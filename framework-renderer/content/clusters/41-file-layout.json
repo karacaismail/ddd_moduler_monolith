@@ -1,0 +1,231 @@
+{
+  "id": "file-layout",
+  "title": "Dosya / Dizin Yapısı",
+  "subtitle": "Önerilen monorepo yapısı.",
+  "cluster": "build",
+  "order": 41,
+  "icon": "ph-folder-open",
+  "tags": [
+    "layout",
+    "directory",
+    "monorepo"
+  ],
+  "blocks": [
+    {
+      "type": "tree",
+      "title": "ddd_moduler_monolith/",
+      "root": {
+        "name": "ddd_moduler_monolith/",
+        "children": [
+          {
+            "name": "framework/",
+            "comment": "Layer 0 + Scale + Layer 1",
+            "children": [
+              {
+                "name": "kernel/",
+                "children": [
+                  {
+                    "name": "schema/",
+                    "comment": "DocType engine"
+                  },
+                  {
+                    "name": "identity/"
+                  },
+                  {
+                    "name": "authz/",
+                    "comment": "RBAC + ABAC + ReBAC + RLS"
+                  },
+                  {
+                    "name": "tenancy/"
+                  },
+                  {
+                    "name": "events/",
+                    "comment": "bus + outbox"
+                  },
+                  {
+                    "name": "polyglot/",
+                    "comment": "embedded JS / sidecar / WASM"
+                  },
+                  {
+                    "name": "plugin/",
+                    "comment": "registry + manifest"
+                  }
+                ]
+              },
+              {
+                "name": "scale/",
+                "children": [
+                  {
+                    "name": "projection.py"
+                  },
+                  {
+                    "name": "counter.py"
+                  },
+                  {
+                    "name": "workers.py"
+                  },
+                  {
+                    "name": "scheduler.py"
+                  },
+                  {
+                    "name": "saga.py"
+                  },
+                  {
+                    "name": "idempotency.py"
+                  }
+                ]
+              },
+              {
+                "name": "layer1/",
+                "children": [
+                  {
+                    "name": "party/"
+                  },
+                  {
+                    "name": "file/"
+                  },
+                  {
+                    "name": "workflow/"
+                  },
+                  {
+                    "name": "notification/"
+                  },
+                  {
+                    "name": "audit/"
+                  },
+                  {
+                    "name": "search/",
+                    "comment": "FTS + pgvector + reranker"
+                  },
+                  {
+                    "name": "calendar/"
+                  },
+                  {
+                    "name": "i18n/"
+                  },
+                  {
+                    "name": "money/"
+                  },
+                  {
+                    "name": "realtime/"
+                  },
+                  {
+                    "name": "webhook/"
+                  },
+                  {
+                    "name": "api/",
+                    "comment": "REST + GraphQL autogen"
+                  },
+                  {
+                    "name": "reporting/"
+                  }
+                ]
+              },
+              {
+                "name": "sdk/",
+                "children": [
+                  {
+                    "name": "python/"
+                  },
+                  {
+                    "name": "typescript/"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "modules/",
+            "comment": "Layer 2 — first-party",
+            "children": [
+              {
+                "name": "commerce/"
+              },
+              {
+                "name": "accounting/",
+                "children": [
+                  {
+                    "name": "ebelge/",
+                    "comment": "TR e-Fatura/e-Arşiv/e-İrsaliye"
+                  },
+                  {
+                    "name": "edefter/"
+                  },
+                  {
+                    "name": "beyanname/"
+                  }
+                ]
+              },
+              {
+                "name": "hrms/"
+              },
+              {
+                "name": "pms/"
+              },
+              {
+                "name": "lms/"
+              },
+              {
+                "name": "cms/"
+              },
+              {
+                "name": "social/"
+              },
+              {
+                "name": "mrp/"
+              },
+              {
+                "name": "ai/"
+              },
+              {
+                "name": "marketing/"
+              },
+              {
+                "name": "helpdesk/"
+              },
+              {
+                "name": "drive/"
+              },
+              {
+                "name": "tr_compliance/",
+                "comment": "KVKK, SGK, MERSİS"
+              }
+            ]
+          },
+          {
+            "name": "ui/",
+            "comment": "Flowbite React (Next.js yasak)"
+          },
+          {
+            "name": "docs/"
+          },
+          {
+            "name": "tests/"
+          },
+          {
+            "name": "pyproject.toml"
+          }
+        ]
+      }
+    }
+  ],
+  "enrich": {
+    "info": "Önerilen monorepo yapısı.",
+    "detail": "Önerilen monorepo yapısı.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

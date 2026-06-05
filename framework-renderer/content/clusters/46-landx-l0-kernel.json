@@ -1,0 +1,174 @@
+{
+  "id": "landx-l0",
+  "title": "LandX L0 — Çekirdek (Kernel)",
+  "subtitle": "K01–K05. Plugin yaşam döngüsü, declarative schema, hook bus, service container.",
+  "cluster": "landx",
+  "order": 46,
+  "layer": "kernel",
+  "icon": "ph-cube",
+  "badge": "LandX L0 — 5 modül",
+  "tags": [
+    "landx",
+    "kernel",
+    "plugin",
+    "schema"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "L0 katmanı: plugin keşfi, manifest doğrulama, DocType engine, migration, hook/event bus, service container. Tüm üst katmanlar buna dayanır."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-plug",
+      "text": "K01 — Plugin Lifecycle Manager"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 1 · P0 · Kernel Squad.** Plugin keşfi, manifest doğrulama, install/upgrade/uninstall, dependency resolution, sürüm uyumluluğu. Tüm üst katmanlar buna bağlı."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Plugin install p95 <30sn, dependency conflict otomatik tespiti %100, downtime-free upgrade >%95"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Plugin Manifest & Metadata · Install/Upgrade/Uninstall · Dependency Resolution · Plugin Registry"
+        },
+        {
+          "key": "Bizim eşdeğer",
+          "value": "{{ref:k-plugin}}"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-database",
+      "text": "K02 — DocType Engine (Schema Runtime)"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 1 · P0 · Kernel Squad.** Deklaratif DocType tanımı → runtime'da DB tablosu, REST endpoint, validation, admin UI ve MCP tool spec'i otomatik üretilir. Frappe DocType'ın AI-native eşdeğeri."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "DocType definition → çalışır API <60sn, schema introspection LLM tool description için %100 kapsama, declarative migration eşleşmesi >%99"
+        },
+        {
+          "key": "Capabilities",
+          "value": "DocType Definition · Runtime Schema Operations · Relations & FK · Soft Delete & Versioning"
+        },
+        {
+          "key": "Bizim eşdeğer",
+          "value": "{{ref:k-schema}}"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-arrows-clockwise",
+      "text": "K03 — Migration & Versioning Engine"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 2 · P0 · Kernel Squad.** Plugin sürüm geçişlerinde DB schema migration, data migration, rollback. Frappe migrate'in AI-augmented eşdeğeri."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Migration generation accuracy >%95, rollback success >%99, AI-suggested plan acceptance >%80"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Migration Plan · Migration Execution · Schema Diff · Data Migration (ETL)"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-broadcast",
+      "text": "K04 — Hook & Event Bus"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 1 · P0 · Kernel Squad.** Plugin'lerin birbirini bilmeden davranış genişletmesi için hook (sync) ve event (async) sistemi. Drupal hook'larının async + agent-aware eşdeğeri."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Event delivery p95 <50ms, hook timeout <%0.1, dead-letter recovery >%95"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Hook Registry · Event Bus · Outbox & Saga Pattern"
+        },
+        {
+          "key": "Bizim eşdeğer",
+          "value": "{{ref:k-bus}} + {{ref:scale-outbox}} + {{ref:scale-saga}}"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-gear",
+      "text": "K05 — Service Container & Configuration"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 2 · P1 · Kernel Squad.** Dependency injection container, hierarchical configuration (global → tenant → user), feature flags, secret resolution."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Config read p99 <5ms, feature flag toggle propagation <2sn, secret rotation downtime 0"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Service Registry · Configuration Hierarchy · Feature Flags · Secrets Resolution"
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Field detayları",
+      "body": "K01-K05'in tam field spec'ı (yaklaşık 280 field) LandX kataloğunda mevcut. Bu cluster özet odaklı; tam detay için kaynak: `LandX-Module-Catalog-main/data/modules_l0.py`."
+    }
+  ],
+  "enrich": {
+    "info": "K01–K05. Plugin yaşam döngüsü, declarative schema, hook bus, service container.",
+    "detail": "K01–K05. Plugin yaşam döngüsü, declarative schema, hook bus, service container.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

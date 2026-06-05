@@ -1,0 +1,1011 @@
+{
+  "id": "atomic-types",
+  "title": "Atomik tipler — Kum Tanesi",
+  "subtitle": "DocType engine'i besleyen atomik primitive'ler. Field'ın altındaki tip katmanı.",
+  "cluster": "atomic",
+  "order": 3,
+  "layer": "atomic",
+  "icon": "ph-circle-half",
+  "granularity": "atom",
+  "state": "wip",
+  "tags": [
+    "atomic",
+    "types",
+    "primitive"
+  ],
+  "enrich": {
+    "info": "Field'ın da altındaki primitive katman. DocType engine bunları kullanarak alan üretir.",
+    "detail": "Tahtada `Field, Log, Handler, Security` yazıyordu — yetersiz. Asıl katman bunların altındaki **atomik tipler**. Her field bir type'a referans verir; validator, coercion, admin widget, API serializer hepsi type'tan türer.",
+    "terms": [
+      {
+        "term": "Primitive",
+        "abbrev_tr": "İlkel",
+        "meaning": "Bölünemez en küçük tip. Scalar (string/int) + composite (Money = Decimal+currency).",
+        "why": "Tüm framework'ün omurgası — değiştirilmez kabul edilir."
+      },
+      {
+        "term": "Coercion",
+        "abbrev_tr": "Zorlayıcı dönüştürme",
+        "meaning": "Input'u tipin beklediği formata çekmek. Örn '19,99' → Decimal(19.99).",
+        "why": "Frontend'den gelen string, backend'de doğru tip olarak saklanmalı."
+      },
+      {
+        "term": "Validator",
+        "abbrev_tr": "Doğrulayıcı",
+        "meaning": "Input'un kurallara uyup uymadığını test eden fonksiyon. Örn IBAN MOD-97 check.",
+        "why": "Yanlış data DB'ye girmesin; tek noktadan kontrol."
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Senin tahtada **Field, Log, Handler, Security** yazdın. Bunlar başlangıç ama yetersiz. Field'ın altında somut tip sistemi olmalı. Aşağıda kritik tiplerin tam listesi — DocType engine bu primitive'leri kullanarak alan yaratıyor.",
+      "enrich": {
+        "info": "Field bir 'kutu'; tip o kutunun ne tutacağını söyler.",
+        "detail": "Frappe pattern'inde DocType'ın her alanı tip referansı tutar. Bizim ek katmanımız: tip sistemi **plugin'lerle genişletilebilir** (registry pattern)."
+      }
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Kritik tipler",
+      "icon": "ph-warning",
+      "enrich": {
+        "info": "Bu tipler olmazsa framework taşımıyor — para kaybı, distributed sorunlar."
+      }
+    },
+    {
+      "type": "feature-list",
+      "filterable": true,
+      "items": [
+        {
+          "name": "Type System",
+          "desc": "Scalar/composite tip, validator, coercion. Field'ın altında. Her field bir type'a referans verir.",
+          "critical": true,
+          "enrich": {
+            "info": "Scalar = bölünemez (int, string). Composite = birleşik (Money = Decimal + currency).",
+            "detail": "Plugin'ler yeni tip ekleyebilmeli; registry pattern.\n\n**Anatomi:** `{ name, validate(v), coerce(input)→v, serialize(v)→json, widget→ReactComponent }`.",
+            "state": "critical",
+            "granularity": "atom",
+            "terms": [
+              {
+                "term": "Scalar",
+                "abbrev_tr": "Tekil",
+                "meaning": "Bölünemez tip — int, string, bool.",
+                "why": "DB'de tek kolon, frontend'de tek input."
+              },
+              {
+                "term": "Composite",
+                "abbrev_tr": "Birleşik",
+                "meaning": "İki+ scalar'dan oluşan tip — Money(Decimal+currency).",
+                "why": "Domain kavramı (para) bir bütün, ayrı kolonlar ile kontrol edilemez."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Plugin geliştirici",
+                "context": "E-ticaret modülüne 'IBAN' tipini eklemek istiyor.",
+                "outcome": "Type registry'e ekler; admin form'da otomatik IBAN input, API'de MOD-97 check, DB'de string saklanır."
+              },
+              {
+                "persona": "Form kullanıcısı",
+                "context": "TL fiyat girer: 1.299,50.",
+                "outcome": "Coercion: TR yerel formatından Decimal'e çekilir; backend her zaman canonical Decimal görür."
+              }
+            ]
+          }
+        },
+        {
+          "name": "ID Generator",
+          "desc": "UUID v7 (timestamp-ordered), ULID, snowflake, tenant-prefixed. Distributed sistemde sequence yetmez.",
+          "critical": true,
+          "enrich": {
+            "info": "Distributed sistemde DB sequence yetmez; collision-free, sortable ID gerekli.",
+            "detail": "**UUID v7** = ilk 48 bit timestamp → DB index'i bozulmaz. **ULID** = Crockford base32, URL-safe. **Snowflake** = 64 bit, Twitter pattern. **Tenant-prefixed** = `t_<tenant>_<uuid>` — log'lardan kim olduğu anlaşılır.",
+            "state": "critical",
+            "granularity": "atom",
+            "terms": [
+              {
+                "term": "UUID v7",
+                "abbrev_of": "Universally Unique Identifier version 7",
+                "abbrev_tr": "Evrensel tek-kimlik v7",
+                "meaning": "İlk 48 bit ms timestamp; geri kalan random. RFC 9562.",
+                "why": "v4 random'dı, B-tree index'i parçalardı. v7 sıralı, insert performansı korunur."
+              },
+              {
+                "term": "ULID",
+                "abbrev_of": "Universally Unique Lexicographically Sortable Identifier",
+                "abbrev_tr": "Sözlük sırasına göre dizilebilir tek-kimlik",
+                "meaning": "128 bit, Crockford base32, 26 karakter.",
+                "why": "URL'lerde, log'larda okunaklı; sortable."
+              },
+              {
+                "term": "Snowflake",
+                "abbrev_tr": "Kar tanesi",
+                "meaning": "64 bit ID = timestamp + datacenter + worker + sequence. Twitter pattern.",
+                "why": "Kompakt; DB'de bigint kolon, çok daha hızlı."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Sipariş kaydı",
+                "context": "Yüksek trafikte aynı anda 5000 sipariş.",
+                "outcome": "UUID v7 ile collision yok, B-tree index sıcak kalır, insert latency'si bozulmaz."
+              },
+              {
+                "persona": "Destek mühendisi",
+                "context": "Log'larda `t_acme_01H8ABCD...` görür.",
+                "outcome": "Tenant prefix sayesinde hangi müşteri olduğunu anında bilir, support ticket'a bağlar."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Money / Decimal",
+          "desc": "Float yasak (yuvarlama). `Decimal(20,4)` + currency code çifti. Muhasebede para kaybı önler.",
+          "critical": true,
+          "enrich": {
+            "info": "Float = yuvarlama hatası. Muhasebede 1 kuruş bile sıkıntıdır.",
+            "detail": "**Decimal(20, 4)** = toplam 20 hane, 4 ondalık (mikroişlemler için). Currency code (ISO 4217) ayrı tutulur. Aritmetik sadece aynı currency içinde; çapraz işlemler **döviz tipi** gerektirir.",
+            "state": "critical",
+            "granularity": "atom",
+            "terms": [
+              {
+                "term": "Decimal",
+                "abbrev_tr": "Ondalık (sabit-hassasiyet)",
+                "meaning": "Sabit hassasiyetli sayı. Float'tan farkı: 0.1+0.2 == 0.3 doğrudur.",
+                "why": "IEEE-754 float kuruş kaybeder; muhasebe testinden geçmez."
+              },
+              {
+                "term": "ISO 4217",
+                "meaning": "Para birimi kod standardı — TRY, USD, EUR.",
+                "why": "String 'lira' yazmak yerine standart kod; uluslararası bağlam tek seçenek."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Muhasebeci (SaaS kullanıcı)",
+                "context": "Fatura kalemi: 19.99 TRY × 3 = ?",
+                "outcome": "Decimal(20,4) ile 59.9700 TRY tam doğru; float olsaydı 59.97000000000001 gibi tortu kalırdı."
+              },
+              {
+                "persona": "Çoklu-currency ticari",
+                "context": "Yurt dışı satıcı 199.95 USD fatura kesiyor.",
+                "outcome": "USD field, TRY field'dan ayrı; toplam alırken FX rate ile dönüşüm zorunlu — yanlış kuru otomatik flag'lenir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "DateTime + Timezone",
+          "desc": "UTC store, IANA tz display. HRMS effective-dating için bitemporal (geçerlilik zamanı + kayıt zamanı).",
+          "critical": true,
+          "enrich": {
+            "info": "DB'de UTC sakla; ekranda kullanıcı tz'sinde göster.",
+            "detail": "**IANA tz database** = `Europe/Istanbul`, `America/New_York`. DST geçişlerinde +03/+02 farkını otomatik çözer. **Bitemporal** = iki zaman: (1) valid_from/valid_to — bu bilgi ne zaman geçerli, (2) recorded_at — bu bilgi sisteme ne zaman girildi. HRMS terfilerini geriye dönük girince ayrım kritik.",
+            "state": "critical",
+            "granularity": "atom",
+            "terms": [
+              {
+                "term": "UTC",
+                "abbrev_of": "Coordinated Universal Time",
+                "abbrev_tr": "Eşgüdümlü Evrensel Zaman",
+                "meaning": "Zaman dilimi olmayan referans saat. Eski adıyla GMT.",
+                "why": "Tek doğruluk noktası — sunucu, DB, log her zaman UTC."
+              },
+              {
+                "term": "IANA tz",
+                "abbrev_of": "Internet Assigned Numbers Authority timezone database",
+                "abbrev_tr": "İnternet sayı atama otoritesi zaman dilimi veritabanı",
+                "meaning": "Tüm dünya tz tanımları — yaz saati değişikliklerini içerir.",
+                "why": "Düz '+03:00' offset yetmez; DST tarihleri yıldan yıla değişir."
+              },
+              {
+                "term": "Bitemporal",
+                "abbrev_tr": "İki-zamanlı",
+                "meaning": "Bilginin ne zaman geçerli olduğu (valid) + ne zaman kaydedildiği (recorded) ayrı.",
+                "why": "HRMS, finans gibi geriye dönük düzeltme yapılan alanlarda audit denkleştirme için zorunlu."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "İK uzmanı",
+                "context": "Geçen ay yapılan terfiyi bugün sisteme girer (etki: 1 Mayıs).",
+                "outcome": "valid_from=2026-05-01, recorded_at=2026-06-05 → bordro Mayıs'tan itibaren artar, audit log dürüst kalır."
+              },
+              {
+                "persona": "Mobil uygulama kullanıcısı",
+                "context": "Türkiye'den İstanbul saatiyle 14:00 toplantı oluşturur, sonra Berlin'e gider.",
+                "outcome": "Backend UTC 11:00 saklar; uçaktan inince ekran 12:00 (CEST) gösterir, doğru saatte hatırlatır."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Reference / Link",
+          "desc": "DocType'a foreign key. Cascade kuralı, orphan kontrolü, tenant-scope check otomatik.",
+          "critical": true,
+          "enrich": {
+            "info": "Bir DocType'tan diğerine pointer; FK + tenant-scope güvenliği.",
+            "detail": "Naif FK yetmez: (a) cascade davranışı (silinince ne olur), (b) orphan detection (link kaldı, hedef silindi), (c) **tenant-scope check** (link tenant A'dan tenant B'ye gidemez — kritik güvenlik).",
+            "state": "critical",
+            "granularity": "atom",
+            "terms": [
+              {
+                "term": "Cascade",
+                "abbrev_tr": "Şelale",
+                "meaning": "Hedef silinince link tarafına ne olur: ON DELETE CASCADE/SET NULL/RESTRICT.",
+                "why": "Yanlış cascade veri kaybına; yokluğu orphan'a yol açar."
+              },
+              {
+                "term": "Orphan",
+                "abbrev_tr": "Yetim",
+                "meaning": "Hedefi silinmiş ama hâlâ duran link.",
+                "why": "Soft-delete'lerde sık olur; periyodik check gerekir."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Multi-tenant SaaS güvenlik",
+                "context": "Acme Ltd kullanıcısı, link alanına Beta Inc'in müşteri ID'sini girer.",
+                "outcome": "Reference tip otomatik tenant-scope check: red. SQL injection tarzı veri sızıntısı engellenmiş olur."
+              },
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Reference / Link\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Reference / Link\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Reference / Link\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Counter (hot)",
+          "desc": "Like/view/follower. Backend swap edilebilir (DB → Redis → sharded). API tek interface, backend deployment'a göre.",
+          "critical": true,
+          "enrich": {
+            "info": "Yüksek-yazma sayaçlar (like, view). Backend transparent değiştirilebilir.",
+            "detail": "**Aşamalar:** (1) Düşük trafikte UPDATE counters SET v=v+1. (2) Orta trafikte Redis INCR + periodic flush. (3) Çok yüksek trafikte sharded counter (her shard ayrı INCR, sum okurken). API tek: `counter.increment('post:42:likes')`. Backend deploy seçimine göre swap.",
+            "state": "critical",
+            "granularity": "atom",
+            "terms": [
+              {
+                "term": "Sharded counter",
+                "abbrev_tr": "Parçalanmış sayaç",
+                "meaning": "Tek satıra her UPDATE değil; 10 shard'a random INCR, okurken SUM(shards).",
+                "why": "Lock contention çözümü — Twitter 'like' patterni."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Social platform kullanıcısı",
+                "context": "Viral post: 100k like/dakika.",
+                "outcome": "Sharded counter sayesinde DB row lock olmaz, latency 5ms altında kalır."
+              },
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Counter (hot)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Counter (hot)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Counter (hot)\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Version / ETag",
+          "desc": "Optimistic concurrency — aynı record'u iki kullanıcı eşzamanlı edit ederse çakışma detect.",
+          "critical": true,
+          "enrich": {
+            "info": "Çakışma tespiti: 'Sen yazdığında bu kayıt değişmişti' uyarısı.",
+            "detail": "**Optimistic concurrency**: lock alma, sadece versiyon kontrolü. Her UPDATE'te `WHERE version = :expected`. Eşleşmezse 409 Conflict, kullanıcıya merge ekranı. **ETag** = HTTP header'da bu versiyon string'i.",
+            "state": "critical",
+            "granularity": "atom",
+            "terms": [
+              {
+                "term": "Optimistic concurrency",
+                "abbrev_tr": "İyimser eşzamanlılık",
+                "meaning": "Lock almadan çalış, yazarken çatışma var mı kontrol et.",
+                "why": "Pesimist lock yüksek trafikte ölür; çatışma nadir."
+              },
+              {
+                "term": "ETag",
+                "abbrev_of": "Entity Tag",
+                "abbrev_tr": "Varlık etiketi",
+                "meaning": "HTTP response'unda kaynak versiyonunu işaretleyen string.",
+                "why": "Client If-Match header'ı ile race-free PUT yapabilir."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "İki muhasebeci aynı anda",
+                "context": "Fatura kalemini ikisi aynı anda günceller.",
+                "outcome": "İkinci PUT 409 alır; UI 'son hali şu, sizin değişikliğiniz şu, neyi tutmak istersiniz?' merge ekranı açar."
+              },
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Version / ETag\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Version / ETag\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Version / ETag\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Yardımcı tipler",
+      "icon": "ph-toolbox",
+      "enrich": {
+        "info": "Kritik değil ama yokluklarında plugin geliştirici tekrar yazıyor — DRY için core'a."
+      }
+    },
+    {
+      "type": "feature-list",
+      "filterable": true,
+      "items": [
+        {
+          "name": "Hash / Checksum",
+          "desc": "SHA-256, BLAKE3. Dosya integrity, idempotency key, content-addressable storage (Drive).",
+          "enrich": {
+            "info": "Dosya/içerik parmak izi. Aynı dosya iki kez yüklenirse aynı hash → tek storage.",
+            "terms": [
+              {
+                "term": "SHA-256",
+                "abbrev_of": "Secure Hash Algorithm 256-bit",
+                "abbrev_tr": "Güvenli özet algoritması 256-bit",
+                "meaning": "256-bit özet üreten hash. Çakışma bulmak pratikte imkansız.",
+                "why": "Standart — git, S3, blockchain hepsi kullanır."
+              },
+              {
+                "term": "BLAKE3",
+                "meaning": "SHA-256'dan çok daha hızlı modern hash.",
+                "why": "Büyük dosyalarda CPU darboğazını çözer."
+              },
+              {
+                "term": "Content-addressable storage",
+                "abbrev_tr": "İçerik-adresli depolama",
+                "meaning": "Dosya hash'i = dosya adresi. Aynı içerik tek kez saklanır.",
+                "why": "Drive ürününde dedup; storage maliyeti büyük tasarruf."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Drive kullanıcısı",
+                "context": "1 GB PDF'yi 5 farklı klasöre koyar.",
+                "outcome": "Hash aynı → tek storage, 5 metadata kaydı; 4 GB tasarruf."
+              },
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Hash / Checksum\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Hash / Checksum\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Hash / Checksum\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ],
+            "detail": "**Hash / Checksum** nedir?\n\nSHA-256, BLAKE3. Dosya integrity, idempotency key, content-addressable storage (Drive).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        },
+        {
+          "name": "Slug",
+          "desc": "Türkçe karakter normalizasyon (ı→i, ş→s, ğ→g, ü→u, ö→o, ç→c), uniqueness scope.",
+          "enrich": {
+            "info": "URL-uyumlu kısa isim: 'Müşteri Şikayeti' → 'musteri-sikayeti'.",
+            "stories": [
+              {
+                "persona": "CMS editor",
+                "context": "Yazı başlığı 'İş İlanı: Şoför Aranıyor'.",
+                "outcome": "Slug: `is-ilani-sofor-araniyor` — Türkçe karakterler doğru normalize, tenant-scope unique."
+              },
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Slug\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Slug\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Slug\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ],
+            "detail": "**Slug** nedir?\n\nTürkçe karakter normalizasyon (ı→i, ş→s, ğ→g, ü→u, ö→o, ç→c), uniqueness scope.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        },
+        {
+          "name": "Phone (E.164)",
+          "desc": "Country code parsing, format, validation. `phonenumbers` Python lib. Twilio/NetGSM gönderiminde şart.",
+          "enrich": {
+            "info": "Standart format: +90 533 123 45 67 → +905331234567.",
+            "terms": [
+              {
+                "term": "E.164",
+                "abbrev_of": "ITU-T Recommendation E.164",
+                "abbrev_tr": "ITU-T E.164 numaralandırma standardı",
+                "meaning": "Uluslararası telefon numarası standardı: + işareti + ülke kodu + abone.",
+                "why": "Tek format → SMS, WhatsApp, regex hepsi tek doğru biçim üzerinde."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "SaaS müşterisi",
+                "context": "CSV upload: '0533 123 45 67', '+905331234567', '90 533 1234567'.",
+                "outcome": "Hepsi `+905331234567` olarak normalize; NetGSM/Twilio'ya doğrudan gönderilir."
+              },
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Phone (E.164)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Phone (E.164)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Phone (E.164)\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ],
+            "detail": "**Phone (E.164)** nedir?\n\nCountry code parsing, format, validation. `phonenumbers` Python lib. Twilio/NetGSM gönderiminde şart.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        },
+        {
+          "name": "Email",
+          "desc": "Syntax + DNS MX check + disposable detection (one-time mail engelle).",
+          "enrich": {
+            "info": "Sözdizimi yetmez; MX kaydı + disposable kara liste de gerek.",
+            "terms": [
+              {
+                "term": "MX record",
+                "abbrev_of": "Mail eXchange record",
+                "abbrev_tr": "Posta değişim kaydı",
+                "meaning": "Bir domain'in posta sunucusunu söyleyen DNS kaydı.",
+                "why": "MX yoksa o domain'e mail gitmez; tip-o yakalanır."
+              },
+              {
+                "term": "Disposable email",
+                "abbrev_tr": "Tek kullanımlık mail",
+                "meaning": "10-minute-mail gibi geçici mail servisleri.",
+                "why": "Spam abuse, free-trial sömürüsünü engeller."
+              }
+            ],
+            "detail": "**Email** nedir?\n\nSyntax + DNS MX check + disposable detection (one-time mail engelle).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Email\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Email\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Email\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "URL",
+          "desc": "Validation, canonical form, scheme allowlist (file:// gibi zararlı scheme'leri engelle).",
+          "enrich": {
+            "info": "Scheme allowlist: http(s):, mailto: tamam. file:, javascript: red.",
+            "terms": [
+              {
+                "term": "SSRF",
+                "abbrev_of": "Server-Side Request Forgery",
+                "abbrev_tr": "Sunucu-tarafı istek sahteciliği",
+                "meaning": "Saldırgan, sunucuyu istemediği bir URL'e istek atmaya zorlar.",
+                "why": "AWS metadata endpoint'i, internal API gibi yerlere sızıntıya yol açar."
+              }
+            ],
+            "detail": "**URL** nedir?\n\nValidation, canonical form, scheme allowlist (file:// gibi zararlı scheme'leri engelle).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"URL\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"URL\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"URL\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Geo Coordinate",
+          "desc": "lat/lng + PostGIS bridge. Real estate (#1), Field Service için kritik.",
+          "enrich": {
+            "info": "Lat/Lng saklar; PostGIS ile yakınlık sorgusu kolay.",
+            "terms": [
+              {
+                "term": "PostGIS",
+                "abbrev_tr": "PostgreSQL coğrafi uzantısı",
+                "meaning": "PostgreSQL'e geometri/coğrafya operatörü ekleyen extension.",
+                "why": "'Bana 5 km içindeki ilanlar' tek SQL ile çözülür."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Field service teknisyeni",
+                "context": "Mobil app: 'En yakın 5 iş'.",
+                "outcome": "Geo sorgu + Polygon delivery zone ile sıralı liste döner."
+              },
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Geo Coordinate\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Geo Coordinate\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Geo Coordinate\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ],
+            "detail": "**Geo Coordinate** nedir?\n\nlat/lng + PostGIS bridge. Real estate (#1), Field Service için kritik.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        },
+        {
+          "name": "Address (atomic)",
+          "desc": "Country/region/city/district/street/postal yapısı + locale formatting.",
+          "enrich": {
+            "info": "Tek string değil — yapılandırılmış. Lokale göre format değişir (TR vs US).",
+            "detail": "**Address (atomic)** nedir?\n\nCountry/region/city/district/street/postal yapısı + locale formatting.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Address (atomic)\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Country/region/city/district/street/postal yapısı + locale formatting. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Address (atomic)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Address (atomic)\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Color",
+          "desc": "Hex string + picker UI. Theme, calendar event, tag.",
+          "enrich": {
+            "info": "#RRGGBB[AA]. Tag, takvim, brand customization için.",
+            "detail": "**Color** nedir?\n\nHex string + picker UI. Theme, calendar event, tag.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Color\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Hex string + picker UI. Theme, calendar event, tag. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Color\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Color\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Tag",
+          "desc": "Polymorphic label, çok-tag yapısı. Hiyerarşisiz (Taxonomy hiyerarşik).",
+          "enrich": {
+            "info": "Düz etiket (#kritik #2026). Hiyerarşi gerekirse Taxonomy kullan.",
+            "detail": "**Tag** nedir?\n\nPolymorphic label, çok-tag yapısı. Hiyerarşisiz (Taxonomy hiyerarşik).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Tag\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Polymorphic label, çok-tag yapısı. Hiyerarşisiz (Taxonomy hiyerarşik). pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Tag\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Tag\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Soft Delete",
+          "desc": "Trash, restore, hard-delete policy. KVKK silme talepleri için altyapı.",
+          "enrich": {
+            "info": "Sil = aslında deleted_at=now. Geri al, gerçekten sil ayrı.",
+            "terms": [
+              {
+                "term": "KVKK",
+                "abbrev_of": "Kişisel Verilerin Korunması Kanunu",
+                "meaning": "Türkiye'nin GDPR muadili — 6698 sayılı kanun.",
+                "why": "Veri sahibi silme talep edebilir; framework hard-delete altyapısı sunmalı."
+              },
+              {
+                "term": "GDPR",
+                "abbrev_of": "General Data Protection Regulation",
+                "abbrev_tr": "Genel Veri Koruma Tüzüğü",
+                "meaning": "AB veri koruma yönetmeliği.",
+                "why": "AB pazarı için zorunlu."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "KVKK sorumlusu",
+                "context": "Kullanıcı 'beni unutun' diyor.",
+                "outcome": "Soft-delete → 30 gün bekleme → hard-delete + audit log; yasal süreç eksiksiz."
+              },
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Soft Delete\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Soft Delete\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Soft Delete\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ],
+            "detail": "**Soft Delete** nedir?\n\nTrash, restore, hard-delete policy. KVKK silme talepleri için altyapı.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        },
+        {
+          "name": "Encryption Field",
+          "desc": "PII/secret field-level encryption (AES-256-GCM), key versioning + rotation.",
+          "enrich": {
+            "info": "Hassas alanı DB'de şifreli sakla; sadece yetkili rolde decrypt.",
+            "terms": [
+              {
+                "term": "AES-256-GCM",
+                "abbrev_of": "Advanced Encryption Standard 256-bit Galois/Counter Mode",
+                "abbrev_tr": "İleri şifreleme standardı 256-bit GCM kipi",
+                "meaning": "Authenticated symmetric encryption — şifreleme + bütünlük tek geçişte.",
+                "why": "Modern, hızlı, NIST onaylı."
+              },
+              {
+                "term": "PII",
+                "abbrev_of": "Personally Identifiable Information",
+                "abbrev_tr": "Kişisel tanımlayıcı bilgi",
+                "meaning": "Kimlik no, telefon, adres — kişiyi tek başına tanımlayan veri.",
+                "why": "KVKK/GDPR uyumu için ek koruma şart."
+              }
+            ],
+            "detail": "**Encryption Field** nedir?\n\nPII/secret field-level encryption (AES-256-GCM), key versioning + rotation.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Encryption Field\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Encryption Field\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Encryption Field\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "JSON / JSONB",
+          "desc": "PostgreSQL JSONB column, schema-less ek alan, opsiyonel JSON Schema validation.",
+          "enrich": {
+            "info": "JSONB = binary JSON, indexlenebilir. Ek alan için DocType'a 'extra' kolonu.",
+            "terms": [
+              {
+                "term": "JSONB",
+                "abbrev_of": "JSON Binary",
+                "abbrev_tr": "İkili JSON",
+                "meaning": "PostgreSQL'in indexlenebilir JSON tipi.",
+                "why": "Schema-less esneklik + index hızı bir arada."
+              }
+            ],
+            "detail": "**JSON / JSONB** nedir?\n\nPostgreSQL JSONB column, schema-less ek alan, opsiyonel JSON Schema validation.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"JSON / JSONB\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"JSON / JSONB\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"JSON / JSONB\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Enum",
+          "desc": "Closed set, multi-language label, ordering, default value.",
+          "enrich": {
+            "info": "Kapalı seçim listesi: 'aktif', 'pasif', 'beklemede'.",
+            "stories": [
+              {
+                "persona": "Çok-dilli SaaS",
+                "context": "Status enum'u TR'de 'Aktif', EN'de 'Active' görünmeli.",
+                "outcome": "Enum label'ı i18n'den çözülür; backend'de tek değer."
+              },
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Enum\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Enum\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Enum\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ],
+            "detail": "**Enum** nedir?\n\nClosed set, multi-language label, ordering, default value.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        },
+        {
+          "name": "Range",
+          "desc": "Date range, int4range, tsrange. PostgreSQL native, exclusion constraint ile.",
+          "enrich": {
+            "info": "Tarih/sayı aralığı, çakışmayan rezervasyon için ideal.",
+            "stories": [
+              {
+                "persona": "Otel PMS",
+                "context": "Oda 101 için iki rezervasyon aynı tarihte gelir.",
+                "outcome": "Exclusion constraint çakışmayı DB seviyesinde reddeder, race condition imkansız."
+              },
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Range\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Range\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Range\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ],
+            "detail": "**Range** nedir?\n\nDate range, int4range, tsrange. PostgreSQL native, exclusion constraint ile.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        },
+        {
+          "name": "Vector",
+          "desc": "pgvector primitive (`vector(N)`). AI-first için kritik. Embedding store + HNSW index.",
+          "enrich": {
+            "info": "N-boyutlu sayı dizisi (embedding). Semantik arama için.",
+            "terms": [
+              {
+                "term": "Embedding",
+                "abbrev_tr": "Gömme",
+                "meaning": "Metni/görseli N boyutlu vektöre çeviren ML modeli çıktısı.",
+                "why": "Anlamsal yakınlık (cosine similarity) yapmak için."
+              },
+              {
+                "term": "HNSW",
+                "abbrev_of": "Hierarchical Navigable Small World",
+                "abbrev_tr": "Hiyerarşik gezilebilir küçük dünya",
+                "meaning": "Yaklaşık en yakın komşu (ANN) index algoritması.",
+                "why": "Milyonlarca vektör arasında milisaniyede arama."
+              },
+              {
+                "term": "pgvector",
+                "abbrev_tr": "PostgreSQL vektör uzantısı",
+                "meaning": "Postgres'e vector tipi + index ekleyen extension.",
+                "why": "Ayrı vector DB (Pinecone) kurmadan, mevcut DB'de semantik arama."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "AI asistanı kullanıcı",
+                "context": "'Geçen ayki bordro hatasını anlat' diye doğal dilde sorar.",
+                "outcome": "Sorgu embedding'i, audit log embedding'leriyle kosinüs karşılaştırılır; ilgili kayıtlar bulunur."
+              },
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Vector\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Vector\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Vector\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ],
+            "detail": "**Vector** nedir?\n\npgvector primitive (`vector(N)`). AI-first için kritik. Embedding store + HNSW index.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        },
+        {
+          "name": "Polygon",
+          "desc": "PostGIS shape. Real estate çizerek arama (polygon search), delivery zone.",
+          "enrich": {
+            "info": "Çokgen alanı. Haritada çizip 'bu içine düşen ilanlar' sorgusu.",
+            "stories": [
+              {
+                "persona": "Emlak müşterisi",
+                "context": "Haritada Beşiktaş'ı çizer.",
+                "outcome": "Polygon ile point-in-polygon: bölgedeki tüm satılık daireler döner."
+              },
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Polygon\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Polygon\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Polygon\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ],
+            "detail": "**Polygon** nedir?\n\nPostGIS shape. Real estate çizerek arama (polygon search), delivery zone.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        }
+      ]
+    },
+    {
+      "type": "user-stories",
+      "title": "Atomic tiplerin gerçek hayattaki yansıması",
+      "stories": [
+        {
+          "persona": "Vergi mükellefi (mobil)",
+          "context": "Mobil app üzerinden masraf ekler: '149,75 TL kahve'",
+          "outcome": "Money(TRY, Decimal) ile saklanır, KDV hesaplaması doğru, e-arşiv fatura üretiminde kuruş kaymaz."
+        },
+        {
+          "persona": "Yeni müşteri kaydı (SaaS)",
+          "context": "Kayıt formu: telefon, email, TCKN",
+          "outcome": "Phone(E.164) normalize, Email MX-check, TCKN MOD-10 + MOD-9 doğrulaması — yanlış kayıt DB'ye girmez."
+        },
+        {
+          "persona": "Çoklu-tenant fatura yöneticisi",
+          "context": "Reference field ile fatura kalemine ürün bağlar",
+          "outcome": "Tenant-scope check, başka müşterinin ürününe link kuramaz — veri sızıntısı engellenir."
+        },
+        {
+          "persona": "AI-first dashboard",
+          "context": "Kullanıcı 'son ay kritik şikayetleri özetle' der",
+          "outcome": "Vector(1536) ile semantik arama → ilgili kayıtlar → LLM özet, milisaniyede dönüş."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Log, Handler, Security — sen yazdın, korunuyor"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Log** = structlog primitive, JSON output, trace_id correlation. **Handler** = request handler factory, middleware pipeline'ın atomu. **Security** = encryption + signing + secret read primitive'leri. Bunlar tahtada doğru yerde, korunuyor.",
+      "enrich": {
+        "info": "Bu üç element de atomic katmanda — gerekçeleri ile.",
+        "terms": [
+          {
+            "term": "structlog",
+            "meaning": "Python structured logging kütüphanesi — JSON output, context binding.",
+            "why": "Grep yerine alanlara göre filtre; observability omurgası."
+          },
+          {
+            "term": "trace_id",
+            "abbrev_tr": "İz kimliği",
+            "meaning": "Bir isteğin sistem boyunca takip edilebilmesi için unique ID.",
+            "why": "Mikro-servis/iş kuyruğunda 'hangi log hangi istekten' sorusunu tek bakışta çözer."
+          }
+        ]
+      }
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Junior'a not",
+      "body": "Type system framework'ün omurgası. Her DocType field'ı bu atomik tiplere referans verir. Yeni bir tip eklemek istersen (örn. `IBAN` doğrulayan bir tip): type registry'e ekle, validator + coercion yaz, framework otomatik admin form widget + API serializer üretsin.",
+      "enrich": {
+        "detail": "**Adım adım:**\n1. `framework/types/iban.py` dosyası aç.\n2. `Type` interface'ini implement et: `validate(v)` (MOD-97), `coerce(s)` (boşluk temizle, upper), `serialize(v)`, `widget` (React IBAN input).\n3. `register('iban', IBANType)`.\n4. Plugin manifest'ine `requires: ['iban']` yaz.\n5. DocType field'ında `type: 'iban'` kullan — admin formdan API'ye her şey otomatik."
+      }
+    }
+  ],
+  "related": [
+    "k-schema",
+    "cc-tr",
+    "cc-security"
+  ]
+}

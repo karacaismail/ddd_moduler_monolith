@@ -1,0 +1,179 @@
+{
+  "id": "overview",
+  "title": "Yönetici özeti",
+  "subtitle": "Bu sayfa 15 SaaS ürünü taşıyacak DDD modüler monolith framework'ün master haritası — JSON-driven, dinamik render.",
+  "cluster": "meta",
+  "order": 0,
+  "icon": "ph-list-checks",
+  "granularity": "kaya",
+  "state": "wip",
+  "tags": [
+    "overview",
+    "architecture",
+    "ddd",
+    "ai-first"
+  ],
+  "enrich": {
+    "info": "Tek cümle: 15 SaaS ürünü taşıyacak DDD modüler monolith framework'ünün master haritası.",
+    "detail": "**Amaç:** son ürün değil, **meta-framework** geliştirmek — Drupal/Django/Frappe sınıfı. FastAPI backend üstüne metadata-driven DocType engine, polyglot runtime (Python + TS), scale primitives core'da.\n\n**Çerçeve:** 6 katman (kum tanesi → kaya). Her katman aşağıdakini bilir, üstündekini bilmez.\n\n**Ölçek:** 15 ürün hedefi (HRMS, Commerce, Accounting, PMS, LMS, CMS, Social, MRP, AI, Marketing, Helpdesk, Drive, Field Service, Real Estate, Field-builder), her biri kendi Layer-2 stack'inde.",
+    "terms": [
+      { "term": "DDD", "abbrev_of": "Domain-Driven Design", "abbrev_tr": "Alana Dayalı Tasarım", "meaning": "İş alanını (domain) yazılım modeline merkez yapan tasarım yaklaşımı.", "why": "İşin dili kodun dili olur; ayrık modüller daha az sızdırır." },
+      { "term": "Meta-framework", "abbrev_tr": "Üst-çerçeve", "meaning": "Framework yazmaya yarayan framework. Frappe, Drupal, Salesforce buna örnek.", "why": "Tek ürün yerine birden çok ürünü aynı çekirdek üstünde inşa etmemizi sağlar." },
+      { "term": "DocType", "abbrev_of": "Document Type", "abbrev_tr": "Belge Tipi", "meaning": "Metadata-driven varlık tanımı — kod yazmadan bir 'Müşteri' veya 'Fatura' tipinin alanları/tabloları/formu üretilir.", "why": "Frappe'den ilham; her custom plugin'in DB tablosu + form + API'sini kendiliğinden alır." }
+    ],
+    "stories": [
+      { "persona": "Sistem yöneticisi (SaaS müşterisi)", "context": "Admin paneline gider, 'Müşteri Şikayeti' adında yeni bir DocType tanımlar; alanlar: konu, açıklama, öncelik, atanan kişi.", "outcome": "Kod yazmadan: DB tablosu açılır, admin formu üretilir, REST/GraphQL endpoint'i hazır olur, audit log tutar." },
+      { "persona": "Plugin geliştirici", "context": "HRMS modülünün üzerine 'Performans 360' eklemek istiyor; manifest yazar, DocType tanımlar, hook bağlar.", "outcome": "Kernel'i kırmadan modül marketplace'e atılabilir; aynı çekirdek, farklı domain." }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Bu sayfa daha önce paylaşılan iki HTML'in (core-domains, eksikler) birleşik, 20 kat derinleştirilmiş halinin JSON dosyalarına bölünmüş ve dinamik render edilen sürümüdür. Mevcut tahta tek katmanlı bir veri-modelleme görünüyordu; oysa 15 üründen Shopify/SAP/Odoo/Frappe sınıfı bir şey çıkacaksa **6 katmanlı bir mimari** gerek: Kum Tanesi (atomik tipler) → Küçük Taş (kernel) → Scale primitives (kernel-yakını) → Orta Taş (in-tree core) → Büyük Taş (Pages) → Services (dış).",
+      "enrich": {
+        "info": "6 katman: atom → kum → toz → küçük taş → orta taş → büyük taş → kaya."
+      }
+    },
+    { "type": "granularity-legend", "title": "Kilometre taşları — Story Point haritası" },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Granularity nasıl kullanılır?",
+      "body": "Bir feature geliştirilirken bu yedi katmandan birine düşer ve **fibonacci** SP otomatik atanır. Aynı modülün altındaki tüm büyük-taş + orta-taş + küçük-taş'lar toplanır → modül roadmap'i çıkar. Sidebar'da `module=kaya`, `items[]=büyük taş`, bir sayfa `orta taş`, bir form bölümü `küçük taş`, bir field `kum`, bir validator `toz`, type primitive `atom`.",
+      "enrich": {
+        "detail": "**Pratik kullanım:** `hrms.işealım.adayhavuzu.aday-formu.tckn-input.tckn-validator` zinciri sırasıyla `kaya → büyük taş → orta taş → küçük taş → kum → toz`. Her seviyenin SP'si toplam projeyi besler.",
+        "stories": [
+          { "persona": "Sprint planlama", "context": "PM, 'aday havuzu' (büyük taş, 34 SP) + 'TCKN validator' (toz, 1 SP) backlog'a alır.", "outcome": "Tahmini gerçeğe yakın olur; çünkü her ata atomik granularity'e oturur." }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "text": "**Sentez tek cümle:** kernel'i mümkün olduğunca dar tut (6 domain), scale primitive'lerini save pipeline'a göm, in-tree core'ları Medusa \"Infrastructure Module\" disiplini ile swappable yap, business logic'i first-party stack module'lerine bırak, asıl ürünleri Layer 3 community marketplace'e at. Ölçek-uyumu kernel'e yerleştir *ama policy değil, primitive olarak* — feed fan-out gibi politika kararları her zaman module katmanında."
+    },
+    {
+      "type": "layer-cards",
+      "cards": [
+        {
+          "tag": "Kum Tanesi",
+          "name": "Atomic types",
+          "desc": "Field, Money, Decimal, ID, Counter, Reference, DateTime, Phone, Email — DocType engine'in oluşturucu blokları.",
+          "tone": "atomic",
+          "enrich": {
+            "info": "DocType engine'i besleyen primitive tipler. Her field bunlardan birine referans verir.",
+            "terms": [
+              { "term": "Primitive", "abbrev_tr": "İlkel", "meaning": "Bölünemez tip — string/int gibi.", "why": "Tüm karmaşık tipler bunlardan birleşik." }
+            ],
+            "stories": [
+              { "persona": "Form tasarımcısı", "context": "Yeni 'Cari Hesap' DocType'ına `Money(TRY, Decimal(20,4))` alanı ekler.", "outcome": "Admin formda otomatik para input, API'de Decimal serileştirme, DB'de NUMERIC(20,4) kolonu üretilir." }
+            ]
+          }
+        },
+        {
+          "tag": "Küçük Taş",
+          "name": "Kernel (6)",
+          "desc": "Schema/DocType, Identity, Authz, Tenancy, Event Bus + Polyglot, Plugin Registry. Çıkarırsan framework ölür.",
+          "tone": "kernel",
+          "enrich": {
+            "info": "Framework'ün vazgeçilmez 6 modülü. Çekirdek dar tutulur.",
+            "detail": "Frappe pattern: kernel ne kadar küçükse o kadar güvenli evrilir. Aşk tanımlama burada bitiyor — gerisi plugin."
+          }
+        },
+        {
+          "tag": "Scale",
+          "name": "Save pipeline",
+          "desc": "Outbox, CQRS Projections, Hot Counter, Workers, Saga, Idempotency.",
+          "tone": "scale",
+          "enrich": {
+            "info": "Yüksek-ölçek için çekirdeğin yanına gömülmüş primitive'ler — policy değil.",
+            "terms": [
+              { "term": "Outbox", "abbrev_tr": "Giden kutusu", "meaning": "DB transaction içinde mesaj yazmak; iletim asenkron worker tarafından.", "why": "DB ve message bus'ı atomik tutar; dual-write sorununu çözer." },
+              { "term": "CQRS", "abbrev_of": "Command Query Responsibility Segregation", "abbrev_tr": "Komut-Sorgu Ayrımı", "meaning": "Yazma modeli ile okuma modeli ayrı; okuma için projection tablosu.", "why": "Karmaşık list/dashboard sorguları join cehenneminden çıkar." }
+            ]
+          }
+        },
+        {
+          "tag": "Orta Taş",
+          "name": "In-tree core",
+          "desc": "Party, File, Workflow, Notification, Audit, Search, Calendar, Money, i18n, Realtime, Settings, Migration.",
+          "tone": "l1",
+          "enrich": {
+            "info": "Her ürünün ortak ihtiyaçları — çekirdeğe gömüyoruz."
+          }
+        },
+        {
+          "tag": "Büyük Taş",
+          "name": "Layer 2 stacks",
+          "desc": "Commerce, Accounting, HRMS, PMS, LMS, CMS, Social, MRP, AI, Marketing, Helpdesk, Drive.",
+          "tone": "l2",
+          "enrich": {
+            "info": "İş alanı modülleri — burada Türkiye uyumu first-class.",
+            "stories": [
+              { "persona": "HRMS müşterisi", "context": "Şirket kuruluyor, bordro modülü açar.", "outcome": "Layer-2 HRMS, Layer-1 Audit ve Workflow'u kullanarak SGK bildirgesi üretir." }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Asıl prensip",
+      "body": "Frappe'nin kanıtladığı şey: *metadata-driven kernel* + *app olarak business logic* = Drupal/Odoo/Salesforce ile aynı pattern. Sen aynı çizgiyi çek, üstüne *polyglot hook* (Python + TypeScript) ve *scale primitives core'da* ekle — yenilik bu üçlüde."
+    },
+    {
+      "type": "ref-grid",
+      "title": "Hızlı geçiş",
+      "refs": [
+        "k-schema",
+        "k-bus",
+        "k-plugin",
+        "scale-outbox",
+        "s-accounting",
+        "build-sequence"
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX Modül Kataloğu — entegre bakış"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX agent-native meta-framework kataloğu (33 modül, 6 katman, 146 capability, 232 operation, 1398 field) bu döküman içine **dağıtılarak** entegre edildi. Ayrı bir grup olarak değil — her LandX modülü ilgili kernel/Layer-1/stack/crosscut/DX cluster'ı içinde ek bir bölüm olarak görünür."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "L0 Çekirdek (K01-K05)",
+          "value": "{{ref:k-plugin}} (K01,K05) · {{ref:k-schema}} (K02,K03) · {{ref:k-bus}} (K04)"
+        },
+        {
+          "key": "L1 Kimlik & Kiracılık (I01-I05)",
+          "value": "{{ref:k-identity}} (I02,I03) · {{ref:k-authz}} (I04) · {{ref:k-tenancy}} (I01,I05)"
+        },
+        {
+          "key": "L2 Agent Runtime (A01-A11)",
+          "value": "{{ref:s-ai}} — 11 modül detay (THE DIFFERENTIATOR)"
+        },
+        {
+          "key": "L3 Application Surface (S01-S06)",
+          "value": "{{ref:l1-misc}} (S01,S02,S03) · {{ref:l1-workflow}} (S04) · {{ref:l1-notification}} (S05) · {{ref:l1-search}} (S06)"
+        },
+        {
+          "key": "L4 Data & Compliance (D01-D03)",
+          "value": "{{ref:l1-audit}} (D01) · {{ref:cc-tr}} (D02,D03)"
+        },
+        {
+          "key": "L5 Operations (O01-O03)",
+          "value": "{{ref:cc-obs}} (O01) · {{ref:dx-marketplace}} (O02,O03)"
+        }
+      ]
+    }
+  ]
+}

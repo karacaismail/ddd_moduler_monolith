@@ -1,0 +1,172 @@
+{
+  "id": "k-identity",
+  "title": "Identity",
+  "subtitle": "Her request'in başında 'kim bu' sorusunu cevaplayan mekanizma. Login/signup'tan çok daha fazlası.",
+  "cluster": "layer0",
+  "layer": "kernel",
+  "order": 5,
+  "icon": "ph-user-circle",
+  "badge": "Layer 0 — Kernel #2",
+  "tags": [
+    "identity",
+    "auth",
+    "session",
+    "kernel"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Her request'in başında **kim bu** sorusunu cevaplayan ana mekanizma. Diğer her module authentication olmadan ne hook çağırabilir, ne event işleyebilir."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Domain modeli"
+    },
+    {
+      "type": "code",
+      "lang": "yaml",
+      "content": "User                  # email, password_hash (Argon2id), status, locale, timezone\nSession               # session_id, user_id, ip, user_agent, expires_at\nToken                 # personal access token, OAuth token, refresh token\nTwoFactorMethod       # TOTP secret, WebAuthn credential, SMS phone\nSSOConnection         # OIDC provider, SAML IdP, OAuth app config\nImpersonationLog      # admin_user, target_user, started_at, ended_at, reason\nPasswordReset         # token, user_id, expires_at, used_at\nServiceAccount        # machine identity, scoped credentials"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Yetenekler"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Şifre auth** — Argon2id (RFC 9106), cost 19MiB/2 iter/1 lane.",
+        "**Session** — server-side Redis session (cookie ID), JWT opsiyonel (stateless API için).",
+        "**OAuth/OIDC** — Google, Microsoft Entra ID, Apple, GitHub, generic OIDC.",
+        "**SAML 2.0** — enterprise SSO (Okta, Auth0, Azure AD).",
+        "**2FA** — TOTP (RFC 6238), WebAuthn (FIDO2 passkey), backup codes, SMS fallback.",
+        "**Magic link** — passwordless email login.",
+        "**Personal Access Token (PAT)** — developer API key, scoped.",
+        "**Service account** — server-to-server, key rotation, scoped.",
+        "**Impersonation** — admin başka kullanıcı olarak giriş, audit log'a \"X impersonated Y at HH:MM\".",
+        "**Password reset** — token tek-kullanımlık, 30 dk TTL, brute force koruması.",
+        "**Account recovery** — backup email, social recovery (FIDO2 + recovery phrase).",
+        "**Rate limit** — failed login backoff (1 → 2 → 4 → 8 saniye), IP-bazlı, account-bazlı.",
+        "**Device management** — \"şu cihazlar oturum açık\" listesi, remote logout.",
+        "**Anonymization (KVKK)** — hesap silindi flag, email/name/phone null, ID korunur."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Kod kontratı"
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "content": "from framework.identity import current_user, require_auth\n\n@require_auth\nasync def my_endpoint(request: Request):\n    user = current_user()        # User aggregate\n    user.is_authenticated        # bool\n    user.has_role(\"manager\")     # RBAC check\n    user.tenant_id               # Tenancy context\n    user.locale                  # \"tr-TR\"\n    user.timezone                # \"Europe/Istanbul\"\n\n# Service account context (cron, webhook)\nwith framework.identity.system_context(service=\"payroll_runner\"):\n    process_payroll_for(tenant_id)"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "SSO senaryosu — gerçek dünya"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bir B2B SaaS müşterin (Acme Inc.) tüm çalışanlarını sadece Acme'nin Google Workspace ile login etsin istiyor. Acme admin'i, Acme tenant'ı için \"SSO Required: Google Workspace, domain: acme.com\" diye ayar yapar. Bundan sonra acme.com kullanıcısı normal şifre login yapamaz — Google'a redirect. Bu özellik kernel'de var, module yazmıyorsun."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Türkiye özel — e-Devlet, m-imza"
+    },
+    {
+      "type": "paragraph",
+      "text": "İleride banka/finans ürünleri için **e-Devlet kapısı OAuth** ve **m-imza (mobil imza)** identity entegrasyonu gerek. Bunlar adapter olarak Identity'nin altına. Çoğunlukla TÜRKKEP üstünden çalışır."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Junior tuzağı — \"kendim yazarım\"",
+      "body": "Auth yazmak = bcrypt cost ayarı, timing-safe karşılaştırma, password reset token tek-kullanımlık, session fixation koruması, CSRF token, OAuth state parameter doğrulama, JWT secret rotation, brute force backoff, account lockout policy. 3 hafta yazılır, içinde 4 güvenlik açığı kalır. Core'da olmasının sebebi: **her ürün ihtiyaç duyar, yanlış yazılınca felaket**."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: I02 User & Identity Core + I03 Authentication & Sessions"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **I02 — User & Identity Core** kritik bir disiplin getirir: bireysel, kurumsal, **agent**, system kullanıcı tek polymorphic identity modelinde, `principal_type` alanı ile ayrılır. Agent ≠ human. Her agent için ek alanlar: `agent_kind` (conversational/workflow/cron/embedded), `model_provider`, `default_model`, `system_prompt_id`, `on_behalf_of_user_id`, `capability_set_id`."
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **I03 — Authentication & Sessions** dört credential tipi tanımlar: Password, Passkey/WebAuthn, API Key, **Agent Token**. Agent token'ı human session'lardan farklı:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "`ttl_seconds` zorunlu (agent token kısa ömürlü)",
+        "`max_tool_calls` limit (kötüye kullanım sınırı)",
+        "`capability_scope_ids` (hangi capability pack)",
+        "`on_behalf_of_user_id` (kim adına çalışıyor)",
+        "Audit zorunlu (`audited` flag)"
+      ]
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "I02 KPI",
+          "value": "Kullanıcı arama p95 <300ms, principal type resolution %100, merge/split conflict <%0.1"
+        },
+        {
+          "key": "I03 KPI",
+          "value": "Login latency p95 <800ms, brute-force başarı 0, agent token TTL ihlali 0"
+        },
+        {
+          "key": "Risk-based Auth (I03)",
+          "value": "device fingerprint, geo_anomaly (AI), velocity_anomaly (AI), recommended_action (allow/step_up/block)"
+        }
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Her request'in başında 'kim bu' sorusunu cevaplayan mekanizma. Login/signup'tan çok daha fazlası.",
+    "detail": "Her request'in başında 'kim bu' sorusunu cevaplayan mekanizma. Login/signup'tan çok daha fazlası.",
+    "terms": [
+      {
+        "term": "Identity",
+        "abbrev_tr": "Kimlik",
+        "meaning": "Kullanıcı/servis kim olduğunu kanıtlayan sistem.",
+        "why": "Kimlik = her güvenlik kararının başlangıç noktası."
+      },
+      {
+        "term": "Session",
+        "abbrev_tr": "Oturum",
+        "meaning": "Bir kullanıcının kimlik kanıtlandıktan sonra süren etkileşim periyodu.",
+        "why": "Her istekte tekrar şifre sormamak için."
+      },
+      {
+        "term": "2FA",
+        "abbrev_of": "Two-Factor Authentication",
+        "abbrev_tr": "İki-faktörlü kimlik doğrulama",
+        "meaning": "Şifre + ek doğrulama (SMS, TOTP).",
+        "why": "Şifre çalınsa bile hesap güvende."
+      },
+      {
+        "term": "Impersonation",
+        "abbrev_tr": "Kimliğe bürünme",
+        "meaning": "Destek personeli müşterinin oturumunu açar (denetimli).",
+        "why": "Destek için gerekli, audit zorunlu."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "SaaS son kullanıcı",
+        "context": "Yeni telefonundan giriş yaparken cihaz tanınmıyor.",
+        "outcome": "2FA TOTP kodu istenir; geçtiğinde session oluşur, sonraki istekler şifresiz gider."
+      }
+    ]
+  }
+}

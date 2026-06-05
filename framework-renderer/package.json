@@ -1,0 +1,21 @@
+{
+  "name": "framework-renderer",
+  "version": "0.1.0",
+  "description": "JSON-driven block renderer for the framework master doc",
+  "type": "module",
+  "license": "LGPL-3.0-only",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "sass": "^1.77.0",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "zod": "^3.23.0"
+  }
+}

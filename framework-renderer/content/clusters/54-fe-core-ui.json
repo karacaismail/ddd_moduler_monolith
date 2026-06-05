@@ -1,0 +1,407 @@
+{
+  "id": "fe-core-ui",
+  "title": "Frontend — Çekirdek + UI + State + API",
+  "subtitle": "React 19 + Vite 6 + TypeScript 5.6 + Flowbite Pro + TanStack + Refine.",
+  "cluster": "frontend",
+  "order": 54,
+  "icon": "ph-puzzle-piece",
+  "tags": [
+    "frontend",
+    "react",
+    "vite",
+    "ui",
+    "state"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.1 Çekirdek"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Katman",
+        "Seçim",
+        "Versiyon",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "Package manager",
+          "pnpm",
+          "9.x",
+          "Strict node_modules, workspace native, hızlı"
+        ],
+        [
+          "Build",
+          "Vite",
+          "6.x",
+          "RSC bağımlısız, HMR hızlı, plugin zengin"
+        ],
+        [
+          "Framework",
+          "React",
+          "19.x",
+          "Concurrent, Suspense, hook olgunluğu"
+        ],
+        [
+          "Dil",
+          "TypeScript",
+          "5.6+ strict",
+          "`any` yasak, exactOptionalPropertyTypes, noUncheckedIndexedAccess"
+        ],
+        [
+          "Routing",
+          "React Router",
+          "v7 (framework mode)",
+          "Type-safe loader/action, Vite uyumlu"
+        ],
+        [
+          "Mobile shell",
+          "Capacitor",
+          "7.x",
+          "Tek codebase, native plugin ekosistemi"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.2 UI & stil"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Katman",
+        "Seçim",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "Base component",
+          "**Flowbite Pro**",
+          "Hazır admin component, Tailwind temelli, lisans alındı"
+        ],
+        [
+          "Headless primitive",
+          "Radix UI",
+          "Flowbite eksiklerine (combobox, hover-card, scroll-area)"
+        ],
+        [
+          "Command palette",
+          "cmdk",
+          "Radix tabanlı, Linear/Vercel standardı"
+        ],
+        [
+          "Toast",
+          "sonner",
+          "Tek lib, Promise toast, küçük"
+        ],
+        [
+          "Icons",
+          "**@phosphor-icons/react**",
+          "Tree-shake, weight varyantı, kullanıcı tercihi"
+        ],
+        [
+          "Utility CSS",
+          "Tailwind (Flowbite ile gelen)",
+          "Component seviyesinde"
+        ],
+        [
+          "Token & tema",
+          "**SCSS**",
+          "`:root` custom properties → Tailwind okur, tek doğruluk kaynağı"
+        ],
+        [
+          "Animation",
+          "Motion (framer-motion successor)",
+          "React 19 uyumlu, gesture API"
+        ],
+        [
+          "Lottie",
+          "lottie-react",
+          "Onboarding, başarı animasyonları"
+        ],
+        [
+          "Charts",
+          "Apache ECharts + echarts-for-react",
+          "Pro-grade, tema-able, büyük dataset"
+        ],
+        [
+          "DnD",
+          "dnd-kit",
+          "Kanban, sortable, accessible"
+        ],
+        [
+          "Virtualization",
+          "@tanstack/react-virtual",
+          "100k+ satır"
+        ],
+        [
+          "Image lazy",
+          "unlazy veya native `loading=\"lazy\"`",
+          "Performans"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.3 State & data"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Katman",
+        "Seçim",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "Server state",
+          "**TanStack Query v5**",
+          "Cache, mutation, optimistic, persistence"
+        ],
+        [
+          "Client state",
+          "Zustand + persist (IDB)",
+          "Ephemeral UI, küçük, devtools"
+        ],
+        [
+          "Form state",
+          "**react-hook-form + zod resolver**",
+          "Nested + array + perf"
+        ],
+        [
+          "URL state",
+          "nuqs",
+          "Type-safe search params, filter/sort/pagination URL sync"
+        ],
+        [
+          "Validation",
+          "**Zod**",
+          "Tek schema, backend Pydantic ile paylaşılır"
+        ],
+        [
+          "Data layer scaffold",
+          "**Refine.dev (headless mode)**",
+          "CRUD hook, auth provider, access control, audit"
+        ],
+        [
+          "Table",
+          "TanStack Table v8",
+          "Headless, faceted filter, bulk action"
+        ],
+        [
+          "Access control",
+          "CASL + @casl/react",
+          "JSON ability, backend ile paylaşılır"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "State karar matrisi"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "State tipi",
+        "Nerede"
+      ],
+      "rows": [
+        [
+          "Server data",
+          "TanStack Query"
+        ],
+        [
+          "Form data",
+          "react-hook-form"
+        ],
+        [
+          "URL params (filter, sort, page)",
+          "nuqs"
+        ],
+        [
+          "Modal açık/kapalı, sidebar",
+          "Zustand"
+        ],
+        [
+          "Auth session",
+          "Logto SDK + Zustand sync"
+        ],
+        [
+          "Realtime presence",
+          "Zustand (WS subscribe)"
+        ],
+        [
+          "Offline queue",
+          "TanStack Query paused mutations + idb-keyval"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.4 API & contract"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Katman",
+        "Seçim",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "OpenAPI tip üretimi",
+          "**openapi-typescript**",
+          "FastAPI /openapi.json'dan TS tipleri"
+        ],
+        [
+          "HTTP client",
+          "**openapi-fetch**",
+          "Runtime küçük, type-safe, hook'lar el yazısı"
+        ],
+        [
+          "File upload",
+          "Dropzone + tus-js-client",
+          "Resumable, KYC dosyaları"
+        ],
+        [
+          "Image compress",
+          "browser-image-compression",
+          "Client-side selfie/belge preprocess"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.5 Auth"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Katman",
+        "Seçim",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "IDP",
+          "**Logto self-host (Hetzner)**",
+          "Node + Postgres, multi-tenant Organizations"
+        ],
+        [
+          "OIDC client",
+          "Logto JS SDK + oidc-client-ts fallback",
+          "PKCE, refresh token rotation"
+        ],
+        [
+          "Mobile flow",
+          "@capacitor/browser (ASWebAuthenticationSession / Custom Tabs)",
+          "Store policy uyumlu"
+        ],
+        [
+          "Deep link callback",
+          "@capacitor/app + universal links",
+          "iOS + Android deep link"
+        ],
+        [
+          "Passkey/WebAuthn",
+          "Logto native",
+          "Phishing-resistant, biometric backed"
+        ],
+        [
+          "Magic link",
+          "Logto native",
+          "Email-only flow, KYB onboarding"
+        ],
+        [
+          "Session",
+          "httpOnly cookie + refresh token rotation",
+          "XSS güvenli"
+        ],
+        [
+          "RBAC",
+          "CASL ability JSON, Logto org role'lerden türetilir",
+          "Backend FastAPI da CASL JSON okur"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.11 i18n & format"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Katman",
+        "Seçim",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "i18n",
+          "**react-intl (FormatJS)**",
+          "ICU MessageFormat native"
+        ],
+        [
+          "Locale dosya",
+          "`packages/i18n/locales/{tr,en,ar}.json`",
+          "Crowdin sync"
+        ],
+        [
+          "RTL",
+          "`dir=\"rtl\"` + tailwindcss-rtl plugin",
+          "Arapça için"
+        ],
+        [
+          "Tarih",
+          "date-fns + date-fns-tz",
+          "Tree-shake, timezone"
+        ],
+        [
+          "Para",
+          "**dinero.js**",
+          "BigInt, IEEE 754 hatasız"
+        ],
+        [
+          "Telefon",
+          "react-phone-number-input",
+          "libphonenumber-js"
+        ]
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "React 19 + Vite 6 + TypeScript 5.6 + Flowbite Pro + TanStack + Refine.",
+    "detail": "React 19 + Vite 6 + TypeScript 5.6 + Flowbite Pro + TanStack + Refine.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

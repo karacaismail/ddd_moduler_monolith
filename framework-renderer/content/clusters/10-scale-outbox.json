@@ -1,0 +1,113 @@
+{
+  "id": "scale-outbox",
+  "title": "Transactional Outbox",
+  "subtitle": "Dual-write problem'inin tek doğru çözümü. Save pipeline'a örülü.",
+  "cluster": "scale",
+  "layer": "scale",
+  "order": 10,
+  "icon": "ph-tray",
+  "badge": "Scale primitive #1",
+  "tags": [
+    "outbox",
+    "events",
+    "dual-write",
+    "scale"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Junior'a:** Dual-write problem. Order'ı DB'ye yazıp Kafka'ya event publish etmek — ikisi iki transaction. Biri başarılı, biri başarısız olabilir."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Naif yaklaşım (yanlış)"
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "content": "def place_order(order):\n    db.save(order)            # ✓ commit\n    kafka.publish(event)      # ✗ network down → event kayıp, Order var\n    # ya da\n    kafka.publish(event)      # ✓ yayınlandı\n    db.save(order)            # ✗ DB crash → event var, Order yok"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Outbox pattern — doğrusu"
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "content": "CREATE TABLE outbox (\n  id uuid PRIMARY KEY,\n  aggregate_type text NOT NULL,\n  aggregate_id text NOT NULL,\n  event_type text NOT NULL,\n  payload jsonb NOT NULL,\n  tenant_id uuid NOT NULL,\n  status text NOT NULL DEFAULT 'pending',  -- pending|published|failed\n  attempts int NOT NULL DEFAULT 0,\n  occurred_at timestamptz NOT NULL DEFAULT now(),\n  published_at timestamptz,\n  next_retry_at timestamptz\n);\nCREATE INDEX outbox_pending_idx ON outbox (status, next_retry_at)\n  WHERE status = 'pending';"
+    },
+    {
+      "type": "paragraph",
+      "text": "Aynı DB transaction'da Order satırı + Outbox satırı INSERT et. Sonra ayrı relay worker outbox'tan Kafka'ya publish eder:"
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "title": "Outbox relay worker",
+      "content": "async def outbox_relay():\n    while True:\n        async with db.transaction():\n            rows = await db.fetch(\"\"\"\n                SELECT * FROM outbox\n                WHERE status = 'pending'\n                  AND (next_retry_at IS NULL OR next_retry_at <= now())\n                ORDER BY occurred_at\n                LIMIT 100\n                FOR UPDATE SKIP LOCKED\n            \"\"\")\n            for row in rows:\n                try:\n                    await kafka.publish(row['event_type'], row['payload'])\n                    await db.execute(\n                        \"UPDATE outbox SET status='published', published_at=now() WHERE id=$1\",\n                        row['id'])\n                except Exception as e:\n                    backoff = min(60 * 2 ** row['attempts'], 3600)\n                    await db.execute(\"\"\"\n                        UPDATE outbox SET attempts = attempts + 1,\n                          next_retry_at = now() + interval '1 second' * $1\n                        WHERE id = $2\n                    \"\"\", backoff, row['id'])\n        await asyncio.sleep(1)"
+    },
+    {
+      "type": "paragraph",
+      "text": "**FOR UPDATE SKIP LOCKED** concurrent worker için kritik. Birden çok worker aynı outbox'tan paralel okuyabilir, lock contention yok."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Debezium alternatifi"
+    },
+    {
+      "type": "paragraph",
+      "text": "PostgreSQL logical replication üstüne **Debezium** outbox tablosunu Kafka'ya stream eder. Python tarafında sadece INSERT yeterli. Production'da tercih edilen pattern. Bkz. `debezium.io/documentation/reference/stable/transformations/outbox-event-router`."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Retention"
+    },
+    {
+      "type": "paragraph",
+      "text": "Outbox tablosu büyür. 2-billion satıra ulaşan fintech örneği var. Politika:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Published satırlar 7 gün sonra archived table'a taşı.",
+        "Failed satırlar 30 gün sonra dead letter queue + alert.",
+        "Partitioning: monthly partition (PostgreSQL declarative partition)."
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Niye save pipeline'a örülmeli",
+      "body": "Her DocType save'i save pipeline'dan geçer. Outbox kodunu module'lere bırakırsan unutan olur. Pipeline'da yapınca her aggregate write **otomatik outbox-aware** — module geliştiricinin düşünmesi gerekmez."
+    }
+  ],
+  "enrich": {
+    "info": "Dual-write problem'inin tek doğru çözümü. Save pipeline'a örülü.",
+    "detail": "Dual-write problem'inin tek doğru çözümü. Save pipeline'a örülü.",
+    "terms": [
+      {
+        "term": "Outbox",
+        "abbrev_tr": "Giden kutusu",
+        "meaning": "DB içinde mesaj satırları, ayrı worker bunları publish eder.",
+        "why": "Dual-write sorununu çözer — DB ve message bus atomik."
+      },
+      {
+        "term": "Dual write",
+        "abbrev_tr": "Çift yazma",
+        "meaning": "Aynı anda iki sisteme (DB + Kafka) yazma denemesi.",
+        "why": "Tehlikeli — biri başarısız olursa tutarsızlık."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

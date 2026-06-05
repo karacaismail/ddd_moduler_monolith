@@ -1,0 +1,259 @@
+{
+  "id": "landx-overview",
+  "title": "LandX Modül Kataloğu — Genel Bakış",
+  "subtitle": "Agent-native meta-framework için 33 modülün 6 katmanlı haritası. Frappe/Drupal/Odoo pattern'inin AI-native yorumu.",
+  "cluster": "landx",
+  "order": 45,
+  "icon": "ph-grid-four",
+  "tags": [
+    "landx",
+    "catalog",
+    "agent-native",
+    "modules"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**LandX**, AI agent'larını birinci sınıf vatandaş kabul eden meta-framework için modül kataloğudur. 33 modül, 6 katman, 146 capability, 232 operation, 1398 field içerir. Bu cluster grubu o kataloğu özet olarak entegre ediyor — detay her bir modül cluster'ında."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Sayısal özet"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Metrik",
+        "Değer"
+      ],
+      "rows": [
+        [
+          "Toplam modül",
+          "33"
+        ],
+        [
+          "Toplam katman",
+          "6 (L0..L5)"
+        ],
+        [
+          "Toplam capability",
+          "146"
+        ],
+        [
+          "Toplam operation",
+          "232"
+        ],
+        [
+          "Toplam field",
+          "1398"
+        ],
+        [
+          "Required field",
+          "502"
+        ],
+        [
+          "AI-aware field",
+          "96"
+        ],
+        [
+          "MCP tool field",
+          "45"
+        ],
+        [
+          "Idempotent operation",
+          "13"
+        ],
+        [
+          "Streaming field",
+          "16"
+        ],
+        [
+          "Vector field",
+          "6"
+        ],
+        [
+          "PII field",
+          "8"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "6 katmanlı taksonomi"
+    },
+    {
+      "type": "layer-cards",
+      "cards": [
+        {
+          "tag": "L0",
+          "name": "Çekirdek",
+          "desc": "Plugin yaşam döngüsü, declarative schema, hook bus, service container. 5 modül.",
+          "tone": "kernel"
+        },
+        {
+          "tag": "L1",
+          "name": "Kimlik & Kiracılık",
+          "desc": "Multi-tenant, user + agent identity, authz, MFA, isolation. 5 modül.",
+          "tone": "kernel"
+        },
+        {
+          "tag": "L2",
+          "name": "Agent Runtime",
+          "desc": "MCP server, tool registry, vector store, memory, prompt lib, LLM obs. 11 modül — THE differentiator.",
+          "tone": "scale"
+        },
+        {
+          "tag": "L3",
+          "name": "Application Surface",
+          "desc": "Auto REST, admin UI, form/validation, workflow, search, notification. 6 modül.",
+          "tone": "l1"
+        },
+        {
+          "tag": "L4",
+          "name": "Data & Compliance",
+          "desc": "Audit log, PII governance, KVKK/GDPR/SOC2. 3 modül.",
+          "tone": "l2"
+        },
+        {
+          "tag": "L5",
+          "name": "Operations & Marketplace",
+          "desc": "Observability, SLO, plugin marketplace, security review. 3 modül.",
+          "tone": "l2"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Faz/Roadmap"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Faz",
+        "Ad",
+        "Aylar"
+      ],
+      "rows": [
+        [
+          "Faz 1",
+          "MVP Kernel & Bootstrap Agent Runtime",
+          "0–4"
+        ],
+        [
+          "Faz 2",
+          "Agent Runtime Olgunluğu",
+          "4–9"
+        ],
+        [
+          "Faz 3",
+          "Uygulama Yüzeyi & Uyumluluk",
+          "9–15"
+        ],
+        [
+          "Faz 4",
+          "Operasyon & Marketplace",
+          "15–24"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Squad organizasyonu"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Kernel Squad** — K01-K05",
+        "**Identity Squad** — I01-I05",
+        "**Agent Runtime Squad** — A01, A02, A03, A04, A05, A09, A10, A11",
+        "**AI Squad** — A05, A06, A07, A08, A09, S06",
+        "**Application Squad** — S01-S06",
+        "**Security Squad** — A03, D02, I05, O03",
+        "**Platform Ops Squad** — A08, D01, O01",
+        "**Compliance Squad** — D01-D03",
+        "**Marketplace Squad** — O02, O03"
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Agent flag taksonomisi"
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "mcp",
+          "value": "Bu alan/operasyon LLM tarafından MCP tool olarak çağrılabilir"
+        },
+        {
+          "key": "idempotent",
+          "value": "Aynı argümanlarla tekrarlanan çağrı yan etki üretmez"
+        },
+        {
+          "key": "streaming",
+          "value": "Sonuç stream edilir (SSE/WebSocket)"
+        },
+        {
+          "key": "vector",
+          "value": "pgvector ile embedding üretilir/saklanır"
+        },
+        {
+          "key": "audited",
+          "value": "Her erişim audit log'a düşer"
+        },
+        {
+          "key": "pii",
+          "value": "Kişisel veri içerir (KVKK kapsamı)"
+        },
+        {
+          "key": "encrypted",
+          "value": "At-rest şifreli saklanır"
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Bu framework ile ilişki",
+      "body": "LandX katalogu bu framework'ün **agent-native bakış açısından** alternatif organizasyonudur. Bizim kernel'imiz {{ref:k-schema}} → LandX'te K02 DocType Engine. Bizim {{ref:k-bus}} → K04. {{ref:k-tenancy}} → I01+I05. {{ref:s-ai}} stack → L2 (A01-A11) tamamı. Aynı problem alanı, farklı taksonomi — birbirini doğruluyor."
+    },
+    {
+      "type": "ref-grid",
+      "title": "LandX katmanları",
+      "refs": [
+        "landx-l0",
+        "landx-l1",
+        "landx-l2",
+        "landx-l3",
+        "landx-l4",
+        "landx-l5"
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Agent-native meta-framework için 33 modülün 6 katmanlı haritası. Frappe/Drupal/Odoo pattern'inin AI-native yorumu.",
+    "detail": "Agent-native meta-framework için 33 modülün 6 katmanlı haritası. Frappe/Drupal/Odoo pattern'inin AI-native yorumu.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

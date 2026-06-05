@@ -1,0 +1,105 @@
+{
+  "id": "cc-obs",
+  "title": "Observability + Performance + DR",
+  "subtitle": "Logging, metrics, tracing, alerting, backup, restore.",
+  "cluster": "crosscut",
+  "order": 37,
+  "icon": "ph-chart-line",
+  "tags": [
+    "observability",
+    "performance",
+    "backup"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Observability"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Logging**: structlog (Python), JSON format, trace_id correlation, Loki/ELK.",
+        "**Metrics**: Prometheus + Grafana. RED method (Rate, Errors, Duration).",
+        "**Tracing**: OpenTelemetry, Jaeger/Tempo. Per-request trace, multi-tenant tagging.",
+        "**Error tracking**: Sentry. Source map, breadcrumb.",
+        "**Real User Monitoring (RUM)**: Datadog RUM, Sentry Performance.",
+        "**Alerting**: PagerDuty / Opsgenie / Slack.",
+        "**Status page**: statuspage.io / Cachet self-host."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Performance Budget"
+    },
+    {
+      "type": "list",
+      "items": [
+        "API p50 < 50ms, p95 < 200ms, p99 < 500ms.",
+        "Page render TTFB < 200ms, LCP < 2.5s.",
+        "DB query budget per endpoint: max 10 queries (N+1 prevention).",
+        "Cache hit rate > 80%.",
+        "Background job throughput per worker > 100 job/s."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Backup & DR"
+    },
+    {
+      "type": "list",
+      "items": [
+        "PostgreSQL: pg_basebackup + WAL archiving (Barman, pgBackRest).",
+        "RPO < 5 dakika, RTO < 1 saat.",
+        "Cross-region replica (Hetzner FSN1 → HEL1).",
+        "Backup encryption (at-rest).",
+        "Restore drill: ayda 1 test.",
+        "Tenant-aware backup: UpdraftPlus pattern, müşteri kendi backup'ını alabilir."
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: O01 Observability & SLO Monitoring"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **O01 — Observability & SLO Monitoring** (Faz 3 · P0 · Platform Ops Squad) bu cluster'ın logs/metrics/traces bölümünü SLO + error budget + on-call routing + **AI anomaly detection** ile tamamlar. *MTTR <30dk, SLO breach precision >%95, alerts/incident <5.*"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Unified observability** — Logs + Metrics + Traces tek pane",
+        "**SLO Definition** — service başına SLI + SLO + error budget",
+        "**Error Budget Tracking** — kalan budget, burn rate alerting",
+        "**Alerting + On-call Routing** — PagerDuty/Opsgenie + escalation policy",
+        "**AI Anomaly Detection** — pattern recognition, root cause hypothesis"
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Logging, metrics, tracing, alerting, backup, restore.",
+    "detail": "Logging, metrics, tracing, alerting, backup, restore.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

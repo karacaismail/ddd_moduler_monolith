@@ -1,0 +1,117 @@
+{
+  "id": "l1-notification",
+  "title": "Notification",
+  "subtitle": "Channel-agnostic. Email, SMS, push, in-app, Slack, webhook.",
+  "cluster": "layer1",
+  "layer": "l1",
+  "order": 19,
+  "icon": "ph-bell",
+  "badge": "Layer 1 — In-tree",
+  "tags": [
+    "notification",
+    "email",
+    "sms",
+    "push"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Channel-agnostic abstraction. Module geliştirici sadece `notify(user, template, data)` yazar. Framework channel preference'ına göre route eder."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Pipeline"
+    },
+    {
+      "type": "list",
+      "ordered": true,
+      "items": [
+        "Template render (Jinja, i18n-aware — kullanıcı locale'i).",
+        "User preference check (kullanıcı bu tipte bildirim istiyor mu).",
+        "Throttling (saatte 1'den fazla aynı bildirim atma).",
+        "Batching (12 kişi beğendi → tek bildirim).",
+        "Channel routing (push varsa push, yoksa email).",
+        "Queue + retry.",
+        "Delivery tracking."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Kanallar"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Email** (transactional + marketing ayrımı, SES/SendGrid/Postmark driver)",
+        "**SMS** (NetGSM, Turkcell SMS, Vatan, Twilio driver) + ETK izin yönetimi",
+        "**Push notification** (iOS APNs, Android FCM, web push VAPID)",
+        "**In-app notification** (bell icon, read/unread state)",
+        "**Slack / Teams / Discord** webhook",
+        "**Generic webhook** (B2B müşteri kendi sistemine alır)"
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Anti-pattern — her module kendi SMTP'sini kursun",
+      "body": "Junior her modüle `smtplib.SMTP(\"smtp.gmail.com\", 587)` yazarsa: config dağınık, throttling yok, queue yok, retry yok, unsubscribe link inconsistent. **Notification core'a koymak = tek pipeline'dan geçer = compliance kolay.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tr",
+      "label": "TR: ETK izin yönetimi",
+      "body": "Elektronik Ticaret Kanunu uyarınca SMS/Email ticari iletişimde alıcının onayı zorunlu. **İYS (İleti Yönetim Sistemi)** entegrasyonu — opt-in kayıtları İYS'ye gönderilir, gönderim öncesi kontrol. Notification module bunu otomatik yapmalı."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: S05 Notification Center"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **S05 — Notification Center** (Faz 3 · P1 · Application Squad) bu cluster ile birebir örtüşür ama ek olarak **agent ping** kanalını birinci sınıf yapar: agent'lar birbirine notification gönderebilir. *Email delivery rate >%98, in-app render p95 <500ms.*"
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "Kanallar",
+          "value": "in-app, email, SMS, push, webhook, **agent ping**"
+        },
+        {
+          "key": "Pipeline",
+          "value": "Template management, user preferences, digest, throttle"
+        },
+        {
+          "key": "Agent kanalı",
+          "value": "Agent'lar arası mesajlaşma — `topic_pattern` subscriber pattern'i ile workflow event'lere bağlanır"
+        }
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Channel-agnostic. Email, SMS, push, in-app, Slack, webhook.",
+    "detail": "Channel-agnostic. Email, SMS, push, in-app, Slack, webhook.",
+    "terms": [
+      {
+        "term": "Channel-agnostic",
+        "abbrev_tr": "Kanal-bağımsız",
+        "meaning": "Notification kodu hangi kanaldan (email/SMS/push) gideceğini bilmez.",
+        "why": "Yeni kanal eklemek kod değişikliği gerektirmesin."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

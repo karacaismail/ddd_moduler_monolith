@@ -1,0 +1,433 @@
+{
+  "id": "s-pms",
+  "title": "PMS Stack",
+  "subtitle": "Linear, Jira, Asana, Monday, ClickUp, MS Project muadili.",
+  "cluster": "stack",
+  "layer": "l2",
+  "order": 26,
+  "icon": "ph-kanban",
+  "badge": "Layer 2 Stack #4",
+  "tags": [
+    "pms",
+    "project",
+    "dependency",
+    "scheduling"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "PMS (#11) ana stack. Diğer ürünlerden helpdesk/CRM cross-link."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Module'ler"
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "WorkItem",
+          "desc": "Epic, Story, Task, Subtask hiyerarşi, backlog",
+          "enrich": {
+            "info": "Epic, Story, Task, Subtask hiyerarşi, backlog",
+            "detail": "**WorkItem** nedir?\n\nEpic, Story, Task, Subtask hiyerarşi, backlog.\n\n**Amaç:** Otellerin oda rezervasyonu, müşteri girişi, fiyatlandırmasını yöneten modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç otel / konaklama bilmeyen biri için: bu özellik, otel / konaklama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Otel resepsiyon ekibi",
+                "context": "\"WorkItem\" özelliğini rezervasyon yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Epic, Story, Task, Subtask hiyerarşi, backlog pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Resepsiyonist",
+                "context": "Müşteri giriş işlemini yapar. \"WorkItem\" özelliği bu süreçte devreye girer.",
+                "outcome": "Rezervasyon arar, oda atar, kimlik tarar; mini-bar/oda servisi hesaba işlenir."
+              },
+              {
+                "persona": "Otel sahibi",
+                "context": "Sezonluk fiyatları yönetir. \"WorkItem\" özelliği bu süreçte devreye girer.",
+                "outcome": "Dinamik fiyatlandırma kuralı tanımlar — yoğun sezonda otomatik %20 artış."
+              },
+              {
+                "persona": "Misafir",
+                "context": "Mobil uygulamadan check-in yapar. \"WorkItem\" özelliği bu süreçte devreye girer.",
+                "outcome": "Resepsiyon kuyruğunu atlar; anahtar telefonuna gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Dependency Graph",
+          "desc": "Blocks/blocked-by, kritik yol",
+          "critical": true,
+          "enrich": {
+            "info": "Blocks/blocked-by, kritik yol",
+            "detail": "**Dependency Graph** nedir?\n\nBlocks/blocked-by, kritik yol.\n\n**Amaç:** Otellerin oda rezervasyonu, müşteri girişi, fiyatlandırmasını yöneten modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç otel / konaklama bilmeyen biri için: bu özellik, otel / konaklama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Otel resepsiyon ekibi",
+                "context": "\"Dependency Graph\" özelliğini rezervasyon yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Blocks/blocked-by, kritik yol pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Resepsiyonist",
+                "context": "Müşteri giriş işlemini yapar. \"Dependency Graph\" özelliği bu süreçte devreye girer.",
+                "outcome": "Rezervasyon arar, oda atar, kimlik tarar; mini-bar/oda servisi hesaba işlenir."
+              },
+              {
+                "persona": "Otel sahibi",
+                "context": "Sezonluk fiyatları yönetir. \"Dependency Graph\" özelliği bu süreçte devreye girer.",
+                "outcome": "Dinamik fiyatlandırma kuralı tanımlar — yoğun sezonda otomatik %20 artış."
+              },
+              {
+                "persona": "Misafir",
+                "context": "Mobil uygulamadan check-in yapar. \"Dependency Graph\" özelliği bu süreçte devreye girer.",
+                "outcome": "Resepsiyon kuyruğunu atlar; anahtar telefonuna gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Scheduling",
+          "desc": "Gantt, timeline, otomatik yeniden-zamanlama",
+          "enrich": {
+            "info": "Gantt, timeline, otomatik yeniden-zamanlama",
+            "detail": "**Scheduling** nedir?\n\nGantt, timeline, otomatik yeniden-zamanlama.\n\n**Amaç:** Otellerin oda rezervasyonu, müşteri girişi, fiyatlandırmasını yöneten modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç otel / konaklama bilmeyen biri için: bu özellik, otel / konaklama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Otel resepsiyon ekibi",
+                "context": "\"Scheduling\" özelliğini rezervasyon yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Gantt, timeline, otomatik yeniden-zamanlama pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Resepsiyonist",
+                "context": "Müşteri giriş işlemini yapar. \"Scheduling\" özelliği bu süreçte devreye girer.",
+                "outcome": "Rezervasyon arar, oda atar, kimlik tarar; mini-bar/oda servisi hesaba işlenir."
+              },
+              {
+                "persona": "Otel sahibi",
+                "context": "Sezonluk fiyatları yönetir. \"Scheduling\" özelliği bu süreçte devreye girer.",
+                "outcome": "Dinamik fiyatlandırma kuralı tanımlar — yoğun sezonda otomatik %20 artış."
+              },
+              {
+                "persona": "Misafir",
+                "context": "Mobil uygulamadan check-in yapar. \"Scheduling\" özelliği bu süreçte devreye girer.",
+                "outcome": "Resepsiyon kuyruğunu atlar; anahtar telefonuna gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Planning",
+          "desc": "Sprint, board (kanban), WIP limit, velocity, burndown",
+          "enrich": {
+            "info": "Sprint, board (kanban), WIP limit, velocity, burndown",
+            "detail": "**Planning** nedir?\n\nSprint, board (kanban), WIP limit, velocity, burndown.\n\n**Amaç:** Otellerin oda rezervasyonu, müşteri girişi, fiyatlandırmasını yöneten modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç otel / konaklama bilmeyen biri için: bu özellik, otel / konaklama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Otel resepsiyon ekibi",
+                "context": "\"Planning\" özelliğini rezervasyon yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Sprint, board (kanban), WIP limit, velocity, burndown pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Resepsiyonist",
+                "context": "Müşteri giriş işlemini yapar. \"Planning\" özelliği bu süreçte devreye girer.",
+                "outcome": "Rezervasyon arar, oda atar, kimlik tarar; mini-bar/oda servisi hesaba işlenir."
+              },
+              {
+                "persona": "Otel sahibi",
+                "context": "Sezonluk fiyatları yönetir. \"Planning\" özelliği bu süreçte devreye girer.",
+                "outcome": "Dinamik fiyatlandırma kuralı tanımlar — yoğun sezonda otomatik %20 artış."
+              },
+              {
+                "persona": "Misafir",
+                "context": "Mobil uygulamadan check-in yapar. \"Planning\" özelliği bu süreçte devreye girer.",
+                "outcome": "Resepsiyon kuyruğunu atlar; anahtar telefonuna gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Resource & Capacity",
+          "desc": "Allocation, workload, leveling",
+          "enrich": {
+            "info": "Allocation, workload, leveling",
+            "detail": "**Resource & Capacity** nedir?\n\nAllocation, workload, leveling.\n\n**Amaç:** Otellerin oda rezervasyonu, müşteri girişi, fiyatlandırmasını yöneten modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç otel / konaklama bilmeyen biri için: bu özellik, otel / konaklama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Otel resepsiyon ekibi",
+                "context": "\"Resource & Capacity\" özelliğini rezervasyon yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Allocation, workload, leveling pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Resepsiyonist",
+                "context": "Müşteri giriş işlemini yapar. \"Resource & Capacity\" özelliği bu süreçte devreye girer.",
+                "outcome": "Rezervasyon arar, oda atar, kimlik tarar; mini-bar/oda servisi hesaba işlenir."
+              },
+              {
+                "persona": "Otel sahibi",
+                "context": "Sezonluk fiyatları yönetir. \"Resource & Capacity\" özelliği bu süreçte devreye girer.",
+                "outcome": "Dinamik fiyatlandırma kuralı tanımlar — yoğun sezonda otomatik %20 artış."
+              },
+              {
+                "persona": "Misafir",
+                "context": "Mobil uygulamadan check-in yapar. \"Resource & Capacity\" özelliği bu süreçte devreye girer.",
+                "outcome": "Resepsiyon kuyruğunu atlar; anahtar telefonuna gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Portfolio & Roadmap",
+          "desc": "Proje-üstü rollup, initiative, OKR hizalama",
+          "enrich": {
+            "info": "Proje-üstü rollup, initiative, OKR hizalama",
+            "detail": "**Portfolio & Roadmap** nedir?\n\nProje-üstü rollup, initiative, OKR hizalama.\n\n**Amaç:** Otellerin oda rezervasyonu, müşteri girişi, fiyatlandırmasını yöneten modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç otel / konaklama bilmeyen biri için: bu özellik, otel / konaklama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Otel resepsiyon ekibi",
+                "context": "\"Portfolio & Roadmap\" özelliğini rezervasyon yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Proje-üstü rollup, initiative, OKR hizalama pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Resepsiyonist",
+                "context": "Müşteri giriş işlemini yapar. \"Portfolio & Roadmap\" özelliği bu süreçte devreye girer.",
+                "outcome": "Rezervasyon arar, oda atar, kimlik tarar; mini-bar/oda servisi hesaba işlenir."
+              },
+              {
+                "persona": "Otel sahibi",
+                "context": "Sezonluk fiyatları yönetir. \"Portfolio & Roadmap\" özelliği bu süreçte devreye girer.",
+                "outcome": "Dinamik fiyatlandırma kuralı tanımlar — yoğun sezonda otomatik %20 artış."
+              },
+              {
+                "persona": "Misafir",
+                "context": "Mobil uygulamadan check-in yapar. \"Portfolio & Roadmap\" özelliği bu süreçte devreye girer.",
+                "outcome": "Resepsiyon kuyruğunu atlar; anahtar telefonuna gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Milestone & Gate",
+          "desc": "Phase, deliverable, approval gate",
+          "enrich": {
+            "info": "Phase, deliverable, approval gate",
+            "detail": "**Milestone & Gate** nedir?\n\nPhase, deliverable, approval gate.\n\n**Amaç:** Otellerin oda rezervasyonu, müşteri girişi, fiyatlandırmasını yöneten modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç otel / konaklama bilmeyen biri için: bu özellik, otel / konaklama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Otel resepsiyon ekibi",
+                "context": "\"Milestone & Gate\" özelliğini rezervasyon yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Phase, deliverable, approval gate pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Resepsiyonist",
+                "context": "Müşteri giriş işlemini yapar. \"Milestone & Gate\" özelliği bu süreçte devreye girer.",
+                "outcome": "Rezervasyon arar, oda atar, kimlik tarar; mini-bar/oda servisi hesaba işlenir."
+              },
+              {
+                "persona": "Otel sahibi",
+                "context": "Sezonluk fiyatları yönetir. \"Milestone & Gate\" özelliği bu süreçte devreye girer.",
+                "outcome": "Dinamik fiyatlandırma kuralı tanımlar — yoğun sezonda otomatik %20 artış."
+              },
+              {
+                "persona": "Misafir",
+                "context": "Mobil uygulamadan check-in yapar. \"Milestone & Gate\" özelliği bu süreçte devreye girer.",
+                "outcome": "Resepsiyon kuyruğunu atlar; anahtar telefonuna gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Risk & Issue (RAID)",
+          "desc": "Risk register, eskalasyon",
+          "enrich": {
+            "info": "Risk register, eskalasyon",
+            "detail": "**Risk & Issue (RAID)** nedir?\n\nRisk register, eskalasyon.\n\n**Amaç:** Otellerin oda rezervasyonu, müşteri girişi, fiyatlandırmasını yöneten modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç otel / konaklama bilmeyen biri için: bu özellik, otel / konaklama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Otel resepsiyon ekibi",
+                "context": "\"Risk & Issue (RAID)\" özelliğini rezervasyon yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Risk register, eskalasyon pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Resepsiyonist",
+                "context": "Müşteri giriş işlemini yapar. \"Risk & Issue (RAID)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Rezervasyon arar, oda atar, kimlik tarar; mini-bar/oda servisi hesaba işlenir."
+              },
+              {
+                "persona": "Otel sahibi",
+                "context": "Sezonluk fiyatları yönetir. \"Risk & Issue (RAID)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Dinamik fiyatlandırma kuralı tanımlar — yoğun sezonda otomatik %20 artış."
+              },
+              {
+                "persona": "Misafir",
+                "context": "Mobil uygulamadan check-in yapar. \"Risk & Issue (RAID)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Resepsiyon kuyruğunu atlar; anahtar telefonuna gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Time Tracking",
+          "desc": "Efor, faturalanabilir saat",
+          "enrich": {
+            "info": "Efor, faturalanabilir saat",
+            "detail": "**Time Tracking** nedir?\n\nEfor, faturalanabilir saat.\n\n**Amaç:** Otellerin oda rezervasyonu, müşteri girişi, fiyatlandırmasını yöneten modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç otel / konaklama bilmeyen biri için: bu özellik, otel / konaklama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Otel resepsiyon ekibi",
+                "context": "\"Time Tracking\" özelliğini rezervasyon yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Efor, faturalanabilir saat pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Resepsiyonist",
+                "context": "Müşteri giriş işlemini yapar. \"Time Tracking\" özelliği bu süreçte devreye girer.",
+                "outcome": "Rezervasyon arar, oda atar, kimlik tarar; mini-bar/oda servisi hesaba işlenir."
+              },
+              {
+                "persona": "Otel sahibi",
+                "context": "Sezonluk fiyatları yönetir. \"Time Tracking\" özelliği bu süreçte devreye girer.",
+                "outcome": "Dinamik fiyatlandırma kuralı tanımlar — yoğun sezonda otomatik %20 artış."
+              },
+              {
+                "persona": "Misafir",
+                "context": "Mobil uygulamadan check-in yapar. \"Time Tracking\" özelliği bu süreçte devreye girer.",
+                "outcome": "Resepsiyon kuyruğunu atlar; anahtar telefonuna gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Work Intake & Triage",
+          "desc": "Request form → task",
+          "enrich": {
+            "info": "Request form → task",
+            "detail": "**Work Intake & Triage** nedir?\n\nRequest form → task.\n\n**Amaç:** Otellerin oda rezervasyonu, müşteri girişi, fiyatlandırmasını yöneten modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç otel / konaklama bilmeyen biri için: bu özellik, otel / konaklama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Otel resepsiyon ekibi",
+                "context": "\"Work Intake & Triage\" özelliğini rezervasyon yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Request form → task pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Resepsiyonist",
+                "context": "Müşteri giriş işlemini yapar. \"Work Intake & Triage\" özelliği bu süreçte devreye girer.",
+                "outcome": "Rezervasyon arar, oda atar, kimlik tarar; mini-bar/oda servisi hesaba işlenir."
+              },
+              {
+                "persona": "Otel sahibi",
+                "context": "Sezonluk fiyatları yönetir. \"Work Intake & Triage\" özelliği bu süreçte devreye girer.",
+                "outcome": "Dinamik fiyatlandırma kuralı tanımlar — yoğun sezonda otomatik %20 artış."
+              },
+              {
+                "persona": "Misafir",
+                "context": "Mobil uygulamadan check-in yapar. \"Work Intake & Triage\" özelliği bu süreçte devreye girer.",
+                "outcome": "Resepsiyon kuyruğunu atlar; anahtar telefonuna gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Views",
+          "desc": "List/Kanban/Gantt/Calendar/Timeline/Workload (read-model)",
+          "enrich": {
+            "info": "List/Kanban/Gantt/Calendar/Timeline/Workload (read-model)",
+            "detail": "**Views** nedir?\n\nList/Kanban/Gantt/Calendar/Timeline/Workload (read-model).\n\n**Amaç:** Otellerin oda rezervasyonu, müşteri girişi, fiyatlandırmasını yöneten modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç otel / konaklama bilmeyen biri için: bu özellik, otel / konaklama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Otel resepsiyon ekibi",
+                "context": "\"Views\" özelliğini rezervasyon yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici List/Kanban/Gantt/Calendar/Timeline/Workload (read-model) pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Resepsiyonist",
+                "context": "Müşteri giriş işlemini yapar. \"Views\" özelliği bu süreçte devreye girer.",
+                "outcome": "Rezervasyon arar, oda atar, kimlik tarar; mini-bar/oda servisi hesaba işlenir."
+              },
+              {
+                "persona": "Otel sahibi",
+                "context": "Sezonluk fiyatları yönetir. \"Views\" özelliği bu süreçte devreye girer.",
+                "outcome": "Dinamik fiyatlandırma kuralı tanımlar — yoğun sezonda otomatik %20 artış."
+              },
+              {
+                "persona": "Misafir",
+                "context": "Mobil uygulamadan check-in yapar. \"Views\" özelliği bu süreçte devreye girer.",
+                "outcome": "Resepsiyon kuyruğunu atlar; anahtar telefonuna gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Baseline Snapshot",
+          "desc": "\"İlk plan ne idi\" sapma ölçümü",
+          "enrich": {
+            "info": "\"İlk plan ne idi\" sapma ölçümü",
+            "detail": "**Baseline Snapshot** nedir?\n\n\"İlk plan ne idi\" sapma ölçümü.\n\n**Amaç:** Otellerin oda rezervasyonu, müşteri girişi, fiyatlandırmasını yöneten modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç otel / konaklama bilmeyen biri için: bu özellik, otel / konaklama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Otel resepsiyon ekibi",
+                "context": "\"Baseline Snapshot\" özelliğini rezervasyon yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici \"İlk plan ne idi\" sapma ölçümü pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Resepsiyonist",
+                "context": "Müşteri giriş işlemini yapar. \"Baseline Snapshot\" özelliği bu süreçte devreye girer.",
+                "outcome": "Rezervasyon arar, oda atar, kimlik tarar; mini-bar/oda servisi hesaba işlenir."
+              },
+              {
+                "persona": "Otel sahibi",
+                "context": "Sezonluk fiyatları yönetir. \"Baseline Snapshot\" özelliği bu süreçte devreye girer.",
+                "outcome": "Dinamik fiyatlandırma kuralı tanımlar — yoğun sezonda otomatik %20 artış."
+              },
+              {
+                "persona": "Misafir",
+                "context": "Mobil uygulamadan check-in yapar. \"Baseline Snapshot\" özelliği bu süreçte devreye girer.",
+                "outcome": "Resepsiyon kuyruğunu atlar; anahtar telefonuna gelir."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "AI integration"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Slippage tahmini (sprint yetişmeyecek)",
+        "Otomatik iş kırılımı (brief → görev ağacı)",
+        "Otomatik atama (kapasite + beceri)",
+        "Standup özet üretimi",
+        "Risk tespiti (gizli blocker, darboğaz)"
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "PMS vs MRP — fark",
+      "body": "İkisi de gelecek + bağımlılık motoru. PMS'te bağımlılığı insan elle çizer (graf authored); MRP'de bağımlılığı ürün yapısı (BOM) belirler (graf derived). Biri irade, biri determinizm."
+    }
+  ],
+  "enrich": {
+    "info": "Linear, Jira, Asana, Monday, ClickUp, MS Project muadili.",
+    "detail": "Linear, Jira, Asana, Monday, ClickUp, MS Project muadili.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

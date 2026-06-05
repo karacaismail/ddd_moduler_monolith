@@ -1,0 +1,96 @@
+{
+  "id": "dx-marketplace",
+  "title": "Marketplace + Versioning",
+  "subtitle": "VS Code Marketplace + Shopify App Store muadili. Semver + Proposed API.",
+  "cluster": "dx",
+  "order": 39,
+  "icon": "ph-storefront",
+  "tags": [
+    "marketplace",
+    "versioning",
+    "publish"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Versioning"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Semver** framework + her module için.",
+        "**API version** hook contract'ında: `api_version: \"1.0\"`. Framework backward-compat sözleşmesi.",
+        "**Proposed API tier** (VS Code pattern) — unstable hook'lar \"experimental\" channel, breaking change yapılabilir; production uyarısı.",
+        "**Deprecation policy**: 2 minor version sonra remove. Deprecation warning log'a."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Marketplace"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Publisher account, plugin upload, review process (security scan + manual review).",
+        "Listing: name, description, category, screenshots, pricing.",
+        "Install: tenant admin permission consent.",
+        "Auto-update opsiyonel, breaking change'de manuel.",
+        "Revenue share: 70/30 split (publisher/platform).",
+        "Plugin analytics: install count, active tenant, rating, review."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Sandboxing — untrusted plugin"
+    },
+    {
+      "type": "paragraph",
+      "text": "Marketplace plugin'leri untrusted. **WASM/Extism** runtime — capability-based sandbox. \"Bu plugin sadece şu DocType'ı okuyabilir, network erişimi yok, disk yok\" diye kısıtlanabilir. First-party plugin sidecar veya embedded; third-party WASM zorunlu."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: O02 Plugin Marketplace + O03 Security Review"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **O02 — Plugin Marketplace** (Faz 4 · P1 · Marketplace Squad) bu cluster ile birebir: 3. parti plugin keşif, install, lisans, ödeme, sürüm. Plugin developer dashboard, billing, **revenue share**, rating/review. *Install conversion >%5, refund rate <%2.*"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **O03 — Plugin Security Review & Sandbox Certification** (Faz 4 · P0 · Security + Marketplace) marketplace'in **kara kutusu**: 3. parti plugin güvenlik denetimi, sandbox uygunluk testleri, imzalı bundle, **supply-chain doğrulama**. Buradan geçmeyen plugin yayına çıkmaz."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Marketplace flywheel",
+      "body": "O01 (observability + SLO) → güvenilirlik, O02 (marketplace) → keşif (developer + tenant arz/talep), O03 (security review + sandbox cert) → güvenlik (untrusted plugin sandboxing). **Üçü birlikte** Shopify App Store + VS Code Marketplace + Apple App Store sağlam üçgenini kurar. Hiçbiri tek başına yetmez."
+    }
+  ],
+  "enrich": {
+    "info": "VS Code Marketplace + Shopify App Store muadili. Semver + Proposed API.",
+    "detail": "VS Code Marketplace + Shopify App Store muadili. Semver + Proposed API.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

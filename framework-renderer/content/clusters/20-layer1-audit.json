@@ -1,0 +1,615 @@
+{
+  "id": "l1-audit",
+  "title": "Audit + Activity",
+  "subtitle": "Compliance + UX. İki ayrı concept, ayrı tut.",
+  "cluster": "layer1",
+  "layer": "l1",
+  "order": 20,
+  "icon": "ph-list-magnifying-glass",
+  "badge": "Layer 1 — In-tree",
+  "granularity": "buyuk-tas",
+  "state": "wip",
+  "tags": [
+    "audit",
+    "activity",
+    "compliance"
+  ],
+  "enrich": {
+    "info": "İki ayrı kavram tek modülde: Audit (yasal/zorunlu) ve Activity (UX/feed).",
+    "detail": "Bunları **karıştırma**. Audit immutable + 10 yıl retention; Activity soft-delete OK, sevkıyat sonrası temizlik mümkün. Yanlışlıkla birleştirilirse: ya audit kirlenir (UX değişiklikleri yasal kayda girer), ya activity şişer (her log entry'sini gösteren feed yorulur).",
+    "terms": [
+      {
+        "term": "Append-only",
+        "abbrev_tr": "Sadece-ekle",
+        "meaning": "Sadece INSERT; UPDATE/DELETE yasak.",
+        "why": "Audit log tamper-proof olmalı; geriye dönük değişiklik = soruşturma."
+      },
+      {
+        "term": "Immutable",
+        "abbrev_tr": "Değiştirilemez",
+        "meaning": "Oluşturulduktan sonra hiçbir alanı güncellenmez.",
+        "why": "Yasal kanıt zincirinin temeli."
+      },
+      {
+        "term": "Event sourcing",
+        "abbrev_tr": "Olay kaynaklı",
+        "meaning": "Sistemin state'i bir olaylar dizisinin replay'i ile yeniden inşa edilebilir.",
+        "why": "Forensic — 'şu an buraya nasıl geldik?' sorusunu zaman içinde geri sararak cevaplar."
+      },
+      {
+        "term": "Retention",
+        "abbrev_tr": "Saklama süresi",
+        "meaning": "Verinin yasal/iş gereği saklanması gereken minimum/maksimum süre.",
+        "why": "Mali 10 yıl, KVKK 'gereken kadar'; aşıldıktan sonra silme zorunlu olabilir."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Vergi denetçisi",
+        "context": "12 ay önce bir muhasebe hesabının değişiklik tarihçesini ister.",
+        "outcome": "Audit log partition'ı (2025-06) çekilir; alan diff'leri JSON olarak gösterilir. Denetim kapanır."
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "İki ayrı concept, ayrı tut:",
+      "enrich": {
+        "info": "Audit ≠ Activity. Birleştirme tuzağına düşme."
+      }
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "text": "**Audit Log** (compliance) — immutable, append-only. Her DocType save'inde alan diff'i. KVKK ve mali kanun zorunlu. Retention: 10 yıl (mali için).",
+          "enrich": {
+            "info": "Yasal kayıt — append-only, kimse silemez, 10 yıl.",
+            "detail": "Mali kanun gereği fatura/defter işlemleri 10 yıl saklanmalı. UPDATE/DELETE yasak; sadece INSERT. Aylık partition: eski partition'lar cold storage'a inebilir.",
+            "state": "critical",
+            "granularity": "orta-tas",
+            "terms": [
+              {
+                "term": "VUK",
+                "abbrev_of": "Vergi Usul Kanunu",
+                "meaning": "TR vergi belgesi saklama yasası.",
+                "why": "Defter/fatura için 10 yıl zorunluluğunun kaynağı."
+              },
+              {
+                "term": "Partition",
+                "abbrev_tr": "Bölüm",
+                "meaning": "Büyük tabloyu range/list bazında alt-tablolara bölme.",
+                "why": "Aylık partition: eski ay'lar sorgu maliyetini düşürür, cold storage'a taşınabilir."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "5 yıl önceki bir faturayı bulması gerekiyor.",
+                "outcome": "Audit log 2021-* partition'ı sorgulanır; ilk değişiklikten son haline kadar tam tarihçe çıkar."
+              }
+            ]
+          }
+        },
+        {
+          "text": "**Activity Feed** (UX) — \"Ahmet bu issue'ya yorum yaptı, 5 dk önce\". Soft delete OK, expire olabilir.",
+          "enrich": {
+            "info": "Kullanıcı arayüzü için akış — yasal değil, UX'tir.",
+            "detail": "Soft-delete OK, eski entry'ler kaldırılabilir. Realtime kanal üstünden push. Audit'in `changes` JSONB'sinden türetilebilir ama performans için ayrı yazılır.",
+            "state": "wip",
+            "granularity": "orta-tas",
+            "stories": [
+              {
+                "persona": "Helpdesk ekibi",
+                "context": "Bir ticket'a 3 farklı kişi yorum yapar.",
+                "outcome": "Activity feed: 'Ayşe yanıtladı 2dk', 'Mehmet status değiştirdi 5dk' — kullanıcı zaman çizgisinde görür."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "title": "audit_log şeması — partition'lı, append-only",
+      "content": "CREATE TABLE audit_log (\n  id uuid PRIMARY KEY,\n  tenant_id uuid NOT NULL,\n  occurred_at timestamptz NOT NULL DEFAULT now(),\n  occurred_by uuid REFERENCES users(id),\n  doctype text NOT NULL,\n  document_id text NOT NULL,\n  action text NOT NULL,            -- create|update|delete|submit|cancel\n  changes jsonb NOT NULL,          -- {field: {old: ..., new: ...}}\n  ip_address inet,\n  user_agent text\n) PARTITION BY RANGE (occurred_at);\n\n-- Monthly partitions\nCREATE TABLE audit_log_2026_01 PARTITION OF audit_log\n  FOR VALUES FROM ('2026-01-01') TO ('2026-02-01');",
+      "enrich": {
+        "info": "Aylık range partition; append-only; user_agent + ip korkulu davranış tespiti için.",
+        "detail": "**Neden tenant_id PRIMARY içinde değil?** Audit cross-tenant join yapmaz; partition + index yeter. **Neden changes jsonb?** Field şemaları değişebilir, audit eski şemayı korumalı. **Neden user_agent + ip?** Compromise tespiti: aynı user'dan beklenmedik ip = alarm."
+      }
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Audit vs Activity — yan yana",
+      "enrich": {
+        "info": "İki concept'in farkı tek tabloda."
+      }
+    },
+    {
+      "type": "table",
+      "filterable": true,
+      "stateColumn": 3,
+      "headers": [
+        "Özellik",
+        "Audit",
+        "Activity",
+        "Durum"
+      ],
+      "rows": [
+        [
+          "Saklama süresi",
+          "10 yıl (mali)",
+          "30-180 gün (configurable)",
+          {
+            "text": "Hazır",
+            "state": "ok"
+          }
+        ],
+        [
+          "Mutability",
+          "Immutable / append-only",
+          "Soft delete OK",
+          {
+            "text": "Hazır",
+            "state": "ok"
+          }
+        ],
+        [
+          "Storage",
+          "Partition + cold storage",
+          "Hot table + Redis stream",
+          {
+            "text": "Geliştiriliyor",
+            "state": "wip"
+          }
+        ],
+        [
+          "Görünürlük",
+          "Sadece admin/denetçi",
+          "Tüm üyeler",
+          {
+            "text": "Hazır",
+            "state": "ok"
+          }
+        ],
+        [
+          "Yasal değer",
+          "Kanıt",
+          "Yok",
+          {
+            "text": "Hazır",
+            "state": "ok"
+          }
+        ],
+        [
+          "Realtime push",
+          "Hayır",
+          "Evet (SSE/WebSocket)",
+          {
+            "text": "Planlı",
+            "state": "planned"
+          }
+        ],
+        [
+          "Schema değişikliği",
+          "JSONB ile esnek",
+          "Versiyonlu DocType event",
+          {
+            "text": "Kısmen",
+            "state": "partial"
+          }
+        ],
+        [
+          "Sorgu pattern",
+          "Forensic (kim/ne/ne zaman)",
+          "Feed (en yeniler)",
+          {
+            "text": "Hazır",
+            "state": "ok"
+          }
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Gerçek dünya örnekleri",
+      "enrich": {
+        "info": "5 farklı stack'ten audit kullanım senaryosu."
+      }
+    },
+    {
+      "type": "examples",
+      "items": [
+        {
+          "label": "Muhasebe (#10)",
+          "text": "Vergi denetiminde \"12 ay önce şu hesap kalemini kim değiştirdi\" sorusu. Audit log olmasa hapis.",
+          "enrich": {
+            "info": "Mali kanun: 10 yıl saklama, alan-bazlı diff zorunlu.",
+            "stories": [
+              {
+                "persona": "Compliance sorumlusu",
+                "context": "\"Muhasebe (#10)\" özelliğini denetim ve yasal saklama sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Vergi denetiminde \"12 ay önce şu hesap kalemini kim değiştirdi\" sorusu. Audit lo pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Vergi denetçisi",
+                "context": "12 ay önceki bir hesap kalemine bakar. \"Muhasebe (#10)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log + partition: tarihsel alan diff'leri."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Bir issue'nun zaman çizgisini görür. \"Muhasebe (#10)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
+              },
+              {
+                "persona": "Compliance",
+                "context": "KVKK silme talebine cevap verir. \"Muhasebe (#10)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft-delete → bekleme → hard-delete + audit."
+              }
+            ],
+            "detail": "**Muhasebe (#10)** nedir?\n\nVergi denetiminde \"12 ay önce şu hesap kalemini kim değiştirdi\" sorusu. Audit log olmasa hapis.\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        },
+        {
+          "label": "HRMS (#9)",
+          "text": "\"Çalışan maaşı 2025-03 → 2025-04'te kim onayladı\". HR compliance.",
+          "enrich": {
+            "info": "İK denetimi: onay zinciri ve etki tarihi izlenebilir.",
+            "terms": [
+              {
+                "term": "Effective dating",
+                "abbrev_tr": "Etki-tarihli",
+                "meaning": "Bir değişikliğin hangi tarihten itibaren geçerli olduğu.",
+                "why": "Geriye dönük zam: kayıt tarihi bugün, etki 1 Mayıs."
+              }
+            ],
+            "detail": "**HRMS (#9)** nedir?\n\n\"Çalışan maaşı 2025-03 → 2025-04'te kim onayladı\". HR compliance.\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Compliance sorumlusu",
+                "context": "\"HRMS (#9)\" özelliğini denetim ve yasal saklama sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici \"Çalışan maaşı 2025-03 → 2025-04'te kim onayladı\". HR compliance. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Vergi denetçisi",
+                "context": "12 ay önceki bir hesap kalemine bakar. \"HRMS (#9)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log + partition: tarihsel alan diff'leri."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Bir issue'nun zaman çizgisini görür. \"HRMS (#9)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
+              },
+              {
+                "persona": "Compliance",
+                "context": "KVKK silme talebine cevap verir. \"HRMS (#9)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft-delete → bekleme → hard-delete + audit."
+              }
+            ]
+          }
+        },
+        {
+          "label": "GitHub PR",
+          "text": "\"Bu satırı 3 ay önce şu kişi şu commit'te ekledi\". Activity feed.",
+          "enrich": {
+            "info": "Activity — UX odaklı; git blame muadili.",
+            "detail": "**GitHub PR** nedir?\n\n\"Bu satırı 3 ay önce şu kişi şu commit'te ekledi\". Activity feed.\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Compliance sorumlusu",
+                "context": "\"GitHub PR\" özelliğini denetim ve yasal saklama sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici \"Bu satırı 3 ay önce şu kişi şu commit'te ekledi\". Activity feed. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Vergi denetçisi",
+                "context": "12 ay önceki bir hesap kalemine bakar. \"GitHub PR\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log + partition: tarihsel alan diff'leri."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Bir issue'nun zaman çizgisini görür. \"GitHub PR\" özelliği bu süreçte devreye girer.",
+                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
+              },
+              {
+                "persona": "Compliance",
+                "context": "KVKK silme talebine cevap verir. \"GitHub PR\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft-delete → bekleme → hard-delete + audit."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Drive (#7)",
+          "text": "\"Bu dosyayı bu hafta kim açtı, indirdi, değiştirdi\". Hem audit hem activity.",
+          "enrich": {
+            "info": "İki concept çakışır: indirme audit (data exfiltration), açma activity.",
+            "detail": "**Drive (#7)** nedir?\n\n\"Bu dosyayı bu hafta kim açtı, indirdi, değiştirdi\". Hem audit hem activity.\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Compliance sorumlusu",
+                "context": "\"Drive (#7)\" özelliğini denetim ve yasal saklama sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici \"Bu dosyayı bu hafta kim açtı, indirdi, değiştirdi\". Hem audit hem activity. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Vergi denetçisi",
+                "context": "12 ay önceki bir hesap kalemine bakar. \"Drive (#7)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log + partition: tarihsel alan diff'leri."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Bir issue'nun zaman çizgisini görür. \"Drive (#7)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
+              },
+              {
+                "persona": "Compliance",
+                "context": "KVKK silme talebine cevap verir. \"Drive (#7)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft-delete → bekleme → hard-delete + audit."
+              }
+            ]
+          }
+        },
+        {
+          "label": "SaaS support",
+          "text": "\"Müşteri X'in hesabına dün admin Y giriş yaptı (impersonation)\". Audit.",
+          "enrich": {
+            "info": "Impersonation = personel kullanıcı hesabına geçici giriş; her zaman audit'lenir.",
+            "terms": [
+              {
+                "term": "Impersonation",
+                "abbrev_tr": "Kimliğe bürünme",
+                "meaning": "Destek personeli, müşterinin oturumunu açar — destek için.",
+                "why": "Yetki çok; suistimal riski yüksek → mutlaka audit + müşteriye bildirim."
+              }
+            ],
+            "detail": "**SaaS support** nedir?\n\n\"Müşteri X'in hesabına dün admin Y giriş yaptı (impersonation)\". Audit.\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Compliance sorumlusu",
+                "context": "\"SaaS support\" özelliğini denetim ve yasal saklama sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici \"Müşteri X'in hesabına dün admin Y giriş yaptı (impersonation)\". Audit. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Vergi denetçisi",
+                "context": "12 ay önceki bir hesap kalemine bakar. \"SaaS support\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log + partition: tarihsel alan diff'leri."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Bir issue'nun zaman çizgisini görür. \"SaaS support\" özelliği bu süreçte devreye girer.",
+                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
+              },
+              {
+                "persona": "Compliance",
+                "context": "KVKK silme talebine cevap verir. \"SaaS support\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft-delete → bekleme → hard-delete + audit."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: D01 Audit Log & Event Sourcing",
+      "enrich": {
+        "info": "Audit'i event sourcing pattern'ine yükselten LandX modülü."
+      }
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **D01 — Audit Log & Event Sourcing** (Faz 3 · P0 · Compliance + Platform Ops) bu cluster'ın audit log kısmını event sourcing pattern'ine yükseltir: append-only event log, replay capability, forensic search, retention policy.",
+      "enrich": {
+        "detail": "**Event sourcing'in pratik faydası:** sistemin geçmişteki herhangi bir anına geri sarılabilir. Bug raporu: 'dün 14:00'da hesap kalemi yanlış göründü' → replay 2026-06-04T14:00:00Z, o anki state üretilir."
+      }
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "Append-Only Log",
+          "desc": "Immutable, replay-safe, partition'lı (monthly).",
+          "enrich": {
+            "state": "wip",
+            "granularity": "kucuk-tas",
+            "info": "Sadece INSERT. UPDATE/DELETE DB seviyesinde reddedilir.",
+            "terms": [
+              {
+                "term": "WORM",
+                "abbrev_of": "Write Once Read Many",
+                "abbrev_tr": "Bir kez yaz, çok kez oku",
+                "meaning": "Bir kez yazılır, sonradan değiştirilemez.",
+                "why": "Yasal kanıt — manipülasyon imkansız."
+              }
+            ],
+            "detail": "**Append-Only Log** nedir?\n\nImmutable, replay-safe, partition'lı (monthly).\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Vergi denetçisi",
+                "context": "12 ay önceki bir hesap kalemine bakar. \"Append-Only Log\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log + partition: tarihsel alan diff'leri."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Bir issue'nun zaman çizgisini görür. \"Append-Only Log\" özelliği bu süreçte devreye girer.",
+                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
+              },
+              {
+                "persona": "Compliance",
+                "context": "KVKK silme talebine cevap verir. \"Append-Only Log\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft-delete → bekleme → hard-delete + audit."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Event Replay",
+          "desc": "Geçmiş state yeniden inşa edilebilir (forensic).",
+          "enrich": {
+            "state": "planned",
+            "granularity": "kucuk-tas",
+            "info": "Olay zincirini baştan oynatarak istenen tarihteki state'i üret.",
+            "stories": [
+              {
+                "persona": "Bug analisti",
+                "context": "Müşteri 'dün hesap kalemi yanlış göründü' diyor.",
+                "outcome": "Replay → o anki snapshot → screenshot ile farkı doğrular."
+              },
+              {
+                "persona": "Vergi denetçisi",
+                "context": "12 ay önceki bir hesap kalemine bakar. \"Event Replay\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log + partition: tarihsel alan diff'leri."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Bir issue'nun zaman çizgisini görür. \"Event Replay\" özelliği bu süreçte devreye girer.",
+                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
+              },
+              {
+                "persona": "Compliance",
+                "context": "KVKK silme talebine cevap verir. \"Event Replay\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft-delete → bekleme → hard-delete + audit."
+              }
+            ],
+            "detail": "**Event Replay** nedir?\n\nGeçmiş state yeniden inşa edilebilir (forensic).\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        },
+        {
+          "name": "Forensic Search",
+          "desc": "\"X kullanıcısı son 30 gün ne yaptı\" sorgusu.",
+          "enrich": {
+            "state": "planned",
+            "granularity": "kucuk-tas",
+            "info": "Kullanıcı bazlı + zaman aralıklı filtre; saldırı tespiti için.",
+            "terms": [
+              {
+                "term": "Forensic",
+                "abbrev_tr": "Adli inceleme",
+                "meaning": "Geçmiş eylemlerin kanıt amacıyla araştırılması.",
+                "why": "Compromise sonrası 'saldırgan ne yaptı' sorusunun cevabı."
+              }
+            ],
+            "detail": "**Forensic Search** nedir?\n\n\"X kullanıcısı son 30 gün ne yaptı\" sorgusu.\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Vergi denetçisi",
+                "context": "12 ay önceki bir hesap kalemine bakar. \"Forensic Search\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log + partition: tarihsel alan diff'leri."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Bir issue'nun zaman çizgisini görür. \"Forensic Search\" özelliği bu süreçte devreye girer.",
+                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
+              },
+              {
+                "persona": "Compliance",
+                "context": "KVKK silme talebine cevap verir. \"Forensic Search\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft-delete → bekleme → hard-delete + audit."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Retention Policy",
+          "desc": "Yasal süre (mali 10 yıl, KVKK varsayılan 5 yıl, configurable).",
+          "enrich": {
+            "state": "missing",
+            "granularity": "kucuk-tas",
+            "info": "DocType bazlı: her tip kendi saklama süresini deklare etsin.",
+            "stories": [
+              {
+                "persona": "KVKK sorumlusu",
+                "context": "Bir tablonun retention'ını 5'ten 7'ye yükseltmek istiyor.",
+                "outcome": "Admin panelden değer değişir; eski entry'ler ek 2 yıl daha tutulur, gelecek silmeler 7 yıla göre planlanır."
+              },
+              {
+                "persona": "Vergi denetçisi",
+                "context": "12 ay önceki bir hesap kalemine bakar. \"Retention Policy\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log + partition: tarihsel alan diff'leri."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Bir issue'nun zaman çizgisini görür. \"Retention Policy\" özelliği bu süreçte devreye girer.",
+                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
+              },
+              {
+                "persona": "Compliance",
+                "context": "KVKK silme talebine cevap verir. \"Retention Policy\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft-delete → bekleme → hard-delete + audit."
+              }
+            ],
+            "detail": "**Retention Policy** nedir?\n\nYasal süre (mali 10 yıl, KVKK varsayılan 5 yıl, configurable).\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        },
+        {
+          "name": "Agent Audit Channel",
+          "desc": "Agent eylemleri ayrı kanal + ek metadata (`run_id`, `tool_name`, `capability_scope_id`, `blast_radius`).",
+          "enrich": {
+            "state": "planned",
+            "granularity": "kucuk-tas",
+            "info": "AI agent'ın yaptığı her tool call, ek alanlarla işaretlenmiş audit kaydı.",
+            "terms": [
+              {
+                "term": "Blast radius",
+                "abbrev_tr": "Etki yarıçapı",
+                "meaning": "Bir agent eyleminin potansiyel zarar alanı (örn: tek kayıt vs tüm tablo).",
+                "why": "Agent risk değerlendirmesi: yüksek blast radius eylem onay ister."
+              },
+              {
+                "term": "Capability scope",
+                "abbrev_tr": "Yetenek kapsamı",
+                "meaning": "Bir agent'a verilen izin sınırları (hangi DocType, hangi action, hangi tenant).",
+                "why": "Agent compromise olursa hasar limitli olsun."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "AI Operations sorumlusu",
+                "context": "Bir agent yanlışlıkla 1000 müşteriyi silmeye çalışır.",
+                "outcome": "Audit channel'da blast_radius=HIGH algılanır → otomatik kilit + insan onayına düşülür."
+              },
+              {
+                "persona": "Vergi denetçisi",
+                "context": "12 ay önceki bir hesap kalemine bakar. \"Agent Audit Channel\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log + partition: tarihsel alan diff'leri."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Bir issue'nun zaman çizgisini görür. \"Agent Audit Channel\" özelliği bu süreçte devreye girer.",
+                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
+              },
+              {
+                "persona": "Compliance",
+                "context": "KVKK silme talebine cevap verir. \"Agent Audit Channel\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft-delete → bekleme → hard-delete + audit."
+              }
+            ],
+            "detail": "**Agent Audit Channel** nedir?\n\nAgent eylemleri ayrı kanal + ek metadata (`run_id`, `tool_name`, `capability_scope_id`, `blast_radius`).\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Yaygın hata",
+      "body": "Audit ve Activity'yi tek tabloda tutma cazibesi büyük (DRY hissi). Bunu yaparsan: (a) audit kirlenir, (b) UI sorguları audit'i yavaşlatır, (c) retention politikası karışır.",
+      "enrich": {
+        "detail": "İki ayrı tablo, iki ayrı erişim deseni. Activity = hot reads, Audit = cold writes + nadir okuma. Birleştirirsen indeks ekonomisi de bozulur."
+      }
+    }
+  ],
+  "related": [
+    "k-schema",
+    "cc-tr",
+    "cc-security"
+  ]
+}

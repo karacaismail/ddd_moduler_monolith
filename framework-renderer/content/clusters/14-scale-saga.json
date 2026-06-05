@@ -1,0 +1,151 @@
+{
+  "id": "scale-saga",
+  "title": "Saga + Compensation",
+  "subtitle": "Cross-aggregate transaction. Adım fail ederse önceki adımları geri al.",
+  "cluster": "scale",
+  "layer": "scale",
+  "order": 14,
+  "icon": "ph-arrows-clockwise",
+  "badge": "Scale primitive #5",
+  "tags": [
+    "saga",
+    "compensation",
+    "workflow",
+    "scale"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Cross-aggregate transaction. \"Order place → Payment charge → Stock reserve → Shipping create\" — herhangi biri fail ederse önceki adımları geri al."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Orchestration vs Choreography"
+    },
+    {
+      "type": "grid",
+      "columns": 2,
+      "items": [
+        {
+          "title": "Orchestration",
+          "icon": "ph-check-circle",
+          "tone": "good",
+          "body": "Merkezi koordinatör adım sırasını ve kompansasyonu bilir. Debug kolay, test edilebilir.\n\n**Modüler monolit için tercih.**",
+          "enrich": {
+            "info": "Merkezi koordinatör adım sırasını ve kompansasyonu bilir. Debug kolay, test edilebilir.\n\n**Modüler monolit için tercih.**",
+            "detail": "**Orchestration** nedir?\n\nMerkezi koordinatör adım sırasını ve kompansasyonu bilir. Debug kolay, test edilebilir.\n\n**Modüler monolit için tercih.**.\n\n**Amaç:** Birden çok adım içeren işlerin (her adımı başarısız olabilir) güvenli yürütüldüğü pattern. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç saga (uzun iş akışı) bilmeyen biri için: bu özellik, saga (uzun iş akışı) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "İş akışı mühendisi",
+                "context": "\"Orchestration\" özelliğini uzun-soluklu işlem zinciri sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Merkezi koordinatör adım sırasını ve kompansasyonu bilir. Debug kolay, test edil pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Backend mühendisi",
+                "context": "Sipariş + ödeme + kargo + email zinciri yazar. \"Orchestration\" özelliği bu süreçte devreye girer.",
+                "outcome": "Saga ile her adım izlenir, başarısızlıkta önceki adımlar telafi edilir."
+              },
+              {
+                "persona": "SRE",
+                "context": "Yarıda kalmış saga'ları izler. \"Orchestration\" özelliği bu süreçte devreye girer.",
+                "outcome": "Görselleştirme + manuel müdahale."
+              },
+              {
+                "persona": "Mimar",
+                "context": "Mali işlem güvenliğini garantiler. \"Orchestration\" özelliği bu süreçte devreye girer.",
+                "outcome": "Compensation logic + idempotency birlikte."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Choreography",
+          "icon": "ph-circle-half",
+          "tone": "neutral",
+          "body": "Servisler event'lere reaktif. Merkezi koordinatör yok. Mikroservis için daha uygun. Modüler monolitte fazla karmaşık.",
+          "enrich": {
+            "info": "Servisler event'lere reaktif. Merkezi koordinatör yok. Mikroservis için daha uygun. Modüler monolitte fazla karmaşık.",
+            "detail": "**Choreography** nedir?\n\nServisler event'lere reaktif. Merkezi koordinatör yok. Mikroservis için daha uygun. Modüler monolitte fazla karmaşık.\n\n**Amaç:** Birden çok adım içeren işlerin (her adımı başarısız olabilir) güvenli yürütüldüğü pattern. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç saga (uzun iş akışı) bilmeyen biri için: bu özellik, saga (uzun iş akışı) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "İş akışı mühendisi",
+                "context": "\"Choreography\" özelliğini uzun-soluklu işlem zinciri sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Servisler event'lere reaktif. Merkezi koordinatör yok. Mikroservis için daha uyg pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Backend mühendisi",
+                "context": "Sipariş + ödeme + kargo + email zinciri yazar. \"Choreography\" özelliği bu süreçte devreye girer.",
+                "outcome": "Saga ile her adım izlenir, başarısızlıkta önceki adımlar telafi edilir."
+              },
+              {
+                "persona": "SRE",
+                "context": "Yarıda kalmış saga'ları izler. \"Choreography\" özelliği bu süreçte devreye girer.",
+                "outcome": "Görselleştirme + manuel müdahale."
+              },
+              {
+                "persona": "Mimar",
+                "context": "Mali işlem güvenliğini garantiler. \"Choreography\" özelliği bu süreçte devreye girer.",
+                "outcome": "Compensation logic + idempotency birlikte."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "DBOS implementasyonu"
+    },
+    {
+      "type": "paragraph",
+      "text": "DBOS Postgres'i durable execution log olarak kullanır — ek altyapı yok. Workflow durable: process crash olursa kaldığı yerden devam eder. Saga için ideal."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "content": "from dbos import DBOS\n\n@DBOS.workflow()\nasync def place_order_saga(order_id: str):\n    try:\n        payment = await DBOS.transaction(charge_payment)(order_id)\n        stock = await DBOS.transaction(reserve_stock)(order_id)\n        shipping = await DBOS.transaction(create_shipment)(order_id)\n        await DBOS.transaction(finalize_order)(order_id)\n        return order_id\n    except StockUnavailable:\n        await DBOS.transaction(refund_payment)(payment)\n        raise\n    except ShippingFailed:\n        await DBOS.transaction(release_stock)(stock)\n        await DBOS.transaction(refund_payment)(payment)\n        raise"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Temporal alternatif"
+    },
+    {
+      "type": "paragraph",
+      "text": "Temporal.io (Cadence fork) — en olgun durable execution platformu. Workflow kodu deterministic Python olarak yazılır, history replay ile state yeniden kurulur. Cassandra/PostgreSQL backend. Self-host veya Temporal Cloud. Çok yüksek throughput senaryoları için."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Distributed transaction (2PC) yapma",
+      "body": "İki ayrı DB'yi tek transaction'da commit etmeye çalışmak (XA, 2PC) yavaş ve fragile. Modern mimaride pratikte kullanılmıyor. Saga + outbox + idempotency, doğru pattern."
+    }
+  ],
+  "enrich": {
+    "info": "Cross-aggregate transaction. Adım fail ederse önceki adımları geri al.",
+    "detail": "Cross-aggregate transaction. Adım fail ederse önceki adımları geri al.",
+    "terms": [
+      {
+        "term": "Saga",
+        "abbrev_tr": "Saga (iş zinciri)",
+        "meaning": "Birden fazla servise yayılan uzun iş akışı.",
+        "why": "Distributed transaction'ın güvenli alternatifi."
+      },
+      {
+        "term": "Compensation",
+        "abbrev_tr": "Telafi",
+        "meaning": "Bir saga adımı başarısız olursa önceki adımları geri alma işlemi.",
+        "why": "ROLLBACK'in mikro-servis dünyasındaki karşılığı."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

@@ -1,0 +1,315 @@
+{
+  "id": "l1-search",
+  "title": "Search (Hybrid: BM25 + Vector)",
+  "subtitle": "Default Postgres FTS + pgvector. Production Meilisearch/Typesense/OpenSearch driver.",
+  "cluster": "layer1",
+  "layer": "l1",
+  "order": 21,
+  "icon": "ph-magnifying-glass",
+  "badge": "Layer 1 — In-tree",
+  "tags": [
+    "search",
+    "fts",
+    "vector",
+    "rag",
+    "hybrid"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "İnterface core'da, backend driver pattern arkasında. Default: PostgreSQL FTS + pgvector (zero ek altyapı). Production: Meilisearch/Typesense/OpenSearch swap."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Hybrid search SQL pattern"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hybrid retrieval: BM25 (lexical) + dense vector (semantic) → **Reciprocal Rank Fusion (RRF)**, k=60 standart. Supabase resmi pattern'i."
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "title": "Hybrid search query",
+      "content": "WITH semantic AS (\n  SELECT id, ROW_NUMBER() OVER (ORDER BY embedding <=> $1) AS rank\n  FROM docs\n  WHERE tenant_id = current_setting('app.tenant_id')::uuid\n  ORDER BY embedding <=> $1 LIMIT 50\n),\nkeyword AS (\n  SELECT id, ROW_NUMBER() OVER (ORDER BY ts_rank_cd(tsv, query) DESC) AS rank\n  FROM docs, plainto_tsquery('turkish', $2) query\n  WHERE tenant_id = current_setting('app.tenant_id')::uuid\n    AND tsv @@ query LIMIT 50\n)\nSELECT id,\n  COALESCE(1.0/(60+s.rank), 0) + COALESCE(1.0/(60+k.rank), 0) AS score\nFROM semantic s FULL OUTER JOIN keyword k USING (id)\nORDER BY score DESC LIMIT 20;"
+    },
+    {
+      "type": "callout",
+      "variant": "tr",
+      "label": "Türkçe stemmer kısıtı",
+      "body": "Postgres `to_tsvector('turkish', ...)` stemmer kısıtlı. Türkçe için **Zemberek-based dictionary** veya `unaccent` + custom dictionary öneririz. Meilisearch v1.5+ Türkçe analyzer var (production'da bu)."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Reranking — opsiyonel ikinci aşama"
+    },
+    {
+      "type": "paragraph",
+      "text": "İlk 20 sonucu cross-encoder ile reorder. **Cohere Rerank v3** (multilingual API) veya **BGE-reranker-v2-m3** (BAAI, open source, multilingual). Türkçe için **BGE-m3** önerilir."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Event-driven indexing"
+    },
+    {
+      "type": "paragraph",
+      "text": "DocType save → `DocumentSaved` event → search indexer worker → backend'e push. {{ref:scale-projections}} pattern'inin özelleşmesi. Module geliştirici \"index güncelle\" düşünmez."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "AI-first ek"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Embedding pipeline** — DocType save → chunk → embed → pgvector projection.",
+        "**Semantic search** — \"Beylikdüzü'nde deniz gören 3+1, 6M altı\" doğal dil arama.",
+        "**RAG** — top-k semantic + rerank + LLM context.",
+        "**GraphRAG** (Microsoft, 2024) — LLM ile entity/relation çıkarımı, knowledge graph, multi-hop sorular."
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Tuzak — Elasticsearch'ü kernel'e fuse etme",
+      "body": "\"Search core'da olsun\" diye Elasticsearch'ü dependency yapma. **Layer 1 = interface core, default SQLite/pgvector, prod Elasticsearch swap.** Frappe core'da search var (basit), ciddi search isteyen Meilisearch eklentisi takıyor. Medusa search'ü Infrastructure Module yapmış. Aynı çizgi."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: S06 Search & Discovery + A05 Vector Store"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **S06 — Search & Discovery** (Faz 3 · P1 · Application + AI Squad) bu cluster'ın hybrid retrieval (BM25 + vector RRF) kısmını **NL → structured query** ile genişletir: doğal dil sorgusu yapılandırılmış filtreye çevrilir. *NDCG@10 >0.78, query latency p95 <250ms.* Ek olarak `saved_searches` + alert subscriptions."
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **A05 — Vector Store & Embedding Pipeline** (Faz 2 · P0 · Agent Runtime + AI Squad) pgvector + embedding job runner + model versioning + hybrid search + reranking — hepsi tek modülde. *Embedding throughput >1000/dk, hybrid search NDCG@10 >0.75, model upgrade downtime 0.*"
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "Embedding Model Registry",
+          "desc": "`provider` (anthropic/openai/cohere/local/voyage), `dimension`, `max_input_tokens`, `cost_per_million_tokens`, `normalized`, `status`",
+          "enrich": {
+            "info": "`provider` (anthropic/openai/cohere/local/voyage), `dimension`, `max_input_tokens`, `cost_per_million_tokens`, `normalized`, `status`",
+            "detail": "**Embedding Model Registry** nedir?\n\n`provider` (anthropic/openai/cohere/local/voyage), `dimension`, `max_input_tokens`, `cost_per_million_tokens`, `normalized`, `status`.\n\n**Amaç:** Klasik keyword + ai semantik aramayı birleştirip ilgili sonuçları döndüren modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç arama (hybrid) bilmeyen biri için: bu özellik, arama (hybrid) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Kullanıcı",
+                "context": "\"Embedding Model Registry\" özelliğini hybrid arama deneyimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `provider` (anthropic/openai/cohere/local/voyage), `dimension`, `max_input_token pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "\"Geçen ay kahve siparişi\" diye arar. \"Embedding Model Registry\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hybrid: BM25 + vector ile ilgili sonuçlar."
+              },
+              {
+                "persona": "İçerik yöneticisi",
+                "context": "Yeni içeriği indeksler. \"Embedding Model Registry\" özelliği bu süreçte devreye girer.",
+                "outcome": "Otomatik — event tetiklenir, projection güncellenir."
+              },
+              {
+                "persona": "Geliştirici",
+                "context": "Custom arama kuralı tanımlar. \"Embedding Model Registry\" özelliği bu süreçte devreye girer.",
+                "outcome": "Boost/filter ile alan ağırlıklarını ayarlar."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Embedding Generation (Embed Job)",
+          "desc": "`source_doctype`, `source_field`, `status` (queued/running/completed/failed), `rows_done` (streaming), `retry_count`. Idempotent.",
+          "enrich": {
+            "info": "`source_doctype`, `source_field`, `status` (queued/running/completed/failed), `rows_done` (streaming), `retry_count`. Idempotent.",
+            "detail": "**Embedding Generation (Embed Job)** nedir?\n\n`source_doctype`, `source_field`, `status` (queued/running/completed/failed), `rows_done` (streaming), `retry_count`. Idempotent.\n\n**Amaç:** Klasik keyword + ai semantik aramayı birleştirip ilgili sonuçları döndüren modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç arama (hybrid) bilmeyen biri için: bu özellik, arama (hybrid) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Kullanıcı",
+                "context": "\"Embedding Generation (Embed Job)\" özelliğini hybrid arama deneyimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `source_doctype`, `source_field`, `status` (queued/running/completed/failed), `r pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "\"Geçen ay kahve siparişi\" diye arar. \"Embedding Generation (Embed Job)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hybrid: BM25 + vector ile ilgili sonuçlar."
+              },
+              {
+                "persona": "İçerik yöneticisi",
+                "context": "Yeni içeriği indeksler. \"Embedding Generation (Embed Job)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Otomatik — event tetiklenir, projection güncellenir."
+              },
+              {
+                "persona": "Geliştirici",
+                "context": "Custom arama kuralı tanımlar. \"Embedding Generation (Embed Job)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Boost/filter ile alan ağırlıklarını ayarlar."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Embedding Storage",
+          "desc": "`source_id`, `model_id`, `vector` (pgvector), `checksum` (içerik değişti mi)",
+          "enrich": {
+            "info": "`source_id`, `model_id`, `vector` (pgvector), `checksum` (içerik değişti mi)",
+            "detail": "**Embedding Storage** nedir?\n\n`source_id`, `model_id`, `vector` (pgvector), `checksum` (içerik değişti mi).\n\n**Amaç:** Klasik keyword + ai semantik aramayı birleştirip ilgili sonuçları döndüren modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç arama (hybrid) bilmeyen biri için: bu özellik, arama (hybrid) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Kullanıcı",
+                "context": "\"Embedding Storage\" özelliğini hybrid arama deneyimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `source_id`, `model_id`, `vector` (pgvector), `checksum` (içerik değişti mi) pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "\"Geçen ay kahve siparişi\" diye arar. \"Embedding Storage\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hybrid: BM25 + vector ile ilgili sonuçlar."
+              },
+              {
+                "persona": "İçerik yöneticisi",
+                "context": "Yeni içeriği indeksler. \"Embedding Storage\" özelliği bu süreçte devreye girer.",
+                "outcome": "Otomatik — event tetiklenir, projection güncellenir."
+              },
+              {
+                "persona": "Geliştirici",
+                "context": "Custom arama kuralı tanımlar. \"Embedding Storage\" özelliği bu süreçte devreye girer.",
+                "outcome": "Boost/filter ile alan ağırlıklarını ayarlar."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Hybrid Search Query",
+          "desc": "`query_text`, `vector_weight` + `bm25_weight`, `filters`, `top_k`, `rerank_with_model_id`. Sonuç `score_vector/bm25/combined/rerank` + `explanation` (AI).",
+          "enrich": {
+            "info": "`query_text`, `vector_weight` + `bm25_weight`, `filters`, `top_k`, `rerank_with_model_id`. Sonuç `score_vector/bm25/combined/rerank` + `expl",
+            "detail": "**Hybrid Search Query** nedir?\n\n`query_text`, `vector_weight` + `bm25_weight`, `filters`, `top_k`, `rerank_with_model_id`. Sonuç `score_vector/bm25/combined/rerank` + `explanation` (AI).\n\n**Amaç:** Klasik keyword + ai semantik aramayı birleştirip ilgili sonuçları döndüren modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç arama (hybrid) bilmeyen biri için: bu özellik, arama (hybrid) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Kullanıcı",
+                "context": "\"Hybrid Search Query\" özelliğini hybrid arama deneyimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `query_text`, `vector_weight` + `bm25_weight`, `filters`, `top_k`, `rerank_with_ pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "\"Geçen ay kahve siparişi\" diye arar. \"Hybrid Search Query\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hybrid: BM25 + vector ile ilgili sonuçlar."
+              },
+              {
+                "persona": "İçerik yöneticisi",
+                "context": "Yeni içeriği indeksler. \"Hybrid Search Query\" özelliği bu süreçte devreye girer.",
+                "outcome": "Otomatik — event tetiklenir, projection güncellenir."
+              },
+              {
+                "persona": "Geliştirici",
+                "context": "Custom arama kuralı tanımlar. \"Hybrid Search Query\" özelliği bu süreçte devreye girer.",
+                "outcome": "Boost/filter ile alan ağırlıklarını ayarlar."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Reindex Job",
+          "desc": "`strategy` (dual_write/blue_green/in_place), `ai_migration_plan_explanation` — model değişimi zero-downtime",
+          "enrich": {
+            "info": "`strategy` (dual_write/blue_green/in_place), `ai_migration_plan_explanation` — model değişimi zero-downtime",
+            "detail": "**Reindex Job** nedir?\n\n`strategy` (dual_write/blue_green/in_place), `ai_migration_plan_explanation` — model değişimi zero-downtime.\n\n**Amaç:** Klasik keyword + ai semantik aramayı birleştirip ilgili sonuçları döndüren modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç arama (hybrid) bilmeyen biri için: bu özellik, arama (hybrid) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Kullanıcı",
+                "context": "\"Reindex Job\" özelliğini hybrid arama deneyimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `strategy` (dual_write/blue_green/in_place), `ai_migration_plan_explanation` — m pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "\"Geçen ay kahve siparişi\" diye arar. \"Reindex Job\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hybrid: BM25 + vector ile ilgili sonuçlar."
+              },
+              {
+                "persona": "İçerik yöneticisi",
+                "context": "Yeni içeriği indeksler. \"Reindex Job\" özelliği bu süreçte devreye girer.",
+                "outcome": "Otomatik — event tetiklenir, projection güncellenir."
+              },
+              {
+                "persona": "Geliştirici",
+                "context": "Custom arama kuralı tanımlar. \"Reindex Job\" özelliği bu süreçte devreye girer.",
+                "outcome": "Boost/filter ile alan ağırlıklarını ayarlar."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Index Health",
+          "desc": "HNSW parametreleri (`hnsw_m_param`, `ef_construction`, `ef_search`), `recall_at_k`, `avg_query_latency_ms`",
+          "enrich": {
+            "info": "HNSW parametreleri (`hnsw_m_param`, `ef_construction`, `ef_search`), `recall_at_k`, `avg_query_latency_ms`",
+            "detail": "**Index Health** nedir?\n\nHNSW parametreleri (`hnsw_m_param`, `ef_construction`, `ef_search`), `recall_at_k`, `avg_query_latency_ms`.\n\n**Amaç:** Klasik keyword + ai semantik aramayı birleştirip ilgili sonuçları döndüren modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç arama (hybrid) bilmeyen biri için: bu özellik, arama (hybrid) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Kullanıcı",
+                "context": "\"Index Health\" özelliğini hybrid arama deneyimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici HNSW parametreleri (`hnsw_m_param`, `ef_construction`, `ef_search`), `recall_at_ pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "\"Geçen ay kahve siparişi\" diye arar. \"Index Health\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hybrid: BM25 + vector ile ilgili sonuçlar."
+              },
+              {
+                "persona": "İçerik yöneticisi",
+                "context": "Yeni içeriği indeksler. \"Index Health\" özelliği bu süreçte devreye girer.",
+                "outcome": "Otomatik — event tetiklenir, projection güncellenir."
+              },
+              {
+                "persona": "Geliştirici",
+                "context": "Custom arama kuralı tanımlar. \"Index Health\" özelliği bu süreçte devreye girer.",
+                "outcome": "Boost/filter ile alan ağırlıklarını ayarlar."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Default Postgres FTS + pgvector. Production Meilisearch/Typesense/OpenSearch driver.",
+    "detail": "Default Postgres FTS + pgvector. Production Meilisearch/Typesense/OpenSearch driver.",
+    "terms": [
+      {
+        "term": "BM25",
+        "abbrev_tr": "Best Match 25",
+        "meaning": "Klasik keyword arama skoru.",
+        "why": "Tam-eşleşme + frequency için iyi."
+      },
+      {
+        "term": "Vector search",
+        "abbrev_tr": "Vektör arama",
+        "meaning": "Semantik benzerlik bazlı arama (embedding'ler).",
+        "why": "\"Eşanlamlı kelime\" sorununu çözer."
+      },
+      {
+        "term": "Hybrid",
+        "abbrev_tr": "Karma",
+        "meaning": "BM25 + vector arama sonuçlarını birleştirme.",
+        "why": "İkisinin de avantajı bir arada."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "id": "build-sequence",
+  "title": "Build Sırası — 5 Stage",
+  "subtitle": "Kernel → Scale primitives → Layer 1 → Layer 2 + DX → Scale proof.",
+  "cluster": "build",
+  "order": 43,
+  "icon": "ph-flag-banner",
+  "tags": [
+    "build",
+    "roadmap",
+    "stages"
+  ],
+  "blocks": [
+    {
+      "type": "table",
+      "headers": [
+        "Stage",
+        "Süre tahmini",
+        "Ne yapılır",
+        "Bitiş kriteri"
+      ],
+      "rows": [
+        [
+          "**Stage 1 — Kernel**",
+          "3-6 ay",
+          "Layer 0 tam shipping: DocType engine (custom field, child table, naming, hooks), Identity (session, OAuth, 2FA, OIDC, SSO, impersonation), Authz (RBAC + ReBAC + ABAC + RLS), Tenancy (multi/single/hybrid + sub-tenant), Event Bus (in-process), Polyglot runtime (embedded JS), Plugin Registry + Manifest + Lifecycle.",
+          "Runtime'da yeni DocType tanımlanır, Python + TS hook bağlanır, authz transparent filtreleme yapar. Tek process'te çalışır. External developer plugin scaffold + publish edebilir."
+        ],
+        [
+          "**Stage 2 — Scale primitives**",
+          "2-3 ay",
+          "Outbox save pipeline'a, CQRS projection deklaratif support, Hot Counter, Background Workers + Scheduler, Saga (DBOS), Idempotency. Event bus Redis Streams driver.",
+          "Config flag ile in-process → Redis swap, module kodu değişmez. Outbox event projection rebuild tetikler. Saga step crash'inde compensation çalışır."
+        ],
+        [
+          "**Stage 3 — Layer 1**",
+          "4-6 ay",
+          "Party/Contact, File (driver), Workflow + ECA, Notification (channel driver), Audit, Search (FTS + pgvector hybrid), Calendar, i18n, Money + Tax, Realtime SSE/WS, Webhook, API Gateway, Reporting, Cache, Rate Limit, Settings, Secrets, Health.",
+          "Topluluk module'ü File backend'ini S3'ten R2'ye değiştirir, core kodu değişmez. Search backend Meilisearch'a swap olur, API aynı kalır."
+        ],
+        [
+          "**Stage 4 — Layer 2 stacks + DX**",
+          "12-18 ay (parallel)",
+          "Commerce, Accounting + TR uyum, HRMS + TR uyum, PMS, LMS, CMS, MRP, AI, Marketing, Helpdesk, Drive, TR Compliance. + Marketplace + CLI + Sidecar runtime + WASM runtime + Packwerk-style CI.",
+          "Dış geliştirici plugin scaffold → build → publish (core'a hiç dokunmadan). Boundary violation CI'da fail. 5 ürün uçtan uca canlıda."
+        ],
+        [
+          "**Stage 5 — Scale proof**",
+          "3-6 ay",
+          "Sosyal medya (#15) — fan-out, ranking, moderation. Hybrid push/pull, celebrity threshold (~10K). Aynı Feed module küçük tenant'ta single-process, dev tenant'ta Kafka + read replica.",
+          "10K+ TPS sustained, p99 < 500ms, multi-region replication. Kernel hiç değişmez."
+        ]
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Kernel → Scale primitives → Layer 1 → Layer 2 + DX → Scale proof.",
+    "detail": "Kernel → Scale primitives → Layer 1 → Layer 2 + DX → Scale proof.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

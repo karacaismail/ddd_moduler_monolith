@@ -1,0 +1,183 @@
+{
+  "id": "landx-l1",
+  "title": "LandX L1 — Kimlik & Kiracılık (Identity)",
+  "subtitle": "I01–I05. Multi-tenant izolasyon, user + agent identity, MFA, permission framework.",
+  "cluster": "landx",
+  "order": 47,
+  "layer": "kernel",
+  "icon": "ph-fingerprint",
+  "badge": "LandX L1 — 5 modül",
+  "tags": [
+    "landx",
+    "identity",
+    "tenancy",
+    "rbac",
+    "agent"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "L1: kimlik, kiracılık, agent capability scopes. **Önemli kavram**: agent kullanıcı adına çalışırken etkin yetki = `user_perms ∩ agent_scope ∩ session_limits`. Bu intersection model framework'ün güvenlik temeli."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-buildings",
+      "text": "I01 — Tenant Lifecycle Management"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 1 · P0 · Identity Squad.** Tenant provisioning, suspend, archive, kota yönetimi. Multi-tenant SaaS'in en alt katmanı."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Provisioning p95 <60sn, isolation breach 0, schema-per-tenant migration eşzamanlılığı >%95"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Tenant Provisioning · Quota & Resource Limits · Tenant Configuration · Suspension & Lifecycle"
+        },
+        {
+          "key": "Bizim eşdeğer",
+          "value": "{{ref:k-tenancy}}"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-user-circle",
+      "text": "I02 — User & Identity Core"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 1 · P0 · Identity Squad.** Bireysel, kurumsal, **agent**, system kullanıcı — hepsi tek polymorphic identity modelinde. `principal_type` ayrımı zorunlu (agent ≠ human)."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Kullanıcı arama p95 <300ms, principal type resolution %100, merge/split conflict <%0.1"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Principal Model (Human/Agent/Service) · Identity Federation (OIDC/SAML) · Profile Merge & Split · Org Membership"
+        },
+        {
+          "key": "Önemli alan",
+          "value": "`agent_user`: `agent_kind` (conversational/workflow/cron/embedded), `on_behalf_of_user_id`, `capability_set_id`"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-key",
+      "text": "I03 — Authentication & Sessions"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 1 · P0 · Identity Squad.** Password, OAuth, OIDC, magic link, passkey, API key, **agent token** — tek auth katmanı. Agent token'ları human session'lardan ayrı muhasebe edilir (kısa TTL, max_tool_calls)."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Login latency p95 <800ms, brute-force başarı 0, agent token TTL ihlali 0"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Credential Types (Password/Passkey/API Key/Agent Token) · Session Management · MFA & Step-up · Risk-based Auth"
+        },
+        {
+          "key": "Bizim eşdeğer",
+          "value": "{{ref:k-identity}}"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-shield-check",
+      "text": "I04 — Permission Framework"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 1 · P0 · Identity Squad.** RBAC + ABAC + agent capability scopes. Agent kullanıcı adına çalışırken `user_perms ∩ agent_scope` kesişimi geçerli."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Permission check p99 <10ms, misconfig (over-privileged) tespit %100, agent privilege escalation 0"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Roles & Permissions · Agent Capability Scopes · Field-level/Row-level Security · Permission Audit"
+        },
+        {
+          "key": "Agent scope alanları",
+          "value": "`allowed_tools`, `allowed_resources`, `max_invocations_per_session`, `max_token_cost_usd`, `blast_radius`"
+        },
+        {
+          "key": "Bizim eşdeğer",
+          "value": "{{ref:k-authz}}"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-shield-warning",
+      "text": "I05 — Multi-Tenant Isolation"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 2 · P0 · Identity Squad + Security Squad.** Schema-per-tenant izolasyon, query interception, cross-tenant erişim tespiti, tenant context propagation. Agent çağrıları tenant context'i kaybetmeden alt servislere taşınmalı."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Cross-tenant breach 0, tenant context propagation hatası <%0.01, schema switch overhead p99 <2ms"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Tenant Context Propagation (Context Sealing) · Query Interception · Schema Routing · Tenant Data Export/Deletion (KVKK madde 7)"
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Agent ≠ Human disiplini",
+      "body": "LandX'in en güçlü fikirlerinden biri: agent ve human kullanıcılar **aynı Principal modelinde** ama farklı `principal_type` ile. Agent'ın yetkisi her zaman üç kümeyi keser: (a) kim adına çalışıyor → user'ın izinleri, (b) hangi capability pack atanmış → agent scope, (c) session limit. Bu kesişim sıfırsa tool çağrılamaz. Privilege escalation matematiksel olarak imkansız."
+    }
+  ],
+  "enrich": {
+    "info": "I01–I05. Multi-tenant izolasyon, user + agent identity, MFA, permission framework.",
+    "detail": "I01–I05. Multi-tenant izolasyon, user + agent identity, MFA, permission framework.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

@@ -1,0 +1,373 @@
+{
+  "id": "edu-u02",
+  "title": "Veri ve Tipler — atomik öncesi temel",
+  "subtitle": "Bit'ten Decimal'e, harften UTF-8'e — bilgisayar verileri nasıl saklar, neden Decimal float'tan üstün?",
+  "cluster": "atomic",
+  "order": 1,
+  "icon": "ph-binary",
+  "granularity": "buyuk-tas",
+  "state": "ok",
+  "tags": [
+    "education",
+    "u02",
+    "veri",
+    "tip"
+  ],
+  "blocks": [
+    {
+      "type": "lesson-header",
+      "unit": "Ünite 02",
+      "title": "Veri ve Tipler — bilgisayar neyi nasıl saklar?",
+      "level": "baslangic",
+      "duration_min": 60,
+      "prereq": [
+        "edu-u01"
+      ],
+      "goals": [
+        "Bit/byte/karakter/string farkını anlatabilirsin.",
+        "Neden parayı asla float ile tutmadığımızı söyleyebilirsin.",
+        "Tip sistemi, validator, coercion kavramlarını projenin gerçek alanlarına uygulayabilirsin.",
+        "UTF-8'in neden 'sş ğ ç ü ö' için zorunlu olduğunu açıklayabilirsin."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Kavramlar — bu ünitede geçecek tüm terimler"
+    },
+    {
+      "type": "terms",
+      "terms": [
+        {
+          "term": "Bit",
+          "abbrev_of": "Binary Digit",
+          "abbrev_tr": "İkili basamak",
+          "meaning": "0 veya 1. Bilgisayardaki en küçük bilgi birimi.",
+          "why": "Tüm veri en altta bit'lere düşer."
+        },
+        {
+          "term": "Byte",
+          "abbrev_tr": "Sekizli",
+          "meaning": "8 bit. 0-255 arası bir sayı tutar.",
+          "why": "Bellek/disk birimi; 1 ASCII karakter = 1 byte."
+        },
+        {
+          "term": "ASCII",
+          "abbrev_of": "American Standard Code for Information Interchange",
+          "abbrev_tr": "Amerikan Standart Bilgi Değişim Kodu",
+          "meaning": "İlk 128 karakter eşleşmesi: A=65, B=66, …",
+          "why": "Türkçe karakter yok; modası geçti ama temel."
+        },
+        {
+          "term": "UTF-8",
+          "abbrev_of": "Unicode Transformation Format — 8 bit",
+          "abbrev_tr": "Evrensel kod dönüşüm formatı (8-bit)",
+          "meaning": "Tüm dilleri tek standartta tutan kodlama. 'ş' 2 byte, '€' 3 byte.",
+          "why": "Türkçe karakter için zorunlu; modern web'in varsayılanı."
+        },
+        {
+          "term": "String",
+          "abbrev_tr": "Dizgi (karakter dizisi)",
+          "meaning": "Sıralı karakter dizisi. 'Merhaba' bir string.",
+          "why": "Metin verisi için temel tip."
+        },
+        {
+          "term": "Integer",
+          "abbrev_of": "Integer",
+          "abbrev_tr": "Tam sayı",
+          "meaning": "Ondalık içermeyen sayı. -3, 0, 42 …",
+          "why": "Sayım, ID, count için."
+        },
+        {
+          "term": "Float",
+          "abbrev_of": "Floating-point number",
+          "abbrev_tr": "Kayan nokta sayısı",
+          "meaning": "Bilim ondalık sayı gösterimi (IEEE-754). Yaklaşıktır.",
+          "why": "Bilimsel hesap için iyi; **para için felaket** çünkü 0.1+0.2 ≠ 0.3."
+        },
+        {
+          "term": "Decimal",
+          "abbrev_tr": "Ondalık (sabit hassasiyet)",
+          "meaning": "Tam-doğru ondalık. 0.1+0.2 = 0.3.",
+          "why": "Para zorunlu Decimal — bir kuruş kayması bile muhasebede sorun."
+        },
+        {
+          "term": "Boolean",
+          "abbrev_tr": "Mantıksal",
+          "meaning": "Sadece true / false.",
+          "why": "is_active gibi açma-kapama alanları."
+        },
+        {
+          "term": "Scalar",
+          "abbrev_tr": "Tekil",
+          "meaning": "Bölünemez tek değer: int, string, bool.",
+          "why": "DB'de tek kolona düşer."
+        },
+        {
+          "term": "Composite",
+          "abbrev_tr": "Birleşik",
+          "meaning": "İki+ scalar'dan oluşan: Money = (Decimal, currency_code).",
+          "why": "Domain kavramı (para) atomik değildir."
+        },
+        {
+          "term": "Validator",
+          "abbrev_tr": "Doğrulayıcı",
+          "meaning": "Kurala uyup uymadığını test eden fonksiyon. Örn IBAN MOD-97.",
+          "why": "Yanlış veri DB'ye girmesin."
+        },
+        {
+          "term": "Coercion",
+          "abbrev_tr": "Zorlayıcı dönüştürme",
+          "meaning": "Input'u tipin formatına çekme. '1.299,50 TL' → Decimal(1299.50).",
+          "why": "Kullanıcının yazdığı her şey backend'de canonical olsun."
+        },
+        {
+          "term": "Primitive",
+          "abbrev_tr": "İlkel tip",
+          "meaning": "Framework'ün hazır sunduğu tip: Money, Phone, Email, DateTime …",
+          "why": "Plugin geliştirici yeniden yazmaz; standart davranır."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Anlatım — 1 byte'tan Money'e"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bilgisayarın altında **bit** (0 veya 1) var. 8 bit = 1 **byte**, 0-255 arası bir sayı tutar. Bu sayıyı 'karakter' olarak yorumlamak için bir **kodlama** lazım: eskiden ASCII (128 karakter, sadece İngilizce), bugün **UTF-8** (tüm diller).",
+      "enrich": {
+        "info": "'ş' UTF-8'de 2 byte tutar; ASCII'de yoktur. Yanlış kodlama → 'Ş' yerine '?' veya 'Å'."
+      }
+    },
+    {
+      "type": "paragraph",
+      "text": "Programcının gördüğü seviye: **tipler**. `Integer` tam sayı, `Boolean` evet/hayır, `String` metin, `Float` ondalık (yaklaşık), `Decimal` ondalık (tam-doğru). Her DB kolonu bir tipe bağlıdır; tip ne kadar yer kaplayacağını, hangi işlemlere izin vereceğini söyler.",
+      "enrich": {
+        "info": "Tip = sözleşme: 'bu alan sadece X tutar, ben Y işlemine izin veririm'."
+      }
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "Neden parayı float ile tutmuyoruz?",
+      "body": "Float bilimseldir, yaklaşıktır. Aşağıdaki testi terminalde yap (Python): `0.1 + 0.2`. Çıktı: `0.30000000000000004`. Bu küçük tortu 1 milyon işlem sonra binlerce kuruş kaybeder. Mali denetimde sebebini bulamazsın.\n\n**Çözüm:** `Decimal(20, 4)` — 20 hane toplam, 4 ondalık. Para birimi (`TRY`/`USD`) ayrı kolon. Aritmetik sadece aynı currency içinde.",
+      "enrich": {
+        "detail": "**Şartlı durum:** sadece *istatistik/grafik* için float kabul edilir. Mali kayıt, fatura, defter — daima Decimal.",
+        "stories": [
+          {
+            "persona": "Muhasebeci",
+            "context": "1 yıl boyunca 200k fatura kalemi işliyor.",
+            "outcome": "Float ile 0.01 TL'lik kayma birike birike ay sonunda 87 TL fark; Decimal ile tam 0."
+          }
+        ]
+      }
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Scalar vs Composite — projenin gözünden"
+    },
+    {
+      "type": "grid",
+      "columns": 2,
+      "items": [
+        {
+          "title": "Scalar (tekil)",
+          "icon": "ph-circle",
+          "body": "**Int**, **String**, **Bool**, **DateTime**. DB'de tek kolon, frontend'de tek input.\nÖrnek: `is_active: bool`, `count: int`.",
+          "tone": "neutral",
+          "enrich": {
+            "info": "Tek değer; başka bir veriye gömülü değil.",
+            "detail": "**Scalar (tekil)** nedir?\n\n**Int**, **String**, **Bool**, **DateTime**. DB'de tek kolon, frontend'de tek input.\nÖrnek: `is_active: bool`, `count: int`.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Scalar (tekil)\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Int**, **String**, **Bool**, **DateTime**. DB'de tek kolon, frontend'de tek in pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Scalar (tekil)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Scalar (tekil)\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Composite (birleşik)",
+          "icon": "ph-circles-three",
+          "body": "**Money** = (Decimal, currency). **Address** = (country, city, street, postal). **Phone** = (E.164 string + ülke kodu).\nDB'de 2+ kolon ama domain için tek kavram.",
+          "tone": "good",
+          "enrich": {
+            "info": "Para 'tek sayı' değildir; bir Decimal + bir currency'dir.",
+            "terms": [
+              {
+                "term": "Domain",
+                "abbrev_tr": "İş alanı",
+                "meaning": "Yazılımın hizmet ettiği iş kavramı (muhasebe, HRMS …).",
+                "why": "Composite tipler domain kavramlarını korur — Decimal+currency 'para'dır."
+              }
+            ],
+            "detail": "**Composite (birleşik)** nedir?\n\n**Money** = (Decimal, currency). **Address** = (country, city, street, postal). **Phone** = (E.164 string + ülke kodu).\nDB'de 2+ kolon ama domain için tek kavram.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Composite (birleşik)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Composite (birleşik)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Composite (birleşik)\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Validator + Coercion: 'doğru veri' nasıl olur?"
+    },
+    {
+      "type": "steps",
+      "items": [
+        {
+          "title": "Kullanıcı '1.299,50 TL' yazar",
+          "body": "Form input'ta serbest yazıyor. Backend bunu Decimal olarak saklamak ister.",
+          "enrich": {
+            "info": "TR yerel format virgül ondalık; US format nokta."
+          }
+        },
+        {
+          "title": "Coercion devreye girer",
+          "body": "`Money.coerce('1.299,50 TL', locale='tr-TR')` → `(Decimal('1299.50'), 'TRY')`. Boşluk, ayraç, currency string parse edilir."
+        },
+        {
+          "title": "Validator çalışır",
+          "body": "`Money.validate(value)`: Decimal mı? currency code geçerli mi (ISO 4217)? hassasiyet kuralına uyuyor mu? Geçmezse 400 Bad Request."
+        },
+        {
+          "title": "DB'ye INSERT",
+          "body": "Yalnızca **canonical form** saklanır: `amount=1299.5000, currency='TRY'`. Görüntüleme tekrar locale'a göre yapılır."
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Mimari aydınlanma",
+      "body": "Validator + Coercion sayesinde **DB'deki veri her zaman canonical**. Frontend ne formatla gelirse gelsin, backend tek doğru biçimi görür. Bu, tüm raporlama/aggregate sorguların 'çalışır' olmasının kilididir.",
+      "enrich": {
+        "detail": "**Tuzak:** Validator/coercion'ı her form için ayrı yazmak. Çözüm: tip seviyesine taşı — Money tipi tanımlandığında validator+coercion onunla gelir. Plugin geliştirici 'Bunu nasıl doğrularım?' diye düşünmez."
+      }
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Türkçe karakter, UTF-8, 'slug' tuzağı"
+    },
+    {
+      "type": "paragraph",
+      "text": "DB ve uygulama her yerde **UTF-8** olmalı. PostgreSQL `CREATE DATABASE … ENCODING 'UTF8'` ile kurulur. Aksi halde 'Şoför Aranıyor' → '?of?r Aran?yor'.",
+      "enrich": {
+        "info": "Modern her şey varsayılan UTF-8; sorun çıkarsa eski bir migration/locale'dir."
+      }
+    },
+    {
+      "type": "paragraph",
+      "text": "**URL'de** Türkçe karakter kullanmıyoruz (CDN cache, link paylaşımı için). 'Şoför Aranıyor' → slug `sofor-araniyor`. Bizim **Slug** primitive'i bu dönüşümü tek yerden yapar — herkes aynı kuralı kullansın.",
+      "enrich": {
+        "info": "ı→i, ş→s, ğ→g, ü→u, ö→o, ç→c; boşluk → '-'.",
+        "stories": [
+          {
+            "persona": "CMS editor",
+            "context": "Yazı başlığı 'İş İlanı: Şoför Aranıyor'.",
+            "outcome": "Slug otomatik `is-ilani-sofor-araniyor`; URL'ler tutarlı."
+          }
+        ]
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Bu üniteyi anladığımı nereden anlarım?",
+      "storageKey": "edu.u02",
+      "items": [
+        {
+          "label": "Bit, byte, karakter, string, integer, float, decimal kelimelerini Türkçe karşılıklarıyla biliyorum."
+        },
+        {
+          "label": "Parayı float ile tutmamamızın sebebini anlatabilirim (örnek: 0.1+0.2)."
+        },
+        {
+          "label": "Scalar ve composite tip arasındaki farkı projeden 2 örnekle gösterebilirim."
+        },
+        {
+          "label": "Validator ve coercion'ın hangi sırada çalıştığını söyleyebilirim."
+        },
+        {
+          "label": "UTF-8'in neden Türkçe için zorunlu olduğunu açıklayabilirim."
+        },
+        {
+          "label": "Bir framework yeni bir Money tipi tanımladığında nelerin otomatik geldiğini sayabilirim.",
+          "hint": "validator + coercion + form widget + API serializer + DB kolon tipi"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Mini-proje (zorunlu değil)"
+    },
+    {
+      "type": "paragraph",
+      "text": "Defterine bir 'Personel' DocType'ı tasarla. Şu alanlar için tip seç ve **neden** kısa not düş: ad-soyad, doğum tarihi, TCKN, telefon, brüt maaş, departman, aktif mi.",
+      "enrich": {
+        "detail": "**Önerilen cevap:**\n- ad-soyad → String\n- doğum tarihi → Date (DateTime değil — saat lüzumsuz)\n- TCKN → String (Int değil — başında sıfır olabilir, MOD-10/MOD-9 validator)\n- telefon → Phone (E.164 primitive)\n- brüt maaş → Money(TRY, Decimal(20,4))\n- departman → Reference(Department) — FK + tenant scope\n- aktif mi → Boolean"
+      }
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Sonraki ünite",
+      "body": "{{ref:edu-u03}} — DocType ile Model. Bu üniteden öğrendiğin tipleri bir kayıt tipine nasıl yerleştireceğini göreceksin: framework otomatik ne üretir, neyi sen söylersin."
+    }
+  ],
+  "related": [
+    "edu-u01",
+    "edu-u03",
+    "atomic-types"
+  ],
+  "enrich": {
+    "info": "Bit'ten Decimal'e, harften UTF-8'e — bilgisayar verileri nasıl saklar, neden Decimal float'tan üstün?",
+    "detail": "Bit'ten Decimal'e, harften UTF-8'e — bilgisayar verileri nasıl saklar, neden Decimal float'tan üstün?",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

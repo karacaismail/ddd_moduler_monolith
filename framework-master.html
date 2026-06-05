@@ -1,0 +1,2226 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Framework Master Dökümanı — DDD Modüler Monolith, AI-first</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  :root {
+    --ink:#1a1a1a; --ink-2:#3d3d3d; --ink-3:#6b6b6b; --ink-4:#9a9a9a; --ink-5:#cccccc;
+    --line:#e6e6e6; --line-2:#f1f1f1; --line-3:#f7f7f7;
+    --bg:#ffffff; --bg-soft:#fafafa; --bg-softer:#f5f5f4;
+    --kernel:#b73a3a; --kernel-soft:#faece9;
+    --scale:#5a2e8a; --scale-soft:#f1eaf9;
+    --l1:#0f5f5c; --l1-soft:#e7f1f0;
+    --l2:#1e5fa0; --l2-soft:#e7eef7;
+    --l3:#5b5b5b; --l3-soft:#efefef;
+    --warn:#8a4b00; --warn-soft:#fbf2e6;
+    --tr:#c91428; --tr-soft:#fce8eb;
+    --code-bg:#f5f5f4;
+    --radius:4px;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html{font-size:16px;}
+  body{margin:0;font-family:'Roboto',system-ui,-apple-system,sans-serif;font-weight:300;font-size:1rem;line-height:1.65;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;}
+  .layout{display:grid;grid-template-columns:240px 1fr;max-width:1400px;margin:0 auto;}
+  aside.toc{position:sticky;top:0;height:100vh;overflow-y:auto;padding:2rem 1.25rem;border-right:1px solid var(--line);background:var(--bg-soft);font-size:0.9375rem;}
+  aside.toc h4{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--ink-4);margin:1.25rem 0 0.5rem;font-weight:500;}
+  aside.toc h4:first-child{margin-top:0;}
+  aside.toc ol{list-style:none;padding:0;margin:0;}
+  aside.toc li{margin:0.2rem 0;}
+  aside.toc a{color:var(--ink-2);text-decoration:none;display:block;padding:0.2rem 0.4rem;border-radius:2px;border-left:2px solid transparent;}
+  aside.toc a:hover{color:var(--kernel);background:var(--bg);border-left-color:var(--kernel);}
+  main{padding:3rem 2.5rem 6rem;max-width:920px;}
+  header.page{border-bottom:1px solid var(--line);padding-bottom:2rem;margin-bottom:3rem;}
+  header.page .eyebrow{text-transform:uppercase;letter-spacing:0.18em;font-size:0.9375rem;color:var(--ink-3);font-weight:400;margin:0 0 0.75rem;}
+  header.page h1{font-size:2.5rem;font-weight:300;line-height:1.2;margin:0 0 1rem;letter-spacing:-0.02em;}
+  header.page .lede{font-size:1.125rem;color:var(--ink-2);font-weight:300;max-width:62ch;margin:0 0 1rem;}
+  header.page .meta{font-size:0.9375rem;color:var(--ink-3);display:flex;gap:1.5rem;flex-wrap:wrap;}
+  header.page .meta span{display:flex;align-items:center;gap:0.4rem;}
+  header.page .meta .ph{color:var(--l1);}
+
+  h2.part{font-size:1.875rem;font-weight:300;margin:5rem 0 1.5rem;letter-spacing:-0.01em;padding-bottom:0.75rem;border-bottom:2px solid var(--ink);display:flex;align-items:center;gap:0.75rem;}
+  h2.part .num{color:var(--ink-4);font-weight:300;font-variant-numeric:tabular-nums;}
+  h2.part .ph,h2.part .ph-duotone{color:var(--l1);font-size:2rem;}
+  h3{font-size:1.5rem;font-weight:400;margin:3rem 0 1rem;letter-spacing:-0.005em;border-bottom:1px solid var(--line);padding-bottom:0.5rem;}
+  h4{font-size:1.1875rem;font-weight:500;margin:2rem 0 0.75rem;color:var(--ink);display:flex;align-items:center;gap:0.5rem;}
+  h4 .ph,h4 .ph-duotone{color:var(--l1);font-size:1.375rem;}
+  h5{font-size:1rem;font-weight:500;margin:1.25rem 0 0.5rem;color:var(--ink-2);text-transform:uppercase;letter-spacing:0.08em;}
+  p{margin:0 0 1rem;max-width:66ch;}
+  strong{font-weight:500;color:var(--ink);}
+  em{font-style:normal;background:linear-gradient(180deg,transparent 60%,var(--l1-soft) 60%);padding:0 2px;}
+  a{color:var(--l1);}
+  code{font-family:'Roboto Mono',monospace;font-size:0.9375rem;background:var(--code-bg);padding:0.1rem 0.35rem;border-radius:3px;font-weight:400;}
+  pre{font-family:'Roboto Mono',monospace;background:var(--code-bg);border:1px solid var(--line);border-radius:var(--radius);padding:1rem 1.25rem;overflow-x:auto;font-size:0.875rem;line-height:1.55;margin:1rem 0 1.5rem;}
+  pre code{background:transparent;padding:0;font-size:inherit;}
+  ul,ol{padding-left:1.25rem;margin:0 0 1.25rem;}
+  li{margin-bottom:0.4rem;max-width:66ch;}
+  li::marker{color:var(--ink-4);}
+
+  table{width:100%;border-collapse:collapse;margin:1.25rem 0 1.75rem;font-size:0.9375rem;}
+  th,td{text-align:left;padding:0.65rem 0.85rem;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{font-weight:500;background:var(--bg-soft);text-transform:uppercase;letter-spacing:0.08em;font-size:0.8125rem;color:var(--ink-3);}
+  td:first-child{font-weight:500;white-space:nowrap;color:var(--ink);}
+  table.compact td,table.compact th{padding:0.45rem 0.6rem;font-size:0.875rem;}
+
+  .domain{border:1px solid var(--line);border-radius:var(--radius);padding:1.75rem 2rem;margin-bottom:2rem;background:var(--bg);}
+  .domain.kernel{border-left:4px solid var(--kernel);}
+  .domain.scale{border-left:4px solid var(--scale);}
+  .domain.l1{border-left:4px solid var(--l1);}
+  .domain.l2{border-left:4px solid var(--l2);}
+  .domain.l3{border-left:4px solid var(--l3);}
+  .badge{display:inline-block;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.12em;font-weight:500;padding:0.2rem 0.6rem;border-radius:3px;margin-bottom:0.5rem;}
+  .domain.kernel .badge{background:var(--kernel-soft);color:var(--kernel);}
+  .domain.scale .badge{background:var(--scale-soft);color:var(--scale);}
+  .domain.l1 .badge{background:var(--l1-soft);color:var(--l1);}
+  .domain.l2 .badge{background:var(--l2-soft);color:var(--l2);}
+  .domain.l3 .badge{background:var(--l3-soft);color:var(--l3);}
+
+  .callout{border:1px solid var(--line);border-left:3px solid var(--warn);background:var(--warn-soft);padding:1rem 1.25rem;border-radius:var(--radius);margin:1rem 0 1.25rem;font-size:0.9375rem;}
+  .callout .label{font-weight:500;color:var(--warn);text-transform:uppercase;font-size:0.75rem;letter-spacing:0.12em;margin-bottom:0.4rem;display:flex;align-items:center;gap:0.4rem;}
+  .callout p{margin:0;max-width:none;}
+  .callout p + p{margin-top:0.5rem;}
+  .callout.tip{border-left-color:var(--l1);background:var(--l1-soft);}
+  .callout.tip .label{color:var(--l1);}
+  .callout.crit{border-left-color:var(--kernel);background:var(--kernel-soft);}
+  .callout.crit .label{color:var(--kernel);}
+  .callout.tr{border-left-color:var(--tr);background:var(--tr-soft);}
+  .callout.tr .label{color:var(--tr);}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+  .layer-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);margin:1.5rem 0;overflow:hidden;}
+  .layer-card{background:var(--bg);padding:1rem 0.85rem;font-size:0.875rem;}
+  .layer-card .tag{font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-4);font-weight:500;margin-bottom:0.4rem;}
+  .layer-card .name{font-weight:500;font-size:1rem;margin-bottom:0.35rem;color:var(--ink);}
+  .layer-card .desc{font-size:0.875rem;color:var(--ink-3);line-height:1.5;}
+  .layer-card.kernel{border-top:3px solid var(--kernel);} .layer-card.kernel .tag{color:var(--kernel);}
+  .layer-card.scale{border-top:3px solid var(--scale);} .layer-card.scale .tag{color:var(--scale);}
+  .layer-card.l1{border-top:3px solid var(--l1);} .layer-card.l1 .tag{color:var(--l1);}
+  .layer-card.l2{border-top:3px solid var(--l2);} .layer-card.l2 .tag{color:var(--l2);}
+  .layer-card.l3{border-top:3px solid var(--l3);} .layer-card.l3 .tag{color:var(--l3);}
+
+  .feature-list{list-style:none;padding:0;margin:0;}
+  .feature-list li{padding:0.5rem 0.75rem;margin-bottom:0.35rem;background:var(--bg-soft);border-left:2px solid var(--line);max-width:none;}
+  .feature-list li.crit{border-left-color:var(--kernel);background:var(--kernel-soft);}
+  .feature-list li .why{display:block;color:var(--ink-3);font-size:0.875rem;margin-top:0.15rem;}
+
+  .toc-section{background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem 1.75rem;margin-bottom:2.5rem;}
+  .toc-section h4{margin:0 0 0.5rem;font-size:1rem;text-transform:uppercase;letter-spacing:0.1em;}
+  .toc-section ol{columns:2;column-gap:2rem;padding-left:1.25rem;margin:0;font-size:0.9375rem;}
+  .toc-section li{break-inside:avoid;margin-bottom:0.3rem;}
+  .toc-section a{color:var(--ink-2);text-decoration:none;}
+  .toc-section a:hover{color:var(--l1);text-decoration:underline;}
+
+  hr{border:0;border-top:1px solid var(--line);margin:4rem 0;}
+  .anchor-offset{display:block;position:relative;top:-1rem;visibility:hidden;}
+
+  @media (max-width:980px){
+    .layout{grid-template-columns:1fr;}
+    aside.toc{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line);}
+    main{padding:2rem 1.25rem 4rem;}
+    .grid2,.grid3{grid-template-columns:1fr;}
+    .layer-grid{grid-template-columns:1fr 1fr;}
+    header.page h1{font-size:1.875rem;}
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<aside class="toc">
+  <h4>Bölümler</h4>
+  <ol>
+    <li><a href="#exec">Yönetici özeti</a></li>
+    <li><a href="#felsefe">1. Felsefe</a></li>
+    <li><a href="#tahta">2. Tahta yeniden</a></li>
+    <li><a href="#layer0">3. Layer 0 Kernel</a></li>
+    <li><a href="#scale">4. Scale primitives</a></li>
+    <li><a href="#layer1">5. Layer 1 in-tree</a></li>
+    <li><a href="#layer2">6. Layer 2 stacks</a></li>
+    <li><a href="#cross">7. Çapraz-kesen</a></li>
+    <li><a href="#dx">8. Plugin DX</a></li>
+    <li><a href="#filelayout">9. Dosya yapısı</a></li>
+    <li><a href="#mapping">10. 15 ürün mapping</a></li>
+    <li><a href="#build">11. Build sırası</a></li>
+    <li><a href="#anti">12. Anti-pattern</a></li>
+  </ol>
+
+  <h4>Layer 0 — Kernel</h4>
+  <ol>
+    <li><a href="#k-schema">Schema/DocType</a></li>
+    <li><a href="#k-identity">Identity</a></li>
+    <li><a href="#k-authz">Authorization</a></li>
+    <li><a href="#k-tenancy">Tenancy</a></li>
+    <li><a href="#k-bus">Event Bus + Polyglot</a></li>
+    <li><a href="#k-plugin">Plugin Registry</a></li>
+  </ol>
+
+  <h4>Layer 2 — Stacks</h4>
+  <ol>
+    <li><a href="#s-commerce">Commerce</a></li>
+    <li><a href="#s-accounting">Muhasebe + TR</a></li>
+    <li><a href="#s-hrms">HRMS + TR</a></li>
+    <li><a href="#s-pms">PMS</a></li>
+    <li><a href="#s-lms">LMS</a></li>
+    <li><a href="#s-cms">CMS</a></li>
+    <li><a href="#s-social">Social</a></li>
+    <li><a href="#s-mrp">MRP</a></li>
+    <li><a href="#s-ai">AI</a></li>
+    <li><a href="#s-marketing">Marketing/CRM</a></li>
+    <li><a href="#s-helpdesk">Helpdesk</a></li>
+    <li><a href="#s-drive">Drive/Wiki</a></li>
+  </ol>
+</aside>
+
+<main>
+
+<header class="page">
+  <p class="eyebrow">Framework Master Dökümanı</p>
+  <h1>AI-first DDD Modüler Monolith — Tam Mimari</h1>
+  <p class="lede">Frappe/Odoo/Drupal/Shopify/SAP esinli, 15 SaaS ürünü taşıyabilecek backbone. core-domains + eksikler birleşimi; her domain için derin dalış, gerçek dünya örnekleri, kod kontratları, junior tuzakları ve 15 ürün mapping tablosu.</p>
+  <div class="meta">
+    <span><i class="ph ph-code"></i>FastAPI + Python 3.12 + Roboto</span>
+    <span><i class="ph ph-shield-check"></i>LGPLv3</span>
+    <span><i class="ph ph-stack"></i>Layer 0..3 + Services</span>
+    <span><i class="ph ph-database"></i>PostgreSQL 16 + pgvector + PostGIS</span>
+    <span><i class="ph ph-broadcast"></i>Redis Streams → Kafka</span>
+  </div>
+</header>
+
+<section id="exec">
+  <h2 class="part"><i class="ph-duotone ph-list-checks"></i><span class="num">00</span>Yönetici özeti</h2>
+
+  <p>Bu döküman, daha önce paylaştığın iki HTML'in (core-domains, eksikler) birleştirilmiş ve <em>20 kat derinleştirilmiş</em> hali. Tahtanın mevcut hali tek bir veri-modelleme katmanı gibi düşünülmüş; oysa 15 üründen Shopify, SAP, Odoo, Frappe sınıfı bir şey çıkacaksa <strong>6 katmanlı bir mimari</strong> gerek: Kum Tanesi (atomik tipler) → Küçük Taş (kernel) → Scale primitives (kernel-yakını) → Orta Taş (in-tree core) → Büyük Taş (Pages) → Services (dış).</p>
+
+  <p><strong>Sentez bir cümlede:</strong> kernel'i mümkün olduğunca dar tut (6 domain), scale primitive'lerini save pipeline'a göm, in-tree core'ları Medusa "Infrastructure Module" disiplini ile swappable yap, business logic'i first-party stack module'lerine bırak, asıl ürünleri Layer 3 community marketplace'e at. Ölçek-uyumu kernel'e yerleştir <em>ama policy değil, primitive olarak</em> — feed fan-out gibi politika kararları her zaman module katmanında.</p>
+
+  <div class="layer-grid">
+    <div class="layer-card kernel"><div class="tag">Kum Tanesi</div><div class="name">Atomic types</div><div class="desc">Field, Money, Decimal, ID, Counter, Reference, DateTime, Phone, Email — DocType engine'in oluşturucu blokları.</div></div>
+    <div class="layer-card kernel"><div class="tag">Küçük Taş</div><div class="name">Kernel (6)</div><div class="desc">Schema/DocType, Identity, Authz, Tenancy, Event Bus + Polyglot, Plugin Registry. Çıkarırsan framework ölür.</div></div>
+    <div class="layer-card scale"><div class="tag">Scale</div><div class="name">Save pipeline</div><div class="desc">Outbox, CQRS Projections, Hot Counter, Workers + Scheduler, Saga, Idempotency.</div></div>
+    <div class="layer-card l1"><div class="tag">Orta Taş</div><div class="name">In-tree core</div><div class="desc">Party, File, Workflow, Notification, Audit, Search, Calendar, Money/Tax, i18n, Realtime, Settings, Migration.</div></div>
+    <div class="layer-card l2"><div class="tag">Büyük Taş</div><div class="name">Layer 2 stacks</div><div class="desc">Commerce, Accounting, HRMS, PMS, LMS, CMS, Social, MRP, AI, Marketing, Helpdesk, Drive.</div></div>
+  </div>
+
+  <div class="callout tip">
+    <div class="label"><i class="ph ph-lightbulb"></i>Asıl prensip</div>
+    <p>Frappe'nin kanıtladığı şey: <em>metadata-driven kernel</em> + <em>app olarak business logic</em> = Drupal/Odoo/Salesforce ile aynı pattern. Sen aynı çizgiyi çek, üstüne <em>polyglot hook</em> (Python + TypeScript) ve <em>scale primitives core'da</em> ekle — yenilik bu üçlüde.</p>
+  </div>
+</section>
+
+<hr>
+
+<section id="felsefe">
+  <h2 class="part"><i class="ph-duotone ph-compass"></i><span class="num">01</span>Felsefe ve ana prensipler</h2>
+
+  <h3>1.1 Modüler monolit, mikroservis değil</h3>
+  <p>Shopify'ın "majestic monolith"i 2.8M+ satırlık tek Rails uygulaması; Black Friday'de saniyede 80K request'i tek deploy unit ile karşıladı. Bizim hedefimiz aynı: <strong>tek deploy unit, çoklu bounded context, sıkı modül sınırı</strong>. Mikroservise sadece zorlandığında (extraction trigger) geç.</p>
+
+  <p>Modüler monolit'in mikroservise olan dört üstünlüğü, junior'a açıkla:</p>
+  <ul>
+    <li><strong>Refactor ucuz.</strong> Bounded context sınırını yanlış çizdin? Tek PR'da değiştir. Mikroservis olsa Kafka schema migration + 2 servis deploy + downstream konsumer'lar.</li>
+    <li><strong>Local development tek komut.</strong> <code>uvicorn app:app</code> ile her şey çalışır. Mikroservis olsa Docker Compose'da 12 servis ayağa kaldır.</li>
+    <li><strong>Distributed transaction yok.</strong> İki aggregate aynı transaction'da değiştirilebilir (gerçi DDD aggregate başına bir transaction kuralı vardır, ama in-process işin saga'sı çok daha basit).</li>
+    <li><strong>Observability ucuz.</strong> Tek log stream, tek trace, tek metric source. Mikroservis dağıtık trace zorunlu.</li>
+  </ul>
+
+  <p>Şartı: <strong>modül sınırı yazılım disipliniyle korunmalı</strong>. Shopify Packwerk ile yapıyor (Ruby static analysis cross-component call'ları flag'liyor). Sen Python'da <code>importlinter</code> + custom plugin ile aynı disiplini sağla — CI'da modül A modül B'nin internal'ına dokunursa fail.</p>
+
+  <h3>1.2 Metadata-driven schema</h3>
+  <p>Frappe DocType, Salesforce Object, Strapi Content-Type — üçü de aynı fikrin farklı isimleri: <em>şema kodda değil, metadatada</em>. Bir <code>Customer</code> tipi tanımlamak için Python class yazmak yerine, sistem tablosuna satır eklersin. Framework gerisini otomatik:</p>
+  <ul>
+    <li>PostgreSQL tablosu otomatik oluşur (gerçek fiziksel tablo, JSON column değil — JOIN performansı için kritik).</li>
+    <li>REST + GraphQL endpoint'leri otomatik üretilir.</li>
+    <li>Admin form + list view otomatik render.</li>
+    <li>Permission engine satırları otomatik tanır.</li>
+    <li>Search index otomatik beslenir.</li>
+    <li>Audit log otomatik dinler.</li>
+    <li>Hook noktaları (<code>before_save</code>, <code>after_insert</code>) otomatik vardır.</li>
+  </ul>
+  <p>Bu sayede müşteri "şu alanı eklemek istiyorum" dediğinde geliştirici ALTER TABLE yazmaz, migration deploy etmez — admin paneli açar, alanı ekler, hazırdır.</p>
+
+  <h3>1.3 AI-first ne demek, ne demek değil</h3>
+  <p>"AI-first" sloganı sürekli kötü kullanılıyor. Net tanım:</p>
+
+  <div class="grid2">
+    <div>
+      <h5><i class="ph ph-check"></i>AI-first <em>budur</em></h5>
+      <ul>
+        <li>Vector store kernel-adjacent primitive (pgvector default, Qdrant/Pinecone driver).</li>
+        <li>Her DocType save'inde otomatik embedding (opt-in, projection olarak).</li>
+        <li>Hybrid search (BM25 + vector RRF) Search domain'inde native.</li>
+        <li>MCP server her bounded context'te otomatik expose (her modül AI'a kendi tool'larını sunar).</li>
+        <li>Otomatik kategorize / anomali tespiti / tahmin event bus üstüne projection.</li>
+        <li>Agent orchestration kernel-adjacent (Pydantic AI tarzı type-safe).</li>
+      </ul>
+    </div>
+    <div>
+      <h5><i class="ph ph-x"></i>AI-first <em>bu değildir</em></h5>
+      <ul>
+        <li>"Bir yere ChatGPT integration ekleyip slogan basmak."</li>
+        <li>"Müşteri destek bot'u eklemek" (bu bir feature, mimari değil).</li>
+        <li>Her ürüne aynı LLM prompt'u dayatmak.</li>
+        <li>AI'ı bir module sanmak (gerçekte: AI primitives kernel-adjacent, AI applications module).</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>1.4 Polyglot hook — gerçek senaryo</h3>
+  <p>Python core, TS opsiyon. Sebep: yazılım sektörünün önemli bir kısmı TS yazıyor; modülünü TS yazmak isteyen geliştiriciyi kaybetmemen lazım. Üç runtime stratejisi (her birinin yeri farklı):</p>
+  <ul>
+    <li><strong>Embedded JS (shared hosting, 5€/ay VPS):</strong> PythonMonkey (SpiderMonkey, aktif geliştirilmeye devam ediyor) veya STPyV8 (Cloudflare fork). Network round-trip yok. Trusted hook için.</li>
+    <li><strong>Sidecar Node/Deno (production default):</strong> Node sürecine gRPC ile bağlan. Dapr modeli. İzole, bağımsız scale, debuggable.</li>
+    <li><strong>WASM/Extism (untrusted marketplace plugin):</strong> Capability sandbox. "Bu plugin sadece şu DocType'ı okuyabilir, network erişimi yok" diye kısıtla.</li>
+  </ul>
+  <p>Geliştirici tarafı tek interface görür: <code>onBeforeSave</code>, <code>onAfterInsert</code>, <code>validate</code>. Hangi runtime'a bağlandığını bilmez.</p>
+
+  <h3>1.5 Scale primitives kernel'de, scale policy module'de</h3>
+  <p>Bu döküman'ın en önemli prensiplerinden biri. Junior'a açıkla:</p>
+  <ul>
+    <li><strong>Primitive (kernel):</strong> Event bus, outbox, hot counter, projection. Hepsi <em>nasıl ölçeklenirim</em> sorusunun cevabını taşır.</li>
+    <li><strong>Policy (module):</strong> Sosyal medya feed'inin push/pull/hybrid kararı, celebrity threshold (~10K follower), reservation expiration timing. Hepsi <em>iş kuralı</em>.</li>
+  </ul>
+  <p>Sosyal medya turunda konuştuğumuz fan-out tartışması bu prensibin somutu. Twitter'ın timeline'ı kernel'e gömülmez; bunun yerine kernel <em>fan-out worker primitive</em>i sağlar, Feed module timeline politikasını yazar. 13 üründe feed yok; kernel onları taşımaz.</p>
+
+  <h3>1.6 Türkiye uyumu birinci sınıf</h3>
+  <p>Hetzner'de host edeceksin (Linux Debian, AMD EPYC). Müşterilerin TR'de. Yani e-Fatura, e-Defter, SGK, KVKK <em>add-on plugin değil, kernel-adjacent</em>. Aksi halde her ürünün muhasebe modülü tekerleği yeniden icat eder, her birinde aynı GİB entegrasyon kodu farklı bug'larla yaşar.</p>
+
+  <p>Yaklaşım: <strong>e-Belge Provider</strong> ve <strong>Tax Authority Adapter</strong> Layer 1 in-tree olarak otur. Driver pattern — Foriba/Sovos, İzibiz, Uyumsoft, KolayBi', Logo plug edilebilir. Default driver bir <em>mock</em> (development). Production'da geliştirici credentials girer, gerisi aynı.</p>
+
+  <h3>1.7 Doğru çatışmalar</h3>
+  <p>Framework tasarımı yaparken karşılaşacağın <em>doğru gerilimler</em> — biri "doğru" diğeri "yanlış" değil, ikisi de geçerli ve seçim bilinçli olmalı:</p>
+
+  <table>
+    <thead><tr><th>Gerilim</th><th>Bir uç</th><th>Diğer uç</th><th>Bizim seçim</th></tr></thead>
+    <tbody>
+      <tr><td>Kernel boyutu</td><td>Minimal (WordPress)</td><td>Battery-included (Drupal eski)</td><td>Minimal kernel + in-tree Layer 1</td></tr>
+      <tr><td>Storage backend</td><td>Database-as-app (PostgreSQL-only)</td><td>Polyglot persistence (Mongo + ES + Redis)</td><td>PostgreSQL-first, Redis/ES projection olarak</td></tr>
+      <tr><td>Frontend</td><td>Coupled (server-render)</td><td>Headless API</td><td>Headless default (Next.js yasak; FastAPI + Flowbite React)</td></tr>
+      <tr><td>Authz</td><td>Application-level</td><td>Query-layer-fused</td><td>Query-layer-fused, OpenFGA-style</td></tr>
+      <tr><td>Tenancy</td><td>Schema-per-tenant</td><td>Shared schema + RLS</td><td>Shared schema + PostgreSQL RLS + tenant_id</td></tr>
+      <tr><td>Plugin runtime</td><td>Native-only</td><td>WASM-only</td><td>Üç runtime (embedded + sidecar + WASM)</td></tr>
+      <tr><td>Scale path</td><td>Vertical (büyük server)</td><td>Horizontal (mikroservis)</td><td>Modüler monolit + horizontal worker</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<hr>
+
+<section id="tahta">
+  <h2 class="part"><i class="ph-duotone ph-squares-four"></i><span class="num">02</span>Tahta — yeniden yapılandırılmış</h2>
+  <p>Senin yazdığın 5 küme (Kum Tanesi / Küçük Taş / Orta Taş / Büyük Taş / Services) <em>doğru iskelet</em> ama eksik. Bu bölüm her kümeyi tam haliyle veriyor.</p>
+
+  <h3>2.1 Kum Tanesi — atomik tipler</h3>
+  <p>DocType engine'i besleyen atomik primitive'ler. Senin yazdığın <strong>Field, Log, Handler, Security</strong> başlangıç ama yetersiz; field'ın altında somut tip sistemi olmalı.</p>
+
+  <div class="grid2">
+    <div>
+      <h5>Kritik tipler</h5>
+      <ul class="feature-list">
+        <li class="crit"><strong>Type System</strong><span class="why">Scalar/composite tip, validator, coercion. Field'ın altında.</span></li>
+        <li class="crit"><strong>ID Generator</strong><span class="why">UUID v7 (timestamp-ordered), ULID, snowflake, tenant-prefixed.</span></li>
+        <li class="crit"><strong>Money/Decimal</strong><span class="why">Float yasak (yuvarlama). Decimal(20,4) + currency code.</span></li>
+        <li class="crit"><strong>DateTime + Timezone</strong><span class="why">UTC store, IANA tz display. Effective-dating için bitemporal.</span></li>
+        <li class="crit"><strong>Reference/Link</strong><span class="why">DocType'a FK. Cascade, orphan, tenant-scope check otomatik.</span></li>
+        <li class="crit"><strong>Counter (hot)</strong><span class="why">Backend swap edilebilir (DB → Redis → sharded).</span></li>
+        <li class="crit"><strong>Version/ETag</strong><span class="why">Optimistic concurrency. Eşzamanlı edit detect.</span></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Yardımcı tipler</h5>
+      <ul class="feature-list">
+        <li><strong>Hash/Checksum</strong><span class="why">SHA-256, BLAKE3, content addressable storage.</span></li>
+        <li><strong>Slug</strong><span class="why">Türkçe karakter normalizasyon (ı→i, ş→s), uniqueness scope.</span></li>
+        <li><strong>Phone (E.164)</strong><span class="why">Country code parse, format, validation. <code>phonenumbers</code> lib.</span></li>
+        <li><strong>Email</strong><span class="why">Syntax + DNS MX + disposable detection.</span></li>
+        <li><strong>URL</strong><span class="why">Canonical form, scheme allowlist.</span></li>
+        <li><strong>Geo Coordinate</strong><span class="why">lat/lng + PostGIS bridge.</span></li>
+        <li><strong>Address</strong><span class="why">Country/region/city/postal, locale formatting.</span></li>
+        <li><strong>Color</strong><span class="why">Theme, calendar event, tag.</span></li>
+        <li><strong>Tag</strong><span class="why">Polymorphic label, hiyerarşisiz.</span></li>
+        <li><strong>Soft Delete</strong><span class="why">Trash, restore, hard-delete policy.</span></li>
+        <li><strong>Encryption Field</strong><span class="why">PII/secret field-level encryption, key rotation.</span></li>
+        <li><strong>JSON/JSONB</strong><span class="why">Schema-less ek alan, opsiyonel JSON Schema validation.</span></li>
+        <li><strong>Enum</strong><span class="why">Closed set, multi-language label, ordering.</span></li>
+        <li><strong>Range</strong><span class="why">Date range, int4range. PostgreSQL native.</span></li>
+        <li><strong>Vector</strong><span class="why">pgvector primitive. AI-first için kritik.</span></li>
+        <li><strong>Polygon</strong><span class="why">PostGIS shape. Real estate çizerek arama.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>2.2 Küçük Taş — kernel + scale primitive</h3>
+  <p>Sen <strong>Taxonomy, Kernel(Task/Cron/Worker/Agent), Domain(DNS/SSL), Tenancy, Workflow, Auth, File Storage, ECA Engine</strong> yazdın. Layer 0 kernel'in 6 immovable'ı bunların içinde gizli ama düzgün şekillenmemiş. Yeniden:</p>
+
+  <table>
+    <thead><tr><th>Domain</th><th>Sen yazdın mı</th><th>Düzeltme</th></tr></thead>
+    <tbody>
+      <tr><td>Schema/DocType engine</td><td>Hayır</td><td>EN KRİTİK eksik. Tahtanın merkezine yaz.</td></tr>
+      <tr><td>Identity (Auth altında)</td><td>Evet (Auth)</td><td>OK. Session/Token/Impersonation/2FA tamam.</td></tr>
+      <tr><td>Authorization</td><td>Evet (Auth.Authz)</td><td>RBAC ekle (ReBAC + ABAC + RBAC üçlü).</td></tr>
+      <tr><td>Tenancy</td><td>Evet</td><td>OK. Multi/Single/Hybrid + sub-tenant kavramı ekle (muhasebe için).</td></tr>
+      <tr><td>Event Bus + Polyglot</td><td>Hayır</td><td>EN KRİTİK eksik #2. Loose coupling omurgası.</td></tr>
+      <tr><td>Plugin Registry/Manifest</td><td>Hayır</td><td>EN KRİTİK eksik #3. Hook noktaları, manifest, dependency resolution.</td></tr>
+      <tr><td>Workflow Engine</td><td>Evet</td><td>OK. State machine + approval chain + ECA.</td></tr>
+      <tr><td>File Storage</td><td>Evet</td><td>OK. Driver pattern (Local/S3/R2) ekle.</td></tr>
+      <tr><td>Kernel (Task/Cron/Worker)</td><td>Evet</td><td>OK. Bunlar scale primitive'lerinin ev sahibi.</td></tr>
+      <tr><td>Domain (DNS/SSL)</td><td>Evet</td><td>OK. Multi-tenant custom domain (e-ticaret SaaS için kritik).</td></tr>
+      <tr><td>Taxonomy</td><td>Evet</td><td>OK. Polymorphic categorization.</td></tr>
+      <tr><td>ECA Engine</td><td>Evet</td><td>OK. Workflow'un altında veya yanında.</td></tr>
+      <tr><td>Outbox</td><td>Hayır</td><td>Save pipeline'a örülmeli.</td></tr>
+      <tr><td>Migration Engine</td><td>Hayır</td><td>DocType değiştiğinde otomatik şema migration.</td></tr>
+      <tr><td>Cache (interface)</td><td>Hayır</td><td>In-process LRU → Redis → CDN driver pattern.</td></tr>
+      <tr><td>Rate Limit</td><td>Hayır</td><td>Per-user/IP/tenant. Brute force koruması.</td></tr>
+      <tr><td>Feature Flag</td><td>Hayır</td><td>Tenant-bazlı, plan-bazlı gating, rollout.</td></tr>
+      <tr><td>Settings/Config</td><td>Hayır</td><td>Tenant > module > framework hiyerarşisi.</td></tr>
+      <tr><td>Secrets Vault</td><td>Hayır</td><td>API key, OAuth secret. Env'den ayrı.</td></tr>
+      <tr><td>Health/Readiness</td><td>Hayır</td><td>K8s probe, dependency health.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.3 Orta Taş — Layer 1 in-tree</h3>
+  <p>Sen <strong>i18n, Form/Table, Block, Section, ECA Rules, Import/Export, Onboarding, Schedule, Notification, Search, Identity, Calendar</strong> yazdın. İyi başlangıç ama 15 üründen Odoo/SAP/Shopify çıkacaksa <em>çok eksik</em>. Aşağıdaki kategoriler ekle:</p>
+
+  <div class="grid3">
+    <div>
+      <h5>Veri primitive</h5>
+      <ul class="feature-list">
+        <li><strong>Party/Contact</strong><span class="why">Person+Org+Address.</span></li>
+        <li><strong>Money + FX</strong><span class="why">Multi-currency.</span></li>
+        <li><strong>Tax Engine</strong><span class="why">KDV/VAT calc.</span></li>
+        <li><strong>Audit Log</strong><span class="why">Sistem-geneli, immutable.</span></li>
+        <li><strong>Activity Feed</strong><span class="why">UX-yüzlü.</span></li>
+        <li><strong>Versioning</strong><span class="why">Record revision.</span></li>
+      </ul>
+    </div>
+    <div>
+      <h5>İletişim/UX</h5>
+      <ul class="feature-list">
+        <li><strong>Realtime/SSE</strong><span class="why">WebSocket, presence.</span></li>
+        <li><strong>Webhook (in/out)</strong><span class="why">B2B integration.</span></li>
+        <li><strong>API Gateway</strong><span class="why">REST + GraphQL autogen.</span></li>
+        <li><strong>Comments</strong><span class="why">Threaded discussion.</span></li>
+        <li><strong>Reactions</strong><span class="why">Hot counter ile.</span></li>
+        <li><strong>Mentions</strong><span class="why">@user, autocomplete.</span></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Reporting/AI</h5>
+      <ul class="feature-list">
+        <li><strong>Query Builder</strong><span class="why">No-code rapor.</span></li>
+        <li><strong>Dashboard</strong><span class="why">Widget + KPI.</span></li>
+        <li><strong>Print/PDF</strong><span class="why">Template + data merge.</span></li>
+        <li><strong>Mail Merge</strong><span class="why">Email + PDF.</span></li>
+        <li><strong>Vector Index</strong><span class="why">pgvector projection.</span></li>
+        <li><strong>Embedding Pipeline</strong><span class="why">Save → embed → index.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>2.4 Büyük Taş — Pages (boştu)</h3>
+  <p>Sen "Büyük Taş (Pages)" diye yazıp boş bıraktın. Page-level kompozitler — Orta Taş'taki primitive'lerin sayfaya dönüştüğü yer. 15 ürünün UX'i bu kompozitlerden kuruluyor.</p>
+
+  <ul class="feature-list">
+    <li><strong>List Page</strong> — DocType liste, filter/sort/bulk action, view-switch (kanban/calendar/gantt/timeline/map).</li>
+    <li><strong>Detail Page</strong> — Single record form + activity timeline + related sub-records.</li>
+    <li><strong>Form Page</strong> — Create/edit form, validation, dynamic field show/hide, conditional fields.</li>
+    <li><strong>Wizard / Multi-step</strong> — Onboarding, checkout, complex create flow.</li>
+    <li><strong>Dashboard Page</strong> — KPI tile + chart + activity. Role-based variants.</li>
+    <li><strong>Settings Page</strong> — Tenant/user/module config, nested navigation.</li>
+    <li><strong>Inbox Page</strong> — Mail, notification, social feed — infinite scroll, real-time push.</li>
+    <li><strong>Conversation Thread</strong> — Chat, email thread, ticket. DM + history.</li>
+    <li><strong>Storefront Page</strong> — E-ticaret katalog + product + cart. Shopify Liquid muadili.</li>
+    <li><strong>Profile Page</strong> — Public user/org profile, social.</li>
+    <li><strong>Admin Console</strong> — Power-user UI, bulk ops, system stats.</li>
+    <li><strong>Onboarding Flow</strong> — İlk-giriş tur, sample data, role picker.</li>
+    <li><strong>Portal Page</strong> — Customer/vendor self-service portal.</li>
+    <li><strong>POS Page</strong> — Touch-friendly satış noktası. Odoo POS muadili.</li>
+    <li><strong>Print/Report Viewer</strong> — Fatura/sözleşme/rapor preview + PDF export.</li>
+    <li><strong>Builder Page</strong> — Visual page composer (Block + Section editor, Elementor/PageFly muadili).</li>
+  </ul>
+
+  <h3>2.5 Services — dış sağlayıcılar</h3>
+  <p>Sen <strong>PowerDNS/Cloudflare/Route 53, AI Providers, ELK, Redis/Cluster</strong> yazdın. Yetersiz. Aşağıdaki kategoriler kritik:</p>
+
+  <table class="compact">
+    <thead><tr><th>Kategori</th><th>Sağlayıcılar</th></tr></thead>
+    <tbody>
+      <tr><td>Ödeme Gateway</td><td>iyzico, PayTR, Stripe Connect, PayPal, Adyen, Param</td></tr>
+      <tr><td>E-Belge entegratör (TR)</td><td>Foriba/Sovos, Logo eLogo, Mikro, İzibiz, Uyumsoft, NES, KolayBi', BizimHesap, Foliper, QNB eFinans, Turkcell DGN</td></tr>
+      <tr><td>Email transactional</td><td>SES, SendGrid, Postmark, Mailgun, Resend</td></tr>
+      <tr><td>SMS gateway (TR)</td><td>NetGSM, Turkcell SMS, Vatan SMS, İletimerkezi, Twilio</td></tr>
+      <tr><td>Push notification</td><td>FCM (Android), APNs (iOS), Web Push (VAPID), OneSignal</td></tr>
+      <tr><td>Object storage</td><td>S3, Cloudflare R2, MinIO (self-host), Wasabi, Backblaze B2</td></tr>
+      <tr><td>CDN</td><td>Cloudflare, Fastly, Bunny.net, CloudFront, KeyCDN</td></tr>
+      <tr><td>Maps / Geocoding</td><td>Mapbox, Google Maps, OpenStreetMap (Nominatim), Yandex Haritalar</td></tr>
+      <tr><td>Carrier (Kargo TR)</td><td>Yurtiçi, Aras, MNG, UPS, Sendeo, Kolay Gelsin, HepsiJet</td></tr>
+      <tr><td>Vector DB</td><td>pgvector (PostgreSQL extension, default), Qdrant, Pinecone, Weaviate</td></tr>
+      <tr><td>LLM Provider</td><td>OpenAI, Anthropic, Google Gemini, Mistral, local Ollama</td></tr>
+      <tr><td>OCR</td><td>Google Vision, AWS Textract, Mindee, Azure Doc Intelligence</td></tr>
+      <tr><td>Translation</td><td>DeepL, Google Translate, AWS Translate</td></tr>
+      <tr><td>Voice/Telephony</td><td>Twilio Voice, Vonage, Plivo</td></tr>
+      <tr><td>Video Conferencing</td><td>Daily, Zoom, Jitsi (self-host), 100ms</td></tr>
+      <tr><td>e-Signature</td><td>DocuSign, HelloSign, e-imza/m-imza (TR ESHS), Adobe Sign</td></tr>
+      <tr><td>KYC/KYB</td><td>Onfido, Stripe Identity, SumSub, Trulioo</td></tr>
+      <tr><td>Fraud</td><td>Sift, Stripe Radar, Signifyd</td></tr>
+      <tr><td>Observability</td><td>Sentry, Datadog, Grafana Cloud, Loki, Tempo, Prometheus</td></tr>
+      <tr><td>Tracing</td><td>OpenTelemetry SDK, Jaeger, Tempo</td></tr>
+      <tr><td>Message Queue</td><td>Redis Streams, RabbitMQ, Kafka, NATS</td></tr>
+      <tr><td>Durable Workflow</td><td>DBOS (Postgres-native, ek altyapı yok), Temporal.io (Cassandra/PG), Restate</td></tr>
+      <tr><td>Search backend</td><td>Postgres FTS+pgvector (default), Meilisearch, Typesense, OpenSearch, Elasticsearch</td></tr>
+      <tr><td>Calendar sync</td><td>Google Calendar, Outlook Graph, CalDAV (Apple)</td></tr>
+      <tr><td>Bank API (TR)</td><td>BKM Express, Open Banking (PSD2 TR adaptasyonu — gelişiyor)</td></tr>
+      <tr><td>Government API (TR)</td><td>GİB Internet Vergi Dairesi, SGK e-Bildirge, MERSİS, Türkiye Cumhuriyeti Kimlik Doğrulama Sistemi</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<hr>
+
+<section id="layer0">
+  <h2 class="part"><i class="ph-duotone ph-cube"></i><span class="num">03</span>Layer 0 — Kernel (6 immovable domain)</h2>
+  <p>Bu altısı kernel. Çıkarırsan framework yok. Gün-1'de bitir, sonradan retrofit'leme.</p>
+
+  <article id="k-schema" class="domain kernel">
+    <span class="badge">Layer 0 — Kernel #1</span>
+    <h3><i class="ph-duotone ph-database"></i>Schema / Metadata Engine (DocType)</h3>
+
+    <p>Bu framework'ün <strong>kalbi</strong>. Frappe'nin DocType'ı, Odoo'nun Model'i, Salesforce'un Object'i, Strapi'nin Content-Type'ı — hepsi aynı fikrin farklı isimleri.</p>
+
+    <h4>Domain modeli</h4>
+    <p>Metadata kaydı şu beş tablodan oluşur (kavramsal, Frappe pattern):</p>
+<pre><code>doctype                # DocType definition (name, label, naming, permissions, options)
+doctype_field          # Per-field metadata (fieldname, fieldtype, options, required, in_list_view, fetch_from)
+doctype_permission     # Role-based default permissions (role, read, write, create, delete, submit, cancel, ifowner)
+custom_field           # Tenant-specific extra field (extends doctype_field at runtime)
+property_setter        # Tenant-specific override of any field property (e.g., make label different)</code></pre>
+
+    <p>Bir <code>Customer</code> tipi tanımladığında framework şunları otomatik üretir:</p>
+    <ol>
+      <li>PostgreSQL'de <code>tabCustomer</code> tablosu — fiziksel tablo, alanlar fiziksel kolon (JSON polymorphism değil, JOIN performansı için kritik).</li>
+      <li><code>GET /api/resource/Customer</code>, <code>POST /api/resource/Customer</code>, <code>PUT /api/resource/Customer/{id}</code>, <code>DELETE /api/resource/Customer/{id}</code> REST endpoint'leri.</li>
+      <li>GraphQL schema'sında <code>type Customer</code> + <code>query Customer(id)</code> + <code>customers(filter)</code> + mutation'lar.</li>
+      <li>Admin paneli — list view, form view, kanban view, calendar view, gantt view (DocType metadata'da hangi view destekli olduğu yazılı).</li>
+      <li>Permission engine — <code>doctype_permission</code> satırlarını okur, query layer'a otomatik WHERE injektsiyonu yapar.</li>
+      <li>Search indexer — yeni satır eklendiğinde event publish eder, Search projection güncellenir.</li>
+      <li>Audit logger — alan değişikliklerini <code>tabVersion</code>'a yazar (diff).</li>
+      <li>Hook noktaları — <code>before_insert</code>, <code>validate</code>, <code>before_save</code>, <code>after_save</code>, <code>on_submit</code>, <code>on_cancel</code>, <code>on_trash</code>, <code>after_delete</code>, <code>on_change</code>.</li>
+    </ol>
+
+    <h4>Field tipleri — gerçekten gerekecek liste</h4>
+    <p>Frappe ~30 fieldtype destekler. Sen başlangıç için şunlar lazım:</p>
+
+    <table class="compact">
+      <thead><tr><th>Fieldtype</th><th>Kullanım</th></tr></thead>
+      <tbody>
+        <tr><td>Data</td><td>Kısa string (max 140 char)</td></tr>
+        <tr><td>Text</td><td>Uzun string, indeksli</td></tr>
+        <tr><td>Long Text</td><td>Uzun string, indeksli değil</td></tr>
+        <tr><td>HTML / Markdown</td><td>Rich content</td></tr>
+        <tr><td>Int / Float / Decimal</td><td>Sayısal — para için Decimal şart</td></tr>
+        <tr><td>Currency</td><td>Decimal + currency code</td></tr>
+        <tr><td>Percent</td><td>Decimal, % display</td></tr>
+        <tr><td>Date / Datetime / Time</td><td>UTC store</td></tr>
+        <tr><td>Duration</td><td>Saniye olarak int, "2h 30m" display</td></tr>
+        <tr><td>Check</td><td>Boolean</td></tr>
+        <tr><td>Select</td><td>Closed enum, sabit liste</td></tr>
+        <tr><td>Link</td><td>Başka DocType'a FK</td></tr>
+        <tr><td>Dynamic Link</td><td>DocType + Name çiftiyle polymorphic FK</td></tr>
+        <tr><td>Table</td><td>Child table — bir parent kayda bağlı satırlar (Order line items)</td></tr>
+        <tr><td>Table MultiSelect</td><td>Many-to-many tag-like</td></tr>
+        <tr><td>Attach / Attach Image</td><td>File storage'a referans</td></tr>
+        <tr><td>Color</td><td>Hex string + picker UI</td></tr>
+        <tr><td>Geolocation</td><td>lat/lng + map picker</td></tr>
+        <tr><td>Code</td><td>Syntax-highlighted (SQL, JS, Python)</td></tr>
+        <tr><td>JSON</td><td>JSONB column, schema-less</td></tr>
+        <tr><td>Password</td><td>Encrypted, never displayed plain</td></tr>
+        <tr><td>Signature</td><td>Base64 PNG signature</td></tr>
+        <tr><td>Barcode / QR</td><td>String + render</td></tr>
+        <tr><td>Rating</td><td>0..5 star</td></tr>
+        <tr><td>Read Only</td><td>Display-only computed</td></tr>
+        <tr><td>Heading / Section Break / Column Break</td><td>Layout, kolon değil</td></tr>
+        <tr><td>Vector</td><td>pgvector(N) — embeddings</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Naming series — Frappe pattern</h4>
+    <p>Her DocType'ın "autoname" stratejisi olmalı. Seçenekler:</p>
+    <ul>
+      <li><strong>UUID</strong> — varsayılan, dağıtık-safe.</li>
+      <li><strong>field:fieldname</strong> — başka alanın değeri (örn. <code>field:email</code>).</li>
+      <li><strong>naming_series:</strong> — <code>SO-{####}</code>, <code>INV-2026-{####}</code> gibi. Yıllık reset destekli.</li>
+      <li><strong>autoincrement</strong> — sequence (legacy).</li>
+      <li><strong>format:</strong> — Jinja template (<code>{customer_code}-{YYYY}-{####}</code>).</li>
+      <li><strong>hash</strong> — random short hash.</li>
+    </ul>
+
+    <h4>Junior'a açıklama — gerçek dünya</h4>
+    <p>Bir restoran POS yazılımı yapıyorsun. MenuItem DocType'ı:</p>
+<pre><code>doctype: MenuItem
+naming: format:MNU-{####}
+fields:
+  - name: title (Data, required)
+  - description (Long Text)
+  - price (Currency, required)
+  - category (Link to MenuCategory)
+  - photo (Attach Image)
+  - allergens (Table MultiSelect)
+  - spice_level (Select: mild, medium, hot, extra hot)
+  - is_active (Check, default 1)
+permissions:
+  - role: Manager → read,write,create,delete
+  - role: Cashier → read</code></pre>
+
+    <p>Restoran A "Türk mutfağı" kategorisinde "vegan mı" alanı istiyor. Sen koda dokunmuyorsun. Admin paneli → DocType: MenuItem → Custom Field ekle: <code>is_vegan</code> (Check). Tenant-spesifik <code>custom_field</code> satırı eklenir. Sonraki form render'da alan görünür, API'de payload'da görünür, audit log'da değişiklik yakalanır. <em>Migration yok, deploy yok</em>.</p>
+
+    <h4>Submittable DocType</h4>
+    <p>Bazı kayıtlar "draft → submitted → cancelled" mantığında yaşar (faturalar, siparişler, journal entry). Frappe'de <code>is_submittable: 1</code> diyince DocType'a <code>docstatus</code> alanı eklenir (0=draft, 1=submitted, 2=cancelled). Submit edildikten sonra <em>belli alanlar değiştirilemez</em> (financial integrity). Sadece <code>on_update_after_submit</code> hook'unda belirli alanlar açıkça izinli.</p>
+
+    <h4>Child Table (Table fieldtype)</h4>
+    <p>Order → OrderLine ilişkisi. Frappe pattern: child DocType, <code>istable: 1</code> ile işaretli, parent'a <code>parent</code>, <code>parenttype</code>, <code>parentfield</code> alanlarıyla bağlı. Lifecycle parent'a bağlı (parent silinince child silinir).</p>
+
+    <h4>Niye CORE</h4>
+    <p>Identity de DocType (User), Authz de DocType (Role, Permission), Tenancy de DocType (Site/Tenant), Workflow da DocType (Workflow, WorkflowState). Hepsi kendini schema engine üstüne tanımlar. Çıkarırsan framework yok.</p>
+
+    <div class="callout crit">
+      <div class="label"><i class="ph ph-warning-circle"></i>Tuzak — JSON column polymorphism</div>
+      <p>Junior çoğunlukla şöyle başlar: tek bir <code>records</code> tablosu, <code>data JSONB</code> kolonu, "her şey JSON". WordPress'in <code>wp_postmeta</code> pattern'i bu — felaket. Çünkü WHERE/ORDER BY/JOIN performansı çöker, index'leme zor, type safety yok. Frappe doğru yolu seçti: her DocType kendi fiziksel tablo. Sen de aynı yap; JSON sadece schema-less ek alan için.</p>
+    </div>
+
+    <div class="callout">
+      <div class="label"><i class="ph ph-warning"></i>Tuzak — eksik shipping (Drupal 7 öyküsü)</div>
+      <p>Drupal 7 Entity API'yi yarım shipping etti. Topluluk eksiği kapatmak için contrib <code>Entity</code> modülü yazdı. D8'e geçişte herkes manual migration yaptı, 5 yıl acı. Sen schema engine'i <em>tam bitir</em>; child table, naming series, custom field, property setter, hooks, permission query injection — hepsi gün-1 hazır.</p>
+    </div>
+  </article>
+
+  <article id="k-identity" class="domain kernel">
+    <span class="badge">Layer 0 — Kernel #2</span>
+    <h3><i class="ph-duotone ph-user-circle"></i>Identity</h3>
+
+    <p>Her request'in başında "kim bu" sorusunu cevaplayan ana mekanizma. Login/signup'tan çok daha fazlası.</p>
+
+    <h4>Domain modeli</h4>
+<pre><code>User                  # email, password_hash (Argon2id), status, locale, timezone
+Session               # session_id, user_id, ip, user_agent, expires_at
+Token                 # personal access token, OAuth token, refresh token
+TwoFactorMethod       # TOTP secret, WebAuthn credential, SMS phone
+SSOConnection         # OIDC provider, SAML IdP, OAuth app config
+ImpersonationLog      # admin_user, target_user, started_at, ended_at, reason
+PasswordReset         # token, user_id, expires_at, used_at
+ServiceAccount        # machine identity, scoped credentials</code></pre>
+
+    <h4>Yetenekler</h4>
+    <ul>
+      <li><strong>Şifre auth</strong> — Argon2id (RFC 9106), cost 19MiB/2 iter/1 lane.</li>
+      <li><strong>Session</strong> — server-side Redis session (cookie ID), JWT opsiyonel (stateless API için).</li>
+      <li><strong>OAuth/OIDC</strong> — Google, Microsoft Entra ID, Apple, GitHub, generic OIDC.</li>
+      <li><strong>SAML 2.0</strong> — enterprise SSO (Okta, Auth0, Azure AD).</li>
+      <li><strong>2FA</strong> — TOTP (RFC 6238, Google Authenticator), WebAuthn (FIDO2 passkey), backup codes, SMS fallback.</li>
+      <li><strong>Magic link</strong> — passwordless email login.</li>
+      <li><strong>Personal Access Token (PAT)</strong> — developer API key, scoped.</li>
+      <li><strong>Service account</strong> — server-to-server auth, key rotation, scoped.</li>
+      <li><strong>Impersonation</strong> — admin başka kullanıcı olarak giriş, audit log'a "X impersonated Y at HH:MM" yazar.</li>
+      <li><strong>Password reset</strong> — token tek-kullanımlık, 30 dk TTL, brute force koruması.</li>
+      <li><strong>Account recovery</strong> — backup email, social recovery (FIDO2 + recovery phrase).</li>
+      <li><strong>Rate limit</strong> — failed login backoff (1 → 2 → 4 → 8 saniye), IP-bazlı, account-bazlı.</li>
+      <li><strong>Device management</strong> — "şu cihazlar oturum açık" listesi, remote logout.</li>
+      <li><strong>Anonymization (KVKK)</strong> — hesap silindi flag, email/name/phone null'lanıp tutarlılık için ID korunur.</li>
+    </ul>
+
+    <h4>Kod kontratı</h4>
+<pre><code>from framework.identity import current_user, require_auth
+
+@require_auth
+async def my_endpoint(request: Request):
+    user = current_user()  # User aggregate
+    user.is_authenticated     # bool
+    user.has_role("manager")  # RBAC check
+    user.tenant_id            # Tenancy bağlamı
+    user.locale               # "tr-TR"
+    user.timezone             # "Europe/Istanbul"
+
+# Service account context (cron job, webhook)
+with framework.identity.system_context(service="payroll_runner"):
+    process_payroll_for(tenant_id)</code></pre>
+
+    <h4>SSO senaryosu — gerçek dünya</h4>
+    <p>Bir B2B SaaS müşterin (Acme Inc.) tüm çalışanlarını sadece Acme'nin Google Workspace ile login etsin istiyor. Acme admin'i, Acme Inc. tenant'ı için "SSO Required: Google Workspace, domain: acme.com" diye ayar yapar. Bundan sonra acme.com kullanıcısı normal şifre login yapamaz — Google'a redirect. Bu özellik kernel'de var, module yazmıyorsun.</p>
+
+    <h4>Türkiye özel — e-Devlet, m-imza</h4>
+    <p>İleride banka/finans ürünleri için <strong>e-Devlet kapısı OAuth</strong> ve <strong>m-imza (mobil imza)</strong> identity entegrasyonu gerek. Bunlar adapter olarak Identity'nin altına. Çoğunlukla TÜRKKEP üstünden çalışır.</p>
+
+    <div class="callout">
+      <div class="label"><i class="ph ph-warning"></i>Junior tuzağı — "kendim yazarım"</div>
+      <p>Auth yazmak = bcrypt cost ayarı, timing-safe karşılaştırma, password reset token tek-kullanımlık, session fixation koruması, CSRF token, OAuth state parameter doğrulama, JWT secret rotation, brute force backoff, account lockout policy. 3 hafta yazılır, içinde 4 güvenlik açığı kalır. Core'da olmasının sebebi: her ürün ihtiyaç duyar, yanlış yazılınca felaket.</p>
+    </div>
+  </article>
+
+  <article id="k-authz" class="domain kernel">
+    <span class="badge">Layer 0 — Kernel #3</span>
+    <h3><i class="ph-duotone ph-shield-check"></i>Authorization</h3>
+
+    <p>Authentication = "kim", Authorization = "ne yapabilir". Karıştırılmasın. Authz <em>query layer'a örülmeli</em>; application-level if-check yetmez.</p>
+
+    <h4>Üç model birlikte</h4>
+    <p>Gerçek hayatta üç modeli birlikte kullanırsın:</p>
+    <ul>
+      <li><strong>RBAC (Role-Based)</strong> — admin, editor, viewer rolleri. Klasik. Frappe'nin <code>Role</code> + <code>DocPerm</code> sistemi.</li>
+      <li><strong>ABAC (Attribute-Based)</strong> — "kullanıcının departmanı IT ise saat 09-18 arası ise iç ağdaysa". Koşul-temelli. SpiceDB'de "caveats" olarak modellenir.</li>
+      <li><strong>ReBAC (Relationship-Based)</strong> — "kullanıcı bu document'in owner'ı ise" veya "bu projenin member'ı ise". Google Zanzibar paper'ı, OpenFGA, SpiceDB temeli.</li>
+    </ul>
+
+    <h4>OpenFGA modeli — kanonik</h4>
+    <p>Senin framework'ünde OpenFGA-style DSL ile authz tanımla:</p>
+<pre><code>model
+  schema 1.1
+
+type user
+
+type organization
+  relations
+    define member: [user]
+    define admin: [user]
+
+type document
+  relations
+    define parent: [organization]
+    define owner: [user]
+    define editor: [user] or owner or admin from parent
+    define viewer: [user] or editor or member from parent</code></pre>
+
+    <p>Sonra <code>check(user:alice, viewer, document:report-2026)</code> diye sorgu yaparsın. Sistem tuple store'a bakar: <code>document:report-2026.parent = organization:acme</code> + <code>organization:acme.member = user:alice</code> → true.</p>
+
+    <h4>Query layer injection — kritik</h4>
+    <p>Frappe'nin <code>permission_query_conditions</code> hook'u — junior'a bunu illa öğret:</p>
+
+<pre><code># hooks.py
+permission_query_conditions = {
+    "SalesOrder": "myapp.permissions.sales_order_conditions"
+}
+
+# myapp/permissions.py
+def sales_order_conditions(user):
+    if not user:
+        user = framework.session.user
+    if "Sales Manager" in get_roles(user):
+        return ""  # No restriction
+    # Sales rep sadece kendi siparişlerini görür
+    return f"`tabSalesOrder`.owner = {escape(user)}"</code></pre>
+
+    <p>Bu fonksiyon her <code>SELECT * FROM tabSalesOrder</code> sorgusunda WHERE'e otomatik AND'lenir. Application kodu ona bakmaz. Module geliştirici yanlışlıkla <code>db.query("SELECT...")</code> yazarsa bile WHERE injected.</p>
+
+    <h4>PostgreSQL Row-Level Security entegrasyonu</h4>
+    <p>OpenFGA pratikte aplikasyon layer'ında çalışır. Tenant izolasyonu için <em>defense-in-depth</em> olarak PostgreSQL RLS de aç:</p>
+
+<pre><code>ALTER TABLE tabSalesOrder ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY tenant_isolation ON tabSalesOrder
+USING (tenant_id = current_setting('app.tenant_id')::uuid);
+
+-- Session başında:
+SET LOCAL app.tenant_id = 'acme-tenant-uuid';</code></pre>
+
+    <p>Performans: <code>tenant_id</code> üzerinde index varsa overhead %2-5. <strong>PgBouncer transaction mode</strong>'da <code>SET LOCAL</code> kullan (session değişkeni tx scope'una bağlanır, cross-tenant leak imkansız).</p>
+
+    <h4>Field-level security</h4>
+    <p>Bazı alanlar belli rolde görünmez. HRMS senaryosu: çalışan listesinde maaş alanı sadece HR rolüne görünür. DocType metadata'da:</p>
+
+<pre><code>field: salary
+permlevel: 1   # default 0 = herkes; 1 = sadece HR
+
+doctype_permission:
+  - role: Employee, permlevel: 0, read: 1
+  - role: HR, permlevel: 1, read: 1, write: 1</code></pre>
+
+    <h4>Resource sharing — Drive pattern</h4>
+    <p>Drive (#7) ürünü için: kullanıcı dosyayı belli kişilerle paylaşır. ReBAC tuple ekler: <code>document:photo-summer-2026.viewer = user:bob</code>. Sonraki query'de Bob'un access listesi bu dosyayı içerir.</p>
+
+    <div class="callout crit">
+      <div class="label"><i class="ph ph-warning-circle"></i>En kritik kural</div>
+      <p>Authz <em>kesinlikle module olamaz</em>. Query layer'a örülmesi zorunlu. Module olsa, bir geliştirici manuel <code>SELECT *</code> yazıp WHERE eklemeyi unutursa — <em>bir tane unutsa</em> tüm tenant'ların verisi sızar. Frappe'nin <code>permission_query_conditions</code> pattern'i, OpenFGA'nın "List Objects" API'si, PostgreSQL RLS — üçü birlikte defense-in-depth.</p>
+    </div>
+  </article>
+
+  <article id="k-tenancy" class="domain kernel">
+    <span class="badge">Layer 0 — Kernel #4</span>
+    <h3><i class="ph-duotone ph-buildings"></i>Tenancy</h3>
+
+    <p>"SaaS yapıyoruz" = "aynı yazılımı çok müşteriye, herkesin verisi izole" demek. Tenancy bunun mekanizması.</p>
+
+    <h4>Üç model</h4>
+    <ul>
+      <li><strong>Single-tenant (database-per-tenant)</strong> — her müşteri kendi DB'si. Enterprise müşteri "verim kimseyle aynı yerde olmasın" diyorsa. Operasyon cehennemi, migration zorlaşır.</li>
+      <li><strong>Multi-tenant shared schema + tenant_id</strong> — tek DB, tüm tablolarda <code>tenant_id</code> kolonu. En yaygın. Default'umuz bu.</li>
+      <li><strong>Multi-tenant schema-per-tenant</strong> — tek DB, her tenant kendi PostgreSQL schema'sı. Backup/restore kolay, izolasyon güçlü; 10K+ tenant'ta migration zorlaşır.</li>
+      <li><strong>Hybrid (Shopify pattern)</strong> — küçük tenant'lar shared "pod"larda, dev müşteriler dedicated pod. Pod-aware routing.</li>
+    </ul>
+
+    <h4>İki seviyeli tenancy — muhasebe senaryosu</h4>
+    <p>Mali müşavir bürosu senin müşterin. Bürosunun 50 mükellefi var, her mükellefin defteri ayrı. <em>İki seviyeli tenancy</em>:</p>
+<pre><code>tenant_id   = office_uuid       # mali müşavir bürosu (faturalama, login)
+company_id  = client_company    # mükellef şirket (defter, fatura, beyanname)
+
+-- Her finansal kayıtta her iki kolon
+CREATE TABLE journal_entry (
+  id uuid PRIMARY KEY,
+  tenant_id uuid NOT NULL,
+  company_id uuid NOT NULL,
+  ...
+);
+CREATE INDEX ON journal_entry (tenant_id, company_id);</code></pre>
+
+    <p>RLS policy iki seviyeyi de kontrol eder. Bunu modellemezsen büro tüm mükellefleri karıştırır.</p>
+
+    <h4>Tenant ≠ User</h4>
+    <p>Bir user birden çok tenant'ta üye olabilir (Slack workspace switcher). User ↔ Tenant <strong>many-to-many</strong>:</p>
+<pre><code>CREATE TABLE membership (
+  user_id uuid REFERENCES users(id),
+  tenant_id uuid REFERENCES tenants(id),
+  role text NOT NULL,
+  joined_at timestamptz NOT NULL,
+  PRIMARY KEY (user_id, tenant_id)
+);</code></pre>
+
+    <h4>Tenant ≠ Site</h4>
+    <p>Bir tenant birden çok site (subdomain, custom domain) işletebilir. CMS müşterisinin 5 marka sitesi olabilir, hepsi aynı tenant'a ait. <code>site</code> tablosu ayrı, <code>tenant_id</code>'ye bağlı.</p>
+
+    <h4>Custom domain — e-ticaret SaaS</h4>
+    <p>Shopify gibi: her merchant kendi domain'ini kullanır (acme-store.com). DNS provisioning (CNAME), SSL certificate (Let's Encrypt + ACME), routing (host header → tenant lookup). Senin "Domain" küme'n bunu modelliyor — DNS + SSL/TLS + Wildcard.</p>
+
+<pre><code># Tenant lookup middleware
+@app.middleware("http")
+async def tenant_resolver(request, call_next):
+    host = request.headers["host"]
+    # 1. Custom domain mi?  acme-store.com → tenant lookup
+    # 2. Subdomain mi?       acme.myplatform.com → "acme" prefix
+    # 3. Path-based mi?      myplatform.com/acme/... → path prefix
+    tenant = await resolve_tenant(host, request.url.path)
+    request.state.tenant = tenant
+    # PostgreSQL RLS context
+    await db.execute(f"SET LOCAL app.tenant_id = '{tenant.id}'")
+    return await call_next(request)</code></pre>
+
+    <div class="callout crit">
+      <div class="label"><i class="ph ph-warning-circle"></i>Tuzak #1 — "önce tek tenant"</div>
+      <p>"İlk müşterim için tutarlı çalışsın, sonradan çoklarım" düşüncesi. Kaybedilen 6-12 ay. Çünkü retrofit = tüm tabloları rebuild + tüm query'leri rewrite + cross-tenant leak penceresi. Day-1'de tenant_id her satırda.</p>
+    </div>
+
+    <div class="callout">
+      <div class="label"><i class="ph ph-warning"></i>Tuzak #2 — PgBouncer + RLS</div>
+      <p>PgBouncer transaction mode kullanıyorsan <code>SET LOCAL app.tenant_id</code> yapmalısın (transaction scope). <code>SET</code> (session scope) kullanırsan bir sonraki transaction farklı tenant'a bağlanır → veri sızıntısı.</p>
+    </div>
+  </article>
+
+  <article id="k-bus" class="domain kernel">
+    <span class="badge">Layer 0 — Kernel #5</span>
+    <h3><i class="ph-duotone ph-broadcast"></i>Event Bus + Polyglot Runtime Bridge</h3>
+
+    <p>Module'lerin loose-coupled konuştuğu omurga. <em>Aynı kod, üç ölçek</em>: in-process → Redis Streams → Kafka, module değişmeden.</p>
+
+    <h4>Domain modeli — event nedir</h4>
+<pre><code>Event {
+  id: uuid                # idempotency key
+  type: "OrderPlaced"     # event type
+  aggregate_id: "order-123"
+  aggregate_type: "Order"
+  tenant_id: uuid
+  occurred_at: timestamptz
+  occurred_by: user_id
+  version: 1
+  payload: jsonb          # event data
+  trace_id: text          # distributed tracing
+}</code></pre>
+
+    <h4>İki ayrı kavram — karıştırma</h4>
+    <ul>
+      <li><strong>Domain Event</strong> — "bir şey oldu, sistem state'i değişti": <code>OrderPlaced</code>, <code>CustomerCreated</code>, <code>PaymentReceived</code>. Past tense, immutable.</li>
+      <li><strong>Command</strong> — "şu işi yap": <code>PlaceOrder</code>, <code>CreateCustomer</code>. Future tense, validated, can fail.</li>
+    </ul>
+    <p>Event bus'ta sadece event akar. Command'ları doğrudan handler çağırır (genelde Aggregate.do_something method'u). Event Sourcing dünyasına gitmeden bunu net tut.</p>
+
+    <h4>Üç transport, tek interface</h4>
+<pre><code>from framework.events import publish, subscribe
+
+# Publish
+await publish(OrderPlaced(order_id="123", total=199.00))
+
+# Subscribe
+@subscribe(OrderPlaced)
+async def decrement_stock(event: OrderPlaced):
+    for item in event.items:
+        await stock.decrement(item.sku, item.qty)</code></pre>
+
+    <p>Backend deployment profile'a göre seçilir:</p>
+    <ul>
+      <li><strong>Shared hosting:</strong> <code>InProcessBus</code> — async loop, tek process.</li>
+      <li><strong>Orta ölçek:</strong> <code>RedisStreamsBus</code> — persistence, consumer groups, replay.</li>
+      <li><strong>Büyük ölçek:</strong> <code>KafkaBus</code> — partition, retention, replay, multi-consumer.</li>
+    </ul>
+
+    <p>Module kodu <code>publish</code>/<code>subscribe</code>'dan başkasını bilmiyor. Config flag: <code>EVENT_BUS=redis</code>.</p>
+
+    <h4>Polyglot runtime — Python + TypeScript</h4>
+    <p>Geliştirici hook'u Python <em>veya</em> TypeScript yazsın. Hook contract aynı:</p>
+
+<pre><code>// hooks/order.ts
+import type { Order, HookContext } from "@framework/sdk";
+
+export const onBeforeSave = async (doc: Order, ctx: HookContext) =&gt; {
+  if (doc.total &lt; 0) throw new Error("Total negatif olamaz");
+  doc.totalWithTax = await ctx.tax.calculate(doc.total, doc.taxRegion);
+};
+
+export const onSubmit = async (doc: Order, ctx: HookContext) =&gt; {
+  await ctx.events.publish({ type: "OrderSubmitted", orderId: doc.id });
+};</code></pre>
+
+<pre><code># hooks/order.py
+from framework.sdk import HookContext, Order
+
+async def on_before_save(doc: Order, ctx: HookContext):
+    if doc.total &lt; 0:
+        raise ValueError("Total negatif olamaz")
+    doc.total_with_tax = await ctx.tax.calculate(doc.total, doc.tax_region)
+
+async def on_submit(doc: Order, ctx: HookContext):
+    await ctx.events.publish({"type": "OrderSubmitted", "order_id": doc.id})</code></pre>
+
+    <h4>Üç runtime stratejisi</h4>
+    <p>Hook contract aynı, runtime swappable:</p>
+    <ul>
+      <li><strong>Embedded JS (shared hosting)</strong> — PythonMonkey (SpiderMonkey, Distributive Inc., 2024-2026 aktif), STPyV8 (Cloudflare fork). Tek process, network yok, latency düşük. Trusted hook için.</li>
+      <li><strong>Sidecar Node/Deno (production default)</strong> — Node sürecine gRPC ile bağlan, MCP-style. Bağımsız ölçeklenir, debuggable, isolation güçlü.</li>
+      <li><strong>WASM/Extism (untrusted plugin)</strong> — capability sandbox. Marketplace plugin'i için. "Bu plugin sadece şu DocType'ı okuyabilir, network yok" diye kısıtla.</li>
+    </ul>
+
+    <h4>Aggregate boundary kuralı — DDD kritik</h4>
+    <p>TS hook Python aggregate'i üzerinde açık transaction tutamaz. Distributed transaction (2PC) çağı geçti — yavaş, fragile, gerçekte kullanılmıyor. Doğru pattern'ler:</p>
+
+    <ul>
+      <li><strong>Synchronous hook = pure function.</strong> Python core transaction açar, TS hook'a aggregate kopyasını verir, hook decision/mutation döner, Python core commit eder. Frappe'nin <code>doc_events</code> pattern'i.</li>
+      <li><strong>Cross-aggregate effect = outbox + saga.</strong> Hook farklı aggregate'i etkileyecekse, transaction'da olmaz. Outbox'a event yazılır, ayrı consumer asenkron işler, başarısızlıkta compensating action.</li>
+    </ul>
+
+    <h4>Event versioning</h4>
+    <p>Event'ler kontrat. Versiyon değişimi backward-compat zorunlu:</p>
+    <ul>
+      <li>Yeni alan eklemek = OK (optional).</li>
+      <li>Alan silmek = breaking. Yeni event tipi yarat (<code>OrderPlacedV2</code>).</li>
+      <li>Anlam değişikliği = breaking. Yeni tip.</li>
+      <li>Event store retention (replay için) varsa migration script gerekir.</li>
+    </ul>
+  </article>
+
+  <article id="k-plugin" class="domain kernel">
+    <span class="badge">Layer 0 — Kernel #6</span>
+    <h3><i class="ph-duotone ph-puzzle-piece"></i>Plugin Registry + Manifest</h3>
+
+    <p>Framework olmanın can damarı. Plugin yazılabiliyorsa platform, yazılamıyorsa uygulama. Tahtanda bu yoktu — eklemek zorundayız.</p>
+
+    <h4>Plugin manifest — kanonik format</h4>
+    <p>Frappe <code>hooks.py</code>, Odoo <code>__manifest__.py</code>, WordPress plugin header, Strapi <code>strapi-server.js</code> — hepsi aynı fikrin farklı versiyonu. Bizim format (Python + TS uyumlu, JSON5 veya YAML):</p>
+
+<pre><code># plugin.yaml
+name: my_inventory_extension
+version: 1.2.3
+api_version: "1.0"        # framework API contract version
+publisher: acme-corp
+license: LGPL-3.0
+description: "Custom inventory extensions for Acme"
+
+depends:
+  - framework: "^1.0.0"
+  - commerce: "^2.1.0"
+  - accounting: "^1.5.0"
+
+permissions:
+  - read: [Customer, SalesOrder]
+  - write: [SalesOrder]
+  - publish_event: [OrderShipped]
+
+hooks:
+  doc_events:
+    SalesOrder:
+      before_save: handlers/sales_order.py::before_save
+      on_submit: handlers/sales_order.ts::onSubmit
+  schedule:
+    daily: tasks/cleanup.py::daily_cleanup
+    cron:
+      - schedule: "0 */6 * * *"
+        handler: tasks/sync.py::sync_partners
+
+doctypes:           # DocType'ları bu plugin tanımlar
+  - definitions/custom_field.json
+
+fixtures:           # Initial data (seed)
+  - fixtures/categories.json
+
+translations:
+  - translations/tr.po
+  - translations/en.po
+
+ui:
+  pages:
+    - path: /inventory/dashboard
+      component: pages/Dashboard.tsx
+  menu:
+    - title: "Acme Inventory"
+      icon: ph-package
+      route: /inventory</code></pre>
+
+    <h4>Dependency resolution</h4>
+    <p>Odoo'nun <code>depends</code> listesi: install sırasında topological sort. A plugin'i B'ye bağlıysa, B önce yüklenir. Cycle detection — framework boot'ta hata verir, install fail.</p>
+    <p>Semantic versioning — Backstage pattern'i: extension point'ler tek tek versiyonlanır, deprecation per-hook. <code>commerce: "^2.1.0"</code> = "2.1.0 ile uyumlu, 3.0.0 değil".</p>
+
+    <h4>Plugin lifecycle hooks</h4>
+    <ul>
+      <li><code>before_install</code> — install öncesi check (lisans, dependency).</li>
+      <li><code>after_install</code> — schema migration, fixtures, default config.</li>
+      <li><code>before_uninstall</code> — cleanup uyarısı.</li>
+      <li><code>after_uninstall</code> — data export/anonymize seçeneği.</li>
+      <li><code>before_migrate</code> — version upgrade öncesi.</li>
+      <li><code>after_migrate</code> — version upgrade sonrası.</li>
+      <li><code>clear_cache</code> — cache invalidation.</li>
+    </ul>
+
+    <h4>Hook kategorileri — Frappe esinli, genişletilmiş</h4>
+    <p>Frappe ~30 hook kategorisi destekler. Sen başlangıç için şunlar:</p>
+
+    <table class="compact">
+      <thead><tr><th>Kategori</th><th>Hook tipi</th><th>Örnek</th></tr></thead>
+      <tbody>
+        <tr><td>Document lifecycle</td><td>doc_events</td><td>before_save, validate, on_submit, on_cancel, after_delete</td></tr>
+        <tr><td>Schedule</td><td>scheduler_events</td><td>hourly, daily, weekly, monthly, cron</td></tr>
+        <tr><td>Permission</td><td>permission_query_conditions, has_permission</td><td>SELECT WHERE injection</td></tr>
+        <tr><td>Override</td><td>override_doctype_class, override_method</td><td>Default davranışı değiştir</td></tr>
+        <tr><td>UI</td><td>app_include_js/css, doctype_js, page</td><td>Form behavior, page routes</td></tr>
+        <tr><td>Boot/data</td><td>boot_session, fixtures, setup_wizard</td><td>İlk kurulum, seed</td></tr>
+        <tr><td>Web</td><td>website_route_rules, redirects, home_page</td><td>Public site routes</td></tr>
+        <tr><td>Mail/Notification</td><td>notification_config, sender_field</td><td>Email pipeline</td></tr>
+        <tr><td>Auth</td><td>auth_hooks</td><td>Custom auth providers</td></tr>
+        <tr><td>Jinja/Template</td><td>jinja_methods, jinja_filters</td><td>Template extension</td></tr>
+        <tr><td>Migration</td><td>before_migrate, after_migrate</td><td>Schema upgrade</td></tr>
+        <tr><td>Search</td><td>search_routes, global_search</td><td>Search extension</td></tr>
+        <tr><td>Workflow</td><td>workflow_action_handlers</td><td>Custom transition actions</td></tr>
+        <tr><td>API</td><td>api_routes, override_whitelisted_methods</td><td>REST/RPC endpoints</td></tr>
+        <tr><td>Realtime</td><td>realtime_handlers</td><td>WebSocket channels</td></tr>
+        <tr><td>AI</td><td>ai_tools, ai_agents</td><td>MCP tools, agent definitions</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Marketplace</h4>
+    <p>VS Code Marketplace + Shopify App Store muadili. Plugin publisher kayıt olur, plugin yükler, review sürecinden geçer, listede görünür. Tenant admin "App Store"a girer, plugin install eder. Install:</p>
+    <ol>
+      <li>Manifest indir, schema migration uygula.</li>
+      <li>Fixtures yükle (seed data).</li>
+      <li>Hook'ları register et.</li>
+      <li>Permission'lar tenant admin onayına sun ("şu DocType'ları okuyacak").</li>
+      <li><code>after_install</code> çalıştır.</li>
+    </ol>
+
+    <div class="callout">
+      <div class="label"><i class="ph ph-warning"></i>Tuzak — global mutable state</div>
+      <p>Junior plugin'i çoğunlukla "framework'ün global'ine yamala" diye düşünür. Yasak. Hook registry üzerinden bağlanır. Strapi'nin "admin extension" sorununu yaratan budur: "plugin update'i extension'larımı kırıyor". Hook contract'ı semver ile koru.</p>
+    </div>
+  </article>
+</section>
+
+<hr>
+
+<section id="scale">
+  <h2 class="part"><i class="ph-duotone ph-trend-up"></i><span class="num">04</span>Scale primitives — save pipeline'a örülmüş</h2>
+  <p>Bu primitive'ler Layer 0 değil, ama kernel'in save pipeline'ında olmalı. Sonradan retrofit imkansız.</p>
+
+  <article class="domain scale">
+    <span class="badge">Scale primitive #1</span>
+    <h3><i class="ph-duotone ph-tray"></i>Transactional Outbox</h3>
+
+    <p><strong>Junior'a:</strong> Dual-write problem. Order'ı DB'ye yazıp Kafka'ya event publish etmek — ikisi iki transaction. Biri başarılı, biri başarısız olabilir.</p>
+
+    <p>Çözüm: aynı DB transaction'da Order satırı + Outbox satırı INSERT et. Sonra ayrı relay worker outbox'tan Kafka'ya publish eder.</p>
+
+<pre><code>CREATE TABLE outbox (
+  id uuid PRIMARY KEY,
+  aggregate_type text NOT NULL,
+  aggregate_id text NOT NULL,
+  event_type text NOT NULL,
+  payload jsonb NOT NULL,
+  tenant_id uuid NOT NULL,
+  status text NOT NULL DEFAULT 'pending',  -- pending|published|failed
+  attempts int NOT NULL DEFAULT 0,
+  occurred_at timestamptz NOT NULL DEFAULT now(),
+  published_at timestamptz,
+  next_retry_at timestamptz
+);
+CREATE INDEX outbox_pending_idx ON outbox (status, next_retry_at) WHERE status = 'pending';</code></pre>
+
+    <p>Relay worker (Python + asyncpg):</p>
+<pre><code>async def outbox_relay():
+    while True:
+        async with db.transaction():
+            rows = await db.fetch("""
+                SELECT * FROM outbox
+                WHERE status = 'pending' AND (next_retry_at IS NULL OR next_retry_at <= now())
+                ORDER BY occurred_at
+                LIMIT 100
+                FOR UPDATE SKIP LOCKED
+            """)
+            for row in rows:
+                try:
+                    await kafka.publish(row['event_type'], row['payload'])
+                    await db.execute("UPDATE outbox SET status='published', published_at=now() WHERE id=$1", row['id'])
+                except Exception as e:
+                    backoff = min(60 * 2 ** row['attempts'], 3600)
+                    await db.execute("""
+                        UPDATE outbox SET attempts = attempts + 1,
+                          next_retry_at = now() + interval '1 second' * $1
+                        WHERE id = $2
+                    """, backoff, row['id'])
+        await asyncio.sleep(1)</code></pre>
+
+    <p><strong>FOR UPDATE SKIP LOCKED</strong> concurrent worker için kritik. Birden çok worker aynı outbox'tan paralel okuyabilir, lock contention yok.</p>
+
+    <p><strong>Debezium alternatifi</strong>: PostgreSQL logical replication üstüne Debezium outbox tablosunu Kafka'ya stream eder. Python tarafında sadece INSERT yeterli. Production'da tercih edilen pattern.</p>
+
+    <h4>Retention</h4>
+    <p>Outbox tablosu büyür. 2-billion satıra ulaşan fintech örneği var. Politika:</p>
+    <ul>
+      <li>published 7 gün sonra archived table'a taşı.</li>
+      <li>failed 30 gün sonra dead letter queue + alert.</li>
+      <li>Partitioning: monthly partition (PostgreSQL declarative partition).</li>
+    </ul>
+  </article>
+
+  <article class="domain scale">
+    <span class="badge">Scale primitive #2</span>
+    <h3><i class="ph-duotone ph-projector-screen-chart"></i>CQRS Projections (Read Models)</h3>
+
+    <p>Write model normalize, transaction-safe; read model denormalize, hız için. Event-driven olarak senkronize.</p>
+
+    <h4>DocType'a projection metadata</h4>
+<pre><code>doctype: CustomerStats
+is_projection: true
+source_events: [OrderPlaced, OrderCancelled, OrderRefunded]
+rebuild_strategy: replay  # event store'dan baştan kur
+
+projection_handler:
+  OrderPlaced: |
+    customer = stats.get(event.customer_id)
+    customer.total_spent += event.total
+    customer.order_count += 1
+    customer.last_order_at = event.occurred_at
+  OrderCancelled: |
+    customer = stats.get(event.customer_id)
+    customer.total_spent -= event.refund_amount</code></pre>
+
+    <p>Framework bunu görür, otomatik subscriber kurar. Projection rebuild komutu: <code>framework rebuild-projection CustomerStats</code> — event store'dan baştan replay eder (durable workflow ile, kesintide kaldığı yerden).</p>
+
+    <h4>Eventual consistency penceresi</h4>
+    <p>Event işlenene kadar 1-5 saniye gecikme tipik. Dashboard "müşterinin total spent"i 2 saniye stale olabilir. Çoğu zaman OK. Ödeme/finansal sayfalarda fresh-read gerekirse: <code>?fresh=true</code> param → write model'den oku (yavaş ama kesin).</p>
+  </article>
+
+  <article class="domain scale">
+    <span class="badge">Scale primitive #3</span>
+    <h3><i class="ph-duotone ph-fire"></i>Hot Counter</h3>
+
+    <p>Like sayacı, view sayacı, follower sayacı, stok-on-hand. Milyonlarca eşzamanlı update.</p>
+
+    <h4>API</h4>
+<pre><code>counter.increment("post:123:likes", by=1)
+counter.read("post:123:likes")  # approximate, eventual</code></pre>
+
+    <h4>Backend strateji deployment'a göre</h4>
+    <ul>
+      <li><strong>Shared hosting:</strong> <code>UPDATE posts SET likes = likes + 1 WHERE id = ?</code>. Yeterli.</li>
+      <li><strong>Orta ölçek:</strong> Redis INCR, periodic flush DB'ye (10 saniyede 1).</li>
+      <li><strong>Büyük ölçek:</strong> sharded counter — <code>likes:post:123:shard_0</code>, <code>shard_1</code>...<code>shard_15</code>. Read'de SUM. Approximate, kesinlik feda.</li>
+    </ul>
+
+    <p>API tek interface. Module geliştirici backend'i bilmez. Twitter/X bu pattern'i kullanır.</p>
+  </article>
+
+  <article class="domain scale">
+    <span class="badge">Scale primitive #4</span>
+    <h3><i class="ph-duotone ph-gear-six"></i>Workers + Scheduler</h3>
+
+    <p>Async job queue. Outbox relay, projection rebuild, fan-out, scheduled task, webhook delivery — hepsi burada.</p>
+
+    <h4>Job kategorileri</h4>
+    <ul>
+      <li><strong>Immediate</strong> — queue'ya at, en yakın worker alır. (örn: email send)</li>
+      <li><strong>Scheduled</strong> — 15 dk sonra çalışsın. (örn: kart abandonment reminder)</li>
+      <li><strong>Recurring</strong> — her gün 02:00. (örn: daily cleanup)</li>
+      <li><strong>Priority</strong> — yüksek (payment webhook), normal, düşük (marketing email).</li>
+    </ul>
+
+    <h4>Implementasyon seçimi</h4>
+    <ul>
+      <li><strong>Shared hosting:</strong> <code>arq</code> (asyncio Redis queue) tek worker process.</li>
+      <li><strong>Orta ölçek:</strong> <code>dramatiq</code> + RabbitMQ. Birden çok worker pod.</li>
+      <li><strong>Büyük ölçek:</strong> <code>Celery</code> + Redis/RabbitMQ broker. Veya direkt Kafka consumer.</li>
+      <li><strong>Durable workflow:</strong> <code>DBOS</code> (Postgres-native, ek altyapı yok) — saga için ideal. <code>Temporal.io</code> (Cassandra/PG backend) — büyük workload için.</li>
+    </ul>
+
+    <h4>Idempotency</h4>
+    <p>Job iki kez çalışsa bile sonuç aynı olmalı (network retry, worker restart). Pattern: her job <code>idempotency_key</code> taşır, handler "bu key işlendi mi" check'ler.</p>
+  </article>
+
+  <article class="domain scale">
+    <span class="badge">Scale primitive #5</span>
+    <h3><i class="ph-duotone ph-arrows-clockwise"></i>Saga + Compensation</h3>
+
+    <p>Cross-aggregate transaction. "Order place → Payment charge → Stock reserve → Shipping create" — herhangi biri fail ederse önceki adımları geri al.</p>
+
+    <h4>Orchestration vs Choreography</h4>
+    <ul>
+      <li><strong>Orchestration:</strong> merkezi koordinatör adım sırasını ve kompansasyonu bilir. Debug kolay, test edilebilir. Modüler monolit için tercih.</li>
+      <li><strong>Choreography:</strong> servisler event'lere reaktif. Merkezi koordinatör yok. Mikroservis için.</li>
+    </ul>
+
+    <h4>DBOS implementasyonu</h4>
+<pre><code>from dbos import DBOS, WorkflowID
+
+@DBOS.workflow()
+async def place_order_saga(order_id: str):
+    try:
+        payment = await DBOS.transaction(charge_payment)(order_id)
+        stock = await DBOS.transaction(reserve_stock)(order_id)
+        shipping = await DBOS.transaction(create_shipment)(order_id)
+        await DBOS.transaction(finalize_order)(order_id)
+        return order_id
+    except StockUnavailable:
+        await DBOS.transaction(refund_payment)(payment)
+        raise
+    except ShippingFailed:
+        await DBOS.transaction(release_stock)(stock)
+        await DBOS.transaction(refund_payment)(payment)
+        raise</code></pre>
+
+    <p>Postgres logical tablo'ya checkpoint yazar; process crash olursa kaldığı yerden devam. Ek altyapı yok.</p>
+  </article>
+
+  <article class="domain scale">
+    <span class="badge">Scale primitive #6</span>
+    <h3><i class="ph-duotone ph-key-return"></i>Idempotency Keys</h3>
+
+    <p>Aynı isteğin iki kez gönderilmesi sonucu değiştirmemeli. Webhook delivery, payment processing, third-party API retry.</p>
+
+<pre><code>CREATE TABLE idempotency (
+  key text PRIMARY KEY,
+  tenant_id uuid NOT NULL,
+  endpoint text NOT NULL,
+  response_status int,
+  response_body jsonb,
+  created_at timestamptz DEFAULT now()
+);
+
+-- Middleware
+@app.middleware("http")
+async def idempotency_check(request, call_next):
+    key = request.headers.get("Idempotency-Key")
+    if key:
+        cached = await db.fetchrow("SELECT * FROM idempotency WHERE key=$1", key)
+        if cached:
+            return JSONResponse(cached['response_body'], cached['response_status'])
+    resp = await call_next(request)
+    if key and resp.status_code in (200, 201, 202):
+        await db.execute("INSERT INTO idempotency ...")
+    return resp</code></pre>
+  </article>
+</section>
+
+<hr>
+
+<section id="layer1">
+  <h2 class="part"><i class="ph-duotone ph-stack"></i><span class="num">05</span>Layer 1 — In-tree core (swappable)</h2>
+  <p>Default kurulumla gelir, interface arkasında, topluluk değiştirebilir. Medusa "Infrastructure Module" disiplini.</p>
+
+  <article class="domain l1">
+    <span class="badge">Layer 1</span>
+    <h3><i class="ph-duotone ph-users-three"></i>Party / Contact</h3>
+    <p>Customer/Supplier/Employee yazma — Party yaz. Frappe pattern: generic <code>Contact</code>/<code>Address</code> core'da, <em>Party Type</em> (Customer rolü) module'de.</p>
+
+<pre><code>doctype: Party              # Person veya Organization
+  fields:
+    party_type: Select [Person, Organization]
+    name: Data
+    primary_contact: Link Contact
+    primary_address: Link Address
+    locale, timezone, currency
+
+doctype: Contact
+  fields:
+    party: Link Party
+    email, phone, website
+    is_primary: Check
+
+doctype: Address
+  fields:
+    party: Link Party
+    country, region, city, district, street, postal_code
+    geo: Geolocation
+    type: Select [billing, shipping, ...]
+
+doctype: PartyRole          # Module katmanında (commerce, hr modülünde)
+  fields:
+    party: Link Party
+    role_type: Select [customer, supplier, employee, lead]
+    role_data: JSON         # role-specific fields</code></pre>
+
+    <p><strong>Örnek senaryo:</strong> Bir hastane uygulaması. Doktor Ahmet hem doktor (employee rolü), hem hasta (patient rolü). Tek Party kaydı, iki PartyRole. Maaş bordrosu employee rolünden alır, hasta dosyası patient rolünden.</p>
+  </article>
+
+  <article class="domain l1">
+    <span class="badge">Layer 1</span>
+    <h3><i class="ph-duotone ph-folder-simple"></i>File &amp; Storage</h3>
+
+<pre><code># Storage driver interface
+class StorageDriver(Protocol):
+    async def put(self, key: str, file: BinaryIO, content_type: str) -> str: ...
+    async def get(self, key: str) -> BinaryIO: ...
+    async def delete(self, key: str) -> None: ...
+    async def signed_url(self, key: str, expires_in: int = 3600) -> str: ...
+    async def copy(self, src: str, dst: str) -> None: ...
+
+# Implementations:
+# LocalDiskDriver, S3Driver, R2Driver, AzureBlobDriver, GCSDriver, MinIODriver</code></pre>
+
+    <p>Drive (#7) ürünü için ek katman: <strong>Block Storage</strong> (content-addressable, FastCDC chunking, dedup) bu interface'in üstüne Layer 2 module olarak. Frappe Drive seviyesi yetmiyor (basit re-upload), Seafile seviyesi gerek.</p>
+
+    <h4>File pipeline</h4>
+    <ol>
+      <li>Upload → temp blob storage'a yaz.</li>
+      <li>MIME validation, virus scan (ClamAV opsiyonel).</li>
+      <li>Image: thumbnail variants (64, 256, 1024). Video: HLS transcode.</li>
+      <li>Final blob → CDN'e push.</li>
+      <li>FileMetadata DocType'ında satır.</li>
+      <li><code>FileUploaded</code> event publish (AI moderation, search index dinler).</li>
+    </ol>
+  </article>
+
+  <article class="domain l1">
+    <span class="badge">Layer 1</span>
+    <h3><i class="ph-duotone ph-flow-arrow"></i>Workflow + ECA</h3>
+
+    <p>State machine + approval chain + Event-Condition-Action.</p>
+
+<pre><code>workflow: PurchaseOrderApproval
+  doctype: PurchaseOrder
+  states:
+    - draft (next: pending_approval)
+    - pending_approval (next: approved | rejected)
+    - approved (next: sent)
+    - sent (next: received | cancelled)
+    - received (next: closed)
+    - closed (terminal)
+    - rejected (terminal)
+  transitions:
+    - from: draft, to: pending_approval, action: submit, allowed_roles: [requester]
+    - from: pending_approval, to: approved, action: approve, allowed_roles: [manager], condition: amount < 10000
+    - from: pending_approval, to: approved, action: approve, allowed_roles: [cfo], condition: amount >= 10000
+    - from: pending_approval, to: rejected, action: reject, allowed_roles: [manager, cfo]
+
+eca_rules:
+  - on: doctype:PurchaseOrder.field:amount > 50000
+    condition: status == 'draft'
+    action: assign_to_role(cfo); notify(cfo, 'high_value_po')</code></pre>
+
+    <p>Drupal'da ECA modülü, Frappe'de Workflow + Notification + Auto Repeat. Sen birleşik tut.</p>
+  </article>
+
+  <article class="domain l1">
+    <span class="badge">Layer 1</span>
+    <h3><i class="ph-duotone ph-bell"></i>Notification</h3>
+
+    <p>Channel-agnostic. <code>notify(user, template, data, channels=['email', 'push'])</code>.</p>
+
+    <h4>Pipeline</h4>
+    <ol>
+      <li>Template render (Jinja, i18n-aware — kullanıcı locale'i).</li>
+      <li>User preference check (kullanıcı bu tipte bildirim istiyor mu).</li>
+      <li>Throttling (saatte 1'den fazla aynı bildirim atma).</li>
+      <li>Batching (12 kişi beğendi → tek bildirim).</li>
+      <li>Channel routing (push varsa push, yoksa email).</li>
+      <li>Queue + retry.</li>
+      <li>Delivery tracking.</li>
+    </ol>
+
+    <h4>Kanallar</h4>
+    <ul>
+      <li>Email (SES/SendGrid/Postmark driver)</li>
+      <li>SMS (Twilio/NetGSM/Vatan driver)</li>
+      <li>Push (FCM/APNs/Web Push)</li>
+      <li>In-app (bell icon)</li>
+      <li>Slack/Teams/Discord webhook</li>
+      <li>Generic webhook</li>
+    </ul>
+  </article>
+
+  <article class="domain l1">
+    <span class="badge">Layer 1</span>
+    <h3><i class="ph-duotone ph-list-magnifying-glass"></i>Audit + Activity</h3>
+
+    <p>İki ayrı concept:</p>
+    <ul>
+      <li><strong>Audit Log</strong> (compliance) — immutable, append-only. Her DocType save'inde alan diff'i. KVKK ve mali kanun zorunlu. Retention: 10 yıl (mali için).</li>
+      <li><strong>Activity Feed</strong> (UX) — "Ahmet bu issue'ya yorum yaptı, 5 dk önce". Soft delete OK.</li>
+    </ul>
+
+<pre><code>CREATE TABLE audit_log (
+  id uuid PRIMARY KEY,
+  tenant_id uuid NOT NULL,
+  occurred_at timestamptz NOT NULL DEFAULT now(),
+  occurred_by uuid REFERENCES users(id),
+  doctype text NOT NULL,
+  document_id text NOT NULL,
+  action text NOT NULL,            -- create|update|delete|submit|cancel
+  changes jsonb NOT NULL,          -- {field: {old: ..., new: ...}}
+  ip_address inet,
+  user_agent text
+) PARTITION BY RANGE (occurred_at);
+
+-- Monthly partitions
+CREATE TABLE audit_log_2026_01 PARTITION OF audit_log
+  FOR VALUES FROM ('2026-01-01') TO ('2026-02-01');</code></pre>
+  </article>
+
+  <article class="domain l1">
+    <span class="badge">Layer 1</span>
+    <h3><i class="ph-duotone ph-magnifying-glass"></i>Search (Hybrid: BM25 + Vector)</h3>
+
+    <p>Default: PostgreSQL FTS + pgvector. Production: Meilisearch/Typesense/OpenSearch driver.</p>
+
+    <h4>Hybrid search SQL pattern</h4>
+<pre><code>WITH semantic AS (
+  SELECT id, ROW_NUMBER() OVER (ORDER BY embedding <=> $1) AS rank
+  FROM docs
+  WHERE tenant_id = current_setting('app.tenant_id')::uuid
+  ORDER BY embedding <=> $1 LIMIT 50
+),
+keyword AS (
+  SELECT id, ROW_NUMBER() OVER (ORDER BY ts_rank_cd(tsv, query) DESC) AS rank
+  FROM docs, plainto_tsquery('turkish', $2) query
+  WHERE tenant_id = current_setting('app.tenant_id')::uuid
+    AND tsv @@ query LIMIT 50
+)
+SELECT id,
+  COALESCE(1.0/(60+s.rank), 0) + COALESCE(1.0/(60+k.rank), 0) AS score
+FROM semantic s FULL OUTER JOIN keyword k USING (id)
+ORDER BY score DESC LIMIT 20;</code></pre>
+
+    <p>RRF (Reciprocal Rank Fusion, k=60) standart. Türkçe için <code>to_tsvector('turkish', ...)</code> stemmer kısıtlı — Zemberek-based dictionary veya <code>unaccent</code> + custom.</p>
+
+    <h4>Reranking (opsiyonel ikinci aşama)</h4>
+    <p>İlk 20 sonucu Cohere Rerank v3 (multilingual API) veya BGE-reranker-v2-m3 (open source, multilingual) ile reorder. Türkçe için BGE-m3 önerilir.</p>
+  </article>
+
+  <article class="domain l1">
+    <span class="badge">Layer 1</span>
+    <h3><i class="ph-duotone ph-globe"></i>i18n / Localization</h3>
+
+    <p>Çoklu dil + locale + currency + tarih formatı.</p>
+    <ul>
+      <li><strong>Translation files</strong> — gettext .po (her plugin kendi tr.po, en.po taşır).</li>
+      <li><strong>UI strings</strong> — server-rendered (Jinja <code>_("text")</code>), client-rendered (React <code>t('text')</code>).</li>
+      <li><strong>DocType label translation</strong> — admin paneli "Customer" → "Müşteri".</li>
+      <li><strong>Number formatting</strong> — 1.000,50 (TR) vs 1,000.50 (US).</li>
+      <li><strong>Date formatting</strong> — DD.MM.YYYY (TR) vs MM/DD/YYYY (US).</li>
+      <li><strong>Currency formatting</strong> — ₺1.234,56 vs $1,234.56.</li>
+      <li><strong>Pluralization</strong> — CLDR rules.</li>
+      <li><strong>RTL support</strong> — Arapça/İbranice tenant'lar için.</li>
+    </ul>
+  </article>
+
+  <article class="domain l1">
+    <span class="badge">Layer 1</span>
+    <h3><i class="ph-duotone ph-currency-dollar"></i>Money + Tax + FX</h3>
+
+    <p>Multi-currency framework. 15 üründen 10'unda gerekli.</p>
+
+<pre><code>doctype: Currency
+  - code (ISO 4217: TRY, USD, EUR, GBP)
+  - symbol (₺, $, €)
+  - decimals (2 for fiat, 8 for crypto)
+  - format
+
+doctype: ExchangeRate
+  - from_currency
+  - to_currency
+  - rate (Decimal)
+  - effective_date
+  - source (TCMB, Fixer, ECB)
+
+# TCMB günlük kur entegrasyonu
+@scheduler.daily(at="15:30")  # TCMB kur yayın saati
+async def fetch_tcmb_rates():
+    rates = await tcmb.get_today_rates()
+    for r in rates:
+        await ExchangeRate.create(...)</code></pre>
+
+    <h4>Tax engine</h4>
+    <p>KDV (TR), VAT (EU), Sales Tax (US), GST (CA/AU). Adapter pattern. Çoklu yargı:</p>
+<pre><code>tax_rules:
+  - jurisdiction: TR
+    rate: 20  # 2024 itibariyle %20 standart KDV
+    reduced_rates: [10, 1]  # %10 (gıda, sağlık), %1 (temel gıda)
+    digital_services: 18
+
+  - jurisdiction: EU
+    type: VAT_MOSS  # OSS digital services
+    rates_by_country: { DE: 19, FR: 20, IT: 22, ... }</code></pre>
+  </article>
+
+  <article class="domain l1">
+    <span class="badge">Layer 1</span>
+    <h3><i class="ph-duotone ph-lightning"></i>Realtime / SSE / WebSocket</h3>
+
+    <p>Live updates: feed, inbox, presence, typing indicator, collaborative editor.</p>
+    <ul>
+      <li><strong>SSE</strong> (Server-Sent Events) — tek yönlü server → client. Notification, dashboard refresh, live counter. HTTP üstünde, proxy-friendly.</li>
+      <li><strong>WebSocket</strong> — çift yönlü. Chat, co-editing, real-time game state.</li>
+      <li><strong>Presence</strong> — "kim online" — Redis pub/sub + heartbeat.</li>
+    </ul>
+
+    <p>Frappe core'da Node.js socket.io server bundled. Sen Python tarafında <code>fastapi-sse</code> + <code>websockets</code> kullan, scale için Redis Pub/Sub.</p>
+  </article>
+
+  <article class="domain l1">
+    <span class="badge">Layer 1</span>
+    <h3><i class="ph-duotone ph-webhooks-logo"></i>Webhook (in/out) + API Gateway</h3>
+
+    <p>B2B integration noktası. İki yön:</p>
+
+    <h4>Outgoing</h4>
+    <p>Tenant admin "OrderPlaced event'i şu URL'e gönder" diye config eder. Framework event bus subscriber'ı olarak çalışır. Retry policy (exponential backoff), HMAC signature (request body imzala), dead letter queue.</p>
+
+    <h4>Incoming</h4>
+    <p>Üçüncü taraf (Stripe webhook, GitHub webhook) framework'e POST atar. Signature verification, idempotency check, event publish.</p>
+
+    <h4>API Gateway</h4>
+    <p>DocType'tan otomatik üretilen REST + GraphQL endpoint'leri. OpenAPI 3.1 spec autogen. Versioning (<code>/api/v1/</code>, <code>/api/v2/</code>). Throttling per tenant + per key.</p>
+  </article>
+
+  <article class="domain l1">
+    <span class="badge">Layer 1</span>
+    <h3><i class="ph-duotone ph-calendar-blank"></i>Calendar</h3>
+
+    <p>Event, recurring (iCal RRULE), timezone-aware, availability, conflict detection. CalDAV/iCal export. Google Calendar + Outlook sync.</p>
+  </article>
+
+  <article class="domain l1">
+    <span class="badge">Layer 1</span>
+    <h3><i class="ph-duotone ph-chart-bar"></i>Reporting + Dashboard</h3>
+
+    <p>Frappe Report Builder, Odoo Studio, Salesforce Reports. No-code query builder, scheduled export, dashboard widget. Drag-drop chart configuration. KPI tile, trend, table, gauge.</p>
+  </article>
+</section>
+
+<hr>
+
+<section id="layer2">
+  <h2 class="part"><i class="ph-duotone ph-package"></i><span class="num">06</span>Layer 2 — First-party module stacks</h2>
+  <p>Senin first-party olarak yazacağın, isteyen tenant'ın kuracağı module bundle'ları. 12 stack — her biri Odoo/SAP'taki bir functional area'ya karşılık.</p>
+
+  <article id="s-commerce" class="domain l2">
+    <span class="badge">Layer 2 Stack #1</span>
+    <h3><i class="ph-duotone ph-shopping-cart"></i>Commerce Stack</h3>
+    <p>Shopify, WooCommerce, Odoo Sale, Medusa muadili. 4 üründe (Sahibinden, Alibaba, AliExpress, Amazon, E-ticaret SaaS — yani #1, #2, #3, #4, #12) merkez stack.</p>
+
+    <h4>Module'ler</h4>
+    <ul>
+      <li><strong>Catalog</strong> — Product, Variant, Bundle, Attribute, Category, Collection, Brand</li>
+      <li><strong>Pricing</strong> — PriceList, PriceTier (B2B kademeli), DiscountRule, ChannelPricing</li>
+      <li><strong>Inventory</strong> — Stock Item, Stock Movement (ledger), Reservation, Warehouse, Bin Location</li>
+      <li><strong>Order</strong> — SalesOrder, OrderLine, RFQ (B2B), Quotation</li>
+      <li><strong>Cart</strong> — Cart, CartLine, CheckoutSession (multi-seller split)</li>
+      <li><strong>Payment</strong> — PaymentMethod, Transaction, Refund, Capture, Authorization</li>
+      <li><strong>Shipping</strong> — ShippingMethod, Zone, Rate, Label, Tracking</li>
+      <li><strong>Promotion</strong> — Coupon, FlashSale, BOGO, StackRule</li>
+      <li><strong>Returns</strong> — RMA, ReturnReason, Refund (escrow ile entegre)</li>
+      <li><strong>Tax</strong> — TaxRule, TaxZone, TaxClass</li>
+      <li><strong>Customer</strong> — per-store, segment, LTV, cohort</li>
+      <li><strong>Wishlist + SavedItems</strong></li>
+      <li><strong>Reviews + Ratings</strong> — Yotpo/Judge.me muadili</li>
+      <li><strong>Loyalty</strong> — Smile.io muadili — points ledger, tier</li>
+      <li><strong>Subscription</strong> — Recharge muadili — recurring billing, prorate, dunning</li>
+      <li><strong>Multi-channel</strong> — kanal sync (Trendyol, Hepsiburada, Amazon TR, Etsy)</li>
+      <li><strong>POS</strong> — Odoo POS muadili, offline-first, cash drawer, receipt printer</li>
+      <li><strong>B2B Portal</strong> — wholesale, net-30, RFQ flow</li>
+    </ul>
+
+    <h4>Sub-modules her commerce ürünü için</h4>
+    <p>Bunlar opsiyonel ek — Shopify App Store'da satılanlar:</p>
+    <ul>
+      <li>Klaviyo benzeri marketing automation</li>
+      <li>Recharge benzeri subscription manager</li>
+      <li>PageFly/Elementor benzeri visual builder</li>
+      <li>DSers/Printful benzeri dropshipping</li>
+      <li>Gorgias benzeri commerce helpdesk</li>
+      <li>AfterShip benzeri tracking</li>
+      <li>ReConvert benzeri upsell</li>
+    </ul>
+  </article>
+
+  <article id="s-accounting" class="domain l2">
+    <span class="badge">Layer 2 Stack #2 — TR uyum kritik</span>
+    <h3><i class="ph-duotone ph-coins"></i>Accounting + Finans Stack</h3>
+    <p>Odoo Accounting, SAP FI/CO, Frappe Books, Mikro/Logo muadili. Türkiye uyumu birinci sınıf.</p>
+
+    <h4>Module'ler</h4>
+    <ul>
+      <li><strong>Chart of Accounts (CoA)</strong> — Tek Düzen Hesap Planı (TR default), GAAP, IFRS, USALI (otel)</li>
+      <li><strong>Journal Entry / GL</strong> — çift-taraflı kayıt, dönem kapanışı, kilitleme</li>
+      <li><strong>AP/AR</strong> — supplier/customer cari, fatura-PO-mal kabul 3-way match, aging, dunning</li>
+      <li><strong>e-Belge</strong> — e-Fatura, e-Arşiv, e-İrsaliye (UBL-TR 1.2)</li>
+      <li><strong>e-Defter</strong> — XBRL-GL, berat, periyodik gönderim</li>
+      <li><strong>Beyanname</strong> — KDV1/KDV2, MUHSGK (birleşik), Geçici Vergi, Kurumlar, BA/BS</li>
+      <li><strong>Banka</strong> — Bank Feed, ekstre import (MT940), mutabakat</li>
+      <li><strong>Treasury</strong> — Multi-currency, FX exposure</li>
+      <li><strong>Fixed Assets</strong> — Sabit kıymet, amortisman (VUK + TFRS), elden çıkarma</li>
+      <li><strong>Cost Accounting</strong> — Cost center, profit center, landed cost</li>
+      <li><strong>Budgeting</strong> — Bütçe, fiili-fark, forecast</li>
+      <li><strong>Capture &amp; Categorize (ön muhasebe)</strong> — banka feed → AI auto-categorize → journal entry</li>
+      <li><strong>Cash Flow Forecast</strong> — 13-week, runway</li>
+      <li><strong>Multi-company Consolidation</strong> — intercompany, eliminasyon</li>
+      <li><strong>Practice Management</strong> — mali müşavir çoklu mükellef yönetimi</li>
+    </ul>
+
+    <div class="callout tr">
+      <div class="label"><i class="ph ph-flag"></i>Türkiye e-Belge — yapı</div>
+      <p><strong>e-Fatura</strong>: UBL-TR 1.2 XML, mali mühür (kurum) veya e-imza (gerçek kişi), B2B tescilli mükellef. <strong>e-Arşiv</strong>: B2C ve tescilsiz B2B; pratikte benzer format. <strong>e-İrsaliye</strong>: mal hareketi.</p>
+      <p>Entegrasyon: <em>özel entegratör</em> üzerinden. Piyasada: Foriba/Sovos (kurumsal), Logo eLogo (Logo ekosistemi), Mikro, İzibiz (orta segment, API kalitesi iyi), Uyumsoft, NES, KolayBi'/BizimHesap (SMB). Default driver bir mock, production'da credentials girilir.</p>
+      <p><strong>e-Defter</strong>: XBRL-GL formatında yevmiye + büyük defter, SHA-256 hash ile berat üretilir, GİB'e yüklenir. Gönderim ritmi: takvim ayını izleyen 3. ayın son günü.</p>
+      <p><strong>Beyanname</strong>: MUHSGK (Muhtasar+Prim) 2020'den birleşik, GİB üzerinden. KDV1/KDV2 aylık. BA/BS yıllık.</p>
+    </div>
+  </article>
+
+  <article id="s-hrms" class="domain l2">
+    <span class="badge">Layer 2 Stack #3 — TR uyum kritik</span>
+    <h3><i class="ph-duotone ph-users-four"></i>HRMS Stack</h3>
+    <p>Odoo HR, SAP HCM, Frappe HRMS, Logo HR muadili. Effective-dating ana disiplin.</p>
+
+    <h4>Module'ler</h4>
+    <ul>
+      <li><strong>Employee Master</strong> — özlük, istihdam yaşam döngüsü, rehire</li>
+      <li><strong>Effective-Dated Records</strong> — maaş, pozisyon, org. Bitemporal (geçerlilik + kayıt zamanı)</li>
+      <li><strong>Recruitment / ATS</strong> — Req, Pipeline, Interview, Offer</li>
+      <li><strong>Onboarding / Offboarding</strong> — Checklist, IT provisioning</li>
+      <li><strong>Time &amp; Attendance</strong> — Shift, clock-in/out, OT, geofence</li>
+      <li><strong>Leave</strong> — Yıllık/mazeret/hastalık, accrual, kıdeme göre</li>
+      <li><strong>Payroll</strong> — Element-based, retro, off-cycle, payslip</li>
+      <li><strong>Compensation</strong> — Pay grade, band, merit, bonus</li>
+      <li><strong>Performance</strong> — OKR, 360°, rating, calibration, PIP</li>
+      <li><strong>Talent / Succession</strong> — 9-box, HiPo, kariyer yolu</li>
+      <li><strong>Statutory (TR)</strong> — SGK e-Bildirge, MUHSGK, kıdem/ihbar tazminatı, asgari ücret, BES</li>
+      <li><strong>Expense Claim</strong> — masraf, fiş OCR, onay</li>
+      <li><strong>HR Document</strong> — sözleşme, e-imza, belge süre takibi</li>
+    </ul>
+
+    <div class="callout tr">
+      <div class="label"><i class="ph ph-flag"></i>Türkiye Payroll</div>
+      <p>Bordro motoru en az şu elementleri hesaplamalı: brüt maaş, SGK işçi (%14), SGK işveren (%20.75 veya %15.5 indirimli), işsizlik işçi (%1), işsizlik işveren (%2), gelir vergisi (dilimli tarife), damga vergisi (%0.00759), AGİ kaldırıldı (2022). Sonuç: net. Asgari ücret istisnası: 2024 itibariyle asgari ücret tutarı kadar gelir vergisi muafiyeti.</p>
+      <p>SGK e-Bildirge: APHB + MUHSGK 2020'den birleşik beyanname olarak GİB üzerinden gönderilir. SGK işveren bildirgesi (İAB — işten ayrılış) ayrı portal'dan.</p>
+    </div>
+  </article>
+
+  <article id="s-pms" class="domain l2">
+    <span class="badge">Layer 2 Stack #4</span>
+    <h3><i class="ph-duotone ph-kanban"></i>PMS — Project Management Stack</h3>
+    <p>Linear, Jira, Asana, Monday, ClickUp, MS Project muadili.</p>
+
+    <h4>Module'ler</h4>
+    <ul>
+      <li><strong>WorkItem</strong> — Epic, Story, Task, Subtask hiyerarşi, backlog</li>
+      <li><strong>Dependency Graph</strong> — blocks/blocked-by, kritik yol</li>
+      <li><strong>Scheduling</strong> — Gantt, timeline, otomatik yeniden-zamanlama</li>
+      <li><strong>Planning</strong> — Sprint, board (kanban), WIP limit, velocity, burndown</li>
+      <li><strong>Resource &amp; Capacity</strong> — Allocation, workload, leveling</li>
+      <li><strong>Portfolio &amp; Roadmap</strong> — Proje-üstü rollup, initiative, OKR hizalama</li>
+      <li><strong>Milestone &amp; Gate</strong> — Phase, deliverable, approval gate</li>
+      <li><strong>Risk &amp; Issue (RAID)</strong> — Risk register, eskalasyon</li>
+      <li><strong>Time Tracking</strong> — Efor, faturalanabilir saat</li>
+      <li><strong>Work Intake &amp; Triage</strong> — Request form → task</li>
+      <li><strong>Views</strong> — List/Kanban/Gantt/Calendar/Timeline/Workload (read-model)</li>
+      <li><strong>Baseline Snapshot</strong> — "ilk plan ne idi" sapma ölçümü</li>
+    </ul>
+
+    <h4>AI integration</h4>
+    <ul>
+      <li>Slippage tahmini (sprint yetişmeyecek)</li>
+      <li>Otomatik iş kırılımı (brief → görev ağacı üretme)</li>
+      <li>Otomatik atama (kapasite + beceri)</li>
+      <li>Standup özet üretimi</li>
+    </ul>
+  </article>
+
+  <article id="s-lms" class="domain l2">
+    <span class="badge">Layer 2 Stack #5</span>
+    <h3><i class="ph-duotone ph-graduation-cap"></i>LMS Stack</h3>
+    <p>Moodle, Canvas, Udemy, Coursera, Frappe LMS muadili.</p>
+
+    <h4>Module'ler</h4>
+    <ul>
+      <li><strong>Curriculum</strong> — Course, Chapter, Lesson, Path, prereq, sequencing</li>
+      <li><strong>Enrollment + Progress</strong> — kayıt, % ilerleme, completion</li>
+      <li><strong>Assessment</strong> — Quiz, attempt, question bank, rubric, geçme eşiği</li>
+      <li><strong>Assignment + Submission</strong> — Ödev, peer review, plagiarism check</li>
+      <li><strong>Gradebook</strong> — Ağırlıklı not, transkript</li>
+      <li><strong>Certification</strong> — Verifiable credential, badge, blockchain opsiyonel</li>
+      <li><strong>Cohort &amp; Term</strong> — Sınıf, dönem, batch</li>
+      <li><strong>Instructor</strong> — Eğitmen, atama, notlandırma</li>
+      <li><strong>Live Session</strong> — Zoom/Daily entegrasyonu, attendance</li>
+      <li><strong>Competency &amp; Skills</strong> — Yetkinlik çerçevesi, skill gap analysis</li>
+      <li><strong>Standards (SCORM/xAPI/cmi5)</strong> — Interoperability, LRS</li>
+      <li><strong>Proctoring</strong> — Sınav gözetimi, kopya önleme</li>
+    </ul>
+
+    <p><strong>Modern öneri</strong>: cmi5 (SCORM 2004 + xAPI'nin birleşimi, ADL 2016) yeni nesil standart. SCORM 2004 backward-compat için, xAPI ek telemetri için yan yana.</p>
+  </article>
+
+  <article id="s-cms" class="domain l2">
+    <span class="badge">Layer 2 Stack #6</span>
+    <h3><i class="ph-duotone ph-article"></i>CMS Stack</h3>
+    <p>Strapi, Sanity, Contentful, Drupal, WordPress muadili. Headless-first.</p>
+
+    <h4>Module'ler</h4>
+    <ul>
+      <li><strong>Authoring</strong> — Block-based editor (BlockNote, Editor.js, Lexical)</li>
+      <li><strong>Content Delivery</strong> — Headless API (REST + GraphQL), edge cache</li>
+      <li><strong>Composition / Page Builder</strong> — Drag-drop sayfa kurma (PageFly muadili)</li>
+      <li><strong>Theme / Template</strong> — Layout inheritance, render</li>
+      <li><strong>Taxonomy &amp; Navigation</strong> — Kategori, etiket, menü</li>
+      <li><strong>Localization</strong> — Çok-dilli içerik, çeviri akışı, fallback</li>
+      <li><strong>SEO</strong> — Slug, canonical, redirect, sitemap, schema.org, Open Graph</li>
+      <li><strong>Personalization</strong> — Audience targeting, A/B content</li>
+      <li><strong>Forms</strong> — Form builder, submission</li>
+      <li><strong>Multi-site</strong> — Tek tenant çok site, domain mapping</li>
+      <li><strong>Comments &amp; UGC</strong> — Moderation</li>
+    </ul>
+  </article>
+
+  <article id="s-social" class="domain l2">
+    <span class="badge">Layer 2 Stack #7</span>
+    <h3><i class="ph-duotone ph-users-three"></i>Social Stack</h3>
+    <p>Twitter, Threads, Instagram, Facebook muadili. Scale primitives test eden.</p>
+
+    <h4>Module'ler</h4>
+    <ul>
+      <li><strong>Social Graph</strong> — Follow/friend, asimetrik + simetrik, block, mute</li>
+      <li><strong>Post / UGC</strong> — Gönderi, reply (thread), quote, repost</li>
+      <li><strong>Feed / Timeline</strong> — Fan-out (push/pull/hybrid, ~10K celebrity threshold), ranking</li>
+      <li><strong>Engagement</strong> — Like, reaction, repost, reply, bookmark — hot counter</li>
+      <li><strong>Direct Messaging</strong> — Realtime DM, group chat, presence, read receipt</li>
+      <li><strong>Trends &amp; Discovery</strong> — Hashtag, trending topics, explore</li>
+      <li><strong>Privacy &amp; Audience</strong> — Public/followers/friends/close-friends/private</li>
+      <li><strong>Stories / Ephemeral</strong> — 24h auto-expire</li>
+      <li><strong>Groups &amp; Communities</strong> — Topluluk, sayfa, etkinlik</li>
+      <li><strong>Live &amp; Spaces</strong> — Canlı video, ses odası</li>
+      <li><strong>Creator &amp; Monetization</strong> — Bahşiş, abonelik, ad revenue share</li>
+      <li><strong>Moderation / T&amp;S</strong> — AI ön-filtre + human review queue</li>
+    </ul>
+  </article>
+
+  <article id="s-mrp" class="domain l2">
+    <span class="badge">Layer 2 Stack #8</span>
+    <h3><i class="ph-duotone ph-factory"></i>MRP / Manufacturing Stack</h3>
+    <p>SAP PP, Odoo Manufacturing muadili.</p>
+
+    <ul>
+      <li><strong>Engineering (BOM + Routing + ECO)</strong> — Multi-level BOM, ECO, effectivity, where-used</li>
+      <li><strong>Demand &amp; MPS</strong> — Tahmin + sipariş, Master Production Schedule</li>
+      <li><strong>MRP Engine</strong> — Patlatma, netleme, lead-time offset, regenerative + net-change</li>
+      <li><strong>Capacity Planning (CRP)</strong> — İş merkezi, makine, sonlu/sonsuz</li>
+      <li><strong>Shop Floor / MES</strong> — İş emri dağıtım, gerçek-zaman data, IoT/OT</li>
+      <li><strong>Production Order Lifecycle</strong> — planned → firmed → released → in-progress → completed → closed</li>
+      <li><strong>Finite Scheduling / APS</strong> — Detaylı çizelge, sıralama, drum-buffer-rope</li>
+      <li><strong>QMS</strong> — In-process, NCR, CAPA, SPC, supplier quality</li>
+      <li><strong>Maintenance / EAM</strong> — PM plan, asset health, OEE</li>
+      <li><strong>Costing</strong> — Standard rollup, sapma analizi, WIP valuation</li>
+      <li><strong>Subcontracting</strong> — Fason / dış işlem</li>
+      <li><strong>S&amp;OP</strong> — Stratejik planlama</li>
+    </ul>
+  </article>
+
+  <article id="s-ai" class="domain l2">
+    <span class="badge">Layer 2 Stack #9 — Differentiator</span>
+    <h3><i class="ph-duotone ph-robot"></i>AI Stack</h3>
+    <p>Framework'ün AI-first iddiasının çıktığı yer. Diğer stack'ler bu primitive'leri tüketir.</p>
+
+    <h4>Module'ler</h4>
+    <ul>
+      <li><strong>Model Routing</strong> — Hangi LLM (OpenAI, Anthropic, Gemini, local Ollama), fallback, cost-aware</li>
+      <li><strong>Prompt Template</strong> — Versioned, A/B test, observability</li>
+      <li><strong>Tool Calling / Function Calling</strong> — DocType action'ları otomatik tool olarak expose</li>
+      <li><strong>Agent</strong> — Pydantic AI tarzı type-safe agent</li>
+      <li><strong>MCP Server</strong> — Her bounded context kendi MCP server'ını expose. Claude Desktop, Cursor, vb. doğrudan bağlanır</li>
+      <li><strong>Embedding Pipeline</strong> — DocType save → chunk → embed → pgvector projection</li>
+      <li><strong>RAG</strong> — Hybrid retrieval (BM25 + vector RRF), reranking (Cohere/BGE), GraphRAG opsiyonel</li>
+      <li><strong>Streaming Response</strong> — SSE LLM token stream</li>
+      <li><strong>Moderation</strong> — Toxicity, NSFW, PII detection</li>
+      <li><strong>Anomaly Detection</strong> — Stat + ML, fraud, hatalı transaction</li>
+      <li><strong>Forecasting</strong> — Talep tahmini, sales, inventory</li>
+      <li><strong>OCR / Document Parsing</strong> — Fiş, fatura, sözleşme</li>
+      <li><strong>Auto-categorization</strong> — Banka transaction → hesap planı (muhasebe), email → label</li>
+      <li><strong>Generation</strong> — Image (DALL-E, SD), text, code</li>
+    </ul>
+
+    <h4>MCP integration mimari notu</h4>
+    <p>MCP (Model Context Protocol, Anthropic, 2024) JSON-RPC 2.0. Server tarafı: her bounded context kendi MCP server'ını expose eder. Örnek: <code>commerce</code> module'ü <code>list_products</code>, <code>search_products</code>, <code>create_order</code> tool'larını publish eder. Client tarafı: agent'lar MCP üstünden bu tool'ları çağırır.</p>
+  </article>
+
+  <article id="s-marketing" class="domain l2">
+    <span class="badge">Layer 2 Stack #10</span>
+    <h3><i class="ph-duotone ph-megaphone"></i>Marketing + CRM Stack</h3>
+
+    <ul>
+      <li><strong>Lead</strong> — Capture, qualify, score</li>
+      <li><strong>Pipeline</strong> — Opportunity, stage, forecast</li>
+      <li><strong>Email Marketing</strong> — Campaign, template, segment, A/B</li>
+      <li><strong>Marketing Automation</strong> — Workflow, drip campaign, trigger</li>
+      <li><strong>SMS Marketing</strong> — Bulk SMS, opt-in management (ETK)</li>
+      <li><strong>Event Management</strong> — Webinar, conference, ticket</li>
+      <li><strong>Survey / NPS</strong> — Anket, feedback</li>
+      <li><strong>Customer Segment</strong> — RFM, cohort, LTV, churn risk</li>
+      <li><strong>Affiliate</strong> — Link, commission, attribution</li>
+      <li><strong>Loyalty</strong> — Smile.io muadili</li>
+      <li><strong>Live Chat</strong> — Tidio/Intercom muadili</li>
+    </ul>
+  </article>
+
+  <article id="s-helpdesk" class="domain l2">
+    <span class="badge">Layer 2 Stack #11</span>
+    <h3><i class="ph-duotone ph-headset"></i>Helpdesk + Knowledge Stack</h3>
+
+    <ul>
+      <li><strong>Ticket</strong> — Yaratım, atama, eskalasyon, SLA timer</li>
+      <li><strong>SLA</strong> — Response time, resolution time, plan-bazlı</li>
+      <li><strong>Knowledge Base</strong> — Article, search, voting, AI search</li>
+      <li><strong>Community Forum</strong> — Q&amp;A, vote, accepted answer</li>
+      <li><strong>Customer Portal</strong> — Self-service ticket, kb, downloads</li>
+      <li><strong>Field Service</strong> — Saha hizmeti, route, scheduling</li>
+    </ul>
+  </article>
+
+  <article id="s-drive" class="domain l2">
+    <span class="badge">Layer 2 Stack #12</span>
+    <h3><i class="ph-duotone ph-cloud-arrow-up"></i>Drive + Wiki + Collaboration Stack</h3>
+
+    <ul>
+      <li><strong>Drive (#7)</strong> — Sync engine, block storage, dedup, version, share, namespace</li>
+      <li><strong>Co-editing (CRDT)</strong> — Yjs (pycrdt binding) — Google Docs muadili real-time</li>
+      <li><strong>Wiki</strong> — Frappe Wiki muadili — versioning, link, search</li>
+      <li><strong>Document e-Sign</strong> — DocuSign muadili — e-imza/m-imza TR</li>
+      <li><strong>Spreadsheet</strong> — Cell-based, formula, chart</li>
+      <li><strong>Whiteboard</strong> — Tldraw muadili — collaborative drawing</li>
+    </ul>
+  </article>
+</section>
+
+<hr>
+
+<section id="cross">
+  <h2 class="part"><i class="ph-duotone ph-arrows-out"></i><span class="num">07</span>Çapraz-kesen disiplinler</h2>
+
+  <h3>7.1 Türkiye Uyum — Birinci Sınıf</h3>
+  <p>Yukarıda accounting + HRMS'te değindiğimizden bağımsız, framework-level Türkiye paketi:</p>
+  <ul>
+    <li><strong>e-Belge Provider Driver</strong> — Foriba/İzibiz/Uyumsoft/Logo plug edilebilir.</li>
+    <li><strong>GİB Internet Vergi Dairesi</strong> — Beyanname, mükellef sorgulama.</li>
+    <li><strong>SGK e-Bildirge</strong> — APHB, MUHSGK, İAB.</li>
+    <li><strong>MERSİS</strong> — Şirket sorgulama API.</li>
+    <li><strong>e-Devlet OAuth</strong> — Kimlik doğrulama.</li>
+    <li><strong>m-imza / e-imza</strong> — TÜRKKEP integration.</li>
+    <li><strong>KEP (Kayıtlı Elektronik Posta)</strong> — Yasal tebligat.</li>
+    <li><strong>KVKK / VERBİS</strong> — DSR endpoint, veri envanteri otomatik üretim, açık rıza versioning.</li>
+    <li><strong>ETK İzin (SMS/Email)</strong> — opt-in yönetimi, IYS entegrasyonu.</li>
+    <li><strong>BKM Express / TROY</strong> — Yerel ödeme.</li>
+    <li><strong>TCMB FX</strong> — Günlük kur (15:30 yayın).</li>
+  </ul>
+
+  <div class="callout tr">
+    <div class="label"><i class="ph ph-flag"></i>KVKK — yazılım gereksinimleri (Madde 11)</div>
+    <p>Veri sahibi hakları endpoint'leri:</p>
+    <ul>
+      <li><strong>Erişim:</strong> <code>GET /kvkk/my-data</code> — kullanıcının tüm verisi.</li>
+      <li><strong>Düzeltme:</strong> standart edit endpoint'leri.</li>
+      <li><strong>Silme/Anonimleştirme:</strong> <code>POST /kvkk/forget-me</code> — PII alanlar null, ID korunur (referential integrity).</li>
+      <li><strong>Aktarım engelleme:</strong> consent versioning per category.</li>
+      <li><strong>Otomatik karar itirazı:</strong> AI scoring kararına itiraz akışı.</li>
+    </ul>
+    <p>Veri envanteri (Madde 16) — entity'lerde PII tagging, otomatik VERBİS bildirim formatı export. İhlal bildirimi 72 saat içinde, framework alert tetikler.</p>
+  </div>
+
+  <h3>7.2 Security Model</h3>
+  <ul>
+    <li><strong>Threat model</strong>: STRIDE — Spoofing/Tampering/Repudiation/Information disclosure/DoS/Elevation.</li>
+    <li><strong>Defense in depth</strong>: app-level authz + DB RLS + WAF + rate limit.</li>
+    <li><strong>OWASP Top 10</strong>: SQLi (parameterized), XSS (auto-escape), CSRF (token), SSRF (URL allowlist), open redirect, broken auth (yukarıda).</li>
+    <li><strong>Secret rotation</strong>: Vault driver, otomatik rotate.</li>
+    <li><strong>PII encryption</strong>: field-level, AES-256-GCM, key versioning.</li>
+    <li><strong>Audit log immutability</strong>: append-only, ihlal forensics için.</li>
+    <li><strong>Dependency scanning</strong>: dependabot, snyk, trivy.</li>
+    <li><strong>Pentest</strong>: yıllık external.</li>
+    <li><strong>Bug bounty</strong>: HackerOne, BugCrowd opsiyonel.</li>
+  </ul>
+
+  <h3>7.3 Observability</h3>
+  <ul>
+    <li><strong>Logging</strong>: structlog (Python), JSON format, trace_id correlation, Loki/ELK.</li>
+    <li><strong>Metrics</strong>: Prometheus + Grafana. RED method (Rate, Errors, Duration).</li>
+    <li><strong>Tracing</strong>: OpenTelemetry, Jaeger/Tempo. Per-request trace, multi-tenant tagging.</li>
+    <li><strong>Error tracking</strong>: Sentry. Source map, breadcrumb.</li>
+    <li><strong>Real User Monitoring (RUM)</strong>: Datadog RUM, Sentry Performance.</li>
+    <li><strong>Alerting</strong>: PagerDuty / Opsgenie / Slack.</li>
+    <li><strong>Status page</strong>: statuspage.io / Cachet self-host.</li>
+  </ul>
+
+  <h3>7.4 Performance Budget</h3>
+  <ul>
+    <li>API p50 &lt; 50ms, p95 &lt; 200ms, p99 &lt; 500ms.</li>
+    <li>Page render TTFB &lt; 200ms, LCP &lt; 2.5s.</li>
+    <li>DB query budget per endpoint: max 10 queries (N+1 prevention).</li>
+    <li>Cache hit rate &gt; 80%.</li>
+    <li>Background job throughput per worker &gt; 100 job/s.</li>
+  </ul>
+
+  <h3>7.5 Backup &amp; DR</h3>
+  <ul>
+    <li>PostgreSQL: pg_basebackup + WAL archiving (Barman, pgBackRest).</li>
+    <li>RPO &lt; 5 dakika, RTO &lt; 1 saat.</li>
+    <li>Cross-region replica (Hetzner FSN1 → HEL1).</li>
+    <li>Backup encryption (at-rest).</li>
+    <li>Restore drill: ayda 1 test.</li>
+    <li>Tenant-aware backup: UpdraftPlus pattern, müşteri kendi backup'ını alabilir.</li>
+  </ul>
+</section>
+
+<hr>
+
+<section id="dx">
+  <h2 class="part"><i class="ph-duotone ph-code"></i><span class="num">08</span>Plugin Developer Experience (DX)</h2>
+
+  <h3>8.1 CLI scaffolding</h3>
+<pre><code>$ framework create-module my-inventory-ext
+? Module name: my-inventory-ext
+? Publisher: acme-corp
+? License: LGPL-3.0
+? Depends on: [framework, commerce]
+? Language: TypeScript / Python / Both
+
+Created:
+  my-inventory-ext/
+    plugin.yaml
+    handlers/
+      sales_order.ts        # TypeScript hook
+      sales_order.py        # Python hook
+    doctypes/
+      MyInventoryItem.json
+    fixtures/
+      categories.json
+    translations/
+      tr.po, en.po
+    tests/
+      test_sales_order.py
+      test_sales_order.test.ts
+    README.md
+    .gitignore</code></pre>
+
+  <h3>8.2 Hook contract specification</h3>
+<pre><code>// @framework/sdk types
+export interface HookContext {
+  tenant: { id: string; locale: string; timezone: string };
+  user: { id: string; roles: string[]; email: string };
+  trace: { traceId: string; spanId: string };
+  events: { publish(event: DomainEvent): Promise<void> };
+  tax: TaxService;
+  storage: StorageService;
+  ai: AIService;
+  db: ReadOnlyDB;        // read-only, write only via aggregate
+  logger: Logger;
+}
+
+export type DocumentHook<T> = (doc: T, ctx: HookContext) => Promise<void> | void;
+export type ValidationHook<T> = (doc: T, ctx: HookContext) => Promise<ValidationError[] | void>;</code></pre>
+
+  <h3>8.3 Versioning</h3>
+  <ul>
+    <li><strong>Semver</strong> framework + her module için.</li>
+    <li><strong>API version</strong> hook contract'ında: <code>api_version: "1.0"</code>. Framework backward-compat sözleşmesi.</li>
+    <li><strong>Proposed API tier</strong> (VS Code pattern) — unstable hook'lar "experimental" channel, breaking change yapılabilir; production'da kullanma uyarısı.</li>
+    <li><strong>Deprecation policy</strong>: 2 minor version sonra remove. Deprecation warning log'a.</li>
+  </ul>
+
+  <h3>8.4 Marketplace</h3>
+  <ul>
+    <li>Publisher account, plugin upload, review process (security scan + manual review).</li>
+    <li>Plugin marketplace listing: name, description, category, screenshots, pricing.</li>
+    <li>Plugin install: tenant admin onayı (permissions consent).</li>
+    <li>Plugin update: auto-update opsiyonel, breaking change'de manuel.</li>
+    <li>Revenue share: Layer 2 module'ler için 70/30 split (publisher/platform).</li>
+    <li>Plugin analytics: install count, active tenant, rating, review.</li>
+  </ul>
+
+  <h3>8.5 Testing</h3>
+  <ul>
+    <li><strong>Unit test</strong>: pytest (Python), vitest (TS). Mock framework SDK.</li>
+    <li><strong>Integration test</strong>: framework test harness — gerçek DB, gerçek event bus.</li>
+    <li><strong>E2E test</strong>: Playwright + framework dev server.</li>
+    <li><strong>Boundary test</strong>: importlinter — modül A modül B internal'ına dokunmasın.</li>
+  </ul>
+</section>
+
+<hr>
+
+<section id="filelayout">
+  <h2 class="part"><i class="ph-duotone ph-folder-open"></i><span class="num">09</span>Dosya / dizin yapısı</h2>
+
+<pre><code>ddd_moduler_monolith/
+├── framework/                        # Layer 0 + Scale + Layer 1
+│   ├── kernel/
+│   │   ├── schema/                   # DocType engine
+│   │   │   ├── doctype.py
+│   │   │   ├── field_types.py
+│   │   │   ├── naming.py
+│   │   │   ├── migration.py
+│   │   │   └── custom_field.py
+│   │   ├── identity/
+│   │   │   ├── user.py
+│   │   │   ├── session.py
+│   │   │   ├── oauth.py
+│   │   │   ├── twofa.py
+│   │   │   └── impersonation.py
+│   │   ├── authz/
+│   │   │   ├── rbac.py
+│   │   │   ├── abac.py
+│   │   │   ├── rebac.py              # OpenFGA-style
+│   │   │   ├── query_injector.py
+│   │   │   └── rls.py
+│   │   ├── tenancy/
+│   │   │   ├── tenant.py
+│   │   │   ├── resolver.py
+│   │   │   └── domain.py
+│   │   ├── events/
+│   │   │   ├── bus.py                # interface
+│   │   │   ├── inprocess_bus.py
+│   │   │   ├── redis_bus.py
+│   │   │   ├── kafka_bus.py
+│   │   │   └── outbox.py
+│   │   ├── polyglot/
+│   │   │   ├── runtime.py            # interface
+│   │   │   ├── embedded_js.py        # PythonMonkey/STPyV8
+│   │   │   ├── sidecar.py            # Node gRPC
+│   │   │   └── wasm.py               # Extism
+│   │   └── plugin/
+│   │       ├── registry.py
+│   │       ├── manifest.py
+│   │       ├── dependency.py
+│   │       └── lifecycle.py
+│   ├── scale/
+│   │   ├── projection.py
+│   │   ├── counter.py
+│   │   ├── workers.py
+│   │   ├── scheduler.py
+│   │   ├── saga.py
+│   │   └── idempotency.py
+│   ├── layer1/
+│   │   ├── party/
+│   │   ├── file/
+│   │   ├── workflow/
+│   │   ├── notification/
+│   │   ├── audit/
+│   │   ├── search/                   # FTS + pgvector + reranker
+│   │   ├── calendar/
+│   │   ├── i18n/
+│   │   ├── money/
+│   │   ├── realtime/
+│   │   ├── webhook/
+│   │   ├── api/                      # REST + GraphQL autogen
+│   │   ├── reporting/
+│   │   ├── cache/
+│   │   ├── ratelimit/
+│   │   ├── settings/
+│   │   ├── secrets/
+│   │   └── health/
+│   └── sdk/                          # Plugin SDK (Python + TS)
+│       ├── python/
+│       └── typescript/
+├── modules/                          # Layer 2 — first-party
+│   ├── commerce/
+│   │   ├── catalog/
+│   │   ├── pricing/
+│   │   ├── inventory/
+│   │   ├── order/
+│   │   ├── cart/
+│   │   ├── payment/
+│   │   ├── shipping/
+│   │   ├── promotion/
+│   │   ├── returns/
+│   │   ├── tax/
+│   │   ├── customer/
+│   │   ├── loyalty/
+│   │   ├── subscription/
+│   │   ├── pos/
+│   │   ├── b2b/
+│   │   └── plugin.yaml
+│   ├── accounting/
+│   │   ├── coa/
+│   │   ├── journal/
+│   │   ├── ap_ar/
+│   │   ├── ebelge/                   # TR e-Fatura/e-Arşiv/e-İrsaliye
+│   │   ├── edefter/                  # TR e-Defter
+│   │   ├── beyanname/                # TR beyanname
+│   │   ├── bank/
+│   │   ├── fixed_assets/
+│   │   ├── cost/
+│   │   ├── budget/
+│   │   ├── capture/                  # ön muhasebe AI auto-categorize
+│   │   ├── forecast/
+│   │   ├── consolidation/
+│   │   ├── practice/                 # mali müşavir multi-client
+│   │   └── plugin.yaml
+│   ├── hrms/
+│   ├── pms/
+│   ├── lms/
+│   ├── cms/
+│   ├── social/
+│   ├── mrp/
+│   ├── ai/
+│   ├── marketing/
+│   ├── helpdesk/
+│   ├── drive/
+│   └── tr_compliance/                # KVKK, GİB, SGK, MERSİS
+├── ui/                               # Flowbite React (Next.js yasak)
+│   ├── pages/
+│   ├── components/
+│   ├── builder/                      # Block + Section editor
+│   └── theme/
+├── docs/
+├── tests/
+└── pyproject.toml</code></pre>
+</section>
+
+<hr>
+
+<section id="mapping">
+  <h2 class="part"><i class="ph-duotone ph-list-numbers"></i><span class="num">10</span>15 ürün → stack mapping</h2>
+  <p>Hangi ürün, hangi Layer 2 stack'lerini kullanır:</p>
+
+  <table class="compact">
+    <thead><tr><th>#</th><th>Ürün</th><th>Birincil stack</th><th>İkincil stack</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Sahibinden klonu</td><td>Commerce (listing), Search (geo), CMS (storefront), Social (lead/inquiry)</td><td>AI (valuation, oto-ilan, moderation), Marketing</td></tr>
+      <tr><td>2</td><td>Alibaba klonu (B2B2B)</td><td>Commerce (RFQ, quotation, escrow), Accounting (e-Belge)</td><td>AI (supplier match), Logistics</td></tr>
+      <tr><td>3</td><td>AliExpress klonu (retail)</td><td>Commerce (cart, promotion, loyalty), Marketing (campaign)</td><td>AI (recsys), Helpdesk</td></tr>
+      <tr><td>4</td><td>Amazon klonu (fulfillment)</td><td>Commerce (1P/3P, BuyBox), MRP/Warehouse</td><td>AI (ads PPC, ranking)</td></tr>
+      <tr><td>5</td><td>CMS (yenilikçi)</td><td>CMS (full stack)</td><td>AI (auto-content), Marketing</td></tr>
+      <tr><td>6</td><td>LMS</td><td>LMS (full stack)</td><td>AI (adaptive), CMS (course content), Calendar</td></tr>
+      <tr><td>7</td><td>Drive (AI-first Dropbox)</td><td>Drive (sync, block storage)</td><td>AI (semantic search, OCR)</td></tr>
+      <tr><td>8</td><td>Stok / PIM / WMS</td><td>Commerce.Inventory + MRP.Warehouse</td><td>AI (forecast, slotting), Accounting</td></tr>
+      <tr><td>9</td><td>HRMS / Payroll</td><td>HRMS (full stack), TR compliance</td><td>LMS (training), AI (attrition)</td></tr>
+      <tr><td>10</td><td>Muhasebe SaaS</td><td>Accounting (full stack), TR e-Belge</td><td>AI (auto-categorize), Capture</td></tr>
+      <tr><td>11</td><td>PMS</td><td>PMS (full stack)</td><td>Helpdesk, AI (slippage)</td></tr>
+      <tr><td>12</td><td>E-ticaret SaaS (Shopify klonu)</td><td>Commerce + CMS (storefront) + Tenancy (custom domain) + Payment Facilitation</td><td>AI (auto-merchandise), Marketing</td></tr>
+      <tr><td>13</td><td>ERP</td><td>Accounting + HRMS + Commerce + MRP (entegre)</td><td>AI (anomaly, forecast)</td></tr>
+      <tr><td>14</td><td>MRP / Manufacturing</td><td>MRP (full stack)</td><td>Accounting, Maintenance, AI (predictive)</td></tr>
+      <tr><td>15</td><td>Sosyal medya</td><td>Social (full stack), AI (moderation), Scale primitives sınavı</td><td>Marketing, Realtime, Drive (medya)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<hr>
+
+<section id="build">
+  <h2 class="part"><i class="ph-duotone ph-flag-banner"></i><span class="num">11</span>Build sırası — 5 stage</h2>
+
+  <table>
+    <thead><tr><th>Stage</th><th>Süre tahmini</th><th>Ne yapılır</th><th>Bitiş kriteri (benchmark)</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Stage 1<br>Kernel</strong></td>
+        <td>3-6 ay</td>
+        <td>Layer 0 tam shipping: DocType engine (custom field, child table, naming series, permissions, hooks), Identity (session, OAuth, 2FA, OIDC, SSO, impersonation), Authz (RBAC + ReBAC + ABAC + RLS), Tenancy (multi/single/hybrid + sub-tenant), Event Bus (in-process), Polyglot runtime (embedded JS default), Plugin Registry + Manifest + Lifecycle.</td>
+        <td>Runtime'da yeni DocType tanımlanır, Python + TS hook bağlanır, authz transparent filtreleme yapar. Tek process'te shared hosting'de çalışır. Plugin scaffold edip publish edebilir bir external developer.</td>
+      </tr>
+      <tr>
+        <td><strong>Stage 2<br>Scale primitives</strong></td>
+        <td>2-3 ay</td>
+        <td>Outbox save pipeline'a, CQRS projection deklaratif support, Hot Counter, Background Workers + Scheduler, Saga (DBOS), Idempotency middleware. Event bus Redis Streams driver.</td>
+        <td>Config flag ile event bus in-process → Redis swap, module kodu değişmez. Outbox event projection rebuild tetikler. Saga step crash'inde compensation çalışır.</td>
+      </tr>
+      <tr>
+        <td><strong>Stage 3<br>Layer 1</strong></td>
+        <td>4-6 ay</td>
+        <td>Party/Contact, File (driver), Workflow + ECA, Notification (channel driver), Audit, Search (FTS + pgvector hybrid), Calendar, i18n, Money + Tax, Realtime SSE/WS, Webhook, API Gateway, Reporting, Cache, Rate Limit, Settings, Secrets, Health.</td>
+        <td>Topluluk module'ü File backend'ini S3'ten R2'ye değiştirir, core kodu değişmez. Search backend Meilisearch'a swap olur, sorgu API'si aynı kalır.</td>
+      </tr>
+      <tr>
+        <td><strong>Stage 4<br>Layer 2 stacks + DX</strong></td>
+        <td>12-18 ay (parallel stack'ler)</td>
+        <td>Commerce (#1-4, #12), Accounting + TR uyum (#10, #13), HRMS + TR uyum (#9), PMS (#11), LMS (#6), CMS (#5), MRP (#13, #14), AI (cross-cutting), Marketing, Helpdesk, Drive (#7), TR Compliance. + Marketplace + CLI + Sidecar runtime + WASM runtime + Packwerk-style CI.</td>
+        <td>Dış geliştirici plugin scaffold → build → publish (core'a hiç dokunmadan). Boundary violation CI'da fail. 5 ürün uçtan uca canlıda (örn. Frappe LMS klonu + Shopify klonu + bir muhasebe SaaS).</td>
+      </tr>
+      <tr>
+        <td><strong>Stage 5<br>Scale proof</strong></td>
+        <td>3-6 ay</td>
+        <td>Sosyal medya (#15) — fan-out, ranking, moderation. Hybrid push/pull, celebrity threshold (~10K). Aynı Feed module küçük tenant'ta single-process, dev tenant'ta Kafka + read replica.</td>
+        <td>10K+ TPS sustained, p99 &lt; 500ms, multi-region replication. Kernel hiç değişmez.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<hr>
+
+<section id="anti">
+  <h2 class="part"><i class="ph-duotone ph-prohibit"></i><span class="num">12</span>Anti-pattern özet — tek tabloda</h2>
+
+  <table class="compact">
+    <thead><tr><th>Anti-pattern</th><th>Niye yanlış</th><th>Doğrusu</th></tr></thead>
+    <tbody>
+      <tr><td>Tek JSON column polymorphism</td><td>WordPress wp_postmeta — yavaş, type-unsafe, JOIN cehennemi</td><td>Frappe pattern: her DocType fiziksel tablo, JSON sadece ek alan</td></tr>
+      <tr><td>Auth'ı sonradan</td><td>Migration cehennemi, güvensiz geçiş</td><td>Day-1 kernel</td></tr>
+      <tr><td>Authz application-level if-check</td><td>Bir unutma → tüm data leak</td><td>Query layer'a örülmüş + RLS defense-in-depth</td></tr>
+      <tr><td>Tenant'sız başlamak</td><td>6-12 ay retrofit</td><td>Day-1 tenant_id her satırda</td></tr>
+      <tr><td>Module direct DB access</td><td>Tight coupling, refactor imkansız</td><td>Sadece public API + event bus</td></tr>
+      <tr><td>Cross-aggregate transaction</td><td>Distributed tx fragile, yavaş</td><td>Outbox + saga + compensation</td></tr>
+      <tr><td>Billing core'a</td><td>Her ürün farklı model (escrow/seat/usage)</td><td>Layer 2 module</td></tr>
+      <tr><td>Catalog core'a</td><td>CMS/LMS/Drive'ın işi yok</td><td>Layer 2 module</td></tr>
+      <tr><td>Feed fan-out kernel'e</td><td>13 üründe feed yok</td><td>Primitive kernel, policy Layer 2</td></tr>
+      <tr><td>Logging "domain"</td><td>Infrastructure concern</td><td>structlog + OpenTelemetry, framework-level</td></tr>
+      <tr><td>Reinvent search</td><td>Elasticsearch'ü kernel'e fuse</td><td>Interface core, default SQLite/pgvector, prod Meilisearch swap</td></tr>
+      <tr><td>Global mutable plugin state</td><td>Strapi admin extension acısı</td><td>Hook registry + semver kontrat</td></tr>
+      <tr><td>Distributed transaction (2PC)</td><td>Yavaş, fragile, çağ geçti</td><td>Saga + outbox + idempotency</td></tr>
+      <tr><td>Customer core'a</td><td>Sosyal medyada yok</td><td>Party generic + role module'de</td></tr>
+      <tr><td>Polyglot transaction crossing</td><td>2PC fragile</td><td>Synchronous hook = pure function</td></tr>
+      <tr><td>e-Belge sonradan</td><td>TR'de baştan bordro/muhasebe yanlış</td><td>e-Belge driver Layer 1 in-tree</td></tr>
+      <tr><td>Effective-dating'i atlamak</td><td>HRMS retro çöker</td><td>Bitemporal day-1</td></tr>
+      <tr><td>Hot counter ACID</td><td>Viral içerikte lock contention</td><td>Approximate, Redis INCR, sharded</td></tr>
+      <tr><td>SCORM'u plugin sanmak</td><td>İlerleme modeli yanlış kurulur</td><td>LMS standardı baştan</td></tr>
+      <tr><td>"Önce tek müşteri"</td><td>Tenancy retrofit</td><td>Day-1 multi-tenant</td></tr>
+      <tr><td>PgBouncer + SET (session)</td><td>Cross-tenant leak</td><td>SET LOCAL (transaction)</td></tr>
+      <tr><td>Submittable DocType'ı normal CRUD</td><td>Financial integrity bozulur</td><td>docstatus + immutable submitted</td></tr>
+      <tr><td>Drupal 7 "yarım shipping"</td><td>5 yıl ekosistem acısı</td><td>Stage 1'i tam bitir</td></tr>
+      <tr><td>Mikroservis ilk gün</td><td>Premature</td><td>Modüler monolit, sonra extract</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<hr>
+
+<footer class="page" style="margin-top:5rem;padding-top:2rem;border-top:1px solid var(--line);color:var(--ink-3);font-size:0.9375rem;">
+  <p><strong>Bu döküman ne değil:</strong> Bitirilmiş architecture spec değil. Bu bir <em>karar çerçevesi</em>. Layer assignment'lar pressure-test edilmeli — özellikle Stage 4'te ilk 3 ürünü canlıya alırken Layer 1 interface'lerin doğru flexibility'ye sahip olup olmadığı ortaya çıkacak.</p>
+  <p><strong>Bu döküman nasıl kullanılır:</strong> Bölümleri sırayla okuma. Stage 1 build edilirken Layer 0 bölümünü açık tut. Stage 4'te bir stack başlatıldığında o stack'in detayını burada bul, eksiklerini kendi domain dokümanıyla genişlet (her stack için ayrı detay döküman gerekecek — bu master, harita).</p>
+  <p><strong>Kaynaklar:</strong> Frappe (github.com/frappe/frappe, frappeframework.com), Odoo (odoo.com/documentation/19.0), Anthropic MCP (modelcontextprotocol.io), Pydantic AI (ai.pydantic.dev), Medusa v2 (docs.medusajs.com), VS Code Extension API (code.visualstudio.com/api), Backstage (backstage.io), GİB (ebelge.gib.gov.tr, edefter.gov.tr), KVKK (kvkk.gov.tr), pgvector (github.com/pgvector/pgvector), Microsoft GraphRAG (github.com/microsoft/graphrag), Cohere Rerank (cohere.com/rerank), DBOS (dbos.dev), Temporal (temporal.io), Extism (extism.org), OpenFGA (openfga.dev), SpiceDB (authzed.com).</p>
+</footer>
+
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+{
+  "id": "l1-file",
+  "title": "File & Storage",
+  "subtitle": "Driver pattern: Local/S3/R2/Azure/GCS. Versioning, signed URL, lifecycle.",
+  "cluster": "layer1",
+  "layer": "l1",
+  "order": 17,
+  "icon": "ph-folder-simple",
+  "badge": "Layer 1 — In-tree",
+  "tags": [
+    "file",
+    "storage",
+    "s3",
+    "blob"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Driver pattern arkasında dosya yönetimi. Topluluk module'ü File backend'ini Local'den S3'e, S3'ten R2'ye değiştirebilir — core kodu değişmez."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "title": "Storage driver interface",
+      "content": "class StorageDriver(Protocol):\n    async def put(self, key: str, file: BinaryIO, content_type: str) -> str: ...\n    async def get(self, key: str) -> BinaryIO: ...\n    async def delete(self, key: str) -> None: ...\n    async def signed_url(self, key: str, expires_in: int = 3600) -> str: ...\n    async def copy(self, src: str, dst: str) -> None: ...\n    async def head(self, key: str) -> dict: ...  # metadata\n\n# Implementations:\n# LocalDiskDriver, S3Driver, R2Driver, AzureBlobDriver, GCSDriver, MinIODriver"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "File pipeline"
+    },
+    {
+      "type": "list",
+      "ordered": true,
+      "items": [
+        "Upload → temp blob storage'a yaz.",
+        "MIME validation, virus scan (ClamAV opsiyonel).",
+        "Image: thumbnail variants (64, 256, 1024). Video: HLS transcode.",
+        "Final blob → CDN'e push.",
+        "FileMetadata DocType'ında satır.",
+        "`FileUploaded` event publish (AI moderation, search index dinler)."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Versioning"
+    },
+    {
+      "type": "paragraph",
+      "text": "Her file için sürüm zinciri. `file_version` tablosu — content hash, kim yükledi, ne zaman, immutable. Rollback opsiyonu. Drive ürünü için bunun üstüne CRDT + block-level delta."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Lifecycle / TTL"
+    },
+    {
+      "type": "paragraph",
+      "text": "Temp uploads 24 saat, abandoned cart asset 7 gün, archive 90 gün sonra cold storage'a (Glacier/R2 archive). Object storage lifecycle policy ile veya scheduled worker ile."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Drive (#7) için ek katman"
+    },
+    {
+      "type": "paragraph",
+      "text": "Drive ürününde Layer 1 file motoru yetmez, üstüne **Block Storage** (content-addressable, FastCDC chunking, dedup) Layer 2 module olarak. Frappe Drive seviyesi yetmiyor (basit re-upload), Seafile seviyesi gerek. {{ref:s-drive}}"
+    }
+  ],
+  "enrich": {
+    "info": "Driver pattern: Local/S3/R2/Azure/GCS. Versioning, signed URL, lifecycle.",
+    "detail": "Driver pattern: Local/S3/R2/Azure/GCS. Versioning, signed URL, lifecycle.",
+    "terms": [
+      {
+        "term": "Driver pattern",
+        "abbrev_tr": "Sürücü deseni",
+        "meaning": "Storage backend (Local/S3/R2) tek interface arkasında.",
+        "why": "Plugin storage tipini bilmez — sadece file API'sini bilir."
+      },
+      {
+        "term": "Pre-signed URL",
+        "abbrev_tr": "Ön-imzalı URL",
+        "meaning": "Geçici, doğrudan storage'a yüklenebilen güvenli URL.",
+        "why": "Sunucu üstünden geçirmeden direkt S3'e yüklemek için."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

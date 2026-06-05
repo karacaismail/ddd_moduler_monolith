@@ -1,0 +1,240 @@
+{
+  "id": "l1-misc",
+  "title": "i18n, Money, Realtime, Webhook, API Gateway, Calendar, Reporting",
+  "subtitle": "Layer 1 in-tree paketinin geri kalanı.",
+  "cluster": "layer1",
+  "layer": "l1",
+  "order": 22,
+  "icon": "ph-stack",
+  "badge": "Layer 1 — In-tree",
+  "tags": [
+    "i18n",
+    "money",
+    "realtime",
+    "webhook",
+    "api"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "i18n / Localization",
+      "icon": "ph-globe"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Translation files** — gettext .po (her plugin kendi tr.po, en.po taşır).",
+        "**UI strings** — server-rendered (Jinja `_(\"text\")`), client (React `t('text')`).",
+        "**DocType label translation** — admin paneli \"Customer\" → \"Müşteri\".",
+        "**Number formatting** — 1.000,50 (TR) vs 1,000.50 (US).",
+        "**Date formatting** — DD.MM.YYYY (TR) vs MM/DD/YYYY (US).",
+        "**Currency formatting** — ₺1.234,56 vs $1,234.56.",
+        "**Pluralization** — CLDR rules.",
+        "**RTL support** — Arapça/İbranice tenant'lar için."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Money + Tax + FX",
+      "icon": "ph-currency-dollar"
+    },
+    {
+      "type": "code",
+      "lang": "yaml",
+      "content": "doctype: Currency\n  - code (ISO 4217: TRY, USD, EUR, GBP)\n  - symbol (₺, $, €)\n  - decimals (2 for fiat, 8 for crypto)\n  - format\n\ndoctype: ExchangeRate\n  - from_currency\n  - to_currency\n  - rate (Decimal)\n  - effective_date\n  - source (TCMB, Fixer, ECB)\n\n# TCMB günlük kur entegrasyonu\n@scheduler.daily(at=\"15:30\")  # TCMB kur yayın saati\nasync def fetch_tcmb_rates():\n    rates = await tcmb.get_today_rates()\n    for r in rates:\n        await ExchangeRate.create(...)"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Tax engine** — KDV (TR), VAT (EU), Sales Tax (US), GST. Adapter pattern. KDV oranları 2024 itibariyle: standart %20, indirimli %10 (gıda, sağlık), süper indirimli %1 (temel gıda)."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Realtime / SSE / WebSocket",
+      "icon": "ph-lightning"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**SSE** (Server-Sent Events) — tek yönlü server → client. Notification, dashboard refresh, live counter. HTTP üstünde, proxy-friendly.",
+        "**WebSocket** — çift yönlü. Chat, co-editing, real-time game state.",
+        "**Presence** — \"kim online\" — Redis pub/sub + heartbeat."
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Frappe core'da Node.js socket.io server bundled. Sen Python tarafında `fastapi-sse` + `websockets` kullan, scale için Redis Pub/Sub."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Webhook + API Gateway",
+      "icon": "ph-webhooks-logo"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Outgoing webhook** — tenant admin \"OrderPlaced event şu URL'e\" config'ler. Framework event bus subscriber'ı. Retry (exponential backoff), HMAC signature, dead letter.",
+        "**Incoming webhook** — Stripe, GitHub vs. POST atar. Signature verification, idempotency, event publish.",
+        "**API Gateway** — DocType'tan otomatik REST + GraphQL endpoint. OpenAPI 3.1 spec autogen. Versioning (`/api/v1/`). Throttling per tenant + per key."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Calendar",
+      "icon": "ph-calendar-blank"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Event entity (start, end, all-day, location, attendees)",
+        "Recurrence rule (RRULE) — \"her pazartesi\", \"her ayın ilk perşembesi\"",
+        "Exception (recurring serisinin bir oturumu iptal)",
+        "Timezone-aware (DST geçişleri, IANA zone)",
+        "iCal export (.ics dosyası)",
+        "CalDAV protocol (Apple Calendar, Outlook sync)",
+        "Availability query (boş slot ara)"
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Reporting + Dashboard",
+      "icon": "ph-chart-bar"
+    },
+    {
+      "type": "paragraph",
+      "text": "Frappe Report Builder, Odoo Studio, Salesforce Reports muadili. No-code query builder, scheduled export, dashboard widget. Drag-drop chart configuration. KPI tile, trend, table, gauge. CSV/Excel/PDF export."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: S01 Auto REST + S02 Auto Admin UI + S03 Form & Validation"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX L3 Application Surface katmanı bu cluster'ın \"Webhook + API Gateway + Reporting\" bölümünü tamamlar: DocType tanımından otomatik olarak üretilen üç yüzey."
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "S01 — Auto REST API Engine",
+          "desc": "**Faz 1 · P0.** DocType → CRUD + filter + bulk endpoint. Aynı tanımdan OpenAPI spec, MCP tool listesi, GraphQL schema türetilir. *DocType → endpoint p95 <60sn, OpenAPI conformance %100.* Capabilities: CRUD Endpoint Generation, OpenAPI Spec, Bulk & Batch (idempotent), Pagination & Cursor, Webhooks.",
+          "enrich": {
+            "info": "**Faz 1 · P0.** DocType → CRUD + filter + bulk endpoint. Aynı tanımdan OpenAPI spec, MCP tool listesi, GraphQL schema türetilir. *DocType → ",
+            "detail": "**S01 — Auto REST API Engine** nedir?\n\n**Faz 1 · P0.** DocType → CRUD + filter + bulk endpoint. Aynı tanımdan OpenAPI spec, MCP tool listesi, GraphQL schema türetilir. *DocType → endpoint p95 <60sn, OpenAPI conformance %100.* Capabilities: CRUD Endpoint Generation, OpenAPI Spec, Bulk & Batch (idempotent), Pagination & Cursor, Webhooks.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "terms": [
+              {
+                "term": "GraphQL",
+                "abbrev_tr": "Graf sorgu dili",
+                "meaning": "Tek endpoint, istemci hangi alanları istediğini söyler.",
+                "why": "Mobile için over-fetching'i çözer."
+              },
+              {
+                "term": "REST",
+                "abbrev_of": "Representational State Transfer",
+                "abbrev_tr": "Temsili Durum Aktarımı",
+                "meaning": "Kaynak-merkezli HTTP API mimarisi.",
+                "why": "Standart, cache-friendly."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"S01 — Auto REST API Engine\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 1 · P0.** DocType → CRUD + filter + bulk endpoint. Aynı tanımdan OpenAPI s pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"S01 — Auto REST API Engine\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"S01 — Auto REST API Engine\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "S02 — Auto Admin UI Engine",
+          "desc": "**Faz 2 · P0.** DocType → auto-generated admin UI: list, detail, form, bulk action, filter side-panel. Flowbite + React Router v7. **AI co-pilot her ekranda.** *DocType → çalışır UI <2dk, Lighthouse a11y >90.* `Saved View` (filter_state + sort_state + is_shared), `ai_quick_filter` (doğal dil filtresi).",
+          "enrich": {
+            "info": "**Faz 2 · P0.** DocType → auto-generated admin UI: list, detail, form, bulk action, filter side-panel. Flowbite + React Router v7. **AI co-p",
+            "detail": "**S02 — Auto Admin UI Engine** nedir?\n\n**Faz 2 · P0.** DocType → auto-generated admin UI: list, detail, form, bulk action, filter side-panel. Flowbite + React Router v7. **AI co-pilot her ekranda.** *DocType → çalışır UI <2dk, Lighthouse a11y >90.* `Saved View` (filter_state + sort_state + is_shared), `ai_quick_filter` (doğal dil filtresi).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"S02 — Auto Admin UI Engine\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 2 · P0.** DocType → auto-generated admin UI: list, detail, form, bulk acti pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"S02 — Auto Admin UI Engine\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"S02 — Auto Admin UI Engine\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "S03 — Form & Validation Framework",
+          "desc": "**Faz 2 · P1.** Form lifecycle, server-side + client-side validation, conditional fields, wizard flows, **AI auto-fill**, draft autosave. Tüm validation kuralları MCP tool olarak dış dünyaya da expose edilir.",
+          "enrich": {
+            "info": "**Faz 2 · P1.** Form lifecycle, server-side + client-side validation, conditional fields, wizard flows, **AI auto-fill**, draft autosave. Tü",
+            "detail": "**S03 — Form & Validation Framework** nedir?\n\n**Faz 2 · P1.** Form lifecycle, server-side + client-side validation, conditional fields, wizard flows, **AI auto-fill**, draft autosave. Tüm validation kuralları MCP tool olarak dış dünyaya da expose edilir.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"S03 — Form & Validation Framework\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 2 · P1.** Form lifecycle, server-side + client-side validation, conditiona pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"S03 — Form & Validation Framework\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"S03 — Form & Validation Framework\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Layer 1 in-tree paketinin geri kalanı.",
+    "detail": "Layer 1 in-tree paketinin geri kalanı.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

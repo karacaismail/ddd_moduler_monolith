@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Tahtada eksikler — küme küme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
+<style>
+  :root {
+    --ink:#1a1a1a; --ink-2:#3d3d3d; --ink-3:#6b6b6b; --ink-4:#9a9a9a;
+    --line:#e6e6e6; --line-2:#f1f1f1;
+    --bg:#fff; --bg-soft:#fafafa;
+    --crit:#b73a3a; --crit-soft:#faece9;
+    --warn:#8a4b00; --warn-soft:#fbf2e6;
+    --ok:#0f5f5c; --ok-soft:#e7f1f0;
+    --code-bg:#f5f5f4;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  body{margin:0;font-family:'Roboto',system-ui,sans-serif;font-weight:300;font-size:1rem;line-height:1.6;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;}
+  .container{max-width:1100px;margin:0 auto;padding:3rem 1.5rem 5rem;}
+  header.page{border-bottom:1px solid var(--line);padding-bottom:1.5rem;margin-bottom:2.5rem;}
+  header.page .eyebrow{text-transform:uppercase;letter-spacing:0.18em;font-size:1rem;color:var(--ink-3);font-weight:400;margin:0 0 0.75rem;}
+  header.page h1{font-size:2rem;font-weight:300;line-height:1.25;margin:0 0 0.75rem;letter-spacing:-0.015em;}
+  header.page .lede{font-size:1.0625rem;color:var(--ink-2);font-weight:300;max-width:60ch;margin:0;}
+  h2{font-size:1.5rem;font-weight:400;margin:3rem 0 1rem;letter-spacing:-0.01em;border-bottom:1px solid var(--line);padding-bottom:0.5rem;display:flex;align-items:center;gap:0.6rem;}
+  h2 .ph,h2 .ph-duotone{color:var(--ok);}
+  h2 .count{margin-left:auto;font-size:1rem;color:var(--ink-4);font-weight:400;font-variant-numeric:tabular-nums;}
+  h3{font-size:1.0625rem;font-weight:500;margin:1.5rem 0 0.5rem;letter-spacing:-0.005em;}
+  p{margin:0 0 0.75rem;max-width:64ch;}
+  code{font-family:'Roboto Mono',monospace;font-size:0.9375rem;background:var(--code-bg);padding:0.1rem 0.35rem;border-radius:3px;font-weight:400;}
+  ul{padding-left:0;margin:0 0 1rem;list-style:none;}
+  li{margin-bottom:0.35rem;max-width:none;padding:0.5rem 0.75rem;border-left:2px solid var(--line);background:var(--bg-soft);}
+  li.crit{border-left-color:var(--crit);background:var(--crit-soft);}
+  li.crit .tag{background:var(--crit);color:#fff;}
+  li.crit strong{color:var(--crit);}
+  li .tag{display:inline-block;font-size:0.75rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.05rem 0.4rem;border-radius:3px;margin-right:0.5rem;background:var(--ink-3);color:#fff;vertical-align:1px;}
+  li strong{font-weight:500;color:var(--ink);}
+  li .why{display:block;color:var(--ink-3);font-size:0.9375rem;margin-top:0.15rem;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
+  .callout{border:1px solid var(--line);border-left:3px solid var(--warn);background:var(--warn-soft);padding:0.85rem 1.1rem;border-radius:4px;margin:1rem 0;font-size:0.9375rem;}
+  .callout .label{font-weight:500;color:var(--warn);text-transform:uppercase;font-size:0.75rem;letter-spacing:0.12em;margin-bottom:0.25rem;display:flex;align-items:center;gap:0.4rem;}
+  .callout p{margin:0;}
+  .callout.crit{border-left-color:var(--crit);background:var(--crit-soft);}
+  .callout.crit .label{color:var(--crit);}
+  .legend{display:flex;gap:1.5rem;margin:1rem 0 2rem;padding:0.75rem 1rem;background:var(--bg-soft);border:1px solid var(--line);border-radius:4px;font-size:0.9375rem;}
+  .legend .item{display:flex;align-items:center;gap:0.45rem;}
+  .swatch{width:14px;height:14px;border-radius:2px;display:inline-block;}
+  .swatch.crit{background:var(--crit);}
+  .swatch.normal{background:var(--ink-3);}
+  .has{color:var(--ink-4);text-decoration:line-through;}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr;}.legend{flex-direction:column;gap:0.5rem;}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="page">
+  <p class="eyebrow">Tahta — Eksik Tamamlama</p>
+  <h1>Sütunlarda eksik olanlar</h1>
+  <p class="lede">15 üründen (Odoo/SAP/Frappe/WP/Drupal/Shopify dahil) gerçekten ihtiyaç duyulacak primitive'lerin senin mevcut tahtana eklenmesi gereken karşılığı. Sade liste, tek satır gerekçe.</p>
+</header>
+
+<div class="legend">
+  <span class="item"><span class="swatch crit"></span>Kritik — eksik kalırsa framework olmaz</span>
+  <span class="item"><span class="swatch normal"></span>Normal — değer katar, sonradan eklenebilir</span>
+</div>
+
+<section>
+  <h2><i class="ph-duotone ph-circle-half"></i>Kum Tanesi <span class="count">+18 öneri</span></h2>
+  <p>Atomik primitive katmanı. Her şeyin oluşturucu blokları. Senin <strong>Field, Log, Handler, Security</strong> dışında DocType engine'i besleyecek atomik tipler çoğunlukla eksik.</p>
+
+  <div class="grid2">
+    <ul>
+      <li class="crit"><span class="tag">Kritik</span><strong>Type System</strong><span class="why">Field'ın altında: scalar/composite tip tanımı, validator, coercion. Her field bir type'a referans verir.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>ID Generator</strong><span class="why">UUID v7, ULID, snowflake, tenant-prefix'li ID. Distributed sistemde sequence yetmez.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Money / Decimal</strong><span class="why">Float yasak (yuvarlama hataları → muhasebede para kaybı). Decimal + currency code çifti.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>DateTime / Timezone</strong><span class="why">UTC store + IANA timezone display. HRMS effective-dating bunsuz olmaz.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Reference / Link</strong><span class="why">DocType'a foreign key. Cascade kuralı, orphan kontrolü, tenant-scope check.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Counter (hot)</strong><span class="why">Like/view/follower. Backend swap edilebilir (DB → Redis → sharded).</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Version / ETag</strong><span class="why">Optimistic concurrency — aynı record'u iki kullanıcı eşzamanlı değiştirirse çakışma.</span></li>
+      <li><span class="tag">Normal</span><strong>Hash / Checksum</strong><span class="why">Dosya integrity, idempotency key, content-addressable storage (Drive).</span></li>
+      <li><span class="tag">Normal</span><strong>Slug</strong><span class="why">URL-safe identifier, Türkçe karakter normalizasyonu, uniqueness scope.</span></li>
+    </ul>
+    <ul>
+      <li><span class="tag">Normal</span><strong>Phone (E.164)</strong><span class="why">Country code parsing, format, validation. Twilio/NetGSM gönderiminde şart.</span></li>
+      <li><span class="tag">Normal</span><strong>Email</strong><span class="why">Validation + DNS MX check + disposable detection.</span></li>
+      <li><span class="tag">Normal</span><strong>URL</strong><span class="why">Validation + canonical form + scheme allowlist.</span></li>
+      <li><span class="tag">Normal</span><strong>Geo Coordinate</strong><span class="why">lat/lng + PostGIS bridge. Real estate (#1), Field Service.</span></li>
+      <li><span class="tag">Normal</span><strong>Address (atomic)</strong><span class="why">Country/region/city/postal yapısı + locale formatting.</span></li>
+      <li><span class="tag">Normal</span><strong>Color</strong><span class="why">Theme, calendar event, tag — UI primitive.</span></li>
+      <li><span class="tag">Normal</span><strong>Tag</strong><span class="why">Polymorphic label, çok-tag yapısı (Taxonomy'den farklı: hiyerarşisiz).</span></li>
+      <li><span class="tag">Normal</span><strong>Soft Delete</strong><span class="why">Trash, restore, hard-delete policy. KVKK silme talepleri için altyapı.</span></li>
+      <li><span class="tag">Normal</span><strong>Encryption Field</strong><span class="why">PII/secret field-level encryption, key rotation. Security primitive'in detayı.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2><i class="ph-duotone ph-circle"></i>Küçük Taş <span class="count">+12 öneri</span></h2>
+  <p>Foundation katmanı. Burada en kritik eksik var: <strong>DocType / Schema Engine</strong>. Sen Kernel'in altında Worker/Cron/Agent yazdın ama <em>asıl framework'ü framework yapan motor</em> tahtanın dışında kalmış.</p>
+
+  <div class="callout crit">
+    <div class="label"><i class="ph ph-warning-circle"></i>En kritik eksik</div>
+    <p>DocType engine, Event Bus + Outbox ve Polyglot Runtime Bridge yok. Bunlar olmadan Frappe/Drupal/Odoo benzeri "metadata-driven, plugin-able framework" hedefini taşıyamazsın. Layer 0 kernel.</p>
+  </div>
+
+  <div class="grid2">
+    <ul>
+      <li class="crit"><span class="tag">Kritik</span><strong>DocType / Schema Engine</strong><span class="why">Tahtanın merkezi olmalı. Field'lardan DocType, DocType'tan tablo + REST + form + permission otomatik. Frappe DocType, Salesforce Object, Strapi Content-Type.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Event Bus / Pub-Sub</strong><span class="why">Module'lerin loose-coupled konuşma omurgası. In-process → Redis Streams → Kafka aynı interface.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Outbox</strong><span class="why">Dual-write problem'in tek doğru çözümü. Save pipeline'a örülü.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Polyglot Runtime Bridge</strong><span class="why">Hook contract Python + TS aynı interface. Embedded (PythonMonkey/STPyV8) / Sidecar (Node gRPC) / WASM (Extism) — üç runtime.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Plugin / Extension Registry</strong><span class="why">Hook noktaları, manifest, dependency resolution. WordPress hooks/filters, Odoo `__manifest__.py`, Backstage extension points.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Migration Engine</strong><span class="why">DocType değişimi → schema migration → veri taşıma. Versiyonlu, geri alınabilir, dry-run.</span></li>
+    </ul>
+    <ul>
+      <li><span class="tag">Normal</span><strong>Cache (interface)</strong><span class="why">In-process LRU → Redis → CDN (HTTP cache). Driver pattern.</span></li>
+      <li><span class="tag">Normal</span><strong>Rate Limiting</strong><span class="why">Per-user, per-IP, per-tenant, per-endpoint. Brute force koruması.</span></li>
+      <li><span class="tag">Normal</span><strong>Feature Flag</strong><span class="why">Tenant-bazlı, rollout, A/B. Plan-bazlı feature gating (SaaS).</span></li>
+      <li><span class="tag">Normal</span><strong>Settings / Config</strong><span class="why">Tenant config, framework config, module config hiyerarşisi. Hot reload.</span></li>
+      <li><span class="tag">Normal</span><strong>Secrets Vault</strong><span class="why">API key, OAuth secret saklama. Env'den ayrı, rotate edilebilir.</span></li>
+      <li><span class="tag">Normal</span><strong>Health / Readiness</strong><span class="why">K8s probe, dependency health (DB, Redis, Kafka up?). Operasyon zorunluluğu.</span></li>
+    </ul>
+  </div>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-warning"></i>Auth'un altında bir not</div>
+    <p>Authorization'ın altına <code>RBAC</code> da ekle. ReBAC modern ama klasik admin/editor/viewer rolleri RBAC. Üçü birlikte (RBAC + ReBAC + ABAC) gerçek hayatta.</p>
+  </div>
+</section>
+
+<section>
+  <h2><i class="ph-duotone ph-square"></i>Orta Taş <span class="count">+40 öneri</span></h2>
+  <p>Module primitive katmanı. Odoo/SAP/Shopify ürünleri burada yaşar. En kabarık liste burada çünkü Layer 1 ve Layer 2 first-party module'lerinin çoğu bu kümede.</p>
+
+  <h3>Commerce primitive'leri (Shopify, Odoo Sales, WooCommerce için zorunlu)</h3>
+  <div class="grid2">
+    <ul>
+      <li class="crit"><span class="tag">Kritik</span><strong>Party / Contact</strong><span class="why">Person + Organization + ContactPoint + Address. Customer/Supplier/Employee role'leri buradan türer.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Catalog / Product</strong><span class="why">Product + Variant + Bundle. Attribute, kategori, taxonomy referans.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Pricing</strong><span class="why">Price list, tier, channel-pricing, currency. B2B kademeli (Alibaba #2), B2C liste (#3).</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Inventory / Stock Ledger</strong><span class="why">Hareket defteri (immutable). Reservation, ATP. PIM/IMS/WMS hiyerarşisi.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Order</strong><span class="why">Sales order, purchase order, internal transfer — generic order primitive. State machine + line items.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Cart / Checkout</strong><span class="why">Multi-seller split, kupon stack, anlık fiyat hesabı. Shopify checkout, WooCommerce.</span></li>
+    </ul>
+    <ul>
+      <li><span class="tag">Normal</span><strong>Promotion / Coupon</strong><span class="why">Flash sale, kupon stack kuralları, BOGO. AliExpress retention mekaniği.</span></li>
+      <li><span class="tag">Normal</span><strong>Loyalty / Points</strong><span class="why">Coin, badge, tier. Bağımsız ledger.</span></li>
+      <li><span class="tag">Normal</span><strong>Subscription</strong><span class="why">Recurring billing, dunning, prorate. Odoo Subscriptions, Recharge.</span></li>
+      <li><span class="tag">Normal</span><strong>Shipping / Fulfillment</strong><span class="why">Rate calc, label print, carrier integration. Kargo takip number.</span></li>
+      <li><span class="tag">Normal</span><strong>Returns / RMA</strong><span class="why">İade akışı, kısmi iade, restock. Buyer protection ayrı.</span></li>
+      <li><span class="tag">Normal</span><strong>Tax Engine</strong><span class="why">KDV/VAT/sales tax hesabı, çoklu yargı. Avalara/TaxJar entegre noktası.</span></li>
+    </ul>
+  </div>
+
+  <h3>Muhasebe + Finans primitive'leri (Odoo Accounting, SAP FI/CO, Frappe Books)</h3>
+  <div class="grid2">
+    <ul>
+      <li class="crit"><span class="tag">Kritik</span><strong>Chart of Accounts (CoA)</strong><span class="why">Tek Düzen Hesap Planı (TR), GAAP/IFRS, hierarchical.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Journal Entry / GL</strong><span class="why">Çift-taraflı kayıt, immutable, dönem kapanışı. System of record.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Invoice / e-Invoice</strong><span class="why">e-Fatura/e-Arşiv/e-İrsaliye, GİB entegrasyonu. TR uyum zorunlu.</span></li>
+    </ul>
+    <ul>
+      <li><span class="tag">Normal</span><strong>Bank Feed</strong><span class="why">Open banking, ekstre import (MT940/CSV).</span></li>
+      <li><span class="tag">Normal</span><strong>Reconciliation</strong><span class="why">Banka, BA/BS, cari mutabakat. AI-first auto-matching.</span></li>
+      <li><span class="tag">Normal</span><strong>Payment / Wallet</strong><span class="why">Tahsilat, ödeme, cüzdan bakiyesi, iyzico/PayTR.</span></li>
+    </ul>
+  </div>
+
+  <h3>HRMS + Project primitive'leri (Odoo HR, SAP HCM, Frappe HR)</h3>
+  <div class="grid2">
+    <ul>
+      <li class="crit"><span class="tag">Kritik</span><strong>Effective-Dated Record</strong><span class="why">Bitemporal (geçerlilik + kayıt zamanı). Maaş, pozisyon, org. HRMS imzası.</span></li>
+      <li><span class="tag">Normal</span><strong>Payroll Element</strong><span class="why">Earning/deduction motoru, retro, SGK/vergi formülleri.</span></li>
+      <li><span class="tag">Normal</span><strong>Time &amp; Attendance</strong><span class="why">Puantaj, vardiya, fazla mesai.</span></li>
+      <li><span class="tag">Normal</span><strong>Leave / Accrual</strong><span class="why">İzin hak ediş, bakiye, talep akışı.</span></li>
+      <li><span class="tag">Normal</span><strong>OKR / Goal</strong><span class="why">Hedef, KR, performans değerlendirme.</span></li>
+    </ul>
+    <ul>
+      <li><span class="tag">Normal</span><strong>Dependency Graph</strong><span class="why">PMS kritik yol motoru. İş kalemleri arası bağımlılık + scheduling.</span></li>
+      <li><span class="tag">Normal</span><strong>Sprint / Kanban</strong><span class="why">Board, WIP limit, velocity, burndown.</span></li>
+      <li><span class="tag">Normal</span><strong>Timesheet</strong><span class="why">Efor logging, faturalanabilir saat, project costing.</span></li>
+      <li><span class="tag">Normal</span><strong>Resource Capacity</strong><span class="why">Allocation, workload, leveling.</span></li>
+      <li><span class="tag">Normal</span><strong>Baseline Snapshot</strong><span class="why">"İlk plan ne idi" — sapma ölçümü için.</span></li>
+    </ul>
+  </div>
+
+  <h3>LMS + Content primitive'leri (Frappe LMS, Drupal, WP)</h3>
+  <div class="grid2">
+    <ul>
+      <li><span class="tag">Normal</span><strong>Curriculum / Course Path</strong><span class="why">Module → unit hiyerarşi, prereq, sequencing.</span></li>
+      <li><span class="tag">Normal</span><strong>Enrollment + Progress</strong><span class="why">Öğrenen-kurs ilişkisi, % ilerleme, completion.</span></li>
+      <li><span class="tag">Normal</span><strong>Assessment / Gradebook</strong><span class="why">Quiz, attempt, scoring, transkript.</span></li>
+      <li><span class="tag">Normal</span><strong>SCORM / xAPI</strong><span class="why">E-öğrenme standardı, LRS. e-Fatura'nın LMS muadili.</span></li>
+    </ul>
+    <ul>
+      <li><span class="tag">Normal</span><strong>Authoring / Block Editor</strong><span class="why">Bloklu içerik editörü. CMS authoring, slash menu, drag-drop.</span></li>
+      <li><span class="tag">Normal</span><strong>Page Composition</strong><span class="why">Tema'dan ayrı: bloklardan sayfa kurma (PageFly, Elementor).</span></li>
+      <li><span class="tag">Normal</span><strong>SEO / URL</strong><span class="why">Slug, canonical, redirect (301/410), sitemap, schema.org.</span></li>
+      <li><span class="tag">Normal</span><strong>Theme / Template</strong><span class="why">Layout inheritance, render. Headless'ta opsiyonel.</span></li>
+    </ul>
+  </div>
+
+  <h3>Social + Collaboration primitive'leri (sosyal medya, Gameplan, Wiki)</h3>
+  <div class="grid2">
+    <ul>
+      <li><span class="tag">Normal</span><strong>Social Graph</strong><span class="why">Follow/friend, asimetrik + simetrik kenar. Block, mute.</span></li>
+      <li><span class="tag">Normal</span><strong>Feed / Timeline</strong><span class="why">Fan-out (push/pull/hybrid), celebrity threshold, ranking.</span></li>
+      <li><span class="tag">Normal</span><strong>Engagement</strong><span class="why">Like/reaction, repost, reply, bookmark — hot counter ile.</span></li>
+      <li><span class="tag">Normal</span><strong>Mention / Tag User</strong><span class="why">@user, hashtag, autocomplete.</span></li>
+    </ul>
+    <ul>
+      <li><span class="tag">Normal</span><strong>Comments / Threads</strong><span class="why">Nested discussion, moderasyon, edit history.</span></li>
+      <li><span class="tag">Normal</span><strong>Direct Messaging</strong><span class="why">Realtime DM, presence, read receipt, typing.</span></li>
+      <li><span class="tag">Normal</span><strong>Realtime / SSE / WebSocket</strong><span class="why">Push channel, presence, live feed. Drive co-edit'in altyapısı.</span></li>
+      <li><span class="tag">Normal</span><strong>CRDT / Co-editing</strong><span class="why">Google Docs benzeri eşzamanlı düzenleme. Drive (#7) ürünü için.</span></li>
+    </ul>
+  </div>
+
+  <h3>MRP + Üretim primitive'leri (Odoo Manufacturing, SAP PP)</h3>
+  <div class="grid2">
+    <ul>
+      <li><span class="tag">Normal</span><strong>BOM + Routing</strong><span class="why">Ürün ağacı, versiyon, effectivity, where-used.</span></li>
+      <li><span class="tag">Normal</span><strong>Production Order</strong><span class="why">İş emri yaşam döngüsü, malzeme tüketim, mamul giriş.</span></li>
+    </ul>
+    <ul>
+      <li><span class="tag">Normal</span><strong>MRP Engine</strong><span class="why">BOM patlatma, netleme, lead-time offset, regenerative run.</span></li>
+      <li><span class="tag">Normal</span><strong>QMS / Maintenance</strong><span class="why">Kalite muayene, NCR, önleyici bakım iş emri.</span></li>
+    </ul>
+  </div>
+
+  <h3>Çapraz-kesen primitive'ler</h3>
+  <div class="grid2">
+    <ul>
+      <li class="crit"><span class="tag">Kritik</span><strong>Webhook (in/out)</strong><span class="why">Outgoing event publishing + incoming endpoint. B2B müşterilerin entegrasyon noktası.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>API Gateway / REST + GraphQL</strong><span class="why">DocType'tan otomatik üretim. Versioning, throttling, openapi spec.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Audit Log (sistem-geneli)</strong><span class="why">Workflow Audit Trail'den ayrı: framework-level "kim ne yaptı". Compliance.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Reporting / Query Builder</strong><span class="why">Frappe Report Builder, Odoo studio. No-code rapor, export, schedule.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>Dashboard / Widget</strong><span class="why">Frappe Insights, Odoo dashboards. Drag-drop widget, KPI tile.</span></li>
+      <li class="crit"><span class="tag">Kritik</span><strong>AI Primitive Suite</strong><span class="why">Embedding, vector store, RAG, agent/tool calling, prompt template, model routing. "AI-first" bunsuz slogan.</span></li>
+    </ul>
+    <ul>
+      <li><span class="tag">Normal</span><strong>Print Format / PDF Gen</strong><span class="why">Frappe Print Designer, fatura/sözleşme PDF.</span></li>
+      <li><span class="tag">Normal</span><strong>Mail Merge / Template</strong><span class="why">Email + PDF + Word template + data merge.</span></li>
+      <li><span class="tag">Normal</span><strong>e-Signature</strong><span class="why">Sözleşme imza, e-imza (TR), DocuSign köprüsü.</span></li>
+      <li><span class="tag">Normal</span><strong>Form Builder</strong><span class="why">WP Contact Form 7, Drupal Webform. Submission collection.</span></li>
+      <li><span class="tag">Normal</span><strong>Survey / Quiz</strong><span class="why">NPS, feedback, quiz. LMS Assessment'tan farklı: anonim olabilir.</span></li>
+      <li><span class="tag">Normal</span><strong>Wiki / Knowledge Base</strong><span class="why">Frappe Wiki, doc-as-code, version history.</span></li>
+      <li><span class="tag">Normal</span><strong>Helpdesk / Ticket / SLA</strong><span class="why">Gorgias, Zendesk, Frappe Helpdesk. SLA timer, escalation.</span></li>
+      <li><span class="tag">Normal</span><strong>CRM Pipeline</strong><span class="why">Lead → opportunity → deal, stage, forecast.</span></li>
+      <li><span class="tag">Normal</span><strong>Image / Video Processing</strong><span class="why">Resize, watermark, transcode (HLS), thumbnail.</span></li>
+      <li><span class="tag">Normal</span><strong>OCR / Doc Parsing</strong><span class="why">Fiş/fatura OCR (muhasebe #10), PDF text extraction.</span></li>
+      <li><span class="tag">Normal</span><strong>Moderation Queue</strong><span class="why">AI ön-filtre + insan inceleme. Sosyal #14, marketplace #1.</span></li>
+      <li><span class="tag">Normal</span><strong>Analytics Events</strong><span class="why">PostHog-tarzı event tracking. Engagement sinyali.</span></li>
+      <li><span class="tag">Normal</span><strong>Quota / Usage Metering</strong><span class="why">Usage-based billing için. Plan limit (SaaS).</span></li>
+      <li><span class="tag">Normal</span><strong>A/B Test / Experiment</strong><span class="why">Feature flag'in üst katmanı. Conversion measurement.</span></li>
+      <li><span class="tag">Normal</span><strong>Data Privacy (DSR)</strong><span class="why">KVKK/GDPR — kullanıcı export/delete talebi. Audit + retention.</span></li>
+      <li><span class="tag">Normal</span><strong>Backup / Restore</strong><span class="why">Tenant-aware, point-in-time, S3 sink. UpdraftPlus pattern.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2><i class="ph-duotone ph-square-half"></i>Büyük Taş (Pages) <span class="count">15 dolum</span></h2>
+  <p>Boş bırakmışsın. Page-level kompozitler — Orta Taş'taki primitive'lerin sayfa şablonuna dönüştüğü yer. Her ürünün UX'i bu kompozitlerden kuruluyor.</p>
+
+  <div class="grid2">
+    <ul>
+      <li><span class="tag">Normal</span><strong>List Page</strong><span class="why">DocType liste — filter, sort, bulk action, view-switch (kanban/calendar/gantt).</span></li>
+      <li><span class="tag">Normal</span><strong>Detail Page</strong><span class="why">Single record — form + activity timeline + related sub-records.</span></li>
+      <li><span class="tag">Normal</span><strong>Form Page</strong><span class="why">Create/edit form, validation, dynamic field show/hide.</span></li>
+      <li><span class="tag">Normal</span><strong>Wizard / Multi-step</strong><span class="why">Onboarding, checkout, complex create flow.</span></li>
+      <li><span class="tag">Normal</span><strong>Dashboard Page</strong><span class="why">KPI tile + chart + activity. Role-based.</span></li>
+      <li><span class="tag">Normal</span><strong>Settings Page</strong><span class="why">Tenant/user/module config, nested navigation.</span></li>
+      <li><span class="tag">Normal</span><strong>Inbox / Feed Page</strong><span class="why">Mail, notification, social feed — infinite scroll, real-time push.</span></li>
+      <li><span class="tag">Normal</span><strong>Conversation Thread Page</strong><span class="why">Chat, email thread, ticket. DM + history.</span></li>
+    </ul>
+    <ul>
+      <li><span class="tag">Normal</span><strong>Storefront Page</strong><span class="why">E-ticaret katalog + product + cart. Shopify Liquid muadili.</span></li>
+      <li><span class="tag">Normal</span><strong>Profile Page</strong><span class="why">Public user/org profile, social.</span></li>
+      <li><span class="tag">Normal</span><strong>Admin Console Page</strong><span class="why">Power-user UI, bulk ops, system stats.</span></li>
+      <li><span class="tag">Normal</span><strong>Onboarding Flow</strong><span class="why">İlk-giriş tur, sample data, role picker.</span></li>
+      <li><span class="tag">Normal</span><strong>Portal Page</strong><span class="why">Customer/vendor self-service portal. Frappe Portal pattern.</span></li>
+      <li><span class="tag">Normal</span><strong>POS Page</strong><span class="why">Touch-friendly satış noktası. Odoo POS.</span></li>
+      <li><span class="tag">Normal</span><strong>Print / Report Viewer</strong><span class="why">Fatura/sözleşme/rapor preview + PDF export.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2><i class="ph-duotone ph-cloud"></i>Services <span class="count">+20 öneri</span></h2>
+  <p>Dış sağlayıcılar — framework'ün bağlandığı external service'ler. Türkiye uyum servisleri ayrıca kritik.</p>
+
+  <h3>Ödeme + Finansal</h3>
+  <ul>
+    <li class="crit"><span class="tag">Kritik</span><strong>Payment Gateway</strong><span class="why">iyzico, PayTR, Stripe, PayPal, Adyen — driver pattern.</span></li>
+    <li><span class="tag">Normal</span><strong>Open Banking</strong><span class="why">Banka ekstre feed (TR'de TBB API).</span></li>
+    <li><span class="tag">Normal</span><strong>KYC / KYB</strong><span class="why">Onfido, Stripe Identity — bireysel + işletme doğrulama.</span></li>
+    <li><span class="tag">Normal</span><strong>Fraud Detection</strong><span class="why">Sift, Stripe Radar, Signifyd.</span></li>
+  </ul>
+
+  <h3>İletişim</h3>
+  <ul>
+    <li class="crit"><span class="tag">Kritik</span><strong>Email Provider</strong><span class="why">SES, SendGrid, Postmark, Mailgun. Transactional + marketing ayrımı.</span></li>
+    <li class="crit"><span class="tag">Kritik</span><strong>SMS Gateway</strong><span class="why">Twilio, NetGSM, Turkcell SMS. TR ETK izin yönetimi dahil.</span></li>
+    <li><span class="tag">Normal</span><strong>Push (APNs / FCM)</strong><span class="why">iOS + Android + web push. OneSignal abstraction.</span></li>
+    <li><span class="tag">Normal</span><strong>Telephony / Voice</strong><span class="why">Twilio Voice, Vonage. Call center, IVR.</span></li>
+    <li><span class="tag">Normal</span><strong>Video Conferencing</strong><span class="why">Zoom, Daily, Jitsi. LMS canlı ders, sales demo.</span></li>
+  </ul>
+
+  <h3>Depolama + Dağıtım</h3>
+  <ul>
+    <li class="crit"><span class="tag">Kritik</span><strong>Object Storage</strong><span class="why">S3, R2, MinIO, Azure Blob, GCS. Driver pattern, default R2 (egress free).</span></li>
+    <li class="crit"><span class="tag">Kritik</span><strong>CDN</strong><span class="why">Cloudflare, Fastly, Bunny. Static + image + signed URL.</span></li>
+    <li><span class="tag">Normal</span><strong>Edge Compute</strong><span class="why">Cloudflare Workers, Vercel Edge. Auth check, A/B route.</span></li>
+  </ul>
+
+  <h3>Türkiye uyum</h3>
+  <ul>
+    <li class="crit"><span class="tag">Kritik</span><strong>e-Belge Entegratörü</strong><span class="why">e-Fatura/e-Arşiv/e-İrsaliye/e-Defter — Logo, Mikro, Foriba, NES, Uyumsoft.</span></li>
+    <li><span class="tag">Normal</span><strong>GİB / Vergi Dairesi API</strong><span class="why">Beyanname, mükellef sorgulama, KDV iade.</span></li>
+    <li><span class="tag">Normal</span><strong>SGK e-Bildirge</strong><span class="why">Bordro → SGK gönderim (HRMS #9).</span></li>
+    <li><span class="tag">Normal</span><strong>MERSİS / TC Kimlik Doğrulama</strong><span class="why">Bireysel + tüzel kişi doğrulama.</span></li>
+  </ul>
+
+  <h3>AI + Veri</h3>
+  <ul>
+    <li><span class="tag">Normal</span><strong>Vector DB</strong><span class="why">Pinecone, Qdrant, Weaviate — zaten kısmen var, ayır.</span></li>
+    <li><span class="tag">Normal</span><strong>OCR Service</strong><span class="why">Google Vision, AWS Textract, Mindee. Fiş/fatura.</span></li>
+    <li><span class="tag">Normal</span><strong>Translation</strong><span class="why">DeepL, Google Translate. Çoklu dil içerik.</span></li>
+    <li><span class="tag">Normal</span><strong>Speech / TTS</strong><span class="why">Whisper, ElevenLabs. Voice note, accessibility.</span></li>
+  </ul>
+
+  <h3>Lojistik + Konum</h3>
+  <ul>
+    <li><span class="tag">Normal</span><strong>Maps / Geocoding</strong><span class="why">Mapbox, Google Maps, OSM. Real estate, field service.</span></li>
+    <li><span class="tag">Normal</span><strong>Shipping Carrier</strong><span class="why">Yurtiçi/Aras/MNG/UPS/Sendeo. Rate + label + tracking.</span></li>
+    <li><span class="tag">Normal</span><strong>Customs / Tax</strong><span class="why">Avalara, TaxJar. Cross-border vergi.</span></li>
+  </ul>
+
+  <h3>Observability + DevOps</h3>
+  <ul>
+    <li><span class="tag">Normal</span><strong>APM / Tracing</strong><span class="why">Sentry, Datadog, OpenTelemetry. Error + perf monitoring.</span></li>
+    <li><span class="tag">Normal</span><strong>Metric / Time-series</strong><span class="why">Prometheus, Grafana, InfluxDB.</span></li>
+    <li><span class="tag">Normal</span><strong>Message Queue</strong><span class="why">RabbitMQ, Kafka, NATS — Redis'in üstünde dev ölçek için.</span></li>
+    <li><span class="tag">Normal</span><strong>Container Registry</strong><span class="why">Docker Hub, GHCR. CI/CD deploy.</span></li>
+  </ul>
+
+  <h3>Integration + Workflow</h3>
+  <ul>
+    <li><span class="tag">Normal</span><strong>iPaaS / n8n / Zapier</strong><span class="why">No-code entegrasyon köprüsü (kendi de yapabilirsin).</span></li>
+    <li><span class="tag">Normal</span><strong>Calendar Sync</strong><span class="why">Google Calendar, Outlook, CalDAV.</span></li>
+    <li><span class="tag">Normal</span><strong>e-Signature</strong><span class="why">DocuSign, HelloSign, e-imza/m-imza (TR).</span></li>
+  </ul>
+</section>
+
+<section>
+  <h2><i class="ph-duotone ph-arrows-clockwise"></i>Önerilen sütun yeniden adlandırma</h2>
+  <p>Tahtanın yapısı sağlam ama iki düzeltme:</p>
+  <ul>
+    <li><span class="tag">Normal</span><strong>"Identity" Küçük Taş'ta zaten Auth altında var, Orta Taş'tan kaldır.</strong><span class="why">Duplicate. Auth.Identity tek noktada kalsın.</span></li>
+    <li><span class="tag">Normal</span><strong>"File Storage" Küçük Taş'ta — yer doğru, ama içine <code>Versioning</code>, <code>Lifecycle</code>, <code>Signed URL</code> ekle.</strong><span class="why">Drive (#7) ürünü için CAS/dedup ayrı module, ama temel versioning core.</span></li>
+    <li><span class="tag">Normal</span><strong>"ECA Engine" Küçük Taş'ta, "ECA Rules" Orta Taş'ta — bu doğru ayrım, koru.</strong><span class="why">Engine = motor (kernel-yakını), Rules = kullanıcı-tanımlı kural seti (module).</span></li>
+    <li><span class="tag">Normal</span><strong>"Block" + "Section" Orta Taş'ta — CMS authoring'in altına nest et.</strong><span class="why">Authoring → Block → Section hiyerarşi açık olsun.</span></li>
+  </ul>
+</section>
+
+</div>
+</body>
+</html>

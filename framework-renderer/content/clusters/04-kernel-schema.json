@@ -1,0 +1,327 @@
+{
+  "id": "k-schema",
+  "title": "Schema / Metadata Engine (DocType)",
+  "subtitle": "Framework'ün kalbi. Frappe DocType, Salesforce Object, Strapi Content-Type — aynı fikir.",
+  "cluster": "layer0",
+  "layer": "kernel",
+  "order": 4,
+  "icon": "ph-database",
+  "badge": "Layer 0 — Kernel #1",
+  "tags": [
+    "doctype",
+    "metadata",
+    "schema",
+    "kernel"
+  ],
+  "granularity": "kaya",
+  "state": "critical",
+  "enrich": {
+    "info": "Framework'ün omurgası. Şema kodda değil — metadata'da. Frappe pattern.",
+    "detail": "Bir DocType tanımladığın anda DB tablosu, REST endpoint, GraphQL tipi, admin form, audit logger, search indexer otomatik üretilir. Migration yok, deploy yok.",
+    "terms": [
+      { "term": "DocType", "abbrev_of": "Document Type", "abbrev_tr": "Belge tipi", "meaning": "Metadata-driven varlık tanımı.", "why": "Tek kaynak: DB + UI + API + audit hepsi bundan türer." },
+      { "term": "Metadata-driven", "abbrev_tr": "Üst-veri güdümlü", "meaning": "Sistemin davranışı kod yerine veri (config) ile belirlenir.", "why": "Plugin geliştiricisi DB ve API'yi kod yazmadan üretir." }
+    ],
+    "stories": [
+      { "persona": "SaaS müşterisi (admin)", "context": "'Servis Talebi' adında yeni bir DocType oluşturur.", "outcome": "Anında: DB tablosu, admin formu, REST/GraphQL endpoint, audit log, search index — kod 0 satır." }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Bu framework'ün **kalbi**. Frappe DocType, Odoo Model, Salesforce Object, Strapi Content-Type — hepsi aynı fikrin farklı isimleri: *şema kodda değil, metadatada*.",
+      "enrich": {
+        "info": "Eşdeğerler: Frappe DocType, Odoo Model, Salesforce Object, Strapi Content-Type.",
+        "terms": [
+          { "term": "Frappe", "meaning": "Python+JS metadata-driven framework. ERPNext'in altyapısı.", "why": "DocType paterni ilk kanıtlayan açık kaynak." },
+          { "term": "Strapi", "meaning": "Node.js headless CMS. Content-Type metadata-driven.", "why": "Content-Type yaklaşımı bizim DocType'ımıza eşdeğer." }
+        ]
+      }
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Domain modeli"
+    },
+    {
+      "type": "paragraph",
+      "text": "Metadata kaydı şu beş tablodan oluşur (kavramsal, Frappe pattern):"
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "title": "Schema engine — metadata tablolar",
+      "content": "doctype                # DocType definition (name, label, naming, permissions, options)\ndoctype_field          # Per-field metadata (fieldname, fieldtype, options, required, in_list_view, fetch_from)\ndoctype_permission     # Role-based default permissions (role, read, write, create, delete, submit, cancel, ifowner)\ncustom_field           # Tenant-specific extra field (extends doctype_field at runtime)\nproperty_setter        # Tenant-specific override of any field property"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bir `Customer` tipi tanımladığında framework şunları otomatik üretir:"
+    },
+    {
+      "type": "list",
+      "ordered": true,
+      "items": [
+        "PostgreSQL'de `tabCustomer` tablosu — fiziksel tablo, alanlar fiziksel kolon (JSON polymorphism değil, JOIN performansı için kritik).",
+        "`GET /api/resource/Customer`, `POST /api/resource/Customer`, `PUT/DELETE` REST endpoint'leri.",
+        "GraphQL schema'sında `type Customer` + `query Customer(id)` + `customers(filter)` + mutation'lar.",
+        "Admin paneli — list view, form view, kanban, calendar, gantt (DocType metadata hangi view destekli olduğunu söyler).",
+        "Permission engine — `doctype_permission` satırlarını okur, query layer'a otomatik WHERE injektsiyonu.",
+        "Search indexer — yeni satır eklenince event publish eder, Search projection güncellenir.",
+        "Audit logger — alan değişikliklerini `tabVersion`'a yazar (diff).",
+        "Hook noktaları — `before_insert`, `validate`, `before_save`, `after_save`, `on_submit`, `on_cancel`, `on_trash`, `after_delete`, `on_change`."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Field tipleri — gerçekten gerekecek liste"
+    },
+    {
+      "type": "paragraph",
+      "text": "Frappe ~30 fieldtype destekler. Sen başlangıç için şunlar lazım:"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "filterable": true,
+      "headers": [
+        "Fieldtype",
+        "Kullanım"
+      ],
+      "rows": [
+        [
+          "Data",
+          "Kısa string (max 140 char)"
+        ],
+        [
+          "Text / Long Text",
+          "Uzun string — indeksli/indeksli değil"
+        ],
+        [
+          "HTML / Markdown",
+          "Rich content"
+        ],
+        [
+          "Int / Float / Decimal",
+          "Sayısal — para için Decimal şart"
+        ],
+        [
+          "Currency",
+          "Decimal + currency code"
+        ],
+        [
+          "Percent",
+          "Decimal, % display"
+        ],
+        [
+          "Date / Datetime / Time",
+          "UTC store"
+        ],
+        [
+          "Duration",
+          "Saniye olarak int, \"2h 30m\" display"
+        ],
+        [
+          "Check",
+          "Boolean"
+        ],
+        [
+          "Select",
+          "Closed enum, sabit liste"
+        ],
+        [
+          "Link",
+          "Başka DocType'a FK"
+        ],
+        [
+          "Dynamic Link",
+          "DocType + Name çiftiyle polymorphic FK"
+        ],
+        [
+          "Table",
+          "Child table — bir parent kayda bağlı satırlar (Order line items)"
+        ],
+        [
+          "Table MultiSelect",
+          "Many-to-many tag-like"
+        ],
+        [
+          "Attach / Attach Image",
+          "File storage'a referans"
+        ],
+        [
+          "Color",
+          "Hex string + picker UI"
+        ],
+        [
+          "Geolocation",
+          "lat/lng + map picker"
+        ],
+        [
+          "Code",
+          "Syntax-highlighted (SQL, JS, Python)"
+        ],
+        [
+          "JSON",
+          "JSONB column, schema-less"
+        ],
+        [
+          "Password",
+          "Encrypted, never displayed plain"
+        ],
+        [
+          "Signature",
+          "Base64 PNG signature"
+        ],
+        [
+          "Barcode / QR",
+          "String + render"
+        ],
+        [
+          "Rating",
+          "0..5 star"
+        ],
+        [
+          "Read Only",
+          "Display-only computed"
+        ],
+        [
+          "Heading / Section Break / Column Break",
+          "Layout, kolon değil"
+        ],
+        [
+          "Vector",
+          "pgvector(N) — embeddings, AI-first için"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Naming series — Frappe pattern"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**UUID** — varsayılan, dağıtık-safe.",
+        "**field:fieldname** — başka alanın değeri (örn. `field:email`).",
+        "**naming_series:** — `SO-{####}`, `INV-2026-{####}` gibi. Yıllık reset destekli.",
+        "**autoincrement** — sequence (legacy).",
+        "**format:** — Jinja template (`{customer_code}-{YYYY}-{####}`).",
+        "**hash** — random short hash."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Junior'a açıklama — gerçek dünya"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bir restoran POS yazılımı yapıyorsun. MenuItem DocType'ı:"
+    },
+    {
+      "type": "code",
+      "lang": "yaml",
+      "title": "DocType: MenuItem",
+      "content": "doctype: MenuItem\nnaming: format:MNU-{####}\nfields:\n  - name: title (Data, required)\n  - description (Long Text)\n  - price (Currency, required)\n  - category (Link to MenuCategory)\n  - photo (Attach Image)\n  - allergens (Table MultiSelect)\n  - spice_level (Select: mild, medium, hot, extra hot)\n  - is_active (Check, default 1)\npermissions:\n  - role: Manager → read,write,create,delete\n  - role: Cashier → read"
+    },
+    {
+      "type": "paragraph",
+      "text": "Restoran A \"Türk mutfağı\" kategorisinde **is_vegan** alanı istiyor. Sen koda dokunmuyorsun. Admin paneli → DocType: MenuItem → Custom Field ekle: `is_vegan` (Check). Tenant-spesifik `custom_field` satırı eklenir. Sonraki form render'da alan görünür, API payload'da görünür, audit log değişikliği yakalar. *Migration yok, deploy yok*."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Submittable DocType"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bazı kayıtlar \"draft → submitted → cancelled\" mantığında yaşar (fatura, sipariş, journal entry). Frappe'de `is_submittable: 1` diyince DocType'a `docstatus` alanı eklenir (0=draft, 1=submitted, 2=cancelled). Submit edildikten sonra belli alanlar değiştirilemez (financial integrity). Sadece `on_update_after_submit` hook'unda belirli alanlar açıkça izinli."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Child Table (Table fieldtype)"
+    },
+    {
+      "type": "paragraph",
+      "text": "Order → OrderLine ilişkisi. Frappe pattern: child DocType, `istable: 1` ile işaretli, parent'a `parent`, `parenttype`, `parentfield` alanlarıyla bağlı. Lifecycle parent'a bağlı (parent silinince child silinir)."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Niye CORE"
+    },
+    {
+      "type": "paragraph",
+      "text": "{{ref:k-identity}} de DocType (User), {{ref:k-authz}} de DocType (Role, Permission), {{ref:k-tenancy}} de DocType, {{ref:l1-workflow}} de DocType. Hepsi kendini schema engine üstüne tanımlar. Çıkarırsan framework yok."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "Tuzak — JSON column polymorphism",
+      "body": "Junior çoğunlukla şöyle başlar: tek bir `records` tablosu, `data JSONB` kolonu, \"her şey JSON\". WordPress'in `wp_postmeta` pattern'i bu — felaket. Çünkü WHERE/ORDER BY/JOIN performansı çöker, index'leme zor, type safety yok.\n\nFrappe doğru yolu seçti: **her DocType kendi fiziksel tablo**. Sen de aynı yap; JSON sadece schema-less ek alan için.",
+      "enrich": {
+        "info": "JSON-her-şey = WP postmeta — WHERE/ORDER/JOIN ölür.",
+        "detail": "JSONB güzel, ama **birincil** veri için değil — ek (extension) için. Birincil alanlar fiziksel kolon olmalı: B-tree index, foreign key constraint, type safety.",
+        "terms": [
+          { "term": "EAV", "abbrev_of": "Entity-Attribute-Value", "abbrev_tr": "Varlık-Nitelik-Değer", "meaning": "Bir tabloda (entity_id, attr_name, value) satırları tutarak şema-less davranma.", "why": "Kolay başlar, sorgu ve performans cehennemine döner. WP postmeta bunun klasik tuzağı." }
+        ]
+      }
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Tuzak — eksik shipping (Drupal 7 öyküsü)",
+      "body": "Drupal 7 Entity API'yi yarım shipping etti. Topluluk eksiği kapatmak için contrib `Entity` modülü yazdı. D8'e geçişte herkes manuel migration yaptı, 5 yıl acı. Sen schema engine'i **tam bitir**; child table, naming series, custom field, property setter, hooks, permission query injection — hepsi gün-1 hazır."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: K02 DocType Engine + K03 Migration"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX kataloğunda K02 — *DocType Engine (Schema Runtime)*: deklaratif DocType tanımı → runtime'da DB tablosu, REST endpoint, validation, admin UI **ve MCP tool spec'i** otomatik üretilir. Bu cluster'daki schema engine + LandX K02 birebir aynı fikrin iki tarafı; ek olarak LandX **agent-aware** kısmı vurgular: her DocType'ın MCP tool olarak otomatik expose edilmesi."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "K02 KPI",
+          "value": "DocType definition → çalışır API <60sn, schema introspection LLM tool description için %100 kapsama, declarative migration eşleşmesi >%99"
+        },
+        {
+          "key": "K02 capabilities",
+          "value": "DocType Definition · Runtime Schema Operations (Schema Introspection json_schema/openapi/mcp_tool_spec/graphql) · Relations & FK · Soft Delete & Versioning"
+        },
+        {
+          "key": "Agent-aware alanlar",
+          "value": "`ai_description` (LLM tool param açıklaması), `validation_rule` (regex/cel), `introspection_format` (mcp_tool_spec dahil)"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX K03 — *Migration & Versioning Engine* (Faz 2 · P0): Plugin sürüm geçişlerinde DB schema migration, data migration, rollback. Frappe migrate'in **AI-augmented eşdeğeri**. *AI-suggested migration plan acceptance >%80* hedefi koyar."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "K03 capabilities",
+          "value": "Migration Plan (AI-generated) · Migration Execution · Schema Diff (compatibility_score) · Data Migration (ETL Step + DLQ)"
+        },
+        {
+          "key": "Agent-aware alanlar",
+          "value": "`ai_generated`, `breaking_changes` (AI), `compatibility_score` (AI, 0-100), `data_loss_assessment` (AI + audit)"
+        }
+      ]
+    }
+  ]
+}

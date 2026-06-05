@@ -1,0 +1,740 @@
+{
+  "id": "s-ai",
+  "title": "AI Stack",
+  "subtitle": "Framework AI-first iddiasının çıktığı yer. Diğer stack'ler bu primitive'leri tüketir.",
+  "cluster": "stack",
+  "layer": "l2",
+  "order": 31,
+  "icon": "ph-robot",
+  "badge": "Layer 2 Stack #9 — Differentiator",
+  "tags": [
+    "ai",
+    "llm",
+    "mcp",
+    "rag",
+    "agent"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Bu stack diğer module'lerin tüketeceği AI primitive'lerini sağlar. Her bounded context kendi tool'larını expose eder, agent'lar MCP üstünden çağırır."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Module'ler"
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "Model Routing",
+          "desc": "Hangi LLM (OpenAI, Anthropic, Gemini, local Ollama), fallback, cost-aware",
+          "enrich": {
+            "info": "Hangi LLM (OpenAI, Anthropic, Gemini, local Ollama), fallback, cost-aware",
+            "detail": "**Model Routing** nedir?\n\nHangi LLM (OpenAI, Anthropic, Gemini, local Ollama), fallback, cost-aware.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"Model Routing\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Hangi LLM (OpenAI, Anthropic, Gemini, local Ollama), fallback, cost-aware pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"Model Routing\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"Model Routing\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Prompt Template",
+          "desc": "Versioned, A/B test, observability",
+          "enrich": {
+            "info": "Versioned, A/B test, observability",
+            "detail": "**Prompt Template** nedir?\n\nVersioned, A/B test, observability.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"Prompt Template\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Versioned, A/B test, observability pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"Prompt Template\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"Prompt Template\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Tool Calling / Function Calling",
+          "desc": "DocType action otomatik tool olarak expose",
+          "enrich": {
+            "info": "DocType action otomatik tool olarak expose",
+            "detail": "**Tool Calling / Function Calling** nedir?\n\nDocType action otomatik tool olarak expose.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"Tool Calling / Function Calling\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici DocType action otomatik tool olarak expose pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"Tool Calling / Function Calling\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"Tool Calling / Function Calling\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Agent",
+          "desc": "Pydantic AI tarzı type-safe agent (Generic Deps + ResultT)",
+          "enrich": {
+            "info": "Pydantic AI tarzı type-safe agent (Generic Deps + ResultT)",
+            "detail": "**Agent** nedir?\n\nPydantic AI tarzı type-safe agent (Generic Deps + ResultT).\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"Agent\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Pydantic AI tarzı type-safe agent (Generic Deps + ResultT) pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"Agent\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"Agent\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "MCP Server",
+          "desc": "Her bounded context kendi MCP server'ını expose. Claude Desktop, Cursor doğrudan bağlanır",
+          "critical": true,
+          "enrich": {
+            "info": "Her bounded context kendi MCP server'ını expose. Claude Desktop, Cursor doğrudan bağlanır",
+            "detail": "**MCP Server** nedir?\n\nHer bounded context kendi MCP server'ını expose. Claude Desktop, Cursor doğrudan bağlanır.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"MCP Server\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Her bounded context kendi MCP server'ını expose. Claude Desktop, Cursor doğrudan pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"MCP Server\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"MCP Server\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Embedding Pipeline",
+          "desc": "DocType save → chunk → embed → pgvector projection",
+          "enrich": {
+            "info": "DocType save → chunk → embed → pgvector projection",
+            "detail": "**Embedding Pipeline** nedir?\n\nDocType save → chunk → embed → pgvector projection.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"Embedding Pipeline\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici DocType save → chunk → embed → pgvector projection pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"Embedding Pipeline\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"Embedding Pipeline\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "RAG",
+          "desc": "Hybrid retrieval (BM25 + vector RRF), reranking (Cohere/BGE), GraphRAG opsiyonel",
+          "enrich": {
+            "info": "Hybrid retrieval (BM25 + vector RRF), reranking (Cohere/BGE), GraphRAG opsiyonel",
+            "detail": "**RAG** nedir?\n\nHybrid retrieval (BM25 + vector RRF), reranking (Cohere/BGE), GraphRAG opsiyonel.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"RAG\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Hybrid retrieval (BM25 + vector RRF), reranking (Cohere/BGE), GraphRAG opsiyonel pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"RAG\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"RAG\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Streaming Response",
+          "desc": "SSE LLM token stream",
+          "enrich": {
+            "info": "SSE LLM token stream",
+            "detail": "**Streaming Response** nedir?\n\nSSE LLM token stream.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"Streaming Response\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici SSE LLM token stream pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"Streaming Response\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"Streaming Response\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Moderation",
+          "desc": "Toxicity, NSFW, PII detection",
+          "enrich": {
+            "info": "Toxicity, NSFW, PII detection",
+            "detail": "**Moderation** nedir?\n\nToxicity, NSFW, PII detection.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"Moderation\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Toxicity, NSFW, PII detection pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"Moderation\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"Moderation\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Anomaly Detection",
+          "desc": "Stat + ML, fraud, hatalı transaction",
+          "enrich": {
+            "info": "Stat + ML, fraud, hatalı transaction",
+            "detail": "**Anomaly Detection** nedir?\n\nStat + ML, fraud, hatalı transaction.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"Anomaly Detection\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Stat + ML, fraud, hatalı transaction pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"Anomaly Detection\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"Anomaly Detection\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Forecasting",
+          "desc": "Talep tahmini, sales, inventory",
+          "enrich": {
+            "info": "Talep tahmini, sales, inventory",
+            "detail": "**Forecasting** nedir?\n\nTalep tahmini, sales, inventory.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"Forecasting\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Talep tahmini, sales, inventory pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"Forecasting\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"Forecasting\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "OCR / Document Parsing",
+          "desc": "Fiş, fatura, sözleşme",
+          "enrich": {
+            "info": "Fiş, fatura, sözleşme",
+            "detail": "**OCR / Document Parsing** nedir?\n\nFiş, fatura, sözleşme.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"OCR / Document Parsing\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Fiş, fatura, sözleşme pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"OCR / Document Parsing\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"OCR / Document Parsing\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Auto-categorization",
+          "desc": "Banka transaction → hesap planı (muhasebe), email → label",
+          "enrich": {
+            "info": "Banka transaction → hesap planı (muhasebe), email → label",
+            "detail": "**Auto-categorization** nedir?\n\nBanka transaction → hesap planı (muhasebe), email → label.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"Auto-categorization\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Banka transaction → hesap planı (muhasebe), email → label pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"Auto-categorization\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"Auto-categorization\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Generation",
+          "desc": "Image (DALL-E, SD), text, code",
+          "enrich": {
+            "info": "Image (DALL-E, SD), text, code",
+            "detail": "**Generation** nedir?\n\nImage (DALL-E, SD), text, code.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"Generation\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Image (DALL-E, SD), text, code pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"Generation\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"Generation\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Pydantic AI tarzı agent"
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "title": "Type-safe agent",
+      "content": "from pydantic_ai import Agent\nfrom dataclasses import dataclass\n\n@dataclass\nclass Deps:\n    tenant_id: str\n    db: Database\n\nclass OrderSuggestion(BaseModel):\n    customer_id: str\n    products: list[str]\n    reasoning: str\n\nsales_agent = Agent[Deps, OrderSuggestion](\n    \"openai:gpt-4o\",\n    deps_type=Deps,\n    result_type=OrderSuggestion,\n    system_prompt=\"Sales recommendation agent...\",\n)\n\n@sales_agent.tool\nasync def search_products(ctx, query: str) -> list[Product]:\n    return await ctx.deps.db.search_products(query, tenant=ctx.deps.tenant_id)\n\n# Çağırma\nresult = await sales_agent.run(\"Acme'ye yeni kampanya öner\", deps=deps)\nprint(result.data.products)"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "MCP entegrasyonu"
+    },
+    {
+      "type": "paragraph",
+      "text": "MCP (Model Context Protocol, Anthropic, 2024) JSON-RPC 2.0. Server tarafı: her bounded context kendi MCP server'ını expose eder. Örnek: `commerce` module'ü `list_products`, `search_products`, `create_order` tool'larını publish eder. Client tarafı: agent'lar MCP üstünden bu tool'ları çağırır. Claude Desktop, Cursor, herhangi MCP client doğrudan kullanır."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: L2 Agent Runtime — 11 modül detaylı"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX L2 katmanı (A01–A11) bu stack'in genişletilmiş halidir. Her modül ayrı bounded context, ama hepsi bu stack altında yaşar. **Framework'ün asıl farklılaşma noktası burası.**"
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "A01 — MCP Server Framework",
+          "desc": "**Faz 1 · P0.** MCP-native server. Plugin tool'ları otomatik MCP endpoint olarak servis edilir. Transport: stdio / SSE / streaming-http. *Tool discovery latency <100ms, uptime >%99.95.* Capabilities: Endpoint Management, Initialize Handshake, Discovery (tools/resources/prompts), Tool Invocation Protocol, Streaming Responses.",
+          "critical": true,
+          "enrich": {
+            "info": "**Faz 1 · P0.** MCP-native server. Plugin tool'ları otomatik MCP endpoint olarak servis edilir. Transport: stdio / SSE / streaming-http. *To",
+            "detail": "**A01 — MCP Server Framework** nedir?\n\n**Faz 1 · P0.** MCP-native server. Plugin tool'ları otomatik MCP endpoint olarak servis edilir. Transport: stdio / SSE / streaming-http. *Tool discovery latency <100ms, uptime >%99.95.* Capabilities: Endpoint Management, Initialize Handshake, Discovery (tools/resources/prompts), Tool Invocation Protocol, Streaming Responses.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"A01 — MCP Server Framework\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 1 · P0.** MCP-native server. Plugin tool'ları otomatik MCP endpoint olarak pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"A01 — MCP Server Framework\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"A01 — MCP Server Framework\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "A02 — Tool Registry & Discovery",
+          "desc": "**Faz 1 · P0.** Merkezi tool kataloğu. Her tool: I/O schema (json_schema), description_for_llm (AI), examples (few-shot), side-effect annotations (`read_only`, `idempotent`, `destructive`, `blast_radius`, `cost_class`). Semantic search (vector embedding) + Usage Analytics. *Tool description LLM selection accuracy >%90.*",
+          "critical": true,
+          "enrich": {
+            "info": "**Faz 1 · P0.** Merkezi tool kataloğu. Her tool: I/O schema (json_schema), description_for_llm (AI), examples (few-shot), side-effect annota",
+            "detail": "**A02 — Tool Registry & Discovery** nedir?\n\n**Faz 1 · P0.** Merkezi tool kataloğu. Her tool: I/O schema (json_schema), description_for_llm (AI), examples (few-shot), side-effect annotations (`read_only`, `idempotent`, `destructive`, `blast_radius`, `cost_class`). Semantic search (vector embedding) + Usage Analytics. *Tool description LLM selection accuracy >%90.*.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"A02 — Tool Registry & Discovery\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 1 · P0.** Merkezi tool kataloğu. Her tool: I/O schema (json_schema), descr pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"A02 — Tool Registry & Discovery\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"A02 — Tool Registry & Discovery\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "A03 — Agent Identity & Capability Scopes",
+          "desc": "**Faz 1 · P0.** `user_perms ∩ agent_scope ∩ session_limits` kesişim modeli. Capability Pack, Agent-User Binding, Session Limits (token_budget, tool_calls_remaining, usd_cost_accumulated), Tool Execution Sandbox (none/process/container/firecracker), Violation & Incident (AI threat assessment). *Privilege escalation 0.*",
+          "enrich": {
+            "info": "**Faz 1 · P0.** `user_perms ∩ agent_scope ∩ session_limits` kesişim modeli. Capability Pack, Agent-User Binding, Session Limits (token_budge",
+            "detail": "**A03 — Agent Identity & Capability Scopes** nedir?\n\n**Faz 1 · P0.** `user_perms ∩ agent_scope ∩ session_limits` kesişim modeli. Capability Pack, Agent-User Binding, Session Limits (token_budget, tool_calls_remaining, usd_cost_accumulated), Tool Execution Sandbox (none/process/container/firecracker), Violation & Incident (AI threat assessment). *Privilege escalation 0.*.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"A03 — Agent Identity & Capability Scopes\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 1 · P0.** `user_perms ∩ agent_scope ∩ session_limits` kesişim modeli. Capa pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"A03 — Agent Identity & Capability Scopes\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"A03 — Agent Identity & Capability Scopes\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "A04 — Agent Memory Layer",
+          "desc": "**Faz 2 · P0.** 4 katmanlı bellek: short-term (conversation buffer + compaction), long-term semantic (memory_kind: fact/preference/rule/skill/observation, embedding, decay_factor, TTL), episodic (episode summary + emotion_tone + key_actions), procedural (learned procedure, approved_by_human). Memory Hygiene: forgetting & **PII scrubbing in memory**.",
+          "critical": true,
+          "enrich": {
+            "info": "**Faz 2 · P0.** 4 katmanlı bellek: short-term (conversation buffer + compaction), long-term semantic (memory_kind: fact/preference/rule/skil",
+            "detail": "**A04 — Agent Memory Layer** nedir?\n\n**Faz 2 · P0.** 4 katmanlı bellek: short-term (conversation buffer + compaction), long-term semantic (memory_kind: fact/preference/rule/skill/observation, embedding, decay_factor, TTL), episodic (episode summary + emotion_tone + key_actions), procedural (learned procedure, approved_by_human). Memory Hygiene: forgetting & **PII scrubbing in memory**.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"A04 — Agent Memory Layer\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 2 · P0.** 4 katmanlı bellek: short-term (conversation buffer + compaction) pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"A04 — Agent Memory Layer\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"A04 — Agent Memory Layer\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "A05 — Vector Store & Embedding Pipeline",
+          "desc": "**Faz 2 · P0.** pgvector + embedding job runner + model versioning + hybrid search + reranking. HNSW parametreleri. Reindex strategy (dual_write/blue_green/in_place). *NDCG@10 >0.75.* Detay: {{ref:l1-search}}.",
+          "enrich": {
+            "info": "**Faz 2 · P0.** pgvector + embedding job runner + model versioning + hybrid search + reranking. HNSW parametreleri. Reindex strategy (dual_w",
+            "detail": "**A05 — Vector Store & Embedding Pipeline** nedir?\n\n**Faz 2 · P0.** pgvector + embedding job runner + model versioning + hybrid search + reranking. HNSW parametreleri. Reindex strategy (dual_write/blue_green/in_place). *NDCG@10 >0.75.* Detay: {{ref:l1-search}}.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"A05 — Vector Store & Embedding Pipeline\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 2 · P0.** pgvector + embedding job runner + model versioning + hybrid sear pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"A05 — Vector Store & Embedding Pipeline\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"A05 — Vector Store & Embedding Pipeline\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "A06 — Prompt Library & Versioning",
+          "desc": "**Faz 2 · P0.** Prompt'lar kod gibi versiyonlanır. Prompt Version (system_template, user_template, variables_schema/output_schema json_schema, model_target). A/B Testing (experiment + result + AI analysis), Eval Suite (case + graders: exact/llm_judge/regex/json_schema), Rollout & Rollback (rollout_percent), Drift Detection (distribution/quality/cost/latency).",
+          "enrich": {
+            "info": "**Faz 2 · P0.** Prompt'lar kod gibi versiyonlanır. Prompt Version (system_template, user_template, variables_schema/output_schema json_schem",
+            "detail": "**A06 — Prompt Library & Versioning** nedir?\n\n**Faz 2 · P0.** Prompt'lar kod gibi versiyonlanır. Prompt Version (system_template, user_template, variables_schema/output_schema json_schema, model_target). A/B Testing (experiment + result + AI analysis), Eval Suite (case + graders: exact/llm_judge/regex/json_schema), Rollout & Rollback (rollout_percent), Drift Detection (distribution/quality/cost/latency).\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"A06 — Prompt Library & Versioning\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 2 · P0.** Prompt'lar kod gibi versiyonlanır. Prompt Version (system_templa pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"A06 — Prompt Library & Versioning\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"A06 — Prompt Library & Versioning\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "A07 — LLM Provider Abstraction",
+          "desc": "**Faz 1 · P0.** Provider Registry (anthropic/openai/azure_openai/bedrock/vertex/ollama) + Model Catalog (context_window, max_output_tokens, cost_per_million, capability_tier: haiku/sonnet/opus_class). Routing & Fallback (Routing Rule + Decision with AI explanation), Retry & Circuit Breaker (closed/open/half_open), Streaming Adapter.",
+          "enrich": {
+            "info": "**Faz 1 · P0.** Provider Registry (anthropic/openai/azure_openai/bedrock/vertex/ollama) + Model Catalog (context_window, max_output_tokens, ",
+            "detail": "**A07 — LLM Provider Abstraction** nedir?\n\n**Faz 1 · P0.** Provider Registry (anthropic/openai/azure_openai/bedrock/vertex/ollama) + Model Catalog (context_window, max_output_tokens, cost_per_million, capability_tier: haiku/sonnet/opus_class). Routing & Fallback (Routing Rule + Decision with AI explanation), Retry & Circuit Breaker (closed/open/half_open), Streaming Adapter.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"A07 — LLM Provider Abstraction\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 1 · P0.** Provider Registry (anthropic/openai/azure_openai/bedrock/vertex/ pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"A07 — LLM Provider Abstraction\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"A07 — LLM Provider Abstraction\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "A08 — LLM Observability & Cost Tracking",
+          "desc": "**Faz 2 · P0.** Her LLM çağrısı: input/output, token count, latency, cost, trace, hallucination skoru. Langfuse-equivalent ama MCP-aware. LLM Trace (Span/Tool Call Span), Cost Attribution (tenant/user/agent/feature/prompt), Quality Signals (Hallucination Detection + User Feedback), Replay & Debug. *Cost attribution accuracy >%99.*",
+          "enrich": {
+            "info": "**Faz 2 · P0.** Her LLM çağrısı: input/output, token count, latency, cost, trace, hallucination skoru. Langfuse-equivalent ama MCP-aware. LL",
+            "detail": "**A08 — LLM Observability & Cost Tracking** nedir?\n\n**Faz 2 · P0.** Her LLM çağrısı: input/output, token count, latency, cost, trace, hallucination skoru. Langfuse-equivalent ama MCP-aware. LLM Trace (Span/Tool Call Span), Cost Attribution (tenant/user/agent/feature/prompt), Quality Signals (Hallucination Detection + User Feedback), Replay & Debug. *Cost attribution accuracy >%99.*.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"A08 — LLM Observability & Cost Tracking\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 2 · P0.** Her LLM çağrısı: input/output, token count, latency, cost, trace pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"A08 — LLM Observability & Cost Tracking\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"A08 — LLM Observability & Cost Tracking\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "A09 — Agent Orchestration & Workflow",
+          "desc": "**Faz 3 · P0.** Plan-execute-reflect döngüsü, alt-agent çağrısı, paralel tool execution, checkpoint/resume, human-in-the-loop. Workflow Definition (orchestration_pattern: react/plan_execute/multi_agent/router/dag), Execution Run + Step, Checkpoint & Resume (durable), Approval Request + Interrupt, Sub-Agent Invocation. *Multi-step task success >%75, checkpoint-resume reliability >%99.*",
+          "critical": true,
+          "enrich": {
+            "info": "**Faz 3 · P0.** Plan-execute-reflect döngüsü, alt-agent çağrısı, paralel tool execution, checkpoint/resume, human-in-the-loop. Workflow Defi",
+            "detail": "**A09 — Agent Orchestration & Workflow** nedir?\n\n**Faz 3 · P0.** Plan-execute-reflect döngüsü, alt-agent çağrısı, paralel tool execution, checkpoint/resume, human-in-the-loop. Workflow Definition (orchestration_pattern: react/plan_execute/multi_agent/router/dag), Execution Run + Step, Checkpoint & Resume (durable), Approval Request + Interrupt, Sub-Agent Invocation. *Multi-step task success >%75, checkpoint-resume reliability >%99.*.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"A09 — Agent Orchestration & Workflow\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 3 · P0.** Plan-execute-reflect döngüsü, alt-agent çağrısı, paralel tool ex pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"A09 — Agent Orchestration & Workflow\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"A09 — Agent Orchestration & Workflow\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "A10 — Streaming & SSE Primitives",
+          "desc": "**Faz 2 · P1.** LLM token stream + tool progress stream + workflow step stream + log stream — unified. Stream Channel + Subscription + Reconnect/Resume + Backpressure (drop_oldest/drop_newest/block/sample) + Transport (SSE/WebSocket). *fan-out 1→N latency p99 <100ms.*",
+          "enrich": {
+            "info": "**Faz 2 · P1.** LLM token stream + tool progress stream + workflow step stream + log stream — unified. Stream Channel + Subscription + Recon",
+            "detail": "**A10 — Streaming & SSE Primitives** nedir?\n\n**Faz 2 · P1.** LLM token stream + tool progress stream + workflow step stream + log stream — unified. Stream Channel + Subscription + Reconnect/Resume + Backpressure (drop_oldest/drop_newest/block/sample) + Transport (SSE/WebSocket). *fan-out 1→N latency p99 <100ms.*.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "terms": [
+              {
+                "term": "WebSocket",
+                "abbrev_tr": "Çift-yönlü kalıcı bağlantı",
+                "meaning": "Sunucu-istemci arasında kalıcı, çift-yönlü TCP bağlantısı.",
+                "why": "Anlık mesaj, presence, canlı yayın için zorunlu."
+              },
+              {
+                "term": "Fan-out",
+                "abbrev_tr": "Dağıtım yelpazesi",
+                "meaning": "Bir post'u N takipçinin feed'ine dağıtma stratejisi (push/pull/hybrid).",
+                "why": "Twitter ölçeğinde maliyet/perf farkı 1000× olabilir."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"A10 — Streaming & SSE Primitives\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 2 · P1.** LLM token stream + tool progress stream + workflow step stream + pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"A10 — Streaming & SSE Primitives\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"A10 — Streaming & SSE Primitives\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "A11 — Conversation & Session Management",
+          "desc": "**Faz 2 · P0.** Konuşma geçmişi, multi-turn context, message threading, **branching** (alternative replies), conversation forking. Agent↔human ve agent↔agent karışık konuşmaları destekler. Context Window Compaction (head_truncate/tail_truncate/**summarize**/hierarchical). *Context window optimization >%30 token tasarrufu.*",
+          "enrich": {
+            "info": "**Faz 2 · P0.** Konuşma geçmişi, multi-turn context, message threading, **branching** (alternative replies), conversation forking. Agent↔hum",
+            "detail": "**A11 — Conversation & Session Management** nedir?\n\n**Faz 2 · P0.** Konuşma geçmişi, multi-turn context, message threading, **branching** (alternative replies), conversation forking. Agent↔human ve agent↔agent karışık konuşmaları destekler. Context Window Compaction (head_truncate/tail_truncate/**summarize**/hierarchical). *Context window optimization >%30 token tasarrufu.*.\n\n**Amaç:** Yapay zekanın doğal dil, içerik üretimi, otomasyon olarak ürüne entegre edildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç AI destekli özellikler bilmeyen biri için: bu özellik, AI destekli özellikler sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "AI mühendisi",
+                "context": "\"A11 — Conversation & Session Management\" özelliğini AI-first ürün özelliği sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 2 · P0.** Konuşma geçmişi, multi-turn context, message threading, **branch pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Doğal dilde sorgu sorar. \"A11 — Conversation & Session Management\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Geçen ay en çok yorumu hangi ürün aldı?\" diye yazar, RAG ile cevap döner."
+              },
+              {
+                "persona": "Operasyon",
+                "context": "AI maliyetini izler. \"A11 — Conversation & Session Management\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi tenant ne kadar token harcadı dashboard'da görünür, bütçe alarmı kurulur."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Bu 11 modülün toplam etkisi",
+      "body": "Diğer framework'ler (Frappe/Odoo/Drupal/WordPress/Shopify) tarihsel olarak human-first. A01-A11 katmanı her DocType action'ını otomatik MCP tool yapar, agent'a session-bound yetki verir, semantic memory + vector retrieval'ı kernel-adjacent kurar, prompt'u kod gibi versiyonlar, multi-provider LLM'i tek soyutlamada birleştirir, her LLM çağrısının cost+quality+hallucination skorunu tutar, durable multi-agent workflow çalıştırır. Bu kombinasyon hiçbir mevcut framework'te yok — sen var ediyorsun."
+    }
+  ],
+  "enrich": {
+    "info": "Framework AI-first iddiasının çıktığı yer. Diğer stack'ler bu primitive'leri tüketir.",
+    "detail": "Framework AI-first iddiasının çıktığı yer. Diğer stack'ler bu primitive'leri tüketir.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

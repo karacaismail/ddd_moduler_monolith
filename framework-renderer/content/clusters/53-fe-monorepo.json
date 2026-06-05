@@ -1,0 +1,183 @@
+{
+  "id": "fe-monorepo",
+  "title": "Frontend — Monorepo İskeleti",
+  "subtitle": "pnpm workspaces, apps/ + packages/ + tools/, sıkı paket sınırı.",
+  "cluster": "frontend",
+  "order": 53,
+  "icon": "ph-folder-open",
+  "tags": [
+    "frontend",
+    "monorepo",
+    "pnpm",
+    "packages"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**pnpm workspaces** — strict node_modules, workspace native, hızlı. Tek codebase'de web + mobile + OTA server + 11 paylaşılan paket."
+    },
+    {
+      "type": "tree",
+      "title": "saas-panel/",
+      "root": {
+        "name": "saas-panel/",
+        "children": [
+          {
+            "name": "apps/",
+            "children": [
+              {
+                "name": "web/",
+                "comment": "PWA Vite build, ana giriş noktası"
+              },
+              {
+                "name": "mobile/",
+                "comment": "Capacitor wrapper (ios/, android/)"
+              },
+              {
+                "name": "ota-server/",
+                "comment": "FastAPI, OTA manifest + S3 yönlendirme"
+              }
+            ]
+          },
+          {
+            "name": "packages/",
+            "children": [
+              {
+                "name": "ui/",
+                "comment": "Flowbite + Radix + Phosphor wrapper'ları"
+              },
+              {
+                "name": "api/",
+                "comment": "openapi-typescript types + openapi-fetch client"
+              },
+              {
+                "name": "domain/",
+                "comment": "Zod schemas, business logic, CASL abilities"
+              },
+              {
+                "name": "i18n/",
+                "comment": "ICU mesajlar (tr, en, ar), date/number formatters"
+              },
+              {
+                "name": "ai/",
+                "comment": "AI SDK provider router, prompt registry, schema-driven UI dispatcher"
+              },
+              {
+                "name": "auth/",
+                "comment": "Logto adapter, Capacitor in-app browser flow"
+              },
+              {
+                "name": "kyc/",
+                "comment": "TC NFC Capacitor plugin + KYB Veriff adapter"
+              },
+              {
+                "name": "realtime/",
+                "comment": "SSE client, WS client, Yjs/Hocuspocus setup"
+              },
+              {
+                "name": "offline/",
+                "comment": "TanStack Query persist + IDB write queue"
+              },
+              {
+                "name": "native/",
+                "comment": "Capacitor plugin'lerin tek noktadan dispatch'i"
+              },
+              {
+                "name": "test-utils/",
+                "comment": "MSW handlers, fixture factory'leri"
+              }
+            ]
+          },
+          {
+            "name": "tools/",
+            "children": [
+              {
+                "name": "eslint-config/",
+                "comment": "Biome config + custom rules"
+              },
+              {
+                "name": "tsconfig/",
+                "comment": "Paylaşılan tsconfig.base.json"
+              }
+            ]
+          },
+          {
+            "name": "docs/",
+            "children": [
+              {
+                "name": "TECH_STACK.md",
+                "comment": "Bu doküman"
+              },
+              {
+                "name": "ENGINEERING_MANIFESTO.md"
+              },
+              {
+                "name": "CLAUDE.md",
+                "comment": "AI agent context"
+              },
+              {
+                "name": "adr/",
+                "comment": "Architecture Decision Records"
+              }
+            ]
+          },
+          {
+            "name": ".github/workflows/",
+            "children": [
+              {
+                "name": "web-deploy.yml",
+                "comment": "Ubuntu runner → Hetzner"
+              },
+              {
+                "name": "ios-build.yml",
+                "comment": "macOS runner → TestFlight"
+              },
+              {
+                "name": "android-build.yml",
+                "comment": "Ubuntu runner → Play Console"
+              },
+              {
+                "name": "ota-publish.yml",
+                "comment": "JS bundle → kendi OTA server"
+              }
+            ]
+          },
+          {
+            "name": "pnpm-workspace.yaml"
+          },
+          {
+            "name": "lefthook.yml"
+          },
+          {
+            "name": "biome.json"
+          }
+        ]
+      }
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Sırayla başlama",
+      "body": "1. **Repo iskeleti** (pnpm-workspace.yaml + tsconfig.base.json + Biome config + lefthook.yml) en yüksek kaldıraçlı çünkü diğer hepsinin ön şartı.\n2. **packages/domain Zod schema'ları** — kullanıcı, organizasyon, KYC submission, AI conversation. Backend FastAPI bunlardan Pydantic üretebilir (datamodel-code-generator).\n3. **packages/kyc TC NFC plugin scaffold** — Capacitor plugin generator çalıştır, iOS/Android boş bridge'i kur, mock implementation.\n4. **Logto + Hetzner kurulum** — docker-compose hazır, organizations feature aç.\n5. **OTA server iskelet** — FastAPI + Hetzner Object Storage. 3 endpoint yeterli (manifest, upload, rollout)."
+    }
+  ],
+  "enrich": {
+    "info": "pnpm workspaces, apps/ + packages/ + tools/, sıkı paket sınırı.",
+    "detail": "pnpm workspaces, apps/ + packages/ + tools/, sıkı paket sınırı.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

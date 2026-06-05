@@ -1,0 +1,311 @@
+{
+  "id": "fe-tooling",
+  "title": "Frontend — Test + Tooling + Observability + Security",
+  "subtitle": "Vitest + Playwright + Maestro · Biome + lefthook · Sentry + PostHog · OWASP baseline.",
+  "cluster": "frontend",
+  "order": 57,
+  "icon": "ph-wrench",
+  "tags": [
+    "frontend",
+    "test",
+    "tooling",
+    "observability"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.13 Test"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Katman",
+        "Seçim",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "Unit/integration",
+          "Vitest + @testing-library/react + user-event",
+          "Vite native, ESM"
+        ],
+        [
+          "API mock",
+          "**MSW**",
+          "Hem unit hem E2E"
+        ],
+        [
+          "E2E web",
+          "**Playwright**",
+          "Auto-wait, trace viewer, parallel"
+        ],
+        [
+          "Visual regression",
+          "Storybook + Chromatic (opsiyonel) veya Playwright snapshot",
+          "PR gate"
+        ],
+        [
+          "Component isolation",
+          "Storybook 8 + @storybook/test-runner",
+          "Interaction test"
+        ],
+        [
+          "Mobile E2E",
+          "**Maestro**",
+          "YAML, Capacitor uyumlu"
+        ],
+        [
+          "Accessibility",
+          "axe-core + Storybook a11y addon",
+          "WCAG 2.1 AA gate"
+        ],
+        [
+          "Performance gate",
+          "Lighthouse CI",
+          "PWA score < 90 PR bloklar"
+        ],
+        [
+          "Load/stress",
+          "k6",
+          "Backend ile birlikte"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Test-first ritüel (her feature)"
+    },
+    {
+      "type": "list",
+      "ordered": true,
+      "items": [
+        "`packages/domain` Zod schema yaz (kontrat).",
+        "`packages/test-utils` MSW handler yaz.",
+        "Vitest unit test (failing).",
+        "Implementation.",
+        "Storybook story + interaction test.",
+        "Playwright/Maestro happy path."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.14 Tooling"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Katman",
+        "Seçim",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "Lint + format",
+          "**Biome**",
+          "Rust, ~10x ESLint hızında, tek config"
+        ],
+        [
+          "Import sort",
+          "Biome dahili",
+          "Framework → 3rd-party → shared → relative"
+        ],
+        [
+          "Git hooks",
+          "**lefthook**",
+          "Go, YAML, husky'den hızlı"
+        ],
+        [
+          "Commit",
+          "commitlint + cz-git",
+          "Conventional commits"
+        ],
+        [
+          "Changelog",
+          "changesets",
+          "Monorepo versioning"
+        ],
+        [
+          "Bundle analiz",
+          "rollup-plugin-visualizer",
+          "Vite uyumlu"
+        ],
+        [
+          "Inline TS check",
+          "vite-plugin-checker",
+          "TS + Biome PR'dan önce"
+        ],
+        [
+          "SVG → component",
+          "vite-plugin-svgr",
+          "Custom Phosphor variant"
+        ],
+        [
+          "Env validation",
+          "t3-env + Zod",
+          "Runtime env type-safe"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.12 Observability"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Katman",
+        "Seçim",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "Error monitoring",
+          "**Sentry self-host (Hetzner)**",
+          "Web + Capacitor native crash, source map"
+        ],
+        [
+          "Analytics + feature flags + session replay",
+          "**PostHog self-host**",
+          "Tek üründe; ClickHouse + Kafka + Postgres + Redis"
+        ],
+        [
+          "Tracing",
+          "OpenTelemetry web SDK → Grafana Tempo",
+          "Backend ile aynı stack"
+        ],
+        [
+          "Logging",
+          "Pino (eğer Node middleware) → Grafana Loki",
+          "JSON structured"
+        ],
+        [
+          "Uptime",
+          "Uptime Kuma self-host",
+          "Hafif, kendi sunucuda"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "PostHog self-host kaynak",
+      "body": "Hetzner **CX42 veya AX41** (8 vCPU / 16GB RAM), ayrı sunucu önerilir. Session replay açıkken disk tüketimi yüksek; S3-uyumlu object storage (Hetzner Object Storage) ile blob offload. Retention 90 gün."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "7. Güvenlik baseline"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Alan",
+        "Politika"
+      ],
+      "rows": [
+        [
+          "Auth token",
+          "httpOnly cookie + refresh token rotation, mobile'da secure storage"
+        ],
+        [
+          "XSS",
+          "**DOMPurify** zorunlu her model çıktısında, react-markdown rehype sanitize"
+        ],
+        [
+          "CSRF",
+          "SameSite=Lax + custom header doğrulama"
+        ],
+        [
+          "CSP",
+          "strict-dynamic, nonce-based, Capacitor için custom scheme allow"
+        ],
+        [
+          "Bağımlılık",
+          "`pnpm audit` CI gate, Renovate haftalık PR"
+        ],
+        [
+          "Secret",
+          "`t3-env` runtime check, GitHub Secrets, Hetzner Vault opsiyonel"
+        ],
+        [
+          "KVKK",
+          "KYC veri retention 1 yıl, EİDS uyumlu, kullanıcı veri export endpoint"
+        ],
+        [
+          "PII log",
+          "Pino redact (`password`, `tckn`, `iban`, vb.)"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "8. Performans bütçesi"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Metrik",
+        "Hedef"
+      ],
+      "rows": [
+        [
+          "LCP (web)",
+          "< 2.5s"
+        ],
+        [
+          "INP",
+          "< 200ms"
+        ],
+        [
+          "CLS",
+          "< 0.1"
+        ],
+        [
+          "Bundle (initial JS)",
+          "< 250kb gzip"
+        ],
+        [
+          "Lighthouse PWA",
+          "> 90"
+        ],
+        [
+          "TTI mobile (mid-tier Android)",
+          "< 3.5s"
+        ],
+        [
+          "Cold start (Capacitor)",
+          "< 1.8s"
+        ]
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Vitest + Playwright + Maestro · Biome + lefthook · Sentry + PostHog · OWASP baseline.",
+    "detail": "Vitest + Playwright + Maestro · Biome + lefthook · Sentry + PostHog · OWASP baseline.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

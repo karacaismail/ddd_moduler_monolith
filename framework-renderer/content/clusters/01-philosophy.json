@@ -1,0 +1,242 @@
+{
+  "id": "philosophy",
+  "title": "Felsefe ve ana prensipler",
+  "cluster": "meta",
+  "order": 1,
+  "icon": "ph-compass",
+  "tags": [
+    "philosophy",
+    "principles",
+    "ddd",
+    "monolith"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "1.1 Modüler monolit, mikroservis değil"
+    },
+    {
+      "type": "paragraph",
+      "text": "Shopify'ın \"majestic monolith\"i 2.8M+ satırlık tek Rails uygulaması; Black Friday'de saniyede 80K request'i tek deploy unit ile karşıladı. Bizim hedefimiz aynı: **tek deploy unit, çoklu bounded context, sıkı modül sınırı**. Mikroservise sadece zorlandığında (extraction trigger) geç."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Refactor ucuz.** Bounded context sınırını yanlış çizdin? Tek PR'da değiştir. Mikroservis olsa Kafka schema migration + 2 servis deploy + downstream konsumer.",
+        "**Local development tek komut.** `uvicorn app:app` — her şey çalışır. Mikroservis olsa Docker Compose'da 12 servis.",
+        "**Distributed transaction yok.** İki aggregate aynı process'te; saga in-process orchestration ile çok daha basit.",
+        "**Observability ucuz.** Tek log stream, tek trace, tek metric source."
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Şartı: **modül sınırı yazılım disipliniyle korunmalı**. Shopify Packwerk ile yapıyor (Ruby static analysis cross-component call'ları flag'liyor). Sen Python'da `importlinter` + custom plugin ile aynı disiplini sağla — CI'da modül A modül B'nin internal'ına dokunursa fail."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "1.2 Metadata-driven schema"
+    },
+    {
+      "type": "paragraph",
+      "text": "Frappe DocType, Salesforce Object, Strapi Content-Type — üçü de aynı fikrin farklı isimleri: *şema kodda değil, metadatada*. Bir `Customer` tipi tanımlamak için Python class yazmak yerine, sistem tablosuna satır eklersin. Framework gerisini otomatik:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "PostgreSQL tablosu otomatik (fiziksel tablo, JSON column değil — JOIN performansı için kritik).",
+        "REST + GraphQL endpoint otomatik.",
+        "Admin form + list view otomatik render.",
+        "Permission engine satırları otomatik tanır.",
+        "Search index otomatik beslenir.",
+        "Audit log otomatik dinler.",
+        "Hook noktaları (`before_save`, `after_insert`) otomatik vardır."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "1.3 AI-first ne demek, ne demek değil"
+    },
+    {
+      "type": "grid",
+      "columns": 2,
+      "items": [
+        {
+          "title": "AI-first BUDUR",
+          "icon": "ph-check",
+          "tone": "good",
+          "body": "Vector store kernel-adjacent primitive (pgvector default).\nHer DocType save'inde otomatik embedding (opt-in projection).\nHybrid search (BM25 + vector RRF) Search domain'inde native.\nMCP server her bounded context'te otomatik expose.\nOtomatik kategorize/anomali/tahmin event bus üstüne projection.\nAgent orchestration kernel-adjacent (Pydantic AI tarzı type-safe).",
+          "enrich": {
+            "info": "Vector store kernel-adjacent primitive (pgvector default).\nHer DocType save'inde otomatik embedding (opt-in projection).\nHybrid search (BM25",
+            "detail": "**AI-first BUDUR** nedir?\n\nVector store kernel-adjacent primitive (pgvector default).\nHer DocType save'inde otomatik embedding (opt-in projection).\nHybrid search (BM25 + vector RRF) Search domain'inde native.\nMCP server her bounded context'te otomatik expose.\nOtomatik kategorize/anomali/tahmin event bus üstüne projection.\nAgent orchestration kernel-adjacent (Pydantic AI tarzı type-safe).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"AI-first BUDUR\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Vector store kernel-adjacent primitive (pgvector default).\nHer DocType save'inde pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"AI-first BUDUR\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"AI-first BUDUR\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "title": "AI-first BU DEĞİLDİR",
+          "icon": "ph-x",
+          "tone": "bad",
+          "body": "Bir yere ChatGPT integration ekleyip slogan basmak.\nMüşteri destek bot'u eklemek (bu feature, mimari değil).\nHer ürüne aynı LLM prompt'u dayatmak.\nAI'ı bir module sanmak (gerçekte: primitives kernel-adjacent, applications module).",
+          "enrich": {
+            "info": "Bir yere ChatGPT integration ekleyip slogan basmak.\nMüşteri destek bot'u eklemek (bu feature, mimari değil).\nHer ürüne aynı LLM prompt'u day",
+            "detail": "**AI-first BU DEĞİLDİR** nedir?\n\nBir yere ChatGPT integration ekleyip slogan basmak.\nMüşteri destek bot'u eklemek (bu feature, mimari değil).\nHer ürüne aynı LLM prompt'u dayatmak.\nAI'ı bir module sanmak (gerçekte: primitives kernel-adjacent, applications module).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"AI-first BU DEĞİLDİR\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Bir yere ChatGPT integration ekleyip slogan basmak.\nMüşteri destek bot'u eklemek pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"AI-first BU DEĞİLDİR\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"AI-first BU DEĞİLDİR\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "1.4 Polyglot hook — gerçek senaryo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Python core, TS opsiyon. Yazılım sektörünün önemli bir kısmı TS yazıyor; modülünü TS yazmak isteyen geliştiriciyi kaybetmemen lazım. Üç runtime stratejisi (her birinin yeri farklı):"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Embedded JS (shared hosting):** PythonMonkey (SpiderMonkey, Distributive Inc., 2024-2026 aktif) veya STPyV8 (Cloudflare fork). Network round-trip yok. Trusted hook için.",
+        "**Sidecar Node/Deno (production default):** Node sürecine gRPC ile bağlan. Dapr modeli. İzole, bağımsız scale, debuggable.",
+        "**WASM/Extism (untrusted marketplace plugin):** Capability sandbox. \"Bu plugin sadece şu DocType'ı okuyabilir, network yok\" diye kısıtla."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "1.5 Scale primitives kernel'de, scale policy module'de"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Primitive (kernel):** Event bus, outbox, hot counter, projection. Hepsi *nasıl ölçeklenirim* sorusunun cevabını taşır.",
+        "**Policy (module):** Sosyal medya feed'inin push/pull/hybrid kararı, celebrity threshold (~10K follower), reservation expiration timing. Hepsi *iş kuralı*."
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Sosyal medya turunda konuşulan fan-out tartışması bu prensibin somutu. Twitter'ın timeline'ı kernel'e gömülmez; kernel *fan-out worker primitive*i sağlar, {{ref:s-social}} module timeline politikasını yazar. 13 üründe feed yok; kernel onları taşımaz."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "1.6 Türkiye uyumu birinci sınıf"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hetzner'de host edeceksin (Linux Debian, AMD EPYC). Müşterilerin TR'de. Yani e-Fatura, e-Defter, SGK, KVKK *add-on plugin değil, kernel-adjacent*. Aksi halde her ürünün muhasebe modülü tekerleği yeniden icat eder. Yaklaşım: **e-Belge Provider** ve **Tax Authority Adapter** Layer 1 in-tree olarak otur. Driver pattern — Foriba/Sovos, İzibiz, Uyumsoft, KolayBi', Logo plug edilebilir."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "1.7 Doğru çatışmalar"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Gerilim",
+        "Bir uç",
+        "Diğer uç",
+        "Bizim seçim"
+      ],
+      "rows": [
+        [
+          "Kernel boyutu",
+          "Minimal (WordPress)",
+          "Battery-included (Drupal eski)",
+          "Minimal kernel + in-tree Layer 1"
+        ],
+        [
+          "Storage backend",
+          "PostgreSQL-only",
+          "Polyglot persistence",
+          "PostgreSQL-first, Redis/ES projection"
+        ],
+        [
+          "Frontend",
+          "Coupled (server-render)",
+          "Headless API",
+          "Headless default (Next.js yasak)"
+        ],
+        [
+          "Authz",
+          "Application-level",
+          "Query-layer-fused",
+          "Query-layer-fused + OpenFGA"
+        ],
+        [
+          "Tenancy",
+          "Schema-per-tenant",
+          "Shared schema + RLS",
+          "Shared + PostgreSQL RLS"
+        ],
+        [
+          "Plugin runtime",
+          "Native-only",
+          "WASM-only",
+          "Üç runtime (embedded + sidecar + WASM)"
+        ],
+        [
+          "Scale path",
+          "Vertical",
+          "Horizontal mikroservis",
+          "Modüler monolit + horizontal worker"
+        ]
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Felsefe ve ana prensipler",
+    "detail": "Felsefe ve ana prensipler — bu cluster, projenin meta grubunda yer alır.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

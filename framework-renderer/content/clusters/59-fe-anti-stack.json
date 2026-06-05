@@ -1,0 +1,226 @@
+{
+  "id": "fe-anti",
+  "title": "Frontend — Anti-Stack + Çelişki Kararları",
+  "subtitle": "Açıkça reddedilen tercihler ve çelişkili kararların çözümü.",
+  "cluster": "frontend",
+  "order": 59,
+  "icon": "ph-prohibit",
+  "tags": [
+    "frontend",
+    "anti-stack",
+    "decisions",
+    "rejected"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "4. Anti-stack (açıkça reddedilen)"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Reddedilen",
+        "Sebep"
+      ],
+      "rows": [
+        [
+          "**Next.js**",
+          "Server/Client component belirsizliği, vibecoding anti-pattern (kullanıcı kuralı)"
+        ],
+        [
+          "**Supabase**",
+          "Stack kuralı, Prisma + Postgres yeterli"
+        ],
+        [
+          "socket.io",
+          "SSE + WS + Yjs üçlüsü zaten kapsıyor, fazla abstraction"
+        ],
+        [
+          "i18next",
+          "ICU plugin gerektiriyor, react-intl native"
+        ],
+        [
+          "Detox",
+          "Maestro daha sade"
+        ],
+        [
+          "husky",
+          "lefthook daha hızlı"
+        ],
+        [
+          "ESLint + Prettier ayrı",
+          "Biome tek araçta"
+        ],
+        [
+          "TanStack Form",
+          "RHF nested form için şu an daha olgun"
+        ],
+        [
+          "Orval",
+          "openapi-fetch + el TanStack hook daha temiz"
+        ],
+        [
+          "Replicache / PowerSync",
+          "TanStack Query queue yeterli"
+        ],
+        [
+          "Embedded WebView OAuth",
+          "Store policy ihlali"
+        ],
+        [
+          "Capgo OTA (managed)",
+          "Supabase bağımlısı"
+        ],
+        [
+          "Keycloak",
+          "Logto tercih (Node native, daha hafif)"
+        ],
+        [
+          "Sumsub / Veriff (KYC tarafı)",
+          "Kendi TC NFC modülü"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "3. Çelişkilerin çözüm kararları"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Çelişki",
+        "Karar"
+      ],
+      "rows": [
+        [
+          "socket.io vs WS vs SSE vs CRDT",
+          "socket.io **YOK**. SSE notification, WS presence, Yjs collab — üç kanal, tek abstraction zorlaması yok."
+        ],
+        [
+          "Refine vs TanStack Query",
+          "Refine headless (data + auth + access). UI'a karışmaz. TanStack Query Refine içinde zaten çalışır."
+        ],
+        [
+          "Flowbite (Tailwind) vs SCSS",
+          "SCSS sadece token + tema + complex animation. Tailwind component-level. Token tek doğruluk kaynağı SCSS."
+        ],
+        [
+          "Zustand vs TanStack Query",
+          "Server state Query, ephemeral UI Zustand, form RHF, URL nuqs. Karar matrisi bağlayıcı."
+        ],
+        [
+          "AI SDK vs Vite (RSC yok)",
+          "useChat/useCompletion zaten Vite uyumlu. RSC yerine schema-driven dispatcher (custom registry)."
+        ],
+        [
+          "Capgo OTA vs Supabase yasağı",
+          "Kendi minimal FastAPI OTA server."
+        ],
+        [
+          "Embedded WebView OAuth",
+          "YASAK. ASWebAuthenticationSession (iOS) + Custom Tabs (Android) zorunlu."
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "9. Açık riskler & azaltma"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Risk",
+        "Etki",
+        "Azaltma"
+      ],
+      "rows": [
+        [
+          "TC NFC plugin geliştirme süresi",
+          "2-3 hafta, test cihazı bağımlı",
+          "Mock plugin ile UI paralel; gerçek cihaz testi Hüseyin"
+        ],
+        [
+          "Logto OSS audit log yetersizliği",
+          "Compliance",
+          "Kendi audit servisi `packages/audit` veya Logto Cloud Pro"
+        ],
+        [
+          "PostHog kaynak tüketimi",
+          "Hetzner faturası",
+          "Ayrı sunucu, S3 offload, retention 90 gün"
+        ],
+        [
+          "Yjs CRDT öğrenme eğrisi",
+          "Geliştirme yavaşlığı",
+          "Önce read-only collab, sonra write"
+        ],
+        [
+          "Multi-provider AI fallback karmaşıklığı",
+          "Beklenmedik maliyet",
+          "Provider router'a budget limiter, daily cap"
+        ],
+        [
+          "jmrtd LGPL lisans",
+          "Hukuki",
+          "Dynamic link garantisi; SaaS web tarafı kapalı kaynak değil"
+        ],
+        [
+          "Capacitor 7 → 8 breaking change",
+          "Bakım",
+          "Renovate + smoke test on upgrade"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "10. ADR (sonraki adım)"
+    },
+    {
+      "type": "paragraph",
+      "text": "Şu kararlar `docs/adr/` altında ayrı ADR olarak yazılmalı:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "ADR-001: Logto seçimi (vs Keycloak vs Authentik)",
+        "ADR-002: Kendi OTA server (vs Capgo / Capawesome)",
+        "ADR-003: TC NFC kendi plugin (vs Sumsub / Veriff)",
+        "ADR-004: Multi-provider AI router pattern",
+        "ADR-005: Refine headless mode (UI ayrımı)",
+        "ADR-006: SSE + WS + Yjs üç kanal (vs socket.io)",
+        "ADR-007: Biome (vs ESLint + Prettier)",
+        "ADR-008: react-intl (vs i18next)"
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Dokümantasyon disiplini",
+      "body": "**Sahibi:** İsmail · **Versiyon:** 1.0.0 · **Son güncelleme:** 2026-05-14. Bu doküman tek doğruluk kaynağıdır. CLAUDE.md, Cursor rules ve AI agent prompt'ları buradan üretilir. Tek bir karar değişimi → yeni ADR + bu dokümana güncelleme."
+    }
+  ],
+  "enrich": {
+    "info": "Açıkça reddedilen tercihler ve çelişkili kararların çözümü.",
+    "detail": "Açıkça reddedilen tercihler ve çelişkili kararların çözümü.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

@@ -1,0 +1,507 @@
+{
+  "id": "s-accounting",
+  "title": "Accounting + Finans Stack (TR)",
+  "subtitle": "Odoo Accounting, SAP FI/CO, Frappe Books, Mikro/Logo muadili. TR uyum birinci sınıf.",
+  "cluster": "stack",
+  "layer": "l2",
+  "order": 24,
+  "icon": "ph-coins",
+  "badge": "Layer 2 Stack #2 — TR uyum kritik",
+  "tags": [
+    "accounting",
+    "finans",
+    "tr-uyum",
+    "e-fatura",
+    "e-defter"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Türkiye uyumu birinci sınıf. Muhasebe SaaS (#10), ERP (#13) ana stack. Diğer ürünlerden e-Fatura, e-Arşiv, e-Defter event'lerini tüketir."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Module'ler"
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "Chart of Accounts (CoA)",
+          "desc": "Tek Düzen Hesap Planı (TR default), GAAP, IFRS, USALI (otel)",
+          "enrich": {
+            "info": "Tek Düzen Hesap Planı (TR default), GAAP, IFRS, USALI (otel)",
+            "detail": "**Chart of Accounts (CoA)** nedir?\n\nTek Düzen Hesap Planı (TR default), GAAP, IFRS, USALI (otel).\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Chart of Accounts (CoA)\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Tek Düzen Hesap Planı (TR default), GAAP, IFRS, USALI (otel) pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Chart of Accounts (CoA)\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Chart of Accounts (CoA)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Journal Entry / GL",
+          "desc": "Çift-taraflı kayıt, dönem kapanışı, kilitleme",
+          "enrich": {
+            "info": "Çift-taraflı kayıt, dönem kapanışı, kilitleme",
+            "detail": "**Journal Entry / GL** nedir?\n\nÇift-taraflı kayıt, dönem kapanışı, kilitleme.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Journal Entry / GL\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Çift-taraflı kayıt, dönem kapanışı, kilitleme pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Journal Entry / GL\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Journal Entry / GL\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "AP/AR",
+          "desc": "Supplier/customer cari, 3-way match (fatura-PO-mal kabul), aging, dunning",
+          "enrich": {
+            "info": "Supplier/customer cari, 3-way match (fatura-PO-mal kabul), aging, dunning",
+            "detail": "**AP/AR** nedir?\n\nSupplier/customer cari, 3-way match (fatura-PO-mal kabul), aging, dunning.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"AP/AR\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Supplier/customer cari, 3-way match (fatura-PO-mal kabul), aging, dunning pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"AP/AR\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"AP/AR\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "e-Belge",
+          "desc": "e-Fatura, e-Arşiv, e-İrsaliye (UBL-TR 1.2)",
+          "critical": true,
+          "enrich": {
+            "info": "e-Fatura, e-Arşiv, e-İrsaliye (UBL-TR 1.2)",
+            "detail": "**e-Belge** nedir?\n\ne-Fatura, e-Arşiv, e-İrsaliye (UBL-TR 1.2).\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"e-Belge\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici e-Fatura, e-Arşiv, e-İrsaliye (UBL-TR 1.2) pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"e-Belge\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"e-Belge\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "e-Defter",
+          "desc": "XBRL-GL, berat, periyodik gönderim (3. ay sonu)",
+          "critical": true,
+          "enrich": {
+            "info": "XBRL-GL, berat, periyodik gönderim (3. ay sonu)",
+            "detail": "**e-Defter** nedir?\n\nXBRL-GL, berat, periyodik gönderim (3. ay sonu).\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"e-Defter\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici XBRL-GL, berat, periyodik gönderim (3. ay sonu) pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"e-Defter\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"e-Defter\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Beyanname",
+          "desc": "KDV1/KDV2, MUHSGK (birleşik), Geçici Vergi, Kurumlar, BA/BS",
+          "enrich": {
+            "info": "KDV1/KDV2, MUHSGK (birleşik), Geçici Vergi, Kurumlar, BA/BS",
+            "detail": "**Beyanname** nedir?\n\nKDV1/KDV2, MUHSGK (birleşik), Geçici Vergi, Kurumlar, BA/BS.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Beyanname\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici KDV1/KDV2, MUHSGK (birleşik), Geçici Vergi, Kurumlar, BA/BS pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Beyanname\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Beyanname\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Banka",
+          "desc": "Bank Feed, ekstre import (MT940), mutabakat",
+          "enrich": {
+            "info": "Bank Feed, ekstre import (MT940), mutabakat",
+            "detail": "**Banka** nedir?\n\nBank Feed, ekstre import (MT940), mutabakat.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Banka\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Bank Feed, ekstre import (MT940), mutabakat pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Banka\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Banka\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Treasury",
+          "desc": "Multi-currency, FX exposure",
+          "enrich": {
+            "info": "Multi-currency, FX exposure",
+            "detail": "**Treasury** nedir?\n\nMulti-currency, FX exposure.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Treasury\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Multi-currency, FX exposure pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Treasury\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Treasury\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Fixed Assets",
+          "desc": "Sabit kıymet, amortisman (VUK + TFRS), elden çıkarma",
+          "enrich": {
+            "info": "Sabit kıymet, amortisman (VUK + TFRS), elden çıkarma",
+            "detail": "**Fixed Assets** nedir?\n\nSabit kıymet, amortisman (VUK + TFRS), elden çıkarma.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Fixed Assets\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Sabit kıymet, amortisman (VUK + TFRS), elden çıkarma pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Fixed Assets\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Fixed Assets\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Cost Accounting",
+          "desc": "Cost center, profit center, landed cost",
+          "enrich": {
+            "info": "Cost center, profit center, landed cost",
+            "detail": "**Cost Accounting** nedir?\n\nCost center, profit center, landed cost.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Cost Accounting\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Cost center, profit center, landed cost pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Cost Accounting\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Cost Accounting\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Budgeting",
+          "desc": "Bütçe, fiili-fark, forecast",
+          "enrich": {
+            "info": "Bütçe, fiili-fark, forecast",
+            "detail": "**Budgeting** nedir?\n\nBütçe, fiili-fark, forecast.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Budgeting\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Bütçe, fiili-fark, forecast pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Budgeting\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Budgeting\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Capture & Categorize",
+          "desc": "Ön muhasebe: banka feed → AI auto-categorize → journal entry",
+          "enrich": {
+            "info": "Ön muhasebe: banka feed → AI auto-categorize → journal entry",
+            "detail": "**Capture & Categorize** nedir?\n\nÖn muhasebe: banka feed → AI auto-categorize → journal entry.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Capture & Categorize\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Ön muhasebe: banka feed → AI auto-categorize → journal entry pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Capture & Categorize\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Capture & Categorize\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Cash Flow Forecast",
+          "desc": "13-week, runway",
+          "enrich": {
+            "info": "13-week, runway",
+            "detail": "**Cash Flow Forecast** nedir?\n\n13-week, runway.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Cash Flow Forecast\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici 13-week, runway pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Cash Flow Forecast\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Cash Flow Forecast\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Multi-company Consolidation",
+          "desc": "Intercompany, eliminasyon",
+          "enrich": {
+            "info": "Intercompany, eliminasyon",
+            "detail": "**Multi-company Consolidation** nedir?\n\nIntercompany, eliminasyon.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Multi-company Consolidation\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Intercompany, eliminasyon pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Multi-company Consolidation\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Multi-company Consolidation\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Practice Management",
+          "desc": "Mali müşavir çoklu mükellef yönetimi",
+          "enrich": {
+            "info": "Mali müşavir çoklu mükellef yönetimi",
+            "detail": "**Practice Management** nedir?\n\nMali müşavir çoklu mükellef yönetimi.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Practice Management\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Mali müşavir çoklu mükellef yönetimi pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Practice Management\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Practice Management\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tr",
+      "label": "Türkiye e-Belge — yapı",
+      "body": "**e-Fatura**: UBL-TR 1.2 XML, mali mühür (kurum) veya e-imza (gerçek kişi), B2B tescilli mükellef. **e-Arşiv**: B2C ve tescilsiz B2B. **e-İrsaliye**: mal hareketi.\n\nEntegrasyon *özel entegratör* üzerinden. Piyasada: **Foriba/Sovos** (kurumsal), **Logo eLogo** (Logo ekosistemi), **Mikro**, **İzibiz** (orta segment, API kalitesi iyi), **Uyumsoft**, **NES**, **KolayBi'/BizimHesap** (SMB). Default driver bir *mock*, production'da credentials girilir.\n\n**e-Defter**: XBRL-GL formatında yevmiye + büyük defter, SHA-256 hash ile berat üretilir, GİB'e yüklenir. Gönderim ritmi: takvim ayını izleyen 3. ayın son günü.\n\n**Beyanname**: MUHSGK (Muhtasar+Prim) 2020'den birleşik, GİB üzerinden. KDV1/KDV2 aylık. BA/BS yıllık. Eşik: 5K TL üstü 1 mükellef ile ay içinde tüm işlemler BA/BS formuna girer."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Ön muhasebe çatalı (SMB vs Mali Müşavir)"
+    },
+    {
+      "type": "grid",
+      "columns": 2,
+      "items": [
+        {
+          "title": "Ön muhasebe (Paraşüt tarzı)",
+          "icon": "ph-storefront",
+          "body": "İşletme sahibi kendi tutar. Fatura kes, tahsilat gör, cari takip. Hafif, kullanıcı-dostu, resmi defter mali müşavirde.",
+          "enrich": {
+            "info": "İşletme sahibi kendi tutar. Fatura kes, tahsilat gör, cari takip. Hafif, kullanıcı-dostu, resmi defter mali müşavirde.",
+            "detail": "**Ön muhasebe (Paraşüt tarzı)** nedir?\n\nİşletme sahibi kendi tutar. Fatura kes, tahsilat gör, cari takip. Hafif, kullanıcı-dostu, resmi defter mali müşavirde.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Ön muhasebe (Paraşüt tarzı)\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici İşletme sahibi kendi tutar. Fatura kes, tahsilat gör, cari takip. Hafif, kullanı pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Ön muhasebe (Paraşüt tarzı)\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Ön muhasebe (Paraşüt tarzı)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Genel muhasebe (Logo/Mikro/Luca)",
+          "icon": "ph-briefcase",
+          "body": "Mali müşavir tutar. e-Defter, beyanname, yasal kayıt. Ağır, çok-müşterili.",
+          "enrich": {
+            "info": "Mali müşavir tutar. e-Defter, beyanname, yasal kayıt. Ağır, çok-müşterili.",
+            "detail": "**Genel muhasebe (Logo/Mikro/Luca)** nedir?\n\nMali müşavir tutar. e-Defter, beyanname, yasal kayıt. Ağır, çok-müşterili.\n\n**Amaç:** Bir işletmenin parasal hareketlerini (fatura, gelir, gider, defter) yasalara uygun tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç muhasebe / mali kayıt bilmeyen biri için: bu özellik, muhasebe / mali kayıt sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Mali müşavir",
+                "context": "\"Genel muhasebe (Logo/Mikro/Luca)\" özelliğini muhasebe ve mali kayıt sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Mali müşavir tutar. e-Defter, beyanname, yasal kayıt. Ağır, çok-müşterili. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Patron (KOBİ)",
+                "context": "Kasayı kendisi tutar, vergi denetimine girer. \"Genel muhasebe (Logo/Mikro/Luca)\" özelliği bu süreçte devreye girer.",
+                "outcome": "3 yıl önceki bir kalemin geçmişine bakar — audit log her değişikliği saklar."
+              },
+              {
+                "persona": "Yazılım entegratörü",
+                "context": "POS yazılımı ile muhasebeyi konuşturmak ister. \"Genel muhasebe (Logo/Mikro/Luca)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook ile satış olayı tetiklenir, otomatik fatura ve yevmiye kaydı oluşur."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "AI-first capture"
+    },
+    {
+      "type": "paragraph",
+      "text": "Banka feed → AI auto-categorize → journal entry önerisi → kullanıcı onayı → kural öğrenme (\"bu tedarikçi hep 770'e gidiyor\"). Fiş/fatura OCR + alan çıkarımı → kayda dönüşüm. Mutabakat otomatik eşleştirme (banka satırı ↔ fatura/tahsilat). Anomali/hata tespiti."
+    }
+  ],
+  "enrich": {
+    "info": "Odoo Accounting, SAP FI/CO, Frappe Books, Mikro/Logo muadili. TR uyum birinci sınıf.",
+    "detail": "Odoo Accounting, SAP FI/CO, Frappe Books, Mikro/Logo muadili. TR uyum birinci sınıf.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

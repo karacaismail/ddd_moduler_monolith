@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Framework Core Domain'leri — Layer Haritası</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --ink-2: #3d3d3d;
+    --ink-3: #6b6b6b;
+    --ink-4: #9a9a9a;
+    --line: #e6e6e6;
+    --line-2: #f1f1f1;
+    --bg: #ffffff;
+    --bg-soft: #fafafa;
+    --accent: #0f5f5c;
+    --accent-soft: #e7f1f0;
+    --warn: #8a4b00;
+    --warn-soft: #fbf2e6;
+    --kernel: #b73a3a;
+    --kernel-soft: #faece9;
+    --code-bg: #f5f5f4;
+    --radius: 4px;
+  }
+  *,*::before,*::after { box-sizing: border-box; }
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: 'Roboto', system-ui, sans-serif;
+    font-weight: 300;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 880px; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+  header.page { border-bottom: 1px solid var(--line); padding-bottom: 2rem; margin-bottom: 3rem; }
+  header.page .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 1rem;
+    color: var(--ink-3);
+    font-weight: 400;
+    margin: 0 0 1rem;
+  }
+  header.page h1 {
+    font-size: 2.25rem;
+    font-weight: 300;
+    line-height: 1.25;
+    margin: 0 0 1.25rem;
+    letter-spacing: -0.015em;
+  }
+  header.page .lede {
+    font-size: 1.125rem;
+    color: var(--ink-2);
+    font-weight: 300;
+    max-width: 60ch;
+    margin: 0;
+  }
+  h2 {
+    font-size: 1.625rem;
+    font-weight: 400;
+    margin: 4rem 0 1.25rem;
+    letter-spacing: -0.01em;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.75rem;
+  }
+  h2 .num {
+    color: var(--ink-4);
+    font-weight: 300;
+    margin-right: 0.6rem;
+    font-variant-numeric: tabular-nums;
+  }
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 2.5rem 0 0.75rem;
+    letter-spacing: -0.005em;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  h3 .ph, h3 .ph-duotone { color: var(--accent); font-size: 1.5rem; }
+  h4 {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    margin: 1.5rem 0 0.5rem;
+    color: var(--ink-2);
+  }
+  p { margin: 0 0 1rem; max-width: 64ch; }
+  strong { font-weight: 500; color: var(--ink); }
+  em { font-style: normal; background: linear-gradient(180deg, transparent 60%, var(--accent-soft) 60%); padding: 0 2px; }
+  code {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.9375rem;
+    background: var(--code-bg);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    font-weight: 400;
+  }
+  pre {
+    font-family: 'Roboto Mono', monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    margin: 1rem 0 1.5rem;
+  }
+  pre code { background: transparent; padding: 0; font-size: inherit; }
+  ul, ol { padding-left: 1.25rem; margin: 0 0 1.25rem; }
+  li { margin-bottom: 0.45rem; max-width: 64ch; }
+  li::marker { color: var(--ink-4); }
+
+  .toc {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 3rem;
+  }
+  .toc h4 { margin: 0 0 0.75rem; color: var(--ink); font-weight: 500; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.12em; }
+  .toc ol { columns: 2; column-gap: 2rem; padding-left: 1.1rem; margin: 0; }
+  .toc li { break-inside: avoid; margin-bottom: 0.35rem; }
+  .toc a { color: var(--ink-2); text-decoration: none; font-weight: 400; }
+  .toc a:hover { color: var(--accent); text-decoration: underline; }
+
+  .layer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin: 1.5rem 0 2rem;
+    overflow: hidden;
+  }
+  .layer-card { background: var(--bg); padding: 1.25rem 1rem; }
+  .layer-card .tag {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-4);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .layer-card .name { font-weight: 500; font-size: 1.0625rem; margin-bottom: 0.5rem; color: var(--ink); }
+  .layer-card .desc { font-size: 1rem; color: var(--ink-3); line-height: 1.5; }
+  .layer-card.kernel .tag { color: var(--kernel); }
+  .layer-card.kernel { border-top: 3px solid var(--kernel); }
+  .layer-card.l1 { border-top: 3px solid var(--accent); }
+  .layer-card.l2 { border-top: 3px solid var(--ink-3); }
+  .layer-card.l3 { border-top: 3px solid var(--ink-4); }
+
+  .domain {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.75rem 2rem;
+    margin-bottom: 2rem;
+  }
+  .domain.kernel { border-left: 3px solid var(--kernel); }
+  .domain.layer1 { border-left: 3px solid var(--accent); }
+  .domain .badge {
+    display: inline-block;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 500;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    margin-bottom: 0.75rem;
+  }
+  .domain.kernel .badge { background: var(--kernel-soft); color: var(--kernel); }
+  .domain.layer1 .badge { background: var(--accent-soft); color: var(--accent); }
+  .domain.scale .badge { background: #f1eaf9; color: #5a2e8a; }
+  .domain.scale { border-left: 3px solid #5a2e8a; }
+  .domain h3 { margin-top: 0.25rem; margin-bottom: 1rem; }
+
+  .callout {
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--warn);
+    background: var(--warn-soft);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    margin: 1rem 0 1.25rem;
+    font-size: 1rem;
+  }
+  .callout .label {
+    font-weight: 500;
+    color: var(--warn);
+    text-transform: uppercase;
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.4rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .callout p { margin: 0; max-width: none; }
+  .callout.tip { border-left-color: var(--accent); background: var(--accent-soft); }
+  .callout.tip .label { color: var(--accent); }
+
+  .examples {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0 1.25rem;
+  }
+  .examples h5 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+    margin: 0 0 0.75rem;
+    font-weight: 500;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .examples h5 .ph, .examples h5 .ph-duotone { color: var(--accent); font-size: 1rem; }
+  .examples ul { margin: 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0 2rem;
+    font-size: 1rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.75rem 0.9rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 500;
+    background: var(--bg-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.875rem;
+    color: var(--ink-3);
+  }
+  td:first-child { font-weight: 500; white-space: nowrap; color: var(--ink); }
+
+  .why-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.25rem 0;
+  }
+  .why-row .col {
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-soft);
+  }
+  .why-row .col h5 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .why-row .col p { font-size: 1rem; margin: 0; max-width: none; }
+  .why-row .col.good h5 { color: var(--accent); }
+  .why-row .col.bad h5 { color: var(--kernel); }
+
+  hr { border: 0; border-top: 1px solid var(--line); margin: 4rem 0; }
+
+  footer.page {
+    margin-top: 5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-3);
+    font-size: 1rem;
+  }
+
+  @media (max-width: 720px) {
+    .container { padding: 2rem 1rem 4rem; }
+    .toc ol { columns: 1; }
+    .layer-grid { grid-template-columns: 1fr 1fr; }
+    .why-row { grid-template-columns: 1fr; }
+    header.page h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.375rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="page">
+  <p class="eyebrow">DDD Modüler Monolith — Framework Mimarisi</p>
+  <h1>Core Domain Haritası</h1>
+  <p class="lede">Framework'ün kalbinde ne kalır, modüllere ne taşınır. 15 ürünün ortak paydası ve gerçek dünya örnekleriyle, junior geliştiricinin de anlayacağı dilde.</p>
+</header>
+
+<nav class="toc">
+  <h4>İçindekiler</h4>
+  <ol>
+    <li><a href="#kademe">Mimari kademe</a></li>
+    <li><a href="#layer0">Layer 0 — Kernel (5 değişmez)</a></li>
+    <li><a href="#schema">1. Schema / Metadata (DocType Engine)</a></li>
+    <li><a href="#identity">2. Identity</a></li>
+    <li><a href="#authz">3. Authorization</a></li>
+    <li><a href="#tenancy">4. Tenancy</a></li>
+    <li><a href="#bus">5. Event Bus + Polyglot Runtime</a></li>
+    <li><a href="#scale">Scale Primitives (kernel-adjacent)</a></li>
+    <li><a href="#layer1">Layer 1 — In-tree core (swappable)</a></li>
+    <li><a href="#party">Party / Contact</a></li>
+    <li><a href="#file">File &amp; Storage</a></li>
+    <li><a href="#workflow">Workflow &amp; Process</a></li>
+    <li><a href="#notify">Notification</a></li>
+    <li><a href="#audit">Audit &amp; Activity</a></li>
+    <li><a href="#search">Search &amp; Indexing</a></li>
+    <li><a href="#calendar">Calendar</a></li>
+    <li><a href="#tuzaklar">Core sanılan ama core olmayan</a></li>
+    <li><a href="#sira">Geliştirme sırası</a></li>
+  </ol>
+</nav>
+
+<section id="kademe">
+  <h2><span class="num">00</span>Mimari kademe</h2>
+  <p>Framework dört katmana ayrılır. Bir domain'in hangi katmanda yaşadığı tek bir testle belirlenir: <em>çıkarınca framework çalışmaya devam eder mi?</em> Eden katman, etmeyen katman.</p>
+
+  <div class="layer-grid">
+    <div class="layer-card kernel">
+      <div class="tag">Layer 0</div>
+      <div class="name">Kernel</div>
+      <div class="desc">Çıkarırsan framework ölür. Beş immovable domain. Frappe'nin <code>frappe</code> paketi, Salesforce'un multitenant kernel'i.</div>
+    </div>
+    <div class="layer-card l1">
+      <div class="tag">Layer 1</div>
+      <div class="name">In-tree core</div>
+      <div class="desc">Default kurulumla gelir, ama interface arkasındadır. Medusa "Infrastructure Module" pattern'i. Topluluk değiştirebilir.</div>
+    </div>
+    <div class="layer-card l2">
+      <div class="tag">Layer 2</div>
+      <div class="name">First-party module</div>
+      <div class="desc">Sen yazarsın, isteyen kurar. Billing, Pricing, Reporting, AI, Location, Feed gibi kategori-spesifik şeyler.</div>
+    </div>
+    <div class="layer-card l3">
+      <div class="tag">Layer 3</div>
+      <div class="name">Community / app</div>
+      <div class="desc">Üçüncü taraf marketplace. 15 ürünün business logic'i (Listing, BOM, Stock Ledger, Social Graph...) buraya iner.</div>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <div class="label"><i class="ph ph-lightbulb"></i>Kuralın özü</div>
+    <p>Frappe core ile ERPNext'in ilişkisini örnek al. <code>frappe</code> paketinde DocType, User, Workflow, Notification, File, Audit, Search, Communication, Calendar, Scheduler, multi-tenancy <em>var</em>. ERPNext'te ise Customer, Supplier, Invoice, BOM <em>var</em>. Generic olan core'da, business semantic taşıyan modülde. Sen de aynı çizgiyi çek.</p>
+  </div>
+</section>
+
+<section id="layer0">
+  <h2><span class="num">01</span>Layer 0 — Kernel (5 değişmez)</h2>
+  <p>Bu beşi çıkarırsan kalan her şey çöker. Bu beşi sonradan retrofit'lemeye çalışırsan 6 ay kaybedersin. O yüzden gün-1'de bitirip kapat.</p>
+</section>
+
+<article id="schema" class="domain kernel">
+  <span class="badge">Layer 0 — Kernel</span>
+  <h3><i class="ph-duotone ph-database"></i>Schema / Metadata Engine (DocType)</h3>
+
+  <p><strong>Junior'a:</strong> Normal Django/Rails projesinde "Customer" tablosu yapmak için <code>CREATE TABLE</code> yazıyorsun. Yeni alan eklemek için <code>ALTER TABLE</code> + migration. Bu framework'te öyle çalışmıyor. Sen sadece bir <em>metadata</em> kaydı oluşturuyorsun: "Customer adında bir DocType istiyorum; name, email, phone, tier alanları olsun". Framework gerisini otomatik yapar.</p>
+
+  <p>Tek bir DocType tanımından framework şunları otomatik üretir:</p>
+  <ul>
+    <li><strong>DB tablosu</strong> — Postgres'te tablo + index'ler. (Salesforce gibi gerçek implementasyonlarda fiziksel tablo bile yok, sparse columnar storage; sen Postgres ile başla, çalışır.)</li>
+    <li><strong>REST + GraphQL endpoint'leri</strong> — <code>GET /api/customer</code>, <code>POST /api/customer</code>, list/filter/sort dahil.</li>
+    <li><strong>Admin form'u</strong> — alan tiplerine göre input render eder (text, select, date, link-to-other-DocType, table-in-table).</li>
+    <li><strong>List view'u</strong> — sortable, filterable, kolay özelleştirilebilir.</li>
+    <li><strong>İzin satırı</strong> — Authorization sistemine otomatik kayıtlı (kim okur, kim yazar).</li>
+    <li><strong>Search index'i</strong> — yeni satır eklendiğinde otomatik index'e gider.</li>
+    <li><strong>Audit log entry</strong> — kim hangi alanı ne zaman değiştirdi, otomatik kayıt.</li>
+    <li><strong>Hook noktaları</strong> — <code>before_insert</code>, <code>after_save</code>, <code>on_submit</code> gibi lifecycle event'leri otomatik var.</li>
+  </ul>
+
+  <div class="examples">
+    <h5><i class="ph ph-list-bullets"></i>Gerçek dünya örnekleri</h5>
+    <ul>
+      <li><strong>E-ticaret (Shopify-tarzı):</strong> "Product" DocType. Mağaza sahibi panelden "Bedeni" diye yeni bir alan ekliyor. ALTER TABLE yok, deploy yok, downtime yok. Metadata tablosuna 1 satır, sonraki request'te alan görünür.</li>
+      <li><strong>Restaurant POS:</strong> "MenuItem" DocType. Bir restoran "allergens" alanı (multi-select), başka restoran "spice level" (1-5 slider) istiyor. Aynı kod, farklı tenant, farklı şema. Çünkü şema metadata olarak tenant'a bağlı.</li>
+      <li><strong>CRM (Pipedrive-tarzı):</strong> "Deal" DocType. Sales manager bugün "campaign source" alanını eklemek istiyor. Geliştiriciye soruyor mu? Hayır, kendi ekliyor. Çünkü DocType editor admin panelinde.</li>
+      <li><strong>Real estate (#1):</strong> "Listing" DocType. Konut tipinde "balkon var mı" boolean alanı; tarla tipinde "imar durumu" select alanı. Aynı DocType, conditional fields.</li>
+      <li><strong>LMS (#6):</strong> "Course" DocType. Kurum A "prerequisite" çoklu link alanı ister; Kurum B "instructor signature" image alanı. İkisi aynı framework, ikisi farklı tenant.</li>
+      <li><strong>HRMS (#9):</strong> "Employee" DocType. Türk firma için "TC kimlik", "SGK numarası". Alman firma için "Steueridentifikationsnummer". Tek DocType template'i, locale-aware extension.</li>
+    </ul>
+  </div>
+
+  <h4>Niye CORE (modüle inmez)</h4>
+  <p>Hiçbir domain bunsuz tanımlanamaz. Identity bile bir DocType (User). Authz bile DocType (Role, Permission). Tenancy bile DocType (Site/Tenant). Hepsi kendini şema motoruyla tanımlar. Çıkarırsan framework yok.</p>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-warning"></i>Tuzak — yarım shipping</div>
+    <p>Drupal 7 entity API'yi yarım shipping etti. Topluluk eksiği kapatmak için contrib <code>Entity</code> modülü yazdı. D8'e taşırken herkes manuel migration yaptı, 5 yıl acı. <strong>Schema engine'i tam bitir.</strong> Eksik shipping = 5 yıllık ekosistem kanıtması.</p>
+  </div>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-warning"></i>Tuzak — "WordPress benzeri çözerim"</div>
+    <p>WordPress'in <code>wp_postmeta</code> tablosu polymorphic key-value. Filtreleme yavaş, JOIN cehennemi. Frappe/Salesforce öyle yapmıyor — her DocType kendi tablosu (Frappe) veya sparse columnar (Salesforce). Sen Postgres ile her DocType'a fiziksel tablo aç, JSON kolonu sadece schema-less ek alanlar için kullan.</p>
+  </div>
+</article>
+
+<article id="identity" class="domain kernel">
+  <span class="badge">Layer 0 — Kernel</span>
+  <h3><i class="ph-duotone ph-user-circle"></i>Identity</h3>
+
+  <p><strong>Junior'a:</strong> "Login/signup'ın olduğu yer" diye düşünüyorsan eksik. Identity, framework'ün geri kalanına "şu an gelen request'i kim yaptı" sorusunu cevaplayan ana mekanizma. Her endpoint çağrısında, her DocType save'inde, her event publish'te sistemin "<code>current_user</code>" diye bildiği şey buradan gelir.</p>
+
+  <p>İçinde olması gereken her şey:</p>
+  <ul>
+    <li><strong>User entity</strong> — email, password hash (Argon2id), profile data, status (active/suspended/deleted).</li>
+    <li><strong>Session management</strong> — cookie session, JWT, refresh token rotation, session revocation.</li>
+    <li><strong>OAuth / SSO</strong> — Google, GitHub, Microsoft Entra ID, generic OIDC. SAML 2.0 enterprise için.</li>
+    <li><strong>2FA</strong> — TOTP (Google Authenticator), SMS (fallback), passkey/WebAuthn (modern standart).</li>
+    <li><strong>Personal access token / API key</strong> — geliştirici curl ile API test etsin diye.</li>
+    <li><strong>Service account</strong> — server-to-server, user'a bağlı olmayan auth.</li>
+    <li><strong>Impersonation</strong> — destek ekibi "müşteri olarak giriş yap" yapsın, audit trail'e yansısın.</li>
+    <li><strong>Password reset</strong> — token expire'lı, one-time, brute force koruması.</li>
+    <li><strong>Account recovery</strong> — backup code, alternative email, social recovery.</li>
+    <li><strong>Rate limit + brute force koruması</strong> — failed login attempt sayacı, exponential backoff, IP/account level.</li>
+  </ul>
+
+  <div class="examples">
+    <h5><i class="ph ph-list-bullets"></i>Gerçek dünya örnekleri</h5>
+    <ul>
+      <li><strong>B2B SaaS (Linear, Notion):</strong> şirket admin'i çalışanlarını sadece Google Workspace ile login etsin istiyor. Şifre kullanmasınlar. SSO core'da olduğu için config'den açıyorsun.</li>
+      <li><strong>Bankacılık app:</strong> kullanıcı her giriş için passkey (yüz tanıma + cihaz). WebAuthn core'da olunca custom yazmıyorsun, hazır.</li>
+      <li><strong>Geliştirici dokümanı:</strong> developer API'sini Postman'de test etmek için <code>pat_abc123</code> üretiyor. Sebep: kendi şifresini Postman'e yazmak istemiyor.</li>
+      <li><strong>Müşteri destek senaryosu:</strong> destek temsilcisi "kullanıcı görmüyor" diyor — admin onun hesabına geçici giriş yapar (impersonate). Sistem log'a <em>"X kullanıcısı, Y kullanıcısının hesabına 14:32-14:38 arası giriş yaptı"</em> diye yazar.</li>
+      <li><strong>Sosyal medya (#14) ölçeği:</strong> 500M kullanıcı, login akışı saniyede 100K request. Session token Redis'te, rate limit Redis'te. Core'da bu primitive'ler hazır.</li>
+      <li><strong>Compliance senaryo:</strong> KVKK / GDPR'a göre kullanıcı hesabını sildiğinde data anonymize edilmeli. Identity core'da "soft delete + anonymization pipeline" hazır gelir.</li>
+    </ul>
+  </div>
+
+  <h4>Niye CORE</h4>
+  <p>Her request'in başında bu soru var. Module olamaz çünkü diğer module'ler authentication olmadan ne hook çağırabilir, ne event işleyebilir.</p>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-warning"></i>Junior tuzağı — "Auth'umu kendim yazarım"</div>
+    <p>Demek istediği şey: bcrypt cost ayarlamak, timing-safe karşılaştırma yapmak, password reset token'ı tek-kullanımlık ve süre dolumlu tutmak, session fixation'a karşı korunmak, OAuth state parameter doğrulamak, JWT secret rotation yapmak. Junior'ın 3 hafta yazıp bug bırakacağı şey. Core'a koymanın sebebi: <em>her ürün ihtiyaç duyar, yanlış yazılınca felaket olur</em>.</p>
+  </div>
+</article>
+
+<article id="authz" class="domain kernel">
+  <span class="badge">Layer 0 — Kernel</span>
+  <h3><i class="ph-duotone ph-shield-check"></i>Authorization</h3>
+
+  <p><strong>Junior'a:</strong> Authentication ile karıştırılmasın. <em>Authentication</em> = "sen kimsin, kanıtla" (login). <em>Authorization</em> = "sen busun, ne yapabilirsin". İkisi farklı domain. Bir kullanıcı login olabilir (auth pass) ama o sayfaya erişim izni olmayabilir (authz fail).</p>
+
+  <p>Modeller (junior'ın bilmesi gereken 3 model):</p>
+  <ul>
+    <li><strong>RBAC (Role-Based):</strong> "admin", "editor", "viewer" rolleri. Her rolün hak setı var. Klasik.</li>
+    <li><strong>ABAC (Attribute-Based):</strong> "kullanıcının departmanı IT ise + saat 09-18 arası ise + IP iç ağdan ise". Koşul-temelli.</li>
+    <li><strong>ReBAC (Relationship-Based):</strong> "kullanıcı bu dokümanın owner'ı ise" veya "bu projenin member'ı ise". Google Zanzibar paper'ı, OpenFGA, SpiceDB bu model üzerine.</li>
+  </ul>
+
+  <p>Senin framework'ünde üçü de gerekli. Authz layer'ı query layer'a örülmeli (query'ye otomatik WHERE eklenmeli) ki module geliştirici yanlışlıkla bile data leak yapamasın.</p>
+
+  <h4>Frappe'nin gerçek tekniği</h4>
+  <p>Frappe'de <code>permission_query_conditions</code> hook'u var. Sen "Order DocType'a herkes sadece kendi siparişini görsün" derken aslında her <code>SELECT * FROM tabOrder</code> query'sine framework otomatik <code>WHERE owner = current_user OR ...</code> ekler. Module geliştirici hiç düşünmüyor. <em>Authz query layer'ında, application layer'ında değil.</em></p>
+
+  <div class="examples">
+    <h5><i class="ph ph-list-bullets"></i>Gerçek dünya örnekleri</h5>
+    <ul>
+      <li><strong>Trello:</strong> board'un member'ları sadece o board'u görür. Karta atanmış kişi karta erişebilir. <em>ReBAC</em> — "X, board:Y'nin member'ı" relation tuple'ı.</li>
+      <li><strong>Gmail:</strong> bir mail'in receiver'ısın → okuyabilirsin. Sender'sın → "Sent" klasöründe silebilirsin ama receiver'da silinmez. <em>ABAC</em> — attribute (sender/receiver) + action (read/delete) eşlemesi.</li>
+      <li><strong>E-ticaret admin paneli:</strong> "customer-service" rolü sipariş görür, sadece "refund" yetkisi var ama 1000 TL üstü onaylayamaz. Manager 10K TL altını onaylar, üstünü CFO. <em>RBAC + ABAC karışımı</em>.</li>
+      <li><strong>Drive/Dropbox (#7):</strong> dosya paylaşımı — link share, kişi share, klasör share, organization-wide share. Hepsi resource-başına ACL. <em>Çoklu kombinasyon ReBAC</em>.</li>
+      <li><strong>GitHub:</strong> repo'nun maintainer'ı issue kapatabilir, contributor PR açabilir, public viewer sadece okur. Org içinde takım izinleri repo'lara cascade eder. <em>Hierarchical ReBAC</em>.</li>
+      <li><strong>HRMS (#9):</strong> İK uzmanı tüm maaşları görür; yönetici sadece direct report'ların maaşını görür; çalışan sadece kendininkini. Field-level + relationship-based.</li>
+      <li><strong>Healthcare:</strong> doktor sadece kendi hastasının kaydını görür. Acil servis doktoru "break-glass" ile başkasınınkine erişir ama audit log'a kırmızı flag düşer.</li>
+    </ul>
+  </div>
+
+  <h4>Niye CORE — kritik teknik nokta</h4>
+  <p>Authz <strong>module olamaz</strong>. Çünkü query layer'a örülmesi gerekir. Eğer module olsaydı, her geliştirici manuel <code>WHERE tenant_id = ? AND owner = ?</code> yazmayı unutur — <em>bir tane unutsa</em> bir tenant'ın verisi diğerine sızar. Tenancy ile birlikte gün-1 kernel disiplini.</p>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-warning"></i>Tuzak — application-level check</div>
+    <p>Junior çoğunlukla şöyle yazar:</p>
+<pre><code>orders = db.query("SELECT * FROM orders")
+return [o for o in orders if o.user_id == current_user.id]</code></pre>
+    <p>Bu yanlış: DB'den tüm satırlar geldi, sonra filter. 10M satırlık tabloda bellek patlar. Doğrusu: query layer authz'i otomatik WHERE'e çevirir, DB'den sadece izinli satır gelir.</p>
+  </div>
+
+  <div class="callout tip">
+    <div class="label"><i class="ph ph-lightbulb"></i>Hangi araç</div>
+    <p>OpenFGA (Auth0/Okta) veya SpiceDB (Authzed) inceleyebilirsin. İkisi de Zanzibar implementation'ı, gRPC API'leri var, kendi sidecar'larında çalışıyor. Sen framework'ün authz layer'ını OpenFGA-style relation tuple'lar üzerine kurabilirsin (in-process Python lib + opsiyonel sidecar).</p>
+  </div>
+</article>
+
+<article id="tenancy" class="domain kernel">
+  <span class="badge">Layer 0 — Kernel</span>
+  <h3><i class="ph-duotone ph-buildings"></i>Tenancy</h3>
+
+  <p><strong>Junior'a:</strong> "SaaS yapıyoruz" demek aslında "aynı yazılımı bir sürü müşteriye servis ediyoruz, herkesin verisi izole kalıyor" demek. Tenancy bunu sağlayan mekanizma.</p>
+
+  <h4>Üç model var, hibrit çoğu zaman doğru cevap</h4>
+  <ul>
+    <li><strong>Single-tenant:</strong> Her müşteri kendi DB'si, kendi sunucusu. Yönetim cehennemi, ama kurumsal müşteri "verim sizinkilerle aynı yerde olmasın" diyorsa böyle yapılır.</li>
+    <li><strong>Multi-tenant shared schema:</strong> Tek DB, tüm tablolarda <code>tenant_id</code> kolonu. En yaygın. Junior'ın varsayılan başlangıç noktası olmalı.</li>
+    <li><strong>Multi-tenant separate schema:</strong> Tek DB, her tenant kendi Postgres schema'sı. Backup/restore kolay, izolasyon güçlü, ama 10K+ tenant'ta migration zorlaşır.</li>
+    <li><strong>Hybrid (Shopify pattern):</strong> Küçük müşteriler shared schema'lı "pod"larda, dev müşteriler dedicated pod'da. <code>shop_id</code> ile pod routing.</li>
+  </ul>
+
+  <h4>Üç framework, üç farklı yorum</h4>
+  <ul>
+    <li><strong>Frappe:</strong> site-per-bench. Her tenant ayrı virtual host. <code>site1.local</code>, <code>site2.local</code>. Filesystem'de ayrı dizin.</li>
+    <li><strong>Salesforce:</strong> tek dev kernel, her tabloda OrgID. 200K+ tenant aynı tablolarda; OrgID query layer'da otomatik filter. Bu en zoru ama en çok ölçeklenen.</li>
+    <li><strong>Shopify:</strong> her merchant store_id, MySQL'de pod sharding. Black Friday'de saniyede 80K request'i bu yapıyla kaldırdı.</li>
+  </ul>
+
+  <div class="examples">
+    <h5><i class="ph ph-list-bullets"></i>Gerçek dünya örnekleri</h5>
+    <ul>
+      <li><strong>Notion:</strong> senin workspace'in var (Personal), şirketin workspace'i (Acme Inc) var. Aynı kullanıcı ikisinde de üye, workspace switcher'la geçiş yapar. <code>workspace_id = tenant_id</code>.</li>
+      <li><strong>Slack:</strong> workspace = tenant. Her message, channel, file bir workspace'e ait. Bir workspace'in mesajı diğerinde aratılmaz, görünmez.</li>
+      <li><strong>Shopify (#12 senaryon):</strong> her merchant kendi store'una sahip — kendi customer DB'si, kendi ürünleri, kendi domain'i, kendi tema'sı. A store'un customer'ı B store'una sızmamalı, KVKK / GDPR ihlali olur.</li>
+      <li><strong>Linear / Jira:</strong> organization = tenant. Issue'lar, project'ler hep organization'a bağlı. Aynı kullanıcı 3 organization'da üye olabilir.</li>
+      <li><strong>HRMS (#9):</strong> tenant = company. Türk şirketinin İK verisi Alman şirketininkiyle aynı tabloda ama tenant_id ile izole.</li>
+      <li><strong>Muhasebe SaaS (#10):</strong> tenant = mali müşavir bürosu (her bürosunun ayrı mükellef portföyü var — burada bir "tenant of a tenant" sorunu çıkar, açıklaması aşağıda).</li>
+      <li><strong>LMS (#6):</strong> tenant = okul/kurum. Aynı LMS kodu 500 okulu sunar. Bir okulun öğrencisi diğerinin sınıfını görmez.</li>
+    </ul>
+  </div>
+
+  <h4>Niye CORE</h4>
+  <p>Day-1'den itibaren her satırda <code>tenant_id</code> olmalı, her query otomatik <code>WHERE tenant_id = ?</code> filtrelemeli (Authz ile birlikte). Sonradan retrofit'lemek = tüm tabloları rebuild + tüm query'leri rewrite + 6 ay kayıp + güvensiz geçiş penceresi.</p>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-warning"></i>Junior tuzağı #1 — "Önce tek müşteri için yapayım"</div>
+    <p>"İlk müşterim için tutarlı çalışsın, sonradan çoklarım" düşüncesi. Kaybedilen 6 ay. Çünkü her sorguya tenant filtresi eklemek mekanik iş değil — bazı sorgular cross-tenant olmalı (admin dashboard), bazıları kesin olmamalı (auth flow). Doğru ayrımı baştan yapmak retrofit'ten 10x ucuz.</p>
+  </div>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-warning"></i>Junior tuzağı #2 — Tenant ≠ User</div>
+    <p>Bir <em>user</em> birden çok <em>tenant</em>'ta üye olabilir (Slack workspace switcher gibi). User ↔ Tenant <strong>many-to-many</strong>. Tek bir user.tenant_id alanı yetmez. Membership tablosu lazım (membership: <code>user_id</code>, <code>tenant_id</code>, <code>role</code>, <code>joined_at</code>).</p>
+  </div>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-warning"></i>Junior tuzağı #3 — Tenant ≠ Site (CMS'te)</div>
+    <p>Bir tenant birden çok site (subdomain, custom domain) işletebilir. CMS turunda konuşulmuştu: bir kurumsal müşterin 5 marka sitesi olabilir, hepsi aynı tenant'a ait. <code>site</code> tablosu ayrı, <code>tenant_id</code>'ye bağlı.</p>
+  </div>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-warning"></i>Junior tuzağı #4 — Tenant'ın tenant'ı (muhasebe senaryon)</div>
+    <p>Mali müşavir bürosu senin müşterin. Bürosunun 50 mükellefi var, her mükellefin defteri ayrı tutulmalı. Burada <em>iki seviyeli tenancy</em> var: tenant (büro) + sub-tenant (mükellef). Bunu modellemezsen büro tüm mükelleflerin defterini karıştırır. Çözüm: <code>tenant_id</code> (büro) + <code>company_id</code> (mükellef şirket) ikilisi her satırda.</p>
+  </div>
+</article>
+
+<article id="bus" class="domain kernel">
+  <span class="badge">Layer 0 — Kernel</span>
+  <h3><i class="ph-duotone ph-broadcast"></i>Event Bus + Polyglot Runtime Bridge</h3>
+
+  <p><strong>Junior'a:</strong> Module'ler birbirine doğrudan fonksiyon çağırmaz. Event publish ederler, ilgilenenler subscribe eder. Loose coupling'in motoru.</p>
+
+  <h4>Klasik anti-pattern (junior çoğunlukla böyle başlar)</h4>
+<pre><code># Order module
+def place_order(order):
+    save(order)
+    inventory.decrement_stock(order.items)      # tight coupling
+    notification.send_email(order.customer)     # tight coupling
+    loyalty.add_points(order.customer, order.total)  # tight coupling
+    analytics.track("order_placed", order)      # tight coupling</code></pre>
+  <p>Yarın 5. module geldiğinde Order module'üne 5. satır eklersin. Order module artık 5 module'ün varlığını bilmek zorunda. Modülerlik yok.</p>
+
+  <h4>Doğrusu — event publish</h4>
+<pre><code># Order module
+def place_order(order):
+    save(order)
+    bus.publish(OrderPlaced(order_id=order.id, items=order.items, customer=order.customer))
+    # Order module bu kadarını bilir. Kim dinliyor, umurunda değil.
+
+# Inventory module (ayrı dosya, ayrı geliştirici, ayrı deploy)
+@bus.on(OrderPlaced)
+def decrement_stock(event):
+    for item in event.items:
+        stock.decrement(item.sku, item.qty)
+
+# Notification, Loyalty, Analytics module'leri de aynı şekilde subscribe eder</code></pre>
+
+  <h4>Aynı kod, üç ölçek (sihir bu)</h4>
+  <p>Event bus'ın interface'i tek, implementation'ı deployment profile'a göre değişir:</p>
+  <ul>
+    <li><strong>Shared hosting (5 €/ay VPS):</strong> in-process Python event handler. Async loop. Tek process.</li>
+    <li><strong>Orta ölçek (10K req/s):</strong> Redis Streams. Birden çok worker, persistence var.</li>
+    <li><strong>Büyük ölçek (Twitter benzeri):</strong> Kafka. Saniyede milyon event, partition'lı, replay'lenebilir.</li>
+  </ul>
+  <p>Module kodu hiç değişmez. Sadece <code>config.event_bus_backend = "redis"</code> ya da <code>"kafka"</code>. Spring Modulith bunu yapar. Sen de yapmalısın.</p>
+
+  <h4>Polyglot Runtime Bridge — Python ve TypeScript birinci sınıf</h4>
+  <p>Sen istiyorsun ki geliştirici hook'u Python <em>veya</em> TypeScript ile yazsın. Üç runtime strateji var:</p>
+
+  <div class="why-row">
+    <div class="col">
+      <h5><i class="ph ph-check-circle"></i>Embedded JS (shared hosting)</h5>
+      <p>PythonMonkey (SpiderMonkey) ya da STPyV8 (V8) — Python process'in içinde JS engine. Network yok, latency düşük. 5 €/ay VPS'te single-process çalışan kullanıcılar için.</p>
+    </div>
+    <div class="col">
+      <h5><i class="ph ph-check-circle"></i>Sidecar (production default)</h5>
+      <p>Node/Deno ayrı proses, gRPC ile Python core'a bağlı. Dapr modeli. Production'da güvenilir, izolasyon var, bağımsız ölçeklenir.</p>
+    </div>
+  </div>
+  <div class="why-row">
+    <div class="col">
+      <h5><i class="ph ph-check-circle"></i>WASM / Extism (untrusted plugin)</h5>
+      <p>Marketplace plugin'leri — başkasının kodu. Sandbox'lı, capability-based. "Network erişimi yok, disk yok, sadece bu fonksiyon" diye kısıtlanabilir.</p>
+    </div>
+    <div class="col">
+      <h5><i class="ph ph-info"></i>Aynı interface</h5>
+      <p>Üç runtime de aynı hook contract'ı implement eder. Geliştirici hangisini kullandığını bilmez, framework deployment profile'a göre seçer.</p>
+    </div>
+  </div>
+
+  <p>Geliştirici tarafı aynı görünür:</p>
+<pre><code>// hooks/order.ts — TypeScript
+export const onBeforeSave = (doc: Order) =&gt; {
+  if (doc.total &lt; 0) throw new Error("Total negatif olamaz");
+  doc.totalWithTax = doc.total * 1.20;
+};</code></pre>
+<pre><code># hooks/order.py — Python
+def on_before_save(doc):
+    if doc.total &lt; 0:
+        raise ValueError("Total negatif olamaz")
+    doc.total_with_tax = doc.total * 1.20</code></pre>
+
+  <h4>Kritik DDD kuralı — aggregate boundary crossing yasak</h4>
+  <p>TS hook'unun Python aggregate'i üzerinde açık transaction tutmasına izin verme. Dağıtık transaction (2PC) çağı geçti, hem yavaş hem fragile. Doğru pattern'ler:</p>
+  <ul>
+    <li><strong>Synchronous hook = pure function.</strong> Python core transaction açar, TS hook'a aggregate kopyasını verir, TS hook decision/mutation döner, Python core commit eder. Frappe'nin <code>doc_events</code> contract'ı tam bu.</li>
+    <li><strong>Cross-aggregate effect = outbox + saga.</strong> TS hook farklı aggregate'i değiştirmek istiyorsa, transaction'da olmaz. Outbox'a event yazılır, ayrı consumer asenkron işler, başarısızlıkta compensating action.</li>
+  </ul>
+
+  <div class="examples">
+    <h5><i class="ph ph-list-bullets"></i>Gerçek dünya örnekleri</h5>
+    <ul>
+      <li><strong>Slack:</strong> bir mesaj postlandığında Slack içinde event firee eder. Bot'lar (Linear, GitHub, Datadog) subscribe eder. Slack core'da "Linear" diye bir kavram yok — Linear bot Slack event API'sini dinler.</li>
+      <li><strong>Stripe webhook:</strong> Stripe internal event bus'ını dışarıya açar. <code>payment_intent.succeeded</code> event'i webhook olarak senin endpoint'ine düşer. Senin sistemine event publish'i evrensel olarak böyle yapılır.</li>
+      <li><strong>AWS S3 → Lambda:</strong> S3'e dosya konunca <code>ObjectCreated</code> event'i otomatik Lambda'yı tetikler. Bulutta event bus pattern'inin canonical örneği.</li>
+      <li><strong>E-ticaret (#3) senaryo:</strong> <code>OrderPlaced</code> → Stock decrement + Email + Loyalty + Recommendation update + Tax record + Analytics event. Hepsi paralel, hiçbiri Order module'ü bilmez.</li>
+      <li><strong>Sosyal medya (#14):</strong> <code>PostCreated</code> → Fan-out + Search index + Moderation queue + Trend update. Fan-out'ın yapacağı iş 100M'lik bir push olabilir; ana transaction içinde olamaz, async.</li>
+    </ul>
+  </div>
+
+  <h4>Niye CORE</h4>
+  <p>Module'ler birbirinden habersiz yaşayacaksa event bus şart. Sonradan eklersen tüm module'ler birbirine kavradığı için (tight coupling) module sistemi çöker. Polyglot bridge core'da çünkü hook contract aynı olmadan TS modülü TS modülünden farklı doğmaz.</p>
+</article>
+
+<section id="scale">
+  <h2><span class="num">02</span>Scale Primitives (kernel-adjacent)</h2>
+  <p>Bunlar Layer 0 değil, ama kernel'in <em>save pipeline</em>'ına örülmesi gerek. Sonradan retrofit imkansıza yakın. "Modül yazarım sonra" diyemezsin çünkü her DocType save'i bu pipeline'dan geçer.</p>
+</section>
+
+<article class="domain scale">
+  <span class="badge">Scale primitive</span>
+  <h3><i class="ph-duotone ph-tray"></i>Transactional Outbox</h3>
+  <p><strong>Junior'a:</strong> "Order'ı DB'ye yazıp Kafka'ya event publish et" yazınca şu sorun: ikisi iki ayrı transaction. Biri başarılı, biri başarısız olabilir. Dual-write problem.</p>
+  <p>Naif yaklaşım (yanlış):</p>
+<pre><code>def place_order(order):
+    db.save(order)            # ✓ commit
+    kafka.publish(event)      # ✗ network down → event kayıp, Order var
+    # ya da
+    kafka.publish(event)      # ✓ yayınlandı
+    db.save(order)            # ✗ DB crash → event var, Order yok</code></pre>
+  <p>Outbox pattern:</p>
+<pre><code>def place_order(order):
+    with db.transaction():
+        db.save(order)
+        db.save(OutboxEntry(event_type="OrderPlaced", payload={...}, status="pending"))
+    # ✓ ikisi de aynı transaction'da, atomic
+
+# Ayrı bir worker (relay):
+def outbox_relay():
+    while True:
+        for entry in db.fetch_pending_outbox(limit=100):
+            kafka.publish(entry.payload)
+            entry.mark_as_published()</code></pre>
+  <p>Process crash olursa: Order DB'de var, outbox row'u DB'de var (committed). Worker tekrar başlar, kaldığı yerden devam eder. <em>Event garantili yayınlanır.</em></p>
+  <p><strong>Niye core'a örülmeli:</strong> her DocType save'i save pipeline'dan geçer. Outbox kodunu module'lere bırakırsan unutan olur. Pipeline'da yapınca her aggregate write otomatik outbox-aware.</p>
+  <div class="callout">
+    <div class="label"><i class="ph ph-warning"></i>Retention</div>
+    <p>Outbox tablosu büyür. Bir fintech 2 milyar satıra ulaşmış. Retention politikası gün-1: published row'ları 7 gün sonra arşivle veya başka tabloya taşı.</p>
+  </div>
+</article>
+
+<article class="domain scale">
+  <span class="badge">Scale primitive</span>
+  <h3><i class="ph-duotone ph-projector-screen-chart"></i>CQRS Projections (Materialized Read Models)</h3>
+  <p><strong>Junior'a:</strong> Yazma ve okuma model'ini ayır. Yazma model'i transaction-safe, normalize. Okuma model'i hız-için-tasarlanmış, denormalize, eventual consistent.</p>
+  <p>Klasik problem: E-ticaret dashboard'unda "müşterinin son 30 günde toplam harcaması". Naif:</p>
+<pre><code>SELECT SUM(total) FROM orders WHERE customer_id = ? AND created_at &gt; NOW() - INTERVAL '30 days'</code></pre>
+  <p>10M sipariş, 1M müşteri olunca her dashboard request'inde aynı query. Yavaş. Cache'liyorsun, stale.</p>
+  <p>Projection ile:</p>
+<pre><code># Bir tabloya CustomerStats projection'ı kur
+# customer_id, total_spent_30d, order_count, last_order_at
+
+@bus.on(OrderPlaced)
+def update_customer_stats(event):
+    stats = db.get_or_create_stats(event.customer_id)
+    stats.total_spent_30d += event.total
+    stats.order_count += 1
+    stats.last_order_at = event.timestamp
+    db.save(stats)</code></pre>
+  <p>Dashboard request'inde tek SELECT, hazır agrege. Eventual consistency = event işlenene kadar 1-2 saniye gecikme olabilir. Çoğu zaman kabul.</p>
+  <div class="examples">
+    <h5><i class="ph ph-list-bullets"></i>Gerçek dünya</h5>
+    <ul>
+      <li><strong>Twitter timeline:</strong> <code>PostCreated</code> event'inden materialize edilmiş per-user timeline. Okuma anında JOIN yok, denormalize hazır.</li>
+      <li><strong>YouTube view count:</strong> yazma yapana <code>view++</code>, okuma yapana cached projection.</li>
+      <li><strong>Stripe dashboard:</strong> "this month revenue" — her ödeme event'i projection'ı update eder.</li>
+      <li><strong>Sosyal medya feed:</strong> bütün fan-out işi projection.</li>
+    </ul>
+  </div>
+  <p><strong>Niye core'da:</strong> "Bu DocType'ın şu projection'ı var, şu event'lere subscribe oluyor" deklaratif metadata olmalı. Module'lere bırakmazsın, framework'ün otomatik rebuild edebilmesi lazım (replay).</p>
+</article>
+
+<article class="domain scale">
+  <span class="badge">Scale primitive</span>
+  <h3><i class="ph-duotone ph-fire"></i>Hot Counter</h3>
+  <p><strong>Junior'a:</strong> Like sayacı, view sayacı, follower sayacı — milyonlarca eşzamanlı kullanıcı aynı satıra yazıyor. Klasik <code>UPDATE post SET likes = likes + 1 WHERE id = ?</code> SQL'inde lock contention, throughput çöker.</p>
+  <p>Strateji:</p>
+  <ul>
+    <li><strong>Shared hosting:</strong> normal DB column. Yeterli.</li>
+    <li><strong>Orta ölçek:</strong> Redis <code>INCR</code>. Periodic flush DB'ye (her 10 saniyede bir).</li>
+    <li><strong>Büyük ölçek:</strong> sharded counter — <code>like_counter_post_123_shard_0</code>, <code>shard_1</code>, ... toplama anında <code>SUM</code>. Approximate counter, kesinlik feda, hız kazanılır.</li>
+  </ul>
+  <p>Module API'si tek:</p>
+<pre><code>counter.increment("post:123:likes")
+counter.read("post:123:likes")  # approximate ok</code></pre>
+  <p>Backend strateji deployment profile'a göre. Module geliştirici hangi strateji aktif bilmez.</p>
+  <p><strong>Niye core'da:</strong> Stok turundaki "miktar = hareketlerin toplamı" disiplini muhasebe için doğrudur (ACID). Sosyal medya counter'ı için yanlış pattern — okuma amplifikasyonu, eventual consistency tolere edilir. İki ekosistem aynı framework'te yaşayacaksa counter abstraction core'da olmalı.</p>
+</article>
+
+<article class="domain scale">
+  <span class="badge">Scale primitive</span>
+  <h3><i class="ph-duotone ph-gear-six"></i>Background Workers + Scheduler</h3>
+  <p>Async job queue: Frappe RQ, Celery, BullMQ benzeri. Outbox relay, projection rebuild, fan-out worker, cron job hepsi burada.</p>
+  <ul>
+    <li><strong>Job tipleri:</strong> immediate (queue'ya at, sıradaki worker alır), scheduled (15 dakika sonra çalışsın), recurring (her gün saat 02:00).</li>
+    <li><strong>Priority:</strong> kritik job'lar (ödeme webhook) yüksek; bilgilendirme mail'i düşük.</li>
+    <li><strong>Retry:</strong> exponential backoff, dead letter queue.</li>
+    <li><strong>Idempotency:</strong> aynı job iki kez çalışsa bile sonuç aynı (network retry'a karşı koruma).</li>
+  </ul>
+  <p><strong>Shared hosting</strong>: in-process thread pool veya APScheduler. <strong>Production</strong>: ayrı worker pod'ları, Redis/RabbitMQ queue. Aynı API.</p>
+</article>
+
+<section id="layer1">
+  <h2><span class="num">03</span>Layer 1 — In-tree core (default gelir, swappable)</h2>
+  <p>Bu domain'ler Frappe core'da var, çünkü 15 üründen 13'ünde geçiyor. Ama Medusa "Infrastructure Module" disiplini ile: interface arkasında, topluluk değiştirebilir.</p>
+</section>
+
+<article id="party" class="domain layer1">
+  <span class="badge">Layer 1 — In-tree</span>
+  <h3><i class="ph-duotone ph-users-three"></i>Party / Contact</h3>
+  <p><strong>Junior'a:</strong> "Customer" yazma. "Party" yaz. Çünkü <em>Customer</em>, <em>Supplier</em>, <em>Employee</em>, <em>Lead</em>, <em>Patient</em>, <em>Student</em> — hepsi farklı role oynayan aynı kişi olabilir. Generic abstraction Party, business semantic role module katmanında.</p>
+
+  <h4>Frappe'nin verdiği ders</h4>
+  <p>Frappe core'da <code>Contact</code> ve <code>Address</code> DocType'ları var. ERPNext'te <code>Party Type</code> (Customer / Supplier) DocType'ı var. Yani generic kişi/adres core'da, business role module'de. Sen aynı çizgiyi çiz.</p>
+
+  <h4>Yapı</h4>
+<pre><code>Person (kişi)
+  - first_name, last_name, birthdate, gender, ...
+Organization (şirket)
+  - legal_name, tax_id, founded_at, industry, ...
+Party = Person | Organization (polymorphic)
+ContactPoint
+  - email, phone, website (Party'ye N-to-1)
+Address
+  - country, city, district, street, postal_code (Party'ye N-to-1)
+PartyRole (module katmanında)
+  - customer, supplier, employee, lead, patient, student, ...</code></pre>
+
+  <div class="examples">
+    <h5><i class="ph ph-list-bullets"></i>Gerçek dünya</h5>
+    <ul>
+      <li><strong>Real estate (#1):</strong> Party = aynı kişi hem alıcı (buyer role), hem satıcı (seller role), hem danışman (agent role) olabilir. Üç ayrı tablo değil, tek Party + üç role.</li>
+      <li><strong>Hastane:</strong> Party = doktor, hemşire, hasta, refakatçi. Doktor aynı zamanda hasta olabilir (kendi muayenesi). Tek Party.</li>
+      <li><strong>Üniversite:</strong> öğrenci mezun olunca aynı Party, role değişir (alumni). LinkedIn benzeri network kurabilirsin.</li>
+      <li><strong>E-ticaret B2B (#2):</strong> bir şirket hem alıcı hem satıcı olabilir (distributor pattern). Tek Organization, dual role.</li>
+      <li><strong>CRM:</strong> lead → contact → customer dönüşümü. Aynı Party, role evrimi. Yeni tablo değil, role değişimi.</li>
+    </ul>
+  </div>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-warning"></i>Tuzak — "Customer" core'a koyma</div>
+    <p>Sosyal medyada (#14) "Customer" yok. CMS'te (#5) yok. LMS'te (#6) yok. Eğer Customer'ı core'a koyarsan bu 3 ürün için ölü kavram taşımış olursun. Generic kısım (Person/Org/Contact/Address) core, "Customer" rolü module'de.</p>
+  </div>
+</article>
+
+<article id="file" class="domain layer1">
+  <span class="badge">Layer 1 — In-tree</span>
+  <h3><i class="ph-duotone ph-folder-simple"></i>File &amp; Storage</h3>
+  <p>Dosya upload, thumbnail, version, metadata, signed URL, CDN, virus scan, MIME validation.</p>
+
+  <h4>Driver pattern — backend swappable</h4>
+<pre><code>storage.put(file, key)     # interface
+storage.get(key)
+storage.signed_url(key, expires_in=3600)
+
+# Implementation pluggable:
+# - LocalDiskDriver (shared hosting, /var/storage)
+# - S3Driver (AWS, default production)
+# - R2Driver (Cloudflare R2, S3-uyumlu, egress free)
+# - AzureBlobDriver
+# - GCSDriver</code></pre>
+
+  <p>Module değiştirebilmeli. Bir kullanıcı self-hosted MinIO kullanmak isteyebilir — yeni driver yazar, plug eder.</p>
+
+  <div class="examples">
+    <h5><i class="ph ph-list-bullets"></i>Örnekler</h5>
+    <ul>
+      <li><strong>Profil fotoğrafı:</strong> upload → automatic resize (avatar 64, profile 256, hero 1024) → CDN URL döner.</li>
+      <li><strong>PDF rapor:</strong> server-side oluşturuldu → S3'e konuldu → signed URL ile 5 dakika geçerli download link.</li>
+      <li><strong>Video (sosyal medya #14):</strong> upload → transcode pipeline (480p, 720p, 1080p, HLS) → thumbnail çıkar → moderation queue.</li>
+      <li><strong>Drive ürünü (#7):</strong> Layer 1 file motoru yetmez, üstüne <em>Block Storage</em> (CAS — content-addressable storage, dedup, delta sync) modülü gerekir. Bu Layer 2/3.</li>
+      <li><strong>Mali belge (#10):</strong> uzun süre saklama (7+ yıl, KVK / VUK), immutable, hash-verified.</li>
+    </ul>
+  </div>
+</article>
+
+<article id="workflow" class="domain layer1">
+  <span class="badge">Layer 1 — In-tree</span>
+  <h3><i class="ph-duotone ph-flow-arrow"></i>Workflow &amp; Process</h3>
+  <p><strong>Junior'a:</strong> State machine. Bir DocType'ın izlediği durumlar ve durumlar arası geçiş kuralları.</p>
+
+<pre><code>Workflow: PurchaseOrder
+  states: [draft, pending_approval, approved, sent, received, closed]
+  transitions:
+    - from: draft → pending_approval, by: requester
+    - from: pending_approval → approved, by: manager, condition: amount &lt; 10000
+    - from: pending_approval → approved, by: cfo, condition: amount &gt;= 10000
+    - from: approved → sent, by: purchasing_team
+    - from: sent → received, by: warehouse
+    - from: received → closed, by: accounting</code></pre>
+
+  <p>İçerir:</p>
+  <ul>
+    <li>State machine tanımı (deklaratif)</li>
+    <li>Transition rule + permission (kim hangi geçişi yapabilir)</li>
+    <li>Approval chain (manager + finance birlikte)</li>
+    <li>Timeout / escalation (3 gün onay yoksa CFO'ya eskale)</li>
+    <li>Branching (tutara göre farklı approver)</li>
+    <li>Audit trail (her geçiş kim/ne zaman)</li>
+  </ul>
+
+  <div class="examples">
+    <h5><i class="ph ph-list-bullets"></i>Örnekler</h5>
+    <ul>
+      <li><strong>HR izin onayı (#9):</strong> Çalışan talep → direct manager onay → HR onay → kabul. 14 gün üstüyse genel müdür eklenir.</li>
+      <li><strong>E-fatura akışı (#10):</strong> Fatura draft → finance review → manager approve → GİB'e gönder → onaylı.</li>
+      <li><strong>PR review (#11):</strong> draft PR → CI green → review request → 2 approval → merge.</li>
+      <li><strong>İlan moderasyonu (#1, #14):</strong> kullanıcı submit → AI ön-tarama → eğer flagged: insan moderatöre → onay/red.</li>
+      <li><strong>Refund akışı:</strong> müşteri talep → AI auto-approve (eğer kurallar tutuyorsa) → veya insan inceleme → tahsilat iadesi.</li>
+    </ul>
+  </div>
+
+  <p><strong>Niye core (Layer 1):</strong> 13 üründe geçiyor. Frappe core'da var. Drupal'da contrib. Sen core'da tut çünkü tekrar tekrar ihtiyaç duyulacak.</p>
+</article>
+
+<article id="notify" class="domain layer1">
+  <span class="badge">Layer 1 — In-tree</span>
+  <h3><i class="ph-duotone ph-bell"></i>Notification</h3>
+  <p>Channel-agnostic abstraction. Module geliştirici sadece <code>notify(user, template, data)</code> yazar. Framework kanal seçer (kullanıcının tercihine göre).</p>
+
+  <p>Kanallar:</p>
+  <ul>
+    <li><strong>Email</strong> (transactional + marketing ayrımı, SMTP/SES/SendGrid driver)</li>
+    <li><strong>SMS</strong> (Twilio, NetGSM, Turkcell SMS — driver)</li>
+    <li><strong>Push notification</strong> (iOS APNs, Android FCM, web push)</li>
+    <li><strong>In-app notification</strong> (bell icon, read/unread state)</li>
+    <li><strong>Slack / Teams / Discord</strong> webhook</li>
+    <li><strong>Generic webhook</strong> (B2B müşteri kendi sistemine alır)</li>
+  </ul>
+
+  <p>İçerir:</p>
+  <ul>
+    <li><strong>Template engine</strong> — Jinja/Handlebars, i18n-aware (kullanıcının diline göre template seç)</li>
+    <li><strong>User preference</strong> — kullanıcı "marketing email istemiyorum, transactional gelsin" diyebilmeli</li>
+    <li><strong>Throttling</strong> — saatte 1'den fazla aynı bildirimi atma</li>
+    <li><strong>Batching / aggregation</strong> — "12 kişi gönderini beğendi" tek bildirim (sosyal medya pattern)</li>
+    <li><strong>Delivery tracking</strong> — açıldı mı, click'lendi mi, bounce mu</li>
+    <li><strong>Unsubscribe management</strong> — yasal zorunluluk, link kullanıcıyı pref sayfasına götürür</li>
+    <li><strong>Queue + retry</strong> — SMTP down, sonra dene</li>
+  </ul>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-warning"></i>Anti-pattern — her module kendi SMTP'sini kursun</div>
+    <p>Junior her modüle <code>smtplib.SMTP("smtp.gmail.com", 587)</code> yazarsa: config dağınık, throttling yok, queue yok, retry yok, unsubscribe link inconsistent. Notification core'a koymak = tek pipeline'dan geçer = compliance kolay.</p>
+  </div>
+</article>
+
+<article id="audit" class="domain layer1">
+  <span class="badge">Layer 1 — In-tree</span>
+  <h3><i class="ph-duotone ph-list-magnifying-glass"></i>Audit &amp; Activity</h3>
+  <p>Her değişikliğin kim/ne/ne zaman log'u. Append-only, immutable.</p>
+
+  <p>İki tür var, ayrı tutulmalı:</p>
+  <ul>
+    <li><strong>Audit log (compliance-yüzlü):</strong> "<code>karaca@yandex.com</code> kullanıcısı 2026-06-04 14:32:08'de <code>Order#12345</code>'in <code>status</code> alanını <code>pending</code>'den <code>cancelled</code>'a değiştirdi". Immutable, retention politikası ile (yasal süre kadar saklanır). Muhasebede (#10), HRMS'te (#9) zorunlu.</li>
+    <li><strong>Activity feed (kullanıcı-yüzlü):</strong> "Ahmet bu issue'ya yorum yaptı (5 dk önce)". Soft delete OK, UX odaklı, expire olabilir.</li>
+  </ul>
+
+  <div class="examples">
+    <h5><i class="ph ph-list-bullets"></i>Örnekler</h5>
+    <ul>
+      <li><strong>Muhasebe (#10):</strong> Vergi denetiminde "12 ay önce şu hesap kalemini kim ne zaman değiştirdi" sorusu. Audit log olmasa hapis.</li>
+      <li><strong>HRMS (#9):</strong> "Çalışanın maaşı 2025-03 → 2025-04'te kim onayladı". HR compliance.</li>
+      <li><strong>GitHub PR:</strong> "Bu satırı 3 ay önce şu kişi şu commit'te ekledi". Activity feed.</li>
+      <li><strong>Drive (#7):</strong> "Bu dosyayı bu hafta kim açtı, kim indirdi, kim değiştirdi". Hem audit hem activity.</li>
+      <li><strong>SaaS support:</strong> "Müşteri X'in hesabına dün admin Y giriş yaptı (impersonation)". Audit.</li>
+    </ul>
+  </div>
+</article>
+
+<article id="search" class="domain layer1">
+  <span class="badge">Layer 1 — In-tree</span>
+  <h3><i class="ph-duotone ph-magnifying-glass"></i>Search &amp; Indexing</h3>
+  <p>Interface: <code>search(query, filters, sort, pagination)</code>. Backend swappable.</p>
+
+  <ul>
+    <li><strong>Shared hosting default:</strong> SQLite FTS5 (Postgres tsvector). Yeterli. Sıfır ekstra altyapı.</li>
+    <li><strong>Orta ölçek:</strong> Meilisearch, Typesense — typo-tolerant, fast, kolay setup.</li>
+    <li><strong>Büyük ölçek:</strong> OpenSearch / Elasticsearch — milyarlarca doküman, complex faceting.</li>
+    <li><strong>AI-first ek:</strong> pgvector / Pinecone / Qdrant — semantic search (embedding-based). "Beylikdüzü'nde deniz gören 3+1, 6M altı" doğal dil aramaya bu olmadan cevap veremezsin.</li>
+  </ul>
+
+  <h4>Event-driven indexing</h4>
+  <p>DocType save'i → <code>DocumentSaved</code> event → search indexer worker → backend'e push. Projection pattern'in özelleşmesi. Module geliştiricinin "index güncelle" düşünmesi gerekmez.</p>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-warning"></i>Tuzak — Elasticsearch'ü kernel'e fuse etme</div>
+    <p>"Search core'da olsun" diye Elasticsearch'ü dependency yapma. Layer 1 = <em>interface core'da, default SQLite, prod Elasticsearch swap</em>. Frappe core'da search var (basit), ciddi search isteyen Meilisearch eklentisi takıyor. Medusa search'ü Infrastructure Module yapmış. Aynı çizgi.</p>
+  </div>
+</article>
+
+<article id="calendar" class="domain layer1">
+  <span class="badge">Layer 1 — In-tree</span>
+  <h3><i class="ph-duotone ph-calendar-blank"></i>Calendar</h3>
+  <p>Event, recurring event (RRULE iCal standardı), timezone handling, availability, conflict detection.</p>
+
+  <p>İçerir:</p>
+  <ul>
+    <li>Event entity (start, end, all-day, location, attendees)</li>
+    <li>Recurrence rule (RRULE) — "her pazartesi", "her ayın ilk perşembesi"</li>
+    <li>Exception (recurring serisinin bir oturumu iptal)</li>
+    <li>Timezone-aware (DST geçişleri, IANA zone)</li>
+    <li>iCal export (.ics dosyası)</li>
+    <li>CalDAV protocol (Apple Calendar, Outlook sync)</li>
+    <li>Availability query (boş slot ara)</li>
+  </ul>
+
+  <div class="examples">
+    <h5><i class="ph ph-list-bullets"></i>Kullanım yerleri</h5>
+    <ul>
+      <li><strong>HRMS izin takvimi (#9):</strong> Çalışanın izinli olduğu günler. Manager dashboard'da takım kapasitesi görür.</li>
+      <li><strong>PMS deadline (#11):</strong> Sprint son tarihi, milestone, gate.</li>
+      <li><strong>LMS canlı ders (#6):</strong> Webinar, sınıf, sınav. Zoom entegrasyonu, takvim invite.</li>
+      <li><strong>CRM görüşme:</strong> Sales call, demo, follow-up. Calendly entegrasyonu.</li>
+      <li><strong>Real estate (#1):</strong> Mülk görme randevusu, alıcı + satıcı + danışman üçlü slot.</li>
+      <li><strong>Healthcare:</strong> Doktor randevusu, doctor availability + patient booking.</li>
+    </ul>
+  </div>
+</article>
+
+<section id="tuzaklar">
+  <h2><span class="num">04</span>Core sanılan ama core olmayan</h2>
+  <p>Junior'ın "ben bunu core'a koyarım, çünkü her ürünün lazım olur" diyeceği ama yanılacağı kavramlar.</p>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-x-circle"></i>Billing core değil</div>
+    <p>Her ürünün billing modeli farklı: B2B sözleşme + vade (Alibaba #2), retail kupon + coin (AliExpress #3), escrow + milestone (#2), seat-based subscription (#12), usage-based (API ürünleri), donation (non-profit). Billing core'a fuse edersen <em>tek modeli</em> herkese dayatırsın. Layer 2 first-party module yap, ihtiyacı olan kurar. Frappe, WordPress, Odoo, Salesforce hepsi aynı çizgide.</p>
+  </div>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-x-circle"></i>Catalog / Pricing core değil</div>
+    <p>E-ticaret ürünleri için Layer 2 module. CMS, LMS, Drive, sosyal medya gibi ürünlerin Catalog'la işi yok. Core'a koymak ölü kavram taşımak.</p>
+  </div>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-x-circle"></i>Reporting / Analytics core değil</div>
+    <p>Frappe ve Salesforce core'a koymuş ama bu istisna. Sen Layer 2 yap — kullanan kurar. Genel raporlama (her DocType için liste, filter, export) zaten DocType engine'in özelliği. Cross-domain analytics (BI dashboard) module.</p>
+  </div>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-x-circle"></i>AI / Agent core değil</div>
+    <p>"AI-first framework" dediğine bakma, AI domain kendi başına Layer 2 module. Core'da olan şey: AI'ın bağlandığı substrate (event bus, schema, embeddings için pgvector). AI agent davranışları, prompt template'leri, model routing — module katmanında. Çünkü farklı ürünlerin AI ihtiyacı tamamen farklı (sosyal moderation ≠ muhasebe categorization ≠ stok forecasting).</p>
+  </div>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-x-circle"></i>Logging / Monitoring / Caching</div>
+    <p>Bunlar infrastructure concern, "domain" değil. Sen structlog kullanırsın, OpenTelemetry kurarsın, Redis cache adapter Layer 1 olur. Bunları "domain" olarak kavramlaştırmak DDD'yi su sıkar.</p>
+  </div>
+
+  <div class="callout">
+    <div class="label"><i class="ph ph-x-circle"></i>Feed / Timeline — sosyal medya hayranı için</div>
+    <p>Bu kritik. Sosyal medya turunda konuşulmuştu. "Fan-out core'da olsun" diye düşünebilirsin çünkü "scale primitive". Yanıt: <em>primitive'ler core'da, policy module'de</em>. Event bus, outbox, async worker, hot counter, projection — core'da. Push vs pull seçimi, celebrity threshold (~10K follower), hybrid merge — Layer 2 Feed module. Çünkü 13 ürünün feed'i yok; core'a fuse edersen onları gereksiz overhead taşır.</p>
+  </div>
+</section>
+
+<section id="sira">
+  <h2><span class="num">05</span>Geliştirme sırası önerisi</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Aşama</th>
+        <th>Ne yapılır</th>
+        <th>Bitiş kriteri</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Stage 1<br>Kernel</td>
+        <td>Layer 0 tam shipping: DocType engine, Identity, Authz (query layer'a örülmüş), Tenancy (her satırda tenant_id), Event Bus (in-process), polyglot hook contract (embedded JS runtime).</td>
+        <td>Runtime'da yeni DocType tanımlanabilir, Python <em>ve</em> TS hook bağlanabilir, authz transparent şekilde query'leri filtreliyor. Tek process'te çalışıyor.</td>
+      </tr>
+      <tr>
+        <td>Stage 2<br>Scale primitives</td>
+        <td>Outbox save pipeline'a, projection deklaratif support, hot counter abstraction, background worker + scheduler. Event bus'a Redis Streams driver.</td>
+        <td>Config flag ile event bus in-process'ten Redis'e geçer, module kodu değişmez. Outbox-published event projection rebuild'i tetikler.</td>
+      </tr>
+      <tr>
+        <td>Stage 3<br>Layer 1</td>
+        <td>Party/Contact, File (driver pattern), Workflow engine, Notification (channel-driver), Audit, Search (SQLite FTS default), Calendar.</td>
+        <td>Topluluk module'ü File backend'ini S3'ten R2'ye değiştirebilir, core kodu değişmez.</td>
+      </tr>
+      <tr>
+        <td>Stage 4<br>Layer 2 + Toolchain</td>
+        <td>Billing, Pricing/Catalog, Reporting, AI, Location, ağır Search backend, Feed module. + <code>create-module</code> CLI, manifest/dependency sistemi, marketplace registry, sidecar Node/Deno gRPC, WASM/Extism runtime, Packwerk-tarzı boundary CI check.</td>
+        <td>Dış geliştirici scaffold → build → registry'e publish (core'a hiç dokunmadan). Boundary violation CI'da fail.</td>
+      </tr>
+      <tr>
+        <td>Stage 5<br>Scale proof</td>
+        <td>En zor ürün üstünde test: sosyal medya Feed module'ü (#14). Hybrid push/pull, celebrity threshold, timeline projection.</td>
+        <td>Aynı Feed module kodu küçük tenant'ta single-process, dev tenant'ta Kafka + read replica ile çalışır. Kernel hiç değişmez.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">06</span>Hızlı referans — özet tablo</h2>
+  <table>
+    <thead>
+      <tr><th>Domain</th><th>Layer</th><th>Niye orada</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Schema / DocType</td><td>0 Kernel</td><td>Her şey kendini bunun üstüne tanımlar</td></tr>
+      <tr><td>Identity</td><td>0 Kernel</td><td>Her request'in başında "kim" sorusu</td></tr>
+      <tr><td>Authorization</td><td>0 Kernel</td><td>Query layer'a örülü, module olamaz</td></tr>
+      <tr><td>Tenancy</td><td>0 Kernel</td><td>Day-1 her satırda tenant_id, retrofit zor</td></tr>
+      <tr><td>Event Bus + Polyglot</td><td>0 Kernel</td><td>Module'ler loose-coupled konuşacaksa şart</td></tr>
+      <tr><td>Outbox</td><td>0+ Save pipeline</td><td>Dual-write problem, retrofit imkansız</td></tr>
+      <tr><td>Projections (CQRS)</td><td>0+ Save pipeline</td><td>DocType deklaratif metadata</td></tr>
+      <tr><td>Hot counter</td><td>0+ Primitive</td><td>Counter abstraction, backend swap</td></tr>
+      <tr><td>Background workers</td><td>0+ Infra</td><td>Outbox/projection/fan-out hepsi burada</td></tr>
+      <tr><td>Party / Contact</td><td>1 In-tree</td><td>13/15 ürün, generic kısım core, role module</td></tr>
+      <tr><td>File / Storage</td><td>1 In-tree</td><td>Driver pattern, S3/R2/Local swap</td></tr>
+      <tr><td>Workflow</td><td>1 In-tree</td><td>State machine her yerde lazım</td></tr>
+      <tr><td>Notification</td><td>1 In-tree</td><td>Channel-agnostic, driver pattern</td></tr>
+      <tr><td>Audit / Activity</td><td>1 In-tree</td><td>Compliance ve UX, ayrı tut</td></tr>
+      <tr><td>Search</td><td>1 In-tree</td><td>Interface core, default SQLite, prod Elasticsearch</td></tr>
+      <tr><td>Calendar</td><td>1 In-tree</td><td>iCal/CalDAV standardı, RRULE</td></tr>
+      <tr><td>Billing</td><td>2 First-party</td><td>Her ürünün modeli farklı, core dayatamaz</td></tr>
+      <tr><td>Catalog / Pricing</td><td>2 First-party</td><td>E-ticaret ürünleri için</td></tr>
+      <tr><td>Reporting / BI</td><td>2 First-party</td><td>Cross-domain analytics</td></tr>
+      <tr><td>AI / Agent</td><td>2 First-party</td><td>Her ürünün AI ihtiyacı farklı</td></tr>
+      <tr><td>Feed / Timeline</td><td>2 First-party</td><td>13 üründe yok; policy module, primitive core</td></tr>
+      <tr><td>15 ürünün business logic'i</td><td>3 Community</td><td>Listing, BOM, Stock Ledger, Social Graph, Course...</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer class="page">
+  <p>Bu döküman 15 ürün analizinin ve framework araştırmasının sentezi. Kernel'in 5 immovable domain'i + scale primitives + Layer 1 in-tree core + Layer 2 first-party + Layer 3 community ayrımı, Frappe + Drupal + Odoo + WordPress + Medusa + Salesforce + Backstage + VS Code + Strapi pattern'lerinin ortak paydası.</p>
+</footer>
+
+</div>
+</body>
+</html>

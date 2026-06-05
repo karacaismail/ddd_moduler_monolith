@@ -1,0 +1,114 @@
+{
+  "id": "scale-workers",
+  "title": "Workers + Scheduler",
+  "subtitle": "Async job queue. Outbox relay, projection rebuild, fan-out, cron — hepsi burada.",
+  "cluster": "scale",
+  "layer": "scale",
+  "order": 13,
+  "icon": "ph-gear-six",
+  "badge": "Scale primitive #4",
+  "tags": [
+    "workers",
+    "queue",
+    "cron",
+    "scheduler"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Async job queue. Outbox relay, projection rebuild, fan-out, scheduled task, webhook delivery — hepsi burada."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Job kategorileri"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Immediate** — queue'ya at, en yakın worker alır. (örn: email send)",
+        "**Scheduled** — 15 dk sonra çalışsın. (örn: kart abandonment reminder)",
+        "**Recurring** — her gün 02:00. (örn: daily cleanup)",
+        "**Priority** — yüksek (payment webhook), normal, düşük (marketing email)."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Implementasyon seçimi"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Shared hosting:** `arq` (asyncio Redis queue) tek worker process.",
+        "**Orta ölçek:** `dramatiq` + RabbitMQ. Birden çok worker pod.",
+        "**Büyük ölçek:** `Celery` + Redis/RabbitMQ broker. Veya direkt Kafka consumer.",
+        "**Durable workflow:** `DBOS` (Postgres-native, ek altyapı yok) — saga için ideal. `Temporal.io` (Cassandra/PG backend) — büyük workload için."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Idempotency"
+    },
+    {
+      "type": "paragraph",
+      "text": "Job iki kez çalışsa bile sonuç aynı olmalı (network retry, worker restart). Pattern: her job `idempotency_key` taşır, handler \"bu key işlendi mi\" check'ler. {{ref:scale-idempotency}}."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Job tanımı — kod örneği"
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "content": "from framework.workers import job, schedule\n\n@job(queue=\"emails\", retry=3, backoff=\"exponential\", timeout=60)\nasync def send_welcome_email(user_id: str):\n    user = await User.get(user_id)\n    await mailer.send(user.email, template=\"welcome\")\n\n@schedule(cron=\"0 2 * * *\", queue=\"maintenance\")  # Her gün 02:00\nasync def daily_cleanup():\n    await archive_old_outbox_rows()\n    await rebuild_search_index_for_stale_docs()"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Worker pool sizing"
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "Tek-process (shared host)",
+          "value": "asyncio loop + 1 worker. Yeterli ~100 req/s."
+        },
+        {
+          "key": "Küçük SaaS",
+          "value": "1 web pod + 1 worker pod, her biri 4 vCPU."
+        },
+        {
+          "key": "Orta SaaS",
+          "value": "3 web + 3 worker + 1 scheduler pod. Horizontal scale."
+        },
+        {
+          "key": "Büyük (sosyal medya)",
+          "value": "Web pool, worker pool per queue (emails, fanout, projections, webhooks), autoscale."
+        }
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Async job queue. Outbox relay, projection rebuild, fan-out, cron — hepsi burada.",
+    "detail": "Async job queue. Outbox relay, projection rebuild, fan-out, cron — hepsi burada.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": "edu-overview",
+  "title": "Eğitim yaklaşımı — bu döküman nasıl okunur",
+  "subtitle": "Bu dökümanın TAMAMI bir eğitim materyalidir. Aşağıda yöntem; sonraki cluster'lar konunun kendisidir.",
+  "cluster": "meta",
+  "order": 3,
+  "icon": "ph-graduation-cap",
+  "granularity": "kaya",
+  "state": "wip",
+  "tags": ["education", "curriculum", "onboarding"],
+  "enrich": {
+    "info": "Sıfırdan mimar — 10 üniteli sıralı müfredat. Her ünite sonunda kontrol listesi.",
+    "detail": "Hedef kitle: yazılım bilmeyen tasarımcı/PM/girişimci. Çıktı: bu projenin yazılım mimarı.\n\nMüfredat **anlatım odaklı**, sınav yok. Her ünite: ön-koşul → kavramlar (TR sözlüğü) → anlatım → adım-adım örnek → kontrol listesi → mini-proje önerisi → sonraki ünite linki.",
+    "stories": [
+      { "persona": "UI tasarımcısı (geçiş yapan)", "context": "Photoshop'tan gelir, kod görmemiştir.", "outcome": "Ünite-01'den başlar; her ünite önceki ünitede konuştuğumuz kavramları kullanır. 10 ünite sonra DocType tasarlayıp plugin manifest yazabilir." }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Bu döküman tek başına yazılım mimarı yetiştirir.** Sınav yok; her ünite bir konuyu anlatır, kavramların **Türkçe açılımlarını** verir, gerçek senaryolarla bağlar, sonunda *yapabildiğini* kontrol listesinden işaretlersin.",
+      "enrich": { "info": "Müfredat felsefesi: anlatım + bağlam + kontrol — sınav değil." }
+    },
+
+    { "type": "callout", "variant": "info", "label": "Nasıl okumalıyım?",
+      "body": "Sıralı git. Ünite 03'ten başlama; çünkü 03 öğrenmek için 01 ve 02'deki kavramları kullanıyoruz. Her cümlenin yanındaki **!** (kısa) ve **?** (detaylı) butonları teknik terim açılımlarını + gerçek hayat örneklerini gösterir.",
+      "enrich": {
+        "detail": "**Pratik ipucu:** Bir kavramı ilk gördüğünde **?** ile derine in; sonraki ünitelerde aynı kavramı sadece tekrar görmek için **!** sana yeter. Beyin böyle daha hızlı oturtur."
+      }
+    },
+
+    { "type": "heading", "level": 4, "text": "Müfredat — 10 ünite",
+      "enrich": { "info": "Her ünite 30-90 dakika; toplam ~10 saat." }
+    },
+
+    {
+      "type": "table",
+      "filterable": true,
+      "stateColumn": 3,
+      "headers": ["Ünite", "Konu", "Ne öğreneceksin", "Durum"],
+      "rows": [
+        ["01", "Yazılım nedir?", "Kod, derleyici, runtime, framework, monolit vs micro-services, neden meta-framework", { "text": "Hazır", "state": "ok" }],
+        ["02", "Veri ve Tipler", "Bit/byte, scalar/composite, primitive, validator, coercion, Decimal vs float, UTF-8", { "text": "Hazır", "state": "ok" }],
+        ["03", "DocType ile Model", "Tip değil tablo; metadata-driven model; field, naming series, hooks", { "text": "Hazır", "state": "ok" }],
+        ["04", "Veritabanı Temelleri", "PostgreSQL, kolon, indeks, foreign key, transaction, ACID, normalize/denormalize", { "text": "Hazır", "state": "ok" }],
+        ["05", "API: REST ve GraphQL", "İstek-cevap, HTTP method, REST vs GraphQL, JSON, status code, idempotent", { "text": "Hazır", "state": "ok" }],
+        ["06", "Multi-tenancy", "Bir kod çok müşteri; row-level vs schema vs cluster; tenant scope, sızıntı", { "text": "Planlandı", "state": "planned" }],
+        ["07", "Yetkilendirme & Güvenlik", "Identity, session, RBAC/ABAC, audit, KVKK, encryption at rest", { "text": "Planlandı", "state": "planned" }],
+        ["08", "Event Bus & Outbox", "Senkron vs asenkron, event-driven, transactional outbox, idempotency", { "text": "Planlandı", "state": "planned" }],
+        ["09", "Plugin Mimarisi", "Manifest, registry, hook, semver, marketplace, contract test", { "text": "Planlandı", "state": "planned" }],
+        ["10", "Deploy & Operations", "Git, CI/CD, GitHub Actions, Hetzner, observability, on-call", { "text": "Planlandı", "state": "planned" }]
+      ]
+    },
+
+    { "type": "heading", "level": 4, "text": "Her ünitenin iç şablonu" },
+    {
+      "type": "steps",
+      "items": [
+        { "title": "Ön-koşul", "body": "Bu üniteden önce hangi ünite(ler) tamamlanmış olmalı — link verilir." },
+        { "title": "Bu ünitenin sonunda yapabileceklerin", "body": "Somut yetenekler listesi. 'Anladım' değil, *yapabilirim*." },
+        { "title": "Kavramlar (TR sözlük)", "body": "Bu ünitede geçen tüm İngilizce/jargon terimlerin **Türkçe karşılığı + açıklama + neden böyle**." },
+        { "title": "Anlatım", "body": "Konunun mantığı. Görsel örnek, analoji, projeden bağlama." },
+        { "title": "Adım-adım örnek", "body": "Konuyu projenin gerçek bir parçasına uygula. Kod ve config örnekleri." },
+        { "title": "Kontrol listesi", "body": "Üniteyi bitirdiğinde işaretle. Tarayıcı hatırlar; her dönüşünde bıraktığın yerden devam." },
+        { "title": "Mini-proje", "body": "Tek başına yapabileceğin küçük bir görev — kavramı oturtmak için." },
+        { "title": "Sonraki ünite", "body": "Tek tık ile devam." }
+      ]
+    },
+
+    { "type": "checklist", "title": "Müfredata başlamadan önce — hazırlık",
+      "storageKey": "edu.prereq",
+      "items": [
+        { "label": "Mac veya Linux'ta bir terminal açabiliyorum.", "hint": "`Cmd+Space` → 'Terminal' / Ubuntu'da `Ctrl+Alt+T`." },
+        { "label": "Bir kod editörü kurdum (VS Code önerilir).", "hint": "[code.visualstudio.com](https://code.visualstudio.com)" },
+        { "label": "GitHub hesabım var.", "hint": "[github.com](https://github.com) — ücretsiz." },
+        { "label": "Node.js v22 kuruldu.", "hint": "`brew install node@22` veya [nodejs.org](https://nodejs.org)", "optional": true },
+        { "label": "PostgreSQL kuruldu (sonradan da yapılabilir).", "hint": "`brew install postgresql@16`", "optional": true }
+      ]
+    },
+
+    { "type": "callout", "variant": "tip", "label": "Tek cümle",
+      "body": "10 ünite, ~10 saat, hiç sınav, çok pratik. Bittiğinde bu projenin yazılım mimarısın."
+    }
+  ],
+  "related": ["edu-u01", "overview", "philosophy"]
+}

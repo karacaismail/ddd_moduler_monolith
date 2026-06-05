@@ -1,0 +1,310 @@
+{
+  "id": "landx-l2",
+  "title": "LandX L2 — Agent Runtime (Differentiator)",
+  "subtitle": "A01–A11. MCP server, tool registry, vector store, memory, prompt lib, LLM obs, agent orchestration. 11 modül — framework'ün asıl ayırt edici noktası.",
+  "cluster": "landx",
+  "order": 48,
+  "layer": "scale",
+  "icon": "ph-robot",
+  "badge": "LandX L2 — 11 modül · DIFFERENTIATOR",
+  "tags": [
+    "landx",
+    "agent",
+    "mcp",
+    "llm",
+    "vector",
+    "ai"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "L2 katmanı framework'ün **asıl farklılaşma noktası**. Diğer framework'lerde olmayan, AI agent runtime için doğal yerleşim. 11 modül, 232 operation'ın büyük kısmı burada."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-broadcast",
+      "text": "A01 — MCP Server Framework"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 1 · P0 · Agent Runtime Squad.** Model Context Protocol native server. Plugin'lerin tanımladığı tool'lar otomatik MCP endpoint olarak servis edilir. LLM agent'lar standart MCP transport (stdio/sse/streaming-http) ile bağlanabilir."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Tool discovery latency <100ms, MCP transport uptime >%99.95, tool description LLM-readable score >%95"
+        },
+        {
+          "key": "Capabilities",
+          "value": "MCP Endpoint Management · Initialize Handshake · Discovery Endpoints · Tool Invocation Protocol · Streaming Responses"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-toolbox",
+      "text": "A02 — Tool Registry & Discovery"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 1 · P0 · Agent Runtime Squad.** Plugin'lerin tanımladığı tool'ların merkezi kataloğu. Her tool: input/output schema, side-effect annotation, idempotency, blast radius, cost class, LLM-readable description."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Tool description LLM selection accuracy >%90, tool registry sync <5sn, deprecated tool cleanup >%99"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Tool Definition · Side-Effect/Safety Annotations · Tool Versioning · Semantic Tool Search · Usage Analytics"
+        },
+        {
+          "key": "Safety alanları",
+          "value": "`read_only`, `idempotent`, `destructive`, `requires_confirmation`, `blast_radius` (self/single_record/tenant/global), `cost_class`"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-shield-check",
+      "text": "A03 — Agent Identity & Capability Scopes"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 1 · P0 · Agent Runtime Squad + Security Squad.** Agent kimliği, capability scope binding, session-bound limit, blast-radius kontrolü, ihlal tespiti. Her agent çağrısında etkin yetki = `user_perms ∩ agent_scope ∩ session_limits`."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Privilege escalation 0, scope drift tespit <1sn, scope binding accuracy %100"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Capability Pack Definition · Agent-User Binding · Session Limits & Throttling · Tool Execution Sandbox · Violation & Incident"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-brain",
+      "text": "A04 — Agent Memory Layer"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 2 · P0 · Agent Runtime Squad.** Short-term (conversation), long-term (semantic), episodic (geçmiş etkileşim), procedural (öğrenilmiş prosedür) memory katmanları. Hibrit retrieval: vector + SQL filter + temporal weighting."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Memory recall relevance >%85, write latency <100ms, context window optimization >%30 token tasarrufu"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Short-term Memory · Long-term Semantic · Episodic · Procedural · Memory Hygiene (PII scrubbing)"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-vector-three",
+      "text": "A05 — Vector Store & Embedding Pipeline"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 2 · P0 · Agent Runtime + AI Squad.** pgvector tabanlı vector storage, embedding job runner, model versioning, hybrid search (vector + BM25 + filter), reranking."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Embedding throughput >1000/dk, hybrid search NDCG@10 >0.75, embedding model upgrade downtime 0"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Embedding Model Registry · Embedding Generation · Hybrid Search · Reindex & Migration (dual-write/blue-green/in-place) · Index Statistics (HNSW params)"
+        },
+        {
+          "key": "Bizim eşdeğer",
+          "value": "{{ref:l1-search}}"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-text-aa",
+      "text": "A06 — Prompt Library & Versioning"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 2 · P0 · AI Squad.** Prompt'ların kod gibi versiyonlanması, A/B test, eval suite, drift detection, rollout. Her prompt: input variables, output schema, eval cases, metrik bağlantısı."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Prompt deploy <2dk, A/B winning automated, eval coverage per prompt >%80"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Prompt Definition · A/B Testing · Eval Suite · Rollout & Rollback · Drift Detection"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-circuitry",
+      "text": "A07 — LLM Provider Abstraction"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 1 · P0 · AI Squad.** Anthropic, OpenAI, Azure OpenAI, Bedrock, lokal Ollama gibi sağlayıcıları tek soyutlamada birleştirir. Routing (model fallback, cost-optimal, capability-based), retry, circuit breaker, streaming uyumluluğu."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Provider failover <2sn, cost optimization tasarruf >%20, rate-limit absorption başarı >%99"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Provider Registry · Model Catalog · Routing & Fallback · Retry & Circuit Breaker · Streaming Adapter"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-chart-line",
+      "text": "A08 — LLM Observability & Cost Tracking"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 2 · P0 · AI + Platform Ops.** Her LLM çağrısı: input/output, token count, latency, cost, trace, hallucination skoru. Langfuse-equivalent ama MCP-aware. Cost attribution: tenant/agent/feature."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Cost attribution accuracy >%99, hallucination false-positive <%10, latency p99 dashboard refresh <30sn"
+        },
+        {
+          "key": "Capabilities",
+          "value": "LLM Trace (Span/Tool Call Span) · Cost Attribution · Quality Signals (Hallucination Detection) · Replay & Debug"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-graph",
+      "text": "A09 — Agent Orchestration & Workflow"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 3 · P0 · Agent Runtime + AI Squad.** Çok-adımlı agent görevleri için workflow engine. Plan-execute-reflect döngüsü, alt-agent çağrısı, paralel tool execution, checkpoint/resume, human-in-the-loop."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Multi-step task success rate >%75, checkpoint-resume reliability >%99, human approval queue median wait <15dk"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Workflow Definition (react/plan_execute/multi_agent/router/dag) · Execution Run · Checkpoint & Resume · Human-in-the-Loop · Multi-Agent Coordination"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-lightning",
+      "text": "A10 — Streaming & SSE Primitives"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 2 · P1 · Agent Runtime.** LLM token stream, tool execution progress stream, agent step stream için unified SSE/WebSocket katmanı. Backpressure, reconnect, multiplex, fan-out destekli."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Stream reconnect success >%99, backpressure dropout <%0.1, fan-out 1→N latency p99 <100ms"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Stream Channel · Subscriber Lifecycle (Reconnect/Resume) · Backpressure & Buffering · Transport (SSE/WebSocket)"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-chat-circle",
+      "text": "A11 — Conversation & Session Management"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Faz 2 · P0 · Agent Runtime.** Konuşma geçmişi, session state, multi-turn context, message threading, branching (alternative replies), conversation forking. Agent↔human ve agent↔agent karışık konuşmaları destekler."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "KPI",
+          "value": "Session resume p95 <300ms, conversation branching consistency %100, context window optimization >%30"
+        },
+        {
+          "key": "Capabilities",
+          "value": "Conversation · Messages & Threading · Context Window Management (Compaction) · Conversation Sharing"
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Bu framework'ü ayıran şey",
+      "body": "Diğer framework'ler (Frappe/Odoo/Drupal) tarihsel olarak human-first. L2 katmanı agent'ı first-class vatandaş yapar:\n\n- **A02 Tool Registry** her DocType action'ını otomatik MCP tool olarak expose eder.\n- **A03 Capability Scopes** agent'ı user'dan ayrı yetkilendirir (kesişim modeli).\n- **A04 Memory Layer** session-aware + tenant-isolated bellek.\n- **A05 Vector Store** her DocType save'inde otomatik embedding.\n- **A06 Prompt Library** prompt'u kod gibi versiyonlar.\n- **A07 Provider Abstraction** cost-optimal LLM routing.\n- **A08 LLM Observability** her çağrıyı cost + quality ile izler.\n- **A09 Orchestration** durable agent workflow (DBOS/Temporal pattern).\n\nBu sekiz parçanın hiçbiri WordPress/Drupal/Odoo'da yok. Sen var ediyorsun."
+    }
+  ],
+  "enrich": {
+    "info": "A01–A11. MCP server, tool registry, vector store, memory, prompt lib, LLM obs, agent orchestration. 11 modül — framework'ün asıl ayırt edici",
+    "detail": "A01–A11. MCP server, tool registry, vector store, memory, prompt lib, LLM obs, agent orchestration. 11 modül — framework'ün asıl ayırt edici noktası.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

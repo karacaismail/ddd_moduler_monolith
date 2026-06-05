@@ -1,0 +1,152 @@
+{
+  "id": "services",
+  "title": "Services — Dış Sağlayıcılar",
+  "subtitle": "Adapter pattern arkasında 11 kategori dış servis.",
+  "cluster": "services",
+  "order": 40,
+  "icon": "ph-cloud",
+  "tags": [
+    "services",
+    "providers",
+    "integration"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Senin tahtada **PowerDNS/Cloudflare/Route 53, AI Providers, ELK, Redis/Cluster** yazdın. Aşağıda 11 kategori — driver pattern arkasında."
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Kategori",
+        "Sağlayıcılar"
+      ],
+      "rows": [
+        [
+          "Ödeme Gateway",
+          "iyzico, PayTR, Stripe Connect, PayPal, Adyen, Param"
+        ],
+        [
+          "E-Belge entegratör (TR)",
+          "Foriba/Sovos, Logo eLogo, Mikro, İzibiz, Uyumsoft, NES, KolayBi', BizimHesap, QNB eFinans, Turkcell DGN"
+        ],
+        [
+          "Email transactional",
+          "SES, SendGrid, Postmark, Mailgun, Resend"
+        ],
+        [
+          "SMS gateway (TR)",
+          "NetGSM, Turkcell SMS, Vatan SMS, İletimerkezi, Twilio"
+        ],
+        [
+          "Push notification",
+          "FCM (Android), APNs (iOS), Web Push (VAPID), OneSignal"
+        ],
+        [
+          "Object storage",
+          "S3, Cloudflare R2, MinIO, Wasabi, Backblaze B2"
+        ],
+        [
+          "CDN",
+          "Cloudflare, Fastly, Bunny.net, CloudFront, KeyCDN"
+        ],
+        [
+          "Maps / Geocoding",
+          "Mapbox, Google Maps, OpenStreetMap (Nominatim), Yandex Haritalar"
+        ],
+        [
+          "Carrier (Kargo TR)",
+          "Yurtiçi, Aras, MNG, UPS, Sendeo, Kolay Gelsin, HepsiJet"
+        ],
+        [
+          "Vector DB",
+          "pgvector (default), Qdrant, Pinecone, Weaviate"
+        ],
+        [
+          "LLM Provider",
+          "OpenAI, Anthropic, Google Gemini, Mistral, local Ollama"
+        ],
+        [
+          "OCR",
+          "Google Vision, AWS Textract, Mindee, Azure Doc Intelligence"
+        ],
+        [
+          "Translation",
+          "DeepL, Google Translate, AWS Translate"
+        ],
+        [
+          "Voice/Telephony",
+          "Twilio Voice, Vonage, Plivo"
+        ],
+        [
+          "Video Conferencing",
+          "Daily, Zoom, Jitsi, 100ms"
+        ],
+        [
+          "e-Signature",
+          "DocuSign, HelloSign, e-imza/m-imza (TR ESHS), Adobe Sign"
+        ],
+        [
+          "KYC/KYB",
+          "Onfido, Stripe Identity, SumSub, Trulioo"
+        ],
+        [
+          "Fraud",
+          "Sift, Stripe Radar, Signifyd"
+        ],
+        [
+          "Observability",
+          "Sentry, Datadog, Grafana Cloud, Loki, Tempo, Prometheus"
+        ],
+        [
+          "Tracing",
+          "OpenTelemetry SDK, Jaeger, Tempo"
+        ],
+        [
+          "Message Queue",
+          "Redis Streams, RabbitMQ, Kafka, NATS"
+        ],
+        [
+          "Durable Workflow",
+          "DBOS (Postgres-native), Temporal.io, Restate"
+        ],
+        [
+          "Search backend",
+          "Postgres FTS+pgvector, Meilisearch, Typesense, OpenSearch, Elasticsearch"
+        ],
+        [
+          "Calendar sync",
+          "Google Calendar, Outlook Graph, CalDAV (Apple)"
+        ],
+        [
+          "Bank API (TR)",
+          "BKM Express, Open Banking (PSD2 TR — gelişiyor)"
+        ],
+        [
+          "Government API (TR)",
+          "GİB Internet Vergi Dairesi, SGK e-Bildirge, MERSİS, TC Kimlik Doğrulama"
+        ]
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Adapter pattern arkasında 11 kategori dış servis.",
+    "detail": "Adapter pattern arkasında 11 kategori dış servis.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

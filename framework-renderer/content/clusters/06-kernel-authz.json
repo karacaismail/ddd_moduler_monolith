@@ -1,0 +1,457 @@
+{
+  "id": "k-authz",
+  "title": "Authorization",
+  "subtitle": "Kim ne yapabilir? Query layer'a örülmüş — application-level if-check yetmez.",
+  "cluster": "layer0",
+  "layer": "kernel",
+  "order": 6,
+  "icon": "ph-shield-check",
+  "badge": "Layer 0 — Kernel #3",
+  "tags": [
+    "authz",
+    "rbac",
+    "rebac",
+    "abac",
+    "rls",
+    "kernel"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Authentication** ({{ref:k-identity}}) = \"kim\". **Authorization** = \"ne yapabilir\". Karıştırılmasın. Authz *query layer'a örülmeli*; application-level if-check yetmez."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Üç model birlikte"
+    },
+    {
+      "type": "paragraph",
+      "text": "Gerçek hayatta üç modeli birlikte kullanırsın:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**RBAC (Role-Based)** — admin, editor, viewer rolleri. Klasik. Frappe'nin `Role` + `DocPerm` sistemi.",
+        "**ABAC (Attribute-Based)** — \"kullanıcının departmanı IT ise saat 09-18 arası ise iç ağdaysa\". Koşul-temelli. SpiceDB'de \"caveats\" olarak.",
+        "**ReBAC (Relationship-Based)** — \"kullanıcı bu document'in owner'ı ise\" veya \"bu projenin member'ı ise\". Google Zanzibar, OpenFGA, SpiceDB temeli."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "OpenFGA modeli — kanonik"
+    },
+    {
+      "type": "paragraph",
+      "text": "Senin framework'ünde OpenFGA-style DSL ile authz tanımla:"
+    },
+    {
+      "type": "code",
+      "lang": "openfga",
+      "title": "OpenFGA model DSL",
+      "content": "model\n  schema 1.1\n\ntype user\n\ntype organization\n  relations\n    define member: [user]\n    define admin: [user]\n\ntype document\n  relations\n    define parent: [organization]\n    define owner: [user]\n    define editor: [user] or owner or admin from parent\n    define viewer: [user] or editor or member from parent"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sonra `check(user:alice, viewer, document:report-2026)` diye sorgu yaparsın. Sistem tuple store'a bakar: `document:report-2026.parent = organization:acme` + `organization:acme.member = user:alice` → **true**."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Query layer injection — kritik"
+    },
+    {
+      "type": "paragraph",
+      "text": "Frappe'nin `permission_query_conditions` hook'u — junior'a illa öğret:"
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "title": "Permission query injection",
+      "content": "# hooks.py\npermission_query_conditions = {\n    \"SalesOrder\": \"myapp.permissions.sales_order_conditions\"\n}\n\n# myapp/permissions.py\ndef sales_order_conditions(user):\n    if not user:\n        user = framework.session.user\n    if \"Sales Manager\" in get_roles(user):\n        return \"\"  # No restriction\n    # Sales rep sadece kendi siparişlerini görür\n    return f\"`tabSalesOrder`.owner = {escape(user)}\""
+    },
+    {
+      "type": "paragraph",
+      "text": "Bu fonksiyon her `SELECT * FROM tabSalesOrder` sorgusunda WHERE'e otomatik AND'lenir. Application kodu ona bakmaz. Module geliştirici yanlışlıkla `db.query('SELECT...')` yazarsa bile WHERE injected."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "PostgreSQL Row-Level Security — defense in depth"
+    },
+    {
+      "type": "paragraph",
+      "text": "OpenFGA pratikte aplikasyon layer'ında çalışır. {{ref:k-tenancy}} izolasyonu için ek katman olarak PostgreSQL RLS de aç:"
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "content": "ALTER TABLE tabSalesOrder ENABLE ROW LEVEL SECURITY;\n\nCREATE POLICY tenant_isolation ON tabSalesOrder\nUSING (tenant_id = current_setting('app.tenant_id')::uuid);\n\n-- Session başında:\nSET LOCAL app.tenant_id = 'acme-tenant-uuid';"
+    },
+    {
+      "type": "paragraph",
+      "text": "Performans: `tenant_id` üzerinde index varsa overhead %2-5. **PgBouncer transaction mode**'da `SET LOCAL` kullan (session değişkeni tx scope'una bağlanır, cross-tenant leak imkansız)."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Field-level security"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bazı alanlar belli rolde görünmez. HRMS senaryosu: çalışan listesinde maaş alanı sadece HR rolüne görünür. DocType metadata'da:"
+    },
+    {
+      "type": "code",
+      "lang": "yaml",
+      "content": "field: salary\npermlevel: 1   # default 0 = herkes; 1 = sadece HR\n\ndoctype_permission:\n  - role: Employee, permlevel: 0, read: 1\n  - role: HR, permlevel: 1, read: 1, write: 1"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Resource sharing — Drive pattern"
+    },
+    {
+      "type": "paragraph",
+      "text": "{{ref:s-drive}} ürünü için: kullanıcı dosyayı belli kişilerle paylaşır. ReBAC tuple ekler: `document:photo-summer-2026.viewer = user:bob`. Sonraki query'de Bob'un access listesi bu dosyayı içerir."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Gerçek dünya örnekleri"
+    },
+    {
+      "type": "examples",
+      "items": [
+        {
+          "label": "Trello",
+          "text": "board member sadece o board'u görür. Karta atanmış kişi karta erişebilir. **ReBAC** — \"X, board:Y'nin member'ı\" relation tuple'ı.",
+          "enrich": {
+            "info": "board member sadece o board'u görür. Karta atanmış kişi karta erişebilir. **ReBAC** — \"X, board:Y'nin member'ı\" relation tuple'ı.",
+            "detail": "**Trello** nedir?\n\nboard member sadece o board'u görür. Karta atanmış kişi karta erişebilir. **ReBAC** — \"X, board:Y'nin member'ı\" relation tuple'ı.\n\n**Amaç:** \"bu kullanıcı bu işlemi yapabilir mi?\" sorusunun cevabını üreten çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç yetkilendirme bilmeyen biri için: bu özellik, yetkilendirme sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Sistem mimarı",
+                "context": "\"Trello\" özelliğini yetkilendirme politikası sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici board member sadece o board'u görür. Karta atanmış kişi karta erişebilir. **ReBA pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Yönetici",
+                "context": "Yeni rol tanımlar. \"Trello\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Mali Muhasip\" rolünü oluşturur, fatura okuma+yazma izni verir."
+              },
+              {
+                "persona": "Geliştirici",
+                "context": "Kod'da yetki kontrolü yapmak ister. \"Trello\" özelliği bu süreçte devreye girer.",
+                "outcome": "API otomatik query'ye WHERE ekler — el ile yazmaz."
+              },
+              {
+                "persona": "Compliance",
+                "context": "İzin değişikliğini izler. \"Trello\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log'da kim kime ne zaman izin verdi/aldı."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Gmail",
+          "text": "mail'in receiver'ısın → okuyabilirsin. Sender'sın → \"Sent\" klasöründe silebilirsin. **ABAC** — attribute (sender/receiver) + action (read/delete).",
+          "enrich": {
+            "info": "mail'in receiver'ısın → okuyabilirsin. Sender'sın → \"Sent\" klasöründe silebilirsin. **ABAC** — attribute (sender/receiver) + action (read/de",
+            "detail": "**Gmail** nedir?\n\nmail'in receiver'ısın → okuyabilirsin. Sender'sın → \"Sent\" klasöründe silebilirsin. **ABAC** — attribute (sender/receiver) + action (read/delete).\n\n**Amaç:** \"bu kullanıcı bu işlemi yapabilir mi?\" sorusunun cevabını üreten çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç yetkilendirme bilmeyen biri için: bu özellik, yetkilendirme sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Sistem mimarı",
+                "context": "\"Gmail\" özelliğini yetkilendirme politikası sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici mail'in receiver'ısın → okuyabilirsin. Sender'sın → \"Sent\" klasöründe silebilirs pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Yönetici",
+                "context": "Yeni rol tanımlar. \"Gmail\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Mali Muhasip\" rolünü oluşturur, fatura okuma+yazma izni verir."
+              },
+              {
+                "persona": "Geliştirici",
+                "context": "Kod'da yetki kontrolü yapmak ister. \"Gmail\" özelliği bu süreçte devreye girer.",
+                "outcome": "API otomatik query'ye WHERE ekler — el ile yazmaz."
+              },
+              {
+                "persona": "Compliance",
+                "context": "İzin değişikliğini izler. \"Gmail\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log'da kim kime ne zaman izin verdi/aldı."
+              }
+            ],
+            "terms": [
+              {
+                "term": "ABAC",
+                "abbrev_of": "Attribute-Based Access Control",
+                "meaning": "İzin, niteliklere göre dinamik.",
+                "why": "Karmaşık politikalar için."
+              }
+            ]
+          }
+        },
+        {
+          "label": "E-ticaret admin",
+          "text": "customer-service rolü sipariş görür, refund yetkisi var ama 1000 TL üstü onaylayamaz. Manager 10K TL altı, üstü CFO. **RBAC + ABAC**.",
+          "enrich": {
+            "info": "customer-service rolü sipariş görür, refund yetkisi var ama 1000 TL üstü onaylayamaz. Manager 10K TL altı, üstü CFO. **RBAC + ABAC**.",
+            "detail": "**E-ticaret admin** nedir?\n\ncustomer-service rolü sipariş görür, refund yetkisi var ama 1000 TL üstü onaylayamaz. Manager 10K TL altı, üstü CFO. **RBAC + ABAC**.\n\n**Amaç:** \"bu kullanıcı bu işlemi yapabilir mi?\" sorusunun cevabını üreten çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç yetkilendirme bilmeyen biri için: bu özellik, yetkilendirme sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Sistem mimarı",
+                "context": "\"E-ticaret admin\" özelliğini yetkilendirme politikası sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici customer-service rolü sipariş görür, refund yetkisi var ama 1000 TL üstü onaylay pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Yönetici",
+                "context": "Yeni rol tanımlar. \"E-ticaret admin\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Mali Muhasip\" rolünü oluşturur, fatura okuma+yazma izni verir."
+              },
+              {
+                "persona": "Geliştirici",
+                "context": "Kod'da yetki kontrolü yapmak ister. \"E-ticaret admin\" özelliği bu süreçte devreye girer.",
+                "outcome": "API otomatik query'ye WHERE ekler — el ile yazmaz."
+              },
+              {
+                "persona": "Compliance",
+                "context": "İzin değişikliğini izler. \"E-ticaret admin\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log'da kim kime ne zaman izin verdi/aldı."
+              }
+            ],
+            "terms": [
+              {
+                "term": "RBAC",
+                "abbrev_of": "Role-Based Access Control",
+                "meaning": "İzinler rollere atanır.",
+                "why": "Çoğu sistem için yeterli, basit."
+              },
+              {
+                "term": "ABAC",
+                "abbrev_of": "Attribute-Based Access Control",
+                "meaning": "İzin, niteliklere göre dinamik.",
+                "why": "Karmaşık politikalar için."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Drive (#7)",
+          "text": "dosya paylaşımı — link share, kişi share, klasör share, organization-wide. Hepsi resource-başına ACL. **Çoklu ReBAC**.",
+          "enrich": {
+            "info": "dosya paylaşımı — link share, kişi share, klasör share, organization-wide. Hepsi resource-başına ACL. **Çoklu ReBAC**.",
+            "detail": "**Drive (#7)** nedir?\n\ndosya paylaşımı — link share, kişi share, klasör share, organization-wide. Hepsi resource-başına ACL. **Çoklu ReBAC**.\n\n**Amaç:** \"bu kullanıcı bu işlemi yapabilir mi?\" sorusunun cevabını üreten çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç yetkilendirme bilmeyen biri için: bu özellik, yetkilendirme sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Sistem mimarı",
+                "context": "\"Drive (#7)\" özelliğini yetkilendirme politikası sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici dosya paylaşımı — link share, kişi share, klasör share, organization-wide. Hepsi pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Yönetici",
+                "context": "Yeni rol tanımlar. \"Drive (#7)\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Mali Muhasip\" rolünü oluşturur, fatura okuma+yazma izni verir."
+              },
+              {
+                "persona": "Geliştirici",
+                "context": "Kod'da yetki kontrolü yapmak ister. \"Drive (#7)\" özelliği bu süreçte devreye girer.",
+                "outcome": "API otomatik query'ye WHERE ekler — el ile yazmaz."
+              },
+              {
+                "persona": "Compliance",
+                "context": "İzin değişikliğini izler. \"Drive (#7)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log'da kim kime ne zaman izin verdi/aldı."
+              }
+            ]
+          }
+        },
+        {
+          "label": "GitHub",
+          "text": "repo maintainer issue kapatabilir, contributor PR açabilir, public viewer sadece okur. Org takım izinleri repo'lara cascade. **Hierarchical ReBAC**.",
+          "enrich": {
+            "info": "repo maintainer issue kapatabilir, contributor PR açabilir, public viewer sadece okur. Org takım izinleri repo'lara cascade. **Hierarchical ",
+            "detail": "**GitHub** nedir?\n\nrepo maintainer issue kapatabilir, contributor PR açabilir, public viewer sadece okur. Org takım izinleri repo'lara cascade. **Hierarchical ReBAC**.\n\n**Amaç:** \"bu kullanıcı bu işlemi yapabilir mi?\" sorusunun cevabını üreten çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç yetkilendirme bilmeyen biri için: bu özellik, yetkilendirme sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Sistem mimarı",
+                "context": "\"GitHub\" özelliğini yetkilendirme politikası sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici repo maintainer issue kapatabilir, contributor PR açabilir, public viewer sadece pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Yönetici",
+                "context": "Yeni rol tanımlar. \"GitHub\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Mali Muhasip\" rolünü oluşturur, fatura okuma+yazma izni verir."
+              },
+              {
+                "persona": "Geliştirici",
+                "context": "Kod'da yetki kontrolü yapmak ister. \"GitHub\" özelliği bu süreçte devreye girer.",
+                "outcome": "API otomatik query'ye WHERE ekler — el ile yazmaz."
+              },
+              {
+                "persona": "Compliance",
+                "context": "İzin değişikliğini izler. \"GitHub\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log'da kim kime ne zaman izin verdi/aldı."
+              }
+            ]
+          }
+        },
+        {
+          "label": "HRMS (#9)",
+          "text": "İK uzmanı tüm maaşları, yönetici direct report'ların, çalışan kendininkini. Field-level + relationship-based.",
+          "enrich": {
+            "info": "İK uzmanı tüm maaşları, yönetici direct report'ların, çalışan kendininkini. Field-level + relationship-based.",
+            "detail": "**HRMS (#9)** nedir?\n\nİK uzmanı tüm maaşları, yönetici direct report'ların, çalışan kendininkini. Field-level + relationship-based.\n\n**Amaç:** \"bu kullanıcı bu işlemi yapabilir mi?\" sorusunun cevabını üreten çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç yetkilendirme bilmeyen biri için: bu özellik, yetkilendirme sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Sistem mimarı",
+                "context": "\"HRMS (#9)\" özelliğini yetkilendirme politikası sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici İK uzmanı tüm maaşları, yönetici direct report'ların, çalışan kendininkini. Fiel pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Yönetici",
+                "context": "Yeni rol tanımlar. \"HRMS (#9)\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Mali Muhasip\" rolünü oluşturur, fatura okuma+yazma izni verir."
+              },
+              {
+                "persona": "Geliştirici",
+                "context": "Kod'da yetki kontrolü yapmak ister. \"HRMS (#9)\" özelliği bu süreçte devreye girer.",
+                "outcome": "API otomatik query'ye WHERE ekler — el ile yazmaz."
+              },
+              {
+                "persona": "Compliance",
+                "context": "İzin değişikliğini izler. \"HRMS (#9)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log'da kim kime ne zaman izin verdi/aldı."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Healthcare",
+          "text": "doktor sadece kendi hastasının kaydını görür. Acil servis \"break-glass\" ile başkasınınkine erişir ama audit log'a kırmızı flag.",
+          "enrich": {
+            "info": "doktor sadece kendi hastasının kaydını görür. Acil servis \"break-glass\" ile başkasınınkine erişir ama audit log'a kırmızı flag.",
+            "detail": "**Healthcare** nedir?\n\ndoktor sadece kendi hastasının kaydını görür. Acil servis \"break-glass\" ile başkasınınkine erişir ama audit log'a kırmızı flag.\n\n**Amaç:** \"bu kullanıcı bu işlemi yapabilir mi?\" sorusunun cevabını üreten çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç yetkilendirme bilmeyen biri için: bu özellik, yetkilendirme sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Sistem mimarı",
+                "context": "\"Healthcare\" özelliğini yetkilendirme politikası sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici doktor sadece kendi hastasının kaydını görür. Acil servis \"break-glass\" ile başk pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Yönetici",
+                "context": "Yeni rol tanımlar. \"Healthcare\" özelliği bu süreçte devreye girer.",
+                "outcome": "\"Mali Muhasip\" rolünü oluşturur, fatura okuma+yazma izni verir."
+              },
+              {
+                "persona": "Geliştirici",
+                "context": "Kod'da yetki kontrolü yapmak ister. \"Healthcare\" özelliği bu süreçte devreye girer.",
+                "outcome": "API otomatik query'ye WHERE ekler — el ile yazmaz."
+              },
+              {
+                "persona": "Compliance",
+                "context": "İzin değişikliğini izler. \"Healthcare\" özelliği bu süreçte devreye girer.",
+                "outcome": "Audit log'da kim kime ne zaman izin verdi/aldı."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "En kritik kural",
+      "body": "Authz **kesinlikle module olamaz**. Query layer'a örülmesi zorunlu. Module olsa, bir geliştirici manuel `SELECT *` yazıp WHERE eklemeyi unutursa — *bir tane unutsa* tüm tenant'ların verisi sızar. Frappe'nin `permission_query_conditions` pattern'i + OpenFGA \"List Objects\" API'si + PostgreSQL RLS = defense-in-depth."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Tuzak — application-level check",
+      "body": "Junior çoğunlukla şöyle yazar:\n\n`orders = db.query(\"SELECT * FROM orders\")\nreturn [o for o in orders if o.user_id == current_user.id]`\n\nBu yanlış: DB'den tüm satırlar geldi, sonra filter. 10M satırlık tabloda bellek patlar. Doğrusu: query layer authz'i otomatik WHERE'e çevirir, DB'den sadece izinli satır gelir."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Hangi araç",
+      "body": "OpenFGA (Auth0/Okta sponsorlu CNCF Sandbox) veya SpiceDB (AuthZed) inceleyebilirsin. İkisi de Zanzibar implementation, gRPC API, kendi sidecar'larında çalışıyor. Sen authz layer'ını OpenFGA-style relation tuple'lar üzerine kurabilirsin (in-process Python lib + opsiyonel sidecar)."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: I04 Permission Framework + A03 Agent Capability Scopes"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **I04** RBAC + ABAC + agent capability scopes'u tek frameworkte birleştirir. Asıl yenilik: agent kullanıcı adına çalışırken etkin yetki **üç kümeyi keser**:"
+    },
+    {
+      "type": "code",
+      "lang": "text",
+      "content": "etkin_yetki = user_perms  ∩  agent_scope  ∩  session_limits\n\n# user_perms     → kim adına çalışıyor (I04 RBAC + ABAC)\n# agent_scope    → hangi capability pack atanmış (A03)\n# session_limits → token budget, tool call quota, rate limit (A03)\n\n# Kesişim boşsa → tool çağrılamaz. Privilege escalation matematiksel olarak imkansız."
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **A03 — Agent Identity & Capability Scopes** (Faz 1 · P0 · Agent Runtime + Security Squad) bu kesişimin runtime icra ettiği yer. *Privilege escalation 0, scope drift tespit <1sn, scope binding accuracy %100* hedefi."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "Capability Pack alanları",
+          "value": "`included_tools`, `excluded_tools`, `max_token_budget`, `max_runtime_sec`, `approved_by_human` (audited)"
+        },
+        {
+          "key": "Sandbox alanları",
+          "value": "`isolation_level` (none/process/container/firecracker), `network_egress_allowlist`, `filesystem_readonly`, `max_memory_mb`, `max_cpu_seconds`"
+        },
+        {
+          "key": "Violation tipleri",
+          "value": "out_of_scope / budget_exceeded / blast_radius / sandbox_breach — hepsi `ai_threat_assessment` ile AI-aware"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "**Field-level + Row-level Security** (I04): `Field Mask Policy` (redact/partial/hash/encrypt) + `Row-level Filter` (CEL/JSONLogic/Python sandbox). Authorization Decision her zaman audit log'a düşer."
+    }
+  ],
+  "enrich": {
+    "info": "Kim ne yapabilir? Query layer'a örülmüş — application-level if-check yetmez.",
+    "detail": "Kim ne yapabilir? Query layer'a örülmüş — application-level if-check yetmez.",
+    "terms": [
+      {
+        "term": "RBAC",
+        "abbrev_of": "Role-Based Access Control",
+        "abbrev_tr": "Rol bazlı erişim",
+        "meaning": "İzinler rollere atanır, kullanıcı rol alır.",
+        "why": "Çoğu sistem için yeterli, basit."
+      },
+      {
+        "term": "ABAC",
+        "abbrev_of": "Attribute-Based Access Control",
+        "abbrev_tr": "Nitelik bazlı erişim",
+        "meaning": "İzin, niteliklere (departman, saat, tutar) göre dinamik.",
+        "why": "Karmaşık politikalar için RBAC yetmez."
+      },
+      {
+        "term": "ReBAC",
+        "abbrev_of": "Relationship-Based Access Control",
+        "abbrev_tr": "İlişki bazlı erişim",
+        "meaning": "İzin, kayıtlar arası ilişkilerden türer (sahip, takım üyesi).",
+        "why": "Google Docs paylaşım modeli."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Helpdesk ekibi",
+        "context": "Müşteri 5 milyon TL üstü iadeyi tek tıkla yapmak istiyor.",
+        "outcome": "ABAC: amount>5M → CFO onayı zorunlu; UI buton disabled, audit log'ta deneme görünür."
+      }
+    ]
+  }
+}

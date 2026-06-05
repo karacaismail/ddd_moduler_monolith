@@ -1,0 +1,258 @@
+{
+  "id": "l1-workflow",
+  "title": "Workflow + ECA",
+  "subtitle": "State machine + approval chain + Event-Condition-Action.",
+  "cluster": "layer1",
+  "layer": "l1",
+  "order": 18,
+  "icon": "ph-flow-arrow",
+  "badge": "Layer 1 — In-tree",
+  "tags": [
+    "workflow",
+    "state-machine",
+    "approval",
+    "eca"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Bir DocType'ın izlediği durumlar ve durumlar arası geçiş kuralları. 13 üründe lazım. Frappe core'da var, Drupal'da contrib, sen core'da tut."
+    },
+    {
+      "type": "code",
+      "lang": "yaml",
+      "title": "Workflow tanımı",
+      "content": "workflow: PurchaseOrderApproval\n  doctype: PurchaseOrder\n  states:\n    - draft (next: pending_approval)\n    - pending_approval (next: approved | rejected)\n    - approved (next: sent)\n    - sent (next: received | cancelled)\n    - received (next: closed)\n    - closed (terminal)\n    - rejected (terminal)\n  transitions:\n    - from: draft, to: pending_approval, action: submit, allowed_roles: [requester]\n    - from: pending_approval, to: approved, action: approve, allowed_roles: [manager], condition: amount < 10000\n    - from: pending_approval, to: approved, action: approve, allowed_roles: [cfo], condition: amount >= 10000\n    - from: pending_approval, to: rejected, action: reject, allowed_roles: [manager, cfo]\n\neca_rules:\n  - on: doctype:PurchaseOrder.field:amount > 50000\n    condition: status == 'draft'\n    action: assign_to_role(cfo); notify(cfo, 'high_value_po')"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "İçerir"
+    },
+    {
+      "type": "list",
+      "items": [
+        "State machine tanımı (deklaratif)",
+        "Transition rule + permission (kim hangi geçişi yapabilir)",
+        "Approval chain (manager + finance birlikte)",
+        "Timeout / escalation (3 gün onay yoksa CFO'ya eskale)",
+        "Branching (tutara göre farklı approver)",
+        "Audit trail (her geçiş kim/ne zaman)"
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Örnekler"
+    },
+    {
+      "type": "examples",
+      "items": [
+        {
+          "label": "HR izin onayı (#9)",
+          "text": "Çalışan talep → direct manager onay → HR onay → kabul. 14 gün üstüyse genel müdür eklenir.",
+          "enrich": {
+            "info": "Çalışan talep → direct manager onay → HR onay → kabul. 14 gün üstüyse genel müdür eklenir.",
+            "detail": "**HR izin onayı (#9)** nedir?\n\nÇalışan talep → direct manager onay → HR onay → kabul. 14 gün üstüyse genel müdür eklenir.\n\n**Amaç:** Kayıtların durumlar arası geçişini ve kim onaylayacak kuralını tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç workflow + onay zinciri bilmeyen biri için: bu özellik, workflow + onay zinciri sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Süreç yöneticisi",
+                "context": "\"HR izin onayı (#9)\" özelliğini onay ve durum makinesi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Çalışan talep → direct manager onay → HR onay → kabul. 14 gün üstüyse genel müdü pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "CFO",
+                "context": "500K TL satınalma onayı bekler. \"HR izin onayı (#9)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Sistem otomatik chain: manager → CFO; CFO onaylayınca state=approved."
+              },
+              {
+                "persona": "No-code admin",
+                "context": "Kendi süreçlerini kurar. \"HR izin onayı (#9)\" özelliği bu süreçte devreye girer.",
+                "outcome": "BPMN-benzeri UI ile state machine + ECA kural yazar."
+              },
+              {
+                "persona": "Çalışan",
+                "context": "İzin talebi gönderir. \"HR izin onayı (#9)\" özelliği bu süreçte devreye girer.",
+                "outcome": "State akışında nerede durduğunu görür."
+              }
+            ]
+          }
+        },
+        {
+          "label": "E-fatura akışı (#10)",
+          "text": "Fatura draft → finance review → manager approve → GİB'e gönder → onaylı.",
+          "enrich": {
+            "info": "Fatura draft → finance review → manager approve → GİB'e gönder → onaylı.",
+            "detail": "**E-fatura akışı (#10)** nedir?\n\nFatura draft → finance review → manager approve → GİB'e gönder → onaylı.\n\n**Amaç:** Kayıtların durumlar arası geçişini ve kim onaylayacak kuralını tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç workflow + onay zinciri bilmeyen biri için: bu özellik, workflow + onay zinciri sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Süreç yöneticisi",
+                "context": "\"E-fatura akışı (#10)\" özelliğini onay ve durum makinesi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Fatura draft → finance review → manager approve → GİB'e gönder → onaylı. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "CFO",
+                "context": "500K TL satınalma onayı bekler. \"E-fatura akışı (#10)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Sistem otomatik chain: manager → CFO; CFO onaylayınca state=approved."
+              },
+              {
+                "persona": "No-code admin",
+                "context": "Kendi süreçlerini kurar. \"E-fatura akışı (#10)\" özelliği bu süreçte devreye girer.",
+                "outcome": "BPMN-benzeri UI ile state machine + ECA kural yazar."
+              },
+              {
+                "persona": "Çalışan",
+                "context": "İzin talebi gönderir. \"E-fatura akışı (#10)\" özelliği bu süreçte devreye girer.",
+                "outcome": "State akışında nerede durduğunu görür."
+              }
+            ]
+          }
+        },
+        {
+          "label": "PR review (#11)",
+          "text": "draft PR → CI green → review request → 2 approval → merge.",
+          "enrich": {
+            "info": "draft PR → CI green → review request → 2 approval → merge.",
+            "detail": "**PR review (#11)** nedir?\n\ndraft PR → CI green → review request → 2 approval → merge.\n\n**Amaç:** Kayıtların durumlar arası geçişini ve kim onaylayacak kuralını tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç workflow + onay zinciri bilmeyen biri için: bu özellik, workflow + onay zinciri sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Süreç yöneticisi",
+                "context": "\"PR review (#11)\" özelliğini onay ve durum makinesi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici draft PR → CI green → review request → 2 approval → merge. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "CFO",
+                "context": "500K TL satınalma onayı bekler. \"PR review (#11)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Sistem otomatik chain: manager → CFO; CFO onaylayınca state=approved."
+              },
+              {
+                "persona": "No-code admin",
+                "context": "Kendi süreçlerini kurar. \"PR review (#11)\" özelliği bu süreçte devreye girer.",
+                "outcome": "BPMN-benzeri UI ile state machine + ECA kural yazar."
+              },
+              {
+                "persona": "Çalışan",
+                "context": "İzin talebi gönderir. \"PR review (#11)\" özelliği bu süreçte devreye girer.",
+                "outcome": "State akışında nerede durduğunu görür."
+              }
+            ]
+          }
+        },
+        {
+          "label": "İlan moderasyonu (#1)",
+          "text": "kullanıcı submit → AI ön-tarama → flagged: insan moderatöre → onay/red.",
+          "enrich": {
+            "info": "kullanıcı submit → AI ön-tarama → flagged: insan moderatöre → onay/red.",
+            "detail": "**İlan moderasyonu (#1)** nedir?\n\nkullanıcı submit → AI ön-tarama → flagged: insan moderatöre → onay/red.\n\n**Amaç:** Kayıtların durumlar arası geçişini ve kim onaylayacak kuralını tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç workflow + onay zinciri bilmeyen biri için: bu özellik, workflow + onay zinciri sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Süreç yöneticisi",
+                "context": "\"İlan moderasyonu (#1)\" özelliğini onay ve durum makinesi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici kullanıcı submit → AI ön-tarama → flagged: insan moderatöre → onay/red. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "CFO",
+                "context": "500K TL satınalma onayı bekler. \"İlan moderasyonu (#1)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Sistem otomatik chain: manager → CFO; CFO onaylayınca state=approved."
+              },
+              {
+                "persona": "No-code admin",
+                "context": "Kendi süreçlerini kurar. \"İlan moderasyonu (#1)\" özelliği bu süreçte devreye girer.",
+                "outcome": "BPMN-benzeri UI ile state machine + ECA kural yazar."
+              },
+              {
+                "persona": "Çalışan",
+                "context": "İzin talebi gönderir. \"İlan moderasyonu (#1)\" özelliği bu süreçte devreye girer.",
+                "outcome": "State akışında nerede durduğunu görür."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Refund akışı",
+          "text": "müşteri talep → AI auto-approve veya insan inceleme → tahsilat iadesi.",
+          "enrich": {
+            "info": "müşteri talep → AI auto-approve veya insan inceleme → tahsilat iadesi.",
+            "detail": "**Refund akışı** nedir?\n\nmüşteri talep → AI auto-approve veya insan inceleme → tahsilat iadesi.\n\n**Amaç:** Kayıtların durumlar arası geçişini ve kim onaylayacak kuralını tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç workflow + onay zinciri bilmeyen biri için: bu özellik, workflow + onay zinciri sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Süreç yöneticisi",
+                "context": "\"Refund akışı\" özelliğini onay ve durum makinesi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici müşteri talep → AI auto-approve veya insan inceleme → tahsilat iadesi. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "CFO",
+                "context": "500K TL satınalma onayı bekler. \"Refund akışı\" özelliği bu süreçte devreye girer.",
+                "outcome": "Sistem otomatik chain: manager → CFO; CFO onaylayınca state=approved."
+              },
+              {
+                "persona": "No-code admin",
+                "context": "Kendi süreçlerini kurar. \"Refund akışı\" özelliği bu süreçte devreye girer.",
+                "outcome": "BPMN-benzeri UI ile state machine + ECA kural yazar."
+              },
+              {
+                "persona": "Çalışan",
+                "context": "İzin talebi gönderir. \"Refund akışı\" özelliği bu süreçte devreye girer.",
+                "outcome": "State akışında nerede durduğunu görür."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: S04 Workflow & State Machine"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **S04 — Workflow & State Machine** (Faz 3 · P1 · Application Squad) bu cluster'ın doğal devamı: DocType yaşam döngüsü için deklaratif state machine. Her transition: guard, action, side-effect, audit. **Agent transition'ı tetikleyebilir** — scope izinliyse (A03 capability scope kontrolü)."
+    },
+    {
+      "type": "list",
+      "items": [
+        "Deklaratif state + transition tanımı",
+        "Guard (önkoşul) + Action (yan etki) + Audit (her geçiş kaydı)",
+        "Agent tetikleyici desteği — `triggered_by: agent` audit metadata'sında",
+        "Workflow run state — checkpoint/resume LandX A09 (Agent Orchestration) ile entegre"
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "State machine + approval chain + Event-Condition-Action.",
+    "detail": "State machine + approval chain + Event-Condition-Action.",
+    "terms": [
+      {
+        "term": "State machine",
+        "abbrev_tr": "Durum makinesi",
+        "meaning": "Bir kaydın yaşayabileceği durumlar + aralarındaki geçişler.",
+        "why": "Sipariş, fatura, talep — hepsi state machine."
+      },
+      {
+        "term": "ECA",
+        "abbrev_of": "Event-Condition-Action",
+        "abbrev_tr": "Olay-Koşul-Eylem",
+        "meaning": "Bir event olduğunda, koşul sağlanırsa, eylem yapılır.",
+        "why": "No-code workflow'lar bu kuralı kullanır."
+      },
+      {
+        "term": "Approval chain",
+        "abbrev_tr": "Onay zinciri",
+        "meaning": "Tutara/tipe göre çok katmanlı onay süreci.",
+        "why": "5K'lık talep manager onayı; 50K CFO onayı."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "CFO (mali onay)",
+        "context": "500K TL'lik satınalma talebi gelir.",
+        "outcome": "State machine: pending_approval; approval chain manager → CFO; CFO onay → state=approved."
+      }
+    ]
+  }
+}

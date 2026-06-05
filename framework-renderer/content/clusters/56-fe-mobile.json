@@ -1,0 +1,242 @@
+{
+  "id": "fe-mobile",
+  "title": "Frontend — Capacitor Mobile + KYC/KYB",
+  "subtitle": "Capacitor 7, plugin ekosistemi, TC kimlik NFC kendi modülü, KYB Veriff/Onfido.",
+  "cluster": "frontend",
+  "order": 56,
+  "icon": "ph-device-mobile",
+  "tags": [
+    "frontend",
+    "mobile",
+    "capacitor",
+    "kyc",
+    "nfc"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.9 Native (Capacitor plugin'leri)"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "İhtiyaç",
+        "Plugin",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "Push notification",
+          "@capacitor/push-notifications + web-push",
+          "FCM (Android + web) + APNs (iOS)"
+        ],
+        [
+          "Biometric",
+          "@aparajita/capacitor-biometric-auth",
+          "FaceID/TouchID/BiometricPrompt"
+        ],
+        [
+          "Geolocation",
+          "@capacitor/geolocation + capacitor-background-geolocation",
+          "Foreground + bg"
+        ],
+        [
+          "NFC genel",
+          "capacitor-nfc",
+          "Kart/etiket okuma"
+        ],
+        [
+          "**TC kimlik NFC**",
+          "**Kendi plugin (NFCPassportReader sarmalı)**",
+          "Bu paket; iOS Swift + Android Kotlin"
+        ],
+        [
+          "BLE",
+          "@capacitor-community/bluetooth-le",
+          "POS, IoT, yazıcı"
+        ],
+        [
+          "Document scanner",
+          "@capacitor-mlkit/document-scanner",
+          "ML Kit + VisionKit"
+        ],
+        [
+          "Secure storage",
+          "@aparajita/capacitor-secure-storage",
+          "Keychain + Android Keystore"
+        ],
+        [
+          "Deep link",
+          "@capacitor/app + Universal Links / App Links",
+          "OIDC callback"
+        ],
+        [
+          "File system",
+          "@capacitor/filesystem",
+          "PDF/Excel kaydetme"
+        ],
+        [
+          "Camera",
+          "@capacitor/camera",
+          "KYC selfie + belge"
+        ],
+        [
+          "Share",
+          "@capacitor/share",
+          "Native share sheet"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.10 KYC / KYB"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Akış",
+        "Çözüm"
+      ],
+      "rows": [
+        [
+          "TC kimlik MRZ + NFC",
+          "**Kendi Capacitor plugin** (NFCPassportReader iOS, jmrtd Android). CAN giriş ekranı + \"kartı yaklaştır\" UI."
+        ],
+        [
+          "Pasaport MRZ + NFC",
+          "Aynı plugin, ICAO 9303 standardı kapsar."
+        ],
+        [
+          "Selfie + liveness",
+          "ML Kit Face Detection + custom challenge (göz kırp, baş çevir). Frame'leri backend'e gönder, FastAPI'de DeepFace veya FaceNet ile match."
+        ],
+        [
+          "Belge fotoğrafı (kira, fatura)",
+          "@capacitor-mlkit/document-scanner + OCR (Tesseract.js veya server-side)"
+        ],
+        [
+          "**KYB**: vergi levhası, ticaret sicil",
+          "**Veriff** veya **Onfido** managed (Türkiye için Veriff daha güçlü). API only."
+        ],
+        [
+          "İmza",
+          "react-signature-canvas + PDF embed"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "TC kimlik NFC modülü — kütüphane seçimi"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Platform",
+        "Kütüphane",
+        "Lisans",
+        "Notlar"
+      ],
+      "rows": [
+        [
+          "iOS",
+          "**AndyQ/NFCPassportReader**",
+          "MIT",
+          "TC kimlik dahil eMRTD, BAC/PACE/AA destekli. Apple \"NFC Tag Reading\" entitlement zorunlu."
+        ],
+        [
+          "Android",
+          "**jmrtd**",
+          "LGPL-3.0",
+          "Dynamic link ile kapalı kaynak app'te kullanılabilir. Maven Central'da."
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tr",
+      "label": "Türkiye'ye özgü TC kimlik detayları",
+      "body": "- TC kimlik **CAN** (Card Access Number) kullanır, kartın ön yüzünde 6 haneli sayı. Pasaport gibi MRZ değil.\n- Çip CardOS tabanlı, **PACE protokolü** zorunlu (BAC çoğu yerde reddedilir).\n- KVK Kurumu izni: kişisel veri işleme açık rıza + EİDS Tebliği.\n- Kamu SM kök sertifika ile imza doğrulama opsiyonel — sadece \"kart gerçek ve değiştirilmemiş\" garantisi isteniyorsa.\n\n**KVKK veri minimizasyonu (2023/1430 kararı):** TC kimlik numarası uygulama veritabanında **saklanmaz**; sadece hash veya tek seferlik doğrulama jetonu tutulur. DG2 (foto) lokal cihazda karşılaştırma için kullanılır."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Capacitor 7 baseline (2026 Mayıs)"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Bileşen",
+        "Capacitor 7 gereksinimi"
+      ],
+      "rows": [
+        [
+          "Node.js",
+          "≥ 20 LTS (Node 22 önerilir)"
+        ],
+        [
+          "iOS deployment target",
+          "14.0 (test 16.0+ önerilir)"
+        ],
+        [
+          "Android minSdk",
+          "23 (Android 6)"
+        ],
+        [
+          "Android compileSdk / targetSdk",
+          "35 (Android 15)"
+        ],
+        [
+          "AGP",
+          "8.7+"
+        ],
+        [
+          "Kotlin",
+          "2.0.x"
+        ],
+        [
+          "JDK",
+          "21 (Android Studio Ladybug 2024.2.1 ile gelir)"
+        ],
+        [
+          "Xcode",
+          "16+ (M4 native, Rosetta yok)"
+        ],
+        [
+          "CocoaPods",
+          "1.15+ Apple Silicon native"
+        ]
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "typescript",
+      "title": "capacitor.config.ts (arsam baseline)",
+      "content": "import type { CapacitorConfig } from '@capacitor/cli';\n\nconst config: CapacitorConfig = {\n  appId: 'net.arsam.app',\n  appName: 'arsam',\n  webDir: 'apps/web/dist',\n  bundledWebRuntime: false,\n  ios: {\n    contentInset: 'always',\n    scheme: 'arsam',\n    limitsNavigationsToAppBoundDomains: false\n  },\n  android: {\n    allowMixedContent: false,\n    captureInput: true\n  },\n  server: { androidScheme: 'https' },\n  plugins: {\n    ArsamLiveUpdates: {\n      manifestUrl: 'https://ota.arsam.net/manifest.json',\n      publicKey: '...',\n      defaultChannel: 'beta'\n    }\n  }\n};\nexport default config;"
+    }
+  ],
+  "enrich": {
+    "info": "Capacitor 7, plugin ekosistemi, TC kimlik NFC kendi modülü, KYB Veriff/Onfido.",
+    "detail": "Capacitor 7, plugin ekosistemi, TC kimlik NFC kendi modülü, KYB Veriff/Onfido.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

@@ -1,0 +1,357 @@
+{
+  "id": "s-mrp",
+  "title": "MRP / Manufacturing Stack",
+  "subtitle": "SAP PP, Odoo Manufacturing muadili. Bağımlı talep + regenerative plan.",
+  "cluster": "stack",
+  "layer": "l2",
+  "order": 30,
+  "icon": "ph-factory",
+  "badge": "Layer 2 Stack #8",
+  "tags": [
+    "mrp",
+    "manufacturing",
+    "bom"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "MRP (#14) ana stack. ERP'den ({{ref:s-accounting}}) GL postingi, Inventory'den ({{ref:s-commerce}}) stock ledger besleme."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Module'ler"
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "Engineering (BOM + Routing + ECO)",
+          "desc": "Multi-level BOM, ECO, effectivity, where-used",
+          "enrich": {
+            "info": "Multi-level BOM, ECO, effectivity, where-used",
+            "detail": "**Engineering (BOM + Routing + ECO)** nedir?\n\nMulti-level BOM, ECO, effectivity, where-used.\n\n**Amaç:** Fabrikaların hangi malzemeden ne kadar üretip stoktan ne kullanacağını planladığı modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç üretim planlama bilmeyen biri için: bu özellik, üretim planlama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Üretim planlamacısı",
+                "context": "\"Engineering (BOM + Routing + ECO)\" özelliğini üretim süreci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Multi-level BOM, ECO, effectivity, where-used pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Saha operatörü",
+                "context": "Tablet ile iş emri açar. \"Engineering (BOM + Routing + ECO)\" özelliği bu süreçte devreye girer.",
+                "outcome": "QR kod tarar, üretim adımlarını işaretler — gerçek zamanlı raporlama."
+              },
+              {
+                "persona": "Tedarik müdürü",
+                "context": "Kritik stok seviyelerini izler. \"Engineering (BOM + Routing + ECO)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Alarm geliyor: 3 hammadde 5 gün içinde tükeniyor, sipariş öner."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Demand & MPS",
+          "desc": "Tahmin + sipariş, Master Production Schedule",
+          "enrich": {
+            "info": "Tahmin + sipariş, Master Production Schedule",
+            "detail": "**Demand & MPS** nedir?\n\nTahmin + sipariş, Master Production Schedule.\n\n**Amaç:** Fabrikaların hangi malzemeden ne kadar üretip stoktan ne kullanacağını planladığı modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç üretim planlama bilmeyen biri için: bu özellik, üretim planlama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Üretim planlamacısı",
+                "context": "\"Demand & MPS\" özelliğini üretim süreci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Tahmin + sipariş, Master Production Schedule pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Saha operatörü",
+                "context": "Tablet ile iş emri açar. \"Demand & MPS\" özelliği bu süreçte devreye girer.",
+                "outcome": "QR kod tarar, üretim adımlarını işaretler — gerçek zamanlı raporlama."
+              },
+              {
+                "persona": "Tedarik müdürü",
+                "context": "Kritik stok seviyelerini izler. \"Demand & MPS\" özelliği bu süreçte devreye girer.",
+                "outcome": "Alarm geliyor: 3 hammadde 5 gün içinde tükeniyor, sipariş öner."
+              }
+            ]
+          }
+        },
+        {
+          "name": "MRP Engine",
+          "desc": "Patlatma, netleme, lead-time offset, regenerative + net-change",
+          "critical": true,
+          "enrich": {
+            "info": "Patlatma, netleme, lead-time offset, regenerative + net-change",
+            "detail": "**MRP Engine** nedir?\n\nPatlatma, netleme, lead-time offset, regenerative + net-change.\n\n**Amaç:** Fabrikaların hangi malzemeden ne kadar üretip stoktan ne kullanacağını planladığı modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç üretim planlama bilmeyen biri için: bu özellik, üretim planlama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Üretim planlamacısı",
+                "context": "\"MRP Engine\" özelliğini üretim süreci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Patlatma, netleme, lead-time offset, regenerative + net-change pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Saha operatörü",
+                "context": "Tablet ile iş emri açar. \"MRP Engine\" özelliği bu süreçte devreye girer.",
+                "outcome": "QR kod tarar, üretim adımlarını işaretler — gerçek zamanlı raporlama."
+              },
+              {
+                "persona": "Tedarik müdürü",
+                "context": "Kritik stok seviyelerini izler. \"MRP Engine\" özelliği bu süreçte devreye girer.",
+                "outcome": "Alarm geliyor: 3 hammadde 5 gün içinde tükeniyor, sipariş öner."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Capacity Planning (CRP)",
+          "desc": "İş merkezi, makine, sonlu/sonsuz",
+          "enrich": {
+            "info": "İş merkezi, makine, sonlu/sonsuz",
+            "detail": "**Capacity Planning (CRP)** nedir?\n\nİş merkezi, makine, sonlu/sonsuz.\n\n**Amaç:** Fabrikaların hangi malzemeden ne kadar üretip stoktan ne kullanacağını planladığı modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç üretim planlama bilmeyen biri için: bu özellik, üretim planlama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Üretim planlamacısı",
+                "context": "\"Capacity Planning (CRP)\" özelliğini üretim süreci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici İş merkezi, makine, sonlu/sonsuz pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Saha operatörü",
+                "context": "Tablet ile iş emri açar. \"Capacity Planning (CRP)\" özelliği bu süreçte devreye girer.",
+                "outcome": "QR kod tarar, üretim adımlarını işaretler — gerçek zamanlı raporlama."
+              },
+              {
+                "persona": "Tedarik müdürü",
+                "context": "Kritik stok seviyelerini izler. \"Capacity Planning (CRP)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Alarm geliyor: 3 hammadde 5 gün içinde tükeniyor, sipariş öner."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Shop Floor / MES",
+          "desc": "İş emri dağıtım, gerçek-zaman data, IoT/OT",
+          "enrich": {
+            "info": "İş emri dağıtım, gerçek-zaman data, IoT/OT",
+            "detail": "**Shop Floor / MES** nedir?\n\nİş emri dağıtım, gerçek-zaman data, IoT/OT.\n\n**Amaç:** Fabrikaların hangi malzemeden ne kadar üretip stoktan ne kullanacağını planladığı modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç üretim planlama bilmeyen biri için: bu özellik, üretim planlama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Üretim planlamacısı",
+                "context": "\"Shop Floor / MES\" özelliğini üretim süreci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici İş emri dağıtım, gerçek-zaman data, IoT/OT pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Saha operatörü",
+                "context": "Tablet ile iş emri açar. \"Shop Floor / MES\" özelliği bu süreçte devreye girer.",
+                "outcome": "QR kod tarar, üretim adımlarını işaretler — gerçek zamanlı raporlama."
+              },
+              {
+                "persona": "Tedarik müdürü",
+                "context": "Kritik stok seviyelerini izler. \"Shop Floor / MES\" özelliği bu süreçte devreye girer.",
+                "outcome": "Alarm geliyor: 3 hammadde 5 gün içinde tükeniyor, sipariş öner."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Production Order Lifecycle",
+          "desc": "planned → firmed → released → in-progress → completed → closed",
+          "enrich": {
+            "info": "planned → firmed → released → in-progress → completed → closed",
+            "detail": "**Production Order Lifecycle** nedir?\n\nplanned → firmed → released → in-progress → completed → closed.\n\n**Amaç:** Fabrikaların hangi malzemeden ne kadar üretip stoktan ne kullanacağını planladığı modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç üretim planlama bilmeyen biri için: bu özellik, üretim planlama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Üretim planlamacısı",
+                "context": "\"Production Order Lifecycle\" özelliğini üretim süreci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici planned → firmed → released → in-progress → completed → closed pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Saha operatörü",
+                "context": "Tablet ile iş emri açar. \"Production Order Lifecycle\" özelliği bu süreçte devreye girer.",
+                "outcome": "QR kod tarar, üretim adımlarını işaretler — gerçek zamanlı raporlama."
+              },
+              {
+                "persona": "Tedarik müdürü",
+                "context": "Kritik stok seviyelerini izler. \"Production Order Lifecycle\" özelliği bu süreçte devreye girer.",
+                "outcome": "Alarm geliyor: 3 hammadde 5 gün içinde tükeniyor, sipariş öner."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Finite Scheduling / APS",
+          "desc": "Detaylı çizelge, sıralama, drum-buffer-rope",
+          "enrich": {
+            "info": "Detaylı çizelge, sıralama, drum-buffer-rope",
+            "detail": "**Finite Scheduling / APS** nedir?\n\nDetaylı çizelge, sıralama, drum-buffer-rope.\n\n**Amaç:** Fabrikaların hangi malzemeden ne kadar üretip stoktan ne kullanacağını planladığı modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç üretim planlama bilmeyen biri için: bu özellik, üretim planlama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Üretim planlamacısı",
+                "context": "\"Finite Scheduling / APS\" özelliğini üretim süreci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Detaylı çizelge, sıralama, drum-buffer-rope pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Saha operatörü",
+                "context": "Tablet ile iş emri açar. \"Finite Scheduling / APS\" özelliği bu süreçte devreye girer.",
+                "outcome": "QR kod tarar, üretim adımlarını işaretler — gerçek zamanlı raporlama."
+              },
+              {
+                "persona": "Tedarik müdürü",
+                "context": "Kritik stok seviyelerini izler. \"Finite Scheduling / APS\" özelliği bu süreçte devreye girer.",
+                "outcome": "Alarm geliyor: 3 hammadde 5 gün içinde tükeniyor, sipariş öner."
+              }
+            ]
+          }
+        },
+        {
+          "name": "QMS",
+          "desc": "In-process, NCR, CAPA, SPC, supplier quality",
+          "enrich": {
+            "info": "In-process, NCR, CAPA, SPC, supplier quality",
+            "detail": "**QMS** nedir?\n\nIn-process, NCR, CAPA, SPC, supplier quality.\n\n**Amaç:** Fabrikaların hangi malzemeden ne kadar üretip stoktan ne kullanacağını planladığı modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç üretim planlama bilmeyen biri için: bu özellik, üretim planlama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Üretim planlamacısı",
+                "context": "\"QMS\" özelliğini üretim süreci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici In-process, NCR, CAPA, SPC, supplier quality pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Saha operatörü",
+                "context": "Tablet ile iş emri açar. \"QMS\" özelliği bu süreçte devreye girer.",
+                "outcome": "QR kod tarar, üretim adımlarını işaretler — gerçek zamanlı raporlama."
+              },
+              {
+                "persona": "Tedarik müdürü",
+                "context": "Kritik stok seviyelerini izler. \"QMS\" özelliği bu süreçte devreye girer.",
+                "outcome": "Alarm geliyor: 3 hammadde 5 gün içinde tükeniyor, sipariş öner."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Maintenance / EAM",
+          "desc": "PM plan, asset health, OEE",
+          "enrich": {
+            "info": "PM plan, asset health, OEE",
+            "detail": "**Maintenance / EAM** nedir?\n\nPM plan, asset health, OEE.\n\n**Amaç:** Fabrikaların hangi malzemeden ne kadar üretip stoktan ne kullanacağını planladığı modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç üretim planlama bilmeyen biri için: bu özellik, üretim planlama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Üretim planlamacısı",
+                "context": "\"Maintenance / EAM\" özelliğini üretim süreci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici PM plan, asset health, OEE pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Saha operatörü",
+                "context": "Tablet ile iş emri açar. \"Maintenance / EAM\" özelliği bu süreçte devreye girer.",
+                "outcome": "QR kod tarar, üretim adımlarını işaretler — gerçek zamanlı raporlama."
+              },
+              {
+                "persona": "Tedarik müdürü",
+                "context": "Kritik stok seviyelerini izler. \"Maintenance / EAM\" özelliği bu süreçte devreye girer.",
+                "outcome": "Alarm geliyor: 3 hammadde 5 gün içinde tükeniyor, sipariş öner."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Costing",
+          "desc": "Standard rollup, sapma analizi, WIP valuation",
+          "enrich": {
+            "info": "Standard rollup, sapma analizi, WIP valuation",
+            "detail": "**Costing** nedir?\n\nStandard rollup, sapma analizi, WIP valuation.\n\n**Amaç:** Fabrikaların hangi malzemeden ne kadar üretip stoktan ne kullanacağını planladığı modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç üretim planlama bilmeyen biri için: bu özellik, üretim planlama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Üretim planlamacısı",
+                "context": "\"Costing\" özelliğini üretim süreci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Standard rollup, sapma analizi, WIP valuation pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Saha operatörü",
+                "context": "Tablet ile iş emri açar. \"Costing\" özelliği bu süreçte devreye girer.",
+                "outcome": "QR kod tarar, üretim adımlarını işaretler — gerçek zamanlı raporlama."
+              },
+              {
+                "persona": "Tedarik müdürü",
+                "context": "Kritik stok seviyelerini izler. \"Costing\" özelliği bu süreçte devreye girer.",
+                "outcome": "Alarm geliyor: 3 hammadde 5 gün içinde tükeniyor, sipariş öner."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Subcontracting",
+          "desc": "Fason / dış işlem",
+          "enrich": {
+            "info": "Fason / dış işlem",
+            "detail": "**Subcontracting** nedir?\n\nFason / dış işlem.\n\n**Amaç:** Fabrikaların hangi malzemeden ne kadar üretip stoktan ne kullanacağını planladığı modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç üretim planlama bilmeyen biri için: bu özellik, üretim planlama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Üretim planlamacısı",
+                "context": "\"Subcontracting\" özelliğini üretim süreci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Fason / dış işlem pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Saha operatörü",
+                "context": "Tablet ile iş emri açar. \"Subcontracting\" özelliği bu süreçte devreye girer.",
+                "outcome": "QR kod tarar, üretim adımlarını işaretler — gerçek zamanlı raporlama."
+              },
+              {
+                "persona": "Tedarik müdürü",
+                "context": "Kritik stok seviyelerini izler. \"Subcontracting\" özelliği bu süreçte devreye girer.",
+                "outcome": "Alarm geliyor: 3 hammadde 5 gün içinde tükeniyor, sipariş öner."
+              }
+            ]
+          }
+        },
+        {
+          "name": "S&OP",
+          "desc": "Stratejik planlama",
+          "enrich": {
+            "info": "Stratejik planlama",
+            "detail": "**S&OP** nedir?\n\nStratejik planlama.\n\n**Amaç:** Fabrikaların hangi malzemeden ne kadar üretip stoktan ne kullanacağını planladığı modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç üretim planlama bilmeyen biri için: bu özellik, üretim planlama sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Üretim planlamacısı",
+                "context": "\"S&OP\" özelliğini üretim süreci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Stratejik planlama pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Saha operatörü",
+                "context": "Tablet ile iş emri açar. \"S&OP\" özelliği bu süreçte devreye girer.",
+                "outcome": "QR kod tarar, üretim adımlarını işaretler — gerçek zamanlı raporlama."
+              },
+              {
+                "persona": "Tedarik müdürü",
+                "context": "Kritik stok seviyelerini izler. \"S&OP\" özelliği bu süreçte devreye girer.",
+                "outcome": "Alarm geliyor: 3 hammadde 5 gün içinde tükeniyor, sipariş öner."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Bağımlı talep — MRP'yi tanımlayan kavram",
+      "body": "Bir bileşenin talebi tahmin edilmez, hesaplanır. Kaç vida lazım olduğunu tahmin etmezsin — kaç sandalye üreteceğinden BOM patlatarak hesaplarsın. Tahmin değil determinizm. Bu, MRP'yi diğer Replenishment pattern'lerinden (reorder point — bağımsız talep) ayırır."
+    }
+  ],
+  "enrich": {
+    "info": "SAP PP, Odoo Manufacturing muadili. Bağımlı talep + regenerative plan.",
+    "detail": "SAP PP, Odoo Manufacturing muadili. Bağımlı talep + regenerative plan.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

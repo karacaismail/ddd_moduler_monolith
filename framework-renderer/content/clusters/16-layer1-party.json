@@ -1,0 +1,192 @@
+{
+  "id": "l1-party",
+  "title": "Party / Contact",
+  "subtitle": "Customer/Supplier/Employee yazma — Party yaz. Generic core, role module.",
+  "cluster": "layer1",
+  "layer": "l1",
+  "order": 16,
+  "icon": "ph-users-three",
+  "badge": "Layer 1 — In-tree",
+  "tags": [
+    "party",
+    "contact",
+    "person",
+    "organization"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Frappe pattern: generic `Contact`/`Address` core'da, *Party Type* (Customer rolü) module'de. Bu ürünün de 13 üründe gerekli ortak primitive'i."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Yapı"
+    },
+    {
+      "type": "code",
+      "lang": "yaml",
+      "content": "doctype: Party              # Person veya Organization\n  fields:\n    party_type: Select [Person, Organization]\n    name: Data\n    primary_contact: Link Contact\n    primary_address: Link Address\n    locale, timezone, currency\n\ndoctype: Contact\n  fields:\n    party: Link Party\n    email, phone, website\n    is_primary: Check\n\ndoctype: Address\n  fields:\n    party: Link Party\n    country, region, city, district, street, postal_code\n    geo: Geolocation\n    type: Select [billing, shipping, ...]\n\ndoctype: PartyRole          # Module katmanında (commerce, hr modülünde)\n  fields:\n    party: Link Party\n    role_type: Select [customer, supplier, employee, lead]\n    role_data: JSON         # role-specific fields"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Örnekler — aynı party, farklı role"
+    },
+    {
+      "type": "examples",
+      "items": [
+        {
+          "label": "Real estate (#1)",
+          "text": "Party = aynı kişi hem alıcı (buyer role), hem satıcı (seller role), hem danışman (agent role) olabilir. Üç ayrı tablo değil, tek Party + üç role.",
+          "enrich": {
+            "info": "Party = aynı kişi hem alıcı (buyer role), hem satıcı (seller role), hem danışman (agent role) olabilir. Üç ayrı tablo değil, tek Party + üç ",
+            "detail": "**Real estate (#1)** nedir?\n\nParty = aynı kişi hem alıcı (buyer role), hem satıcı (seller role), hem danışman (agent role) olabilir. Üç ayrı tablo değil, tek Party + üç role.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Real estate (#1)\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Party = aynı kişi hem alıcı (buyer role), hem satıcı (seller role), hem danışman pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Real estate (#1)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Real estate (#1)\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Hastane",
+          "text": "Party = doktor, hemşire, hasta, refakatçi. Doktor aynı zamanda hasta olabilir. Tek Party.",
+          "enrich": {
+            "info": "Party = doktor, hemşire, hasta, refakatçi. Doktor aynı zamanda hasta olabilir. Tek Party.",
+            "detail": "**Hastane** nedir?\n\nParty = doktor, hemşire, hasta, refakatçi. Doktor aynı zamanda hasta olabilir. Tek Party.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Hastane\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Party = doktor, hemşire, hasta, refakatçi. Doktor aynı zamanda hasta olabilir. T pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Hastane\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Hastane\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Üniversite",
+          "text": "öğrenci mezun olunca aynı Party, role değişir (alumni). LinkedIn benzeri network kurabilirsin.",
+          "enrich": {
+            "info": "öğrenci mezun olunca aynı Party, role değişir (alumni). LinkedIn benzeri network kurabilirsin.",
+            "detail": "**Üniversite** nedir?\n\nöğrenci mezun olunca aynı Party, role değişir (alumni). LinkedIn benzeri network kurabilirsin.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Üniversite\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici öğrenci mezun olunca aynı Party, role değişir (alumni). LinkedIn benzeri network pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Üniversite\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Üniversite\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "label": "E-ticaret B2B (#2)",
+          "text": "bir şirket hem alıcı hem satıcı olabilir (distributor pattern). Tek Organization, dual role.",
+          "enrich": {
+            "info": "bir şirket hem alıcı hem satıcı olabilir (distributor pattern). Tek Organization, dual role.",
+            "detail": "**E-ticaret B2B (#2)** nedir?\n\nbir şirket hem alıcı hem satıcı olabilir (distributor pattern). Tek Organization, dual role.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"E-ticaret B2B (#2)\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici bir şirket hem alıcı hem satıcı olabilir (distributor pattern). Tek Organization pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"E-ticaret B2B (#2)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"E-ticaret B2B (#2)\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "label": "CRM",
+          "text": "lead → contact → customer dönüşümü. Aynı Party, role evrimi. Yeni tablo değil.",
+          "enrich": {
+            "info": "lead → contact → customer dönüşümü. Aynı Party, role evrimi. Yeni tablo değil.",
+            "detail": "**CRM** nedir?\n\nlead → contact → customer dönüşümü. Aynı Party, role evrimi. Yeni tablo değil.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"CRM\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici lead → contact → customer dönüşümü. Aynı Party, role evrimi. Yeni tablo değil. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"CRM\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"CRM\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Tuzak — \"Customer\" core'a koyma",
+      "body": "{{ref:s-social}} medyada \"Customer\" yok. {{ref:s-cms}} CMS'te yok. {{ref:s-lms}} LMS'te yok. Eğer Customer'ı core'a koyarsan bu 3 ürün için ölü kavram taşımış olursun. Generic kısım (Person/Org/Contact/Address) core, \"Customer\" rolü module'de."
+    }
+  ],
+  "enrich": {
+    "info": "Customer/Supplier/Employee yazma — Party yaz. Generic core, role module.",
+    "detail": "Customer/Supplier/Employee yazma — Party yaz. Generic core, role module.",
+    "terms": [
+      {
+        "term": "Party",
+        "abbrev_tr": "Taraf",
+        "meaning": "Person + Organization üst tipi (Customer, Vendor, Employee aynı tabandan).",
+        "why": "Aynı kişi hem müşteri hem tedarikçi olabilir; tek kayıt."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

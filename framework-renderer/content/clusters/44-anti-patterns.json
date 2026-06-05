@@ -1,0 +1,165 @@
+{
+  "id": "anti-patterns",
+  "title": "Anti-pattern Özeti",
+  "subtitle": "24 tuzak, niyesi, doğrusu.",
+  "cluster": "build",
+  "order": 44,
+  "icon": "ph-prohibit",
+  "tags": [
+    "anti-pattern",
+    "tuzak",
+    "best-practice"
+  ],
+  "blocks": [
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Anti-pattern",
+        "Niye yanlış",
+        "Doğrusu"
+      ],
+      "rows": [
+        [
+          "Tek JSON column polymorphism",
+          "WordPress wp_postmeta — yavaş, type-unsafe, JOIN cehennemi",
+          "Frappe: her DocType fiziksel tablo"
+        ],
+        [
+          "Auth'ı sonradan",
+          "Migration cehennemi, güvensiz geçiş",
+          "Day-1 kernel"
+        ],
+        [
+          "Authz application-level if-check",
+          "Bir unutma → data leak",
+          "Query layer'a örülmüş + RLS defense-in-depth"
+        ],
+        [
+          "Tenant'sız başlamak",
+          "6-12 ay retrofit",
+          "Day-1 tenant_id her satırda"
+        ],
+        [
+          "Module direct DB access",
+          "Tight coupling, refactor imkansız",
+          "Sadece public API + event bus"
+        ],
+        [
+          "Cross-aggregate transaction",
+          "Distributed tx fragile, yavaş",
+          "Outbox + saga + compensation"
+        ],
+        [
+          "Billing core'a",
+          "Her ürün farklı model (escrow/seat/usage)",
+          "Layer 2 module"
+        ],
+        [
+          "Catalog core'a",
+          "CMS/LMS/Drive'ın işi yok",
+          "Layer 2 module"
+        ],
+        [
+          "Feed fan-out kernel'e",
+          "13 üründe feed yok",
+          "Primitive kernel, policy Layer 2"
+        ],
+        [
+          "Logging \"domain\"",
+          "Infrastructure concern",
+          "structlog + OpenTelemetry"
+        ],
+        [
+          "Reinvent search",
+          "Elasticsearch'ü kernel'e fuse",
+          "Interface core, default Postgres, prod swap"
+        ],
+        [
+          "Global mutable plugin state",
+          "Strapi admin extension acısı",
+          "Hook registry + semver kontrat"
+        ],
+        [
+          "Distributed transaction (2PC)",
+          "Yavaş, fragile, çağ geçti",
+          "Saga + outbox + idempotency"
+        ],
+        [
+          "Customer core'a",
+          "Sosyal medyada yok",
+          "Party generic + role module'de"
+        ],
+        [
+          "Polyglot transaction crossing",
+          "2PC fragile",
+          "Synchronous hook = pure function"
+        ],
+        [
+          "e-Belge sonradan",
+          "TR'de baştan bordro/muhasebe yanlış",
+          "e-Belge driver Layer 1 in-tree"
+        ],
+        [
+          "Effective-dating'i atlamak",
+          "HRMS retro çöker",
+          "Bitemporal day-1"
+        ],
+        [
+          "Hot counter ACID",
+          "Viral içerikte lock contention",
+          "Approximate, Redis INCR, sharded"
+        ],
+        [
+          "SCORM'u plugin sanmak",
+          "İlerleme modeli yanlış kurulur",
+          "LMS standardı baştan (cmi5)"
+        ],
+        [
+          "\"Önce tek müşteri\"",
+          "Tenancy retrofit",
+          "Day-1 multi-tenant"
+        ],
+        [
+          "PgBouncer + SET (session)",
+          "Cross-tenant leak",
+          "SET LOCAL (transaction)"
+        ],
+        [
+          "Submittable DocType'ı normal CRUD",
+          "Financial integrity bozulur",
+          "docstatus + immutable submitted"
+        ],
+        [
+          "Drupal 7 \"yarım shipping\"",
+          "5 yıl ekosistem acısı",
+          "Stage 1'i tam bitir"
+        ],
+        [
+          "Mikroservis ilk gün",
+          "Premature",
+          "Modüler monolit, sonra extract"
+        ]
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "24 tuzak, niyesi, doğrusu.",
+    "detail": "24 tuzak, niyesi, doğrusu.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

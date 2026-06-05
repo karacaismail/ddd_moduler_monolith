@@ -1,0 +1,227 @@
+{
+  "id": "landx-l3",
+  "title": "LandX L3 — Uygulama Yüzeyi (Application Surface)",
+  "subtitle": "S01–S06. Auto REST API, admin UI engine, form/validation, workflow, notification, search.",
+  "cluster": "landx",
+  "order": 49,
+  "layer": "l1",
+  "icon": "ph-stack",
+  "badge": "LandX L3 — 6 modül",
+  "tags": [
+    "landx",
+    "application",
+    "rest",
+    "admin-ui",
+    "workflow"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "L3 katmanı: DocType tanımından otomatik olarak üretilen REST API, admin UI, form, validation, workflow, notification ve hybrid search yüzeyleri."
+    },
+    {
+      "type": "feature-list",
+      "title": "L3 modülleri",
+      "items": [
+        {
+          "name": "S01 — Auto REST API Engine",
+          "desc": "**Faz 1 · P0 · Application Squad.** DocType'tan otomatik REST endpoint (CRUD + filter + bulk). Aynı tanımdan OpenAPI spec, MCP tool listesi, GraphQL schema türetilir. *Capabilities:* CRUD Endpoint Generation, OpenAPI Spec, Bulk & Batch Operations, Pagination & Cursor, Webhooks. *KPI:* DocType → endpoint p95 <60sn, OpenAPI conformance %100, endpoint latency p95 <120ms.",
+          "enrich": {
+            "info": "**Faz 1 · P0 · Application Squad.** DocType'tan otomatik REST endpoint (CRUD + filter + bulk). Aynı tanımdan OpenAPI spec, MCP tool listesi,",
+            "detail": "**S01 — Auto REST API Engine** nedir?\n\n**Faz 1 · P0 · Application Squad.** DocType'tan otomatik REST endpoint (CRUD + filter + bulk). Aynı tanımdan OpenAPI spec, MCP tool listesi, GraphQL schema türetilir. *Capabilities:* CRUD Endpoint Generation, OpenAPI Spec, Bulk & Batch Operations, Pagination & Cursor, Webhooks. *KPI:* DocType → endpoint p95 <60sn, OpenAPI conformance %100, endpoint latency p95 <120ms.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "terms": [
+              {
+                "term": "GraphQL",
+                "abbrev_tr": "Graf sorgu dili",
+                "meaning": "Tek endpoint, istemci hangi alanları istediğini söyler.",
+                "why": "Mobile için over-fetching'i çözer."
+              },
+              {
+                "term": "REST",
+                "abbrev_of": "Representational State Transfer",
+                "abbrev_tr": "Temsili Durum Aktarımı",
+                "meaning": "Kaynak-merkezli HTTP API mimarisi.",
+                "why": "Standart, cache-friendly."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"S01 — Auto REST API Engine\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 1 · P0 · Application Squad.** DocType'tan otomatik REST endpoint (CRUD + f pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"S01 — Auto REST API Engine\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"S01 — Auto REST API Engine\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "S02 — Auto Admin UI Engine",
+          "desc": "**Faz 2 · P0 · Application Squad.** DocType'tan auto-generated admin UI: list, detail, form, bulk action, filter side-panel. Flowbite + React Router v7. AI co-pilot her ekranda. *Capabilities:* List View · Detail View & Form · Bulk Actions · Saved Views · AI Co-pilot. *KPI:* DocType → çalışır UI <2dk, custom override penalty <%10, Lighthouse a11y >90.",
+          "enrich": {
+            "info": "**Faz 2 · P0 · Application Squad.** DocType'tan auto-generated admin UI: list, detail, form, bulk action, filter side-panel. Flowbite + Reac",
+            "detail": "**S02 — Auto Admin UI Engine** nedir?\n\n**Faz 2 · P0 · Application Squad.** DocType'tan auto-generated admin UI: list, detail, form, bulk action, filter side-panel. Flowbite + React Router v7. AI co-pilot her ekranda. *Capabilities:* List View · Detail View & Form · Bulk Actions · Saved Views · AI Co-pilot. *KPI:* DocType → çalışır UI <2dk, custom override penalty <%10, Lighthouse a11y >90.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"S02 — Auto Admin UI Engine\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 2 · P0 · Application Squad.** DocType'tan auto-generated admin UI: list, d pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"S02 — Auto Admin UI Engine\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"S02 — Auto Admin UI Engine\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "S03 — Form & Validation Framework",
+          "desc": "**Faz 2 · P1 · Application Squad.** Form lifecycle, server-side + client-side validation, conditional fields, wizard flows, AI auto-fill, draft autosave. Tüm validation kuralları MCP tool olarak dış dünyaya da expose edilir.",
+          "enrich": {
+            "info": "**Faz 2 · P1 · Application Squad.** Form lifecycle, server-side + client-side validation, conditional fields, wizard flows, AI auto-fill, dr",
+            "detail": "**S03 — Form & Validation Framework** nedir?\n\n**Faz 2 · P1 · Application Squad.** Form lifecycle, server-side + client-side validation, conditional fields, wizard flows, AI auto-fill, draft autosave. Tüm validation kuralları MCP tool olarak dış dünyaya da expose edilir.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"S03 — Form & Validation Framework\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 2 · P1 · Application Squad.** Form lifecycle, server-side + client-side va pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"S03 — Form & Validation Framework\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"S03 — Form & Validation Framework\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "S04 — Workflow & State Machine",
+          "desc": "**Faz 3 · P1 · Application Squad.** DocType yaşam döngüsü için deklaratif state machine. Her transition: guard, action, side-effect, audit. Agent transition'ı tetikleyebilir (scope izinliyse). Bizim eşdeğer: {{ref:l1-workflow}}.",
+          "enrich": {
+            "info": "**Faz 3 · P1 · Application Squad.** DocType yaşam döngüsü için deklaratif state machine. Her transition: guard, action, side-effect, audit. ",
+            "detail": "**S04 — Workflow & State Machine** nedir?\n\n**Faz 3 · P1 · Application Squad.** DocType yaşam döngüsü için deklaratif state machine. Her transition: guard, action, side-effect, audit. Agent transition'ı tetikleyebilir (scope izinliyse). Bizim eşdeğer: {{ref:l1-workflow}}.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"S04 — Workflow & State Machine\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 3 · P1 · Application Squad.** DocType yaşam döngüsü için deklaratif state  pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"S04 — Workflow & State Machine\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"S04 — Workflow & State Machine\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "S05 — Notification Center",
+          "desc": "**Faz 3 · P1 · Application Squad.** Multi-channel bildirim: in-app, email, SMS, push, webhook, agent ping. Template management, user preferences, digest, throttle. *KPI:* Email delivery >%98, in-app render p95 <500ms. Bizim eşdeğer: {{ref:l1-notification}}.",
+          "enrich": {
+            "info": "**Faz 3 · P1 · Application Squad.** Multi-channel bildirim: in-app, email, SMS, push, webhook, agent ping. Template management, user prefere",
+            "detail": "**S05 — Notification Center** nedir?\n\n**Faz 3 · P1 · Application Squad.** Multi-channel bildirim: in-app, email, SMS, push, webhook, agent ping. Template management, user preferences, digest, throttle. *KPI:* Email delivery >%98, in-app render p95 <500ms. Bizim eşdeğer: {{ref:l1-notification}}.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "terms": [
+              {
+                "term": "Webhook",
+                "abbrev_tr": "Web kancası",
+                "meaning": "Bir olay olduğunda dış sistemin URL'ine HTTP POST atan callback.",
+                "why": "Üçüncü-taraf entegrasyonlar için standart."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"S05 — Notification Center\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 3 · P1 · Application Squad.** Multi-channel bildirim: in-app, email, SMS,  pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"S05 — Notification Center\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"S05 — Notification Center\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "S06 — Search & Discovery",
+          "desc": "**Faz 3 · P1 · Application + AI Squad.** DocType genel arama yüzeyi. Hybrid retrieval (BM25 + vector), faceted filter, query understanding (NL → structured), saved searches, alert subscriptions. *KPI:* NDCG@10 >0.78, query latency p95 <250ms. Bizim eşdeğer: {{ref:l1-search}}.",
+          "enrich": {
+            "info": "**Faz 3 · P1 · Application + AI Squad.** DocType genel arama yüzeyi. Hybrid retrieval (BM25 + vector), faceted filter, query understanding (",
+            "detail": "**S06 — Search & Discovery** nedir?\n\n**Faz 3 · P1 · Application + AI Squad.** DocType genel arama yüzeyi. Hybrid retrieval (BM25 + vector), faceted filter, query understanding (NL → structured), saved searches, alert subscriptions. *KPI:* NDCG@10 >0.78, query latency p95 <250ms. Bizim eşdeğer: {{ref:l1-search}}.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"S06 — Search & Discovery\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 3 · P1 · Application + AI Squad.** DocType genel arama yüzeyi. Hybrid retr pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"S06 — Search & Discovery\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"S06 — Search & Discovery\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Bizim framework ile örtüşme",
+      "body": "L3 modülleri büyük ölçüde bizim Layer 1 in-tree katmanına denk gelir. S01 → REST autogen ({{ref:l1-misc}}), S02 → Admin UI ({{ref:s-cms}} authoring + Layer 1 reporting), S03 → form, S04 → {{ref:l1-workflow}}, S05 → {{ref:l1-notification}}, S06 → {{ref:l1-search}}.\n\nFark: LandX'te bu modüller agent-aware. Her validation MCP tool olarak expose, her workflow transition agent tetikleyebilir, search hem human hem agent için. Bizim Layer 1'i AI Stack ({{ref:s-ai}}) ile birleştirdiğinde aynı sonuç."
+    }
+  ],
+  "enrich": {
+    "info": "S01–S06. Auto REST API, admin UI engine, form/validation, workflow, notification, search.",
+    "detail": "S01–S06. Auto REST API, admin UI engine, form/validation, workflow, notification, search.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "id": "scale-idempotency",
+  "title": "Idempotency Keys",
+  "subtitle": "Aynı istek iki kez geldi sonuç değişmesin. Webhook retry, payment, third-party API.",
+  "cluster": "scale",
+  "layer": "scale",
+  "order": 15,
+  "icon": "ph-key-return",
+  "badge": "Scale primitive #6",
+  "tags": [
+    "idempotency",
+    "retry",
+    "webhook",
+    "scale"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Aynı isteğin iki kez gönderilmesi sonucu değiştirmemeli. Webhook delivery, payment processing, third-party API retry. Stripe API'sinde standart pattern: client `Idempotency-Key` header'ı gönderir."
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "content": "CREATE TABLE idempotency (\n  key text PRIMARY KEY,\n  tenant_id uuid NOT NULL,\n  endpoint text NOT NULL,\n  response_status int,\n  response_body jsonb,\n  created_at timestamptz DEFAULT now()\n);"
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "title": "Middleware",
+      "content": "@app.middleware(\"http\")\nasync def idempotency_check(request, call_next):\n    key = request.headers.get(\"Idempotency-Key\")\n    if key:\n        cached = await db.fetchrow(\n            \"SELECT * FROM idempotency WHERE key=$1\", key)\n        if cached:\n            return JSONResponse(cached['response_body'], cached['response_status'])\n    resp = await call_next(request)\n    if key and resp.status_code in (200, 201, 202):\n        await db.execute(\"INSERT INTO idempotency ...\")\n    return resp"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Job idempotency",
+      "body": "Worker job'larında da aynı pattern: her job `idempotency_key` taşır. Handler başlangıcında \"bu key işlendi mi\" check. Network retry, worker restart, queue replay senaryolarında kritik."
+    }
+  ],
+  "enrich": {
+    "info": "Aynı istek iki kez geldi sonuç değişmesin. Webhook retry, payment, third-party API.",
+    "detail": "Aynı istek iki kez geldi sonuç değişmesin. Webhook retry, payment, third-party API.",
+    "terms": [
+      {
+        "term": "Idempotency",
+        "abbrev_tr": "Tekrar-güvenliği",
+        "meaning": "Aynı işlemin N kez yapılması = 1 kez yapılması.",
+        "why": "Ağ tekrar denemelerinde çift işlem olmasın."
+      },
+      {
+        "term": "Idempotency Key",
+        "abbrev_tr": "Tekrar-anahtarı",
+        "meaning": "İstemcinin ürettiği unique string; sunucu aynı key ile gelen ikinciyi yutar.",
+        "why": "Kart çekme gibi yan-etkili işlemlerde şart."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

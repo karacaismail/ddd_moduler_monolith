@@ -1,0 +1,49 @@
+{
+  "id": "cc-security",
+  "title": "Security Model",
+  "subtitle": "STRIDE threat model + OWASP Top 10 + defense in depth.",
+  "cluster": "crosscut",
+  "order": 36,
+  "icon": "ph-shield",
+  "tags": [
+    "security",
+    "owasp",
+    "stride"
+  ],
+  "blocks": [
+    {
+      "type": "list",
+      "items": [
+        "**Threat model**: STRIDE — Spoofing/Tampering/Repudiation/Information disclosure/DoS/Elevation.",
+        "**Defense in depth**: app-level authz + DB RLS + WAF + rate limit.",
+        "**OWASP Top 10**: SQLi (parameterized), XSS (auto-escape), CSRF (token), SSRF (URL allowlist), open redirect, broken auth.",
+        "**Secret rotation**: Vault driver, otomatik rotate.",
+        "**PII encryption**: field-level, AES-256-GCM, key versioning.",
+        "**Audit log immutability**: append-only, ihlal forensics için.",
+        "**Dependency scanning**: dependabot, snyk, trivy.",
+        "**Pentest**: yıllık external.",
+        "**Bug bounty**: HackerOne, BugCrowd opsiyonel.",
+        "**Supply chain**: SBOM (Software Bill of Materials), Sigstore, reproducible builds."
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "STRIDE threat model + OWASP Top 10 + defense in depth.",
+    "detail": "STRIDE threat model + OWASP Top 10 + defense in depth.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

@@ -1,0 +1,514 @@
+{
+  "id": "k-bus",
+  "title": "Event Bus + Polyglot Runtime Bridge",
+  "subtitle": "Module'lerin loose-coupled konuştuğu omurga. Aynı kod, üç ölçek.",
+  "cluster": "layer0",
+  "layer": "kernel",
+  "order": 8,
+  "icon": "ph-broadcast",
+  "badge": "Layer 0 — Kernel #5",
+  "tags": [
+    "events",
+    "polyglot",
+    "bus",
+    "kernel"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Module'lerin loose-coupled konuştuğu omurga. **Aynı kod, üç ölçek**: in-process → Redis Streams → Kafka, module değişmeden."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Domain modeli — event nedir"
+    },
+    {
+      "type": "code",
+      "lang": "yaml",
+      "content": "Event {\n  id: uuid                # idempotency key\n  type: \"OrderPlaced\"     # event type\n  aggregate_id: \"order-123\"\n  aggregate_type: \"Order\"\n  tenant_id: uuid\n  occurred_at: timestamptz\n  occurred_by: user_id\n  version: 1\n  payload: jsonb          # event data\n  trace_id: text          # distributed tracing\n}"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "İki ayrı kavram — karıştırma"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Domain Event** — \"bir şey oldu, sistem state'i değişti\": `OrderPlaced`, `CustomerCreated`, `PaymentReceived`. Past tense, immutable.",
+        "**Command** — \"şu işi yap\": `PlaceOrder`, `CreateCustomer`. Future tense, validated, can fail."
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Event bus'ta sadece event akar. Command'ları doğrudan handler çağırır (genelde `Aggregate.do_something()` method'u). Event Sourcing dünyasına gitmeden bunu net tut."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Klasik anti-pattern — tight coupling"
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "title": "Yanlış",
+      "content": "# Order module\ndef place_order(order):\n    save(order)\n    inventory.decrement_stock(order.items)      # tight coupling\n    notification.send_email(order.customer)     # tight coupling\n    loyalty.add_points(order.customer, order.total)  # tight coupling\n    analytics.track(\"order_placed\", order)      # tight coupling"
+    },
+    {
+      "type": "paragraph",
+      "text": "Yarın 5. module geldiğinde Order'a 5. satır eklersin. Order artık 5 module'ün varlığını biliyor. Modülerlik yok."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "title": "Doğru — event publish",
+      "content": "# Order module\ndef place_order(order):\n    save(order)\n    bus.publish(OrderPlaced(order_id=order.id, items=order.items, customer=order.customer))\n    # Order module bu kadarını bilir. Kim dinliyor, umurunda değil.\n\n# Inventory module (ayrı dosya, ayrı geliştirici, ayrı deploy)\n@bus.on(OrderPlaced)\ndef decrement_stock(event):\n    for item in event.items:\n        stock.decrement(item.sku, item.qty)\n\n# Notification, Loyalty, Analytics module'leri de aynı şekilde subscribe eder"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Üç transport, tek interface"
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "content": "from framework.events import publish, subscribe\n\n# Publish\nawait publish(OrderPlaced(order_id=\"123\", total=199.00))\n\n# Subscribe\n@subscribe(OrderPlaced)\nasync def decrement_stock(event: OrderPlaced):\n    for item in event.items:\n        await stock.decrement(item.sku, item.qty)"
+    },
+    {
+      "type": "paragraph",
+      "text": "Backend deployment profile'a göre seçilir:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Shared hosting:** `InProcessBus` — async loop, tek process.",
+        "**Orta ölçek:** `RedisStreamsBus` — persistence, consumer groups, replay.",
+        "**Büyük ölçek:** `KafkaBus` — partition, retention, replay, multi-consumer."
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Module kodu `publish`/`subscribe`'dan başkasını bilmiyor. Config flag: `EVENT_BUS=redis`."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Polyglot runtime — Python + TypeScript"
+    },
+    {
+      "type": "paragraph",
+      "text": "Geliştirici hook'u Python **veya** TypeScript yazsın. Hook contract aynı:"
+    },
+    {
+      "type": "code",
+      "lang": "typescript",
+      "title": "hooks/order.ts",
+      "content": "import type { Order, HookContext } from \"@framework/sdk\";\n\nexport const onBeforeSave = async (doc: Order, ctx: HookContext) => {\n  if (doc.total < 0) throw new Error(\"Total negatif olamaz\");\n  doc.totalWithTax = await ctx.tax.calculate(doc.total, doc.taxRegion);\n};\n\nexport const onSubmit = async (doc: Order, ctx: HookContext) => {\n  await ctx.events.publish({ type: \"OrderSubmitted\", orderId: doc.id });\n};"
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "title": "hooks/order.py",
+      "content": "from framework.sdk import HookContext, Order\n\nasync def on_before_save(doc: Order, ctx: HookContext):\n    if doc.total < 0:\n        raise ValueError(\"Total negatif olamaz\")\n    doc.total_with_tax = await ctx.tax.calculate(doc.total, doc.tax_region)\n\nasync def on_submit(doc: Order, ctx: HookContext):\n    await ctx.events.publish({\"type\": \"OrderSubmitted\", \"order_id\": doc.id})"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Üç runtime stratejisi"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Embedded JS (shared hosting)** — PythonMonkey (SpiderMonkey, Distributive Inc., aktif), STPyV8 (Cloudflare). Tek process, network yok, latency düşük. Trusted hook için.",
+        "**Sidecar Node/Deno (production default)** — Node sürecine gRPC ile bağlan, MCP-style. Bağımsız ölçeklenir, debuggable, isolation güçlü.",
+        "**WASM/Extism (untrusted plugin)** — capability sandbox. \"Bu plugin sadece şu DocType'ı okuyabilir, network yok\" diye kısıtla."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Aggregate boundary kuralı — DDD kritik"
+    },
+    {
+      "type": "paragraph",
+      "text": "TS hook Python aggregate'i üzerinde açık transaction tutamaz. Distributed transaction (2PC) çağı geçti — yavaş, fragile, gerçekte kullanılmıyor. Doğru pattern'ler:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Synchronous hook = pure function.** Python core transaction açar, TS hook'a aggregate kopyasını verir, hook decision/mutation döner, Python core commit eder. Frappe `doc_events` pattern'i.",
+        "**Cross-aggregate effect = outbox + saga.** Hook farklı aggregate'i etkileyecekse, transaction'da olmaz. {{ref:scale-outbox}}'a event yazılır, ayrı consumer asenkron işler, başarısızlıkta compensating action."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Event versioning"
+    },
+    {
+      "type": "paragraph",
+      "text": "Event'ler kontrat. Versiyon değişimi backward-compat zorunlu:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Yeni alan eklemek = OK (optional).",
+        "Alan silmek = breaking. Yeni event tipi yarat (`OrderPlacedV2`).",
+        "Anlam değişikliği = breaking. Yeni tip.",
+        "Event store retention (replay için) varsa migration script gerekir."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Gerçek dünya paralel"
+    },
+    {
+      "type": "examples",
+      "items": [
+        {
+          "label": "Slack",
+          "text": "mesaj postlandığında Slack içinde event firee eder. Bot'lar (Linear, GitHub, Datadog) subscribe eder. Slack core'da \"Linear\" diye bir kavram yok.",
+          "enrich": {
+            "info": "mesaj postlandığında Slack içinde event firee eder. Bot'lar (Linear, GitHub, Datadog) subscribe eder. Slack core'da \"Linear\" diye bir kavram",
+            "detail": "**Slack** nedir?\n\nmesaj postlandığında Slack içinde event firee eder. Bot'lar (Linear, GitHub, Datadog) subscribe eder. Slack core'da \"Linear\" diye bir kavram yok.\n\n**Amaç:** Modüllerin birbirine doğrudan değil olay (event) yayını üstünden bağlı olduğu altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç event bus bilmeyen biri için: bu özellik, event bus sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Backend mühendisi",
+                "context": "\"Slack\" özelliğini event-driven entegrasyon sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici mesaj postlandığında Slack içinde event firee eder. Bot'lar (Linear, GitHub, Dat pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin yazarı",
+                "context": "Olay tetikleyici otomatik iş yazar. \"Slack\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook + tool registry ile no-code automation."
+              },
+              {
+                "persona": "SRE",
+                "context": "Mesaj gecikmesini izler. \"Slack\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her event'in queue lag'i metriklenir."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Stripe webhook",
+          "text": "Stripe internal event bus'ını dışarıya açar. `payment_intent.succeeded` event'i webhook olarak senin endpoint'ine düşer.",
+          "enrich": {
+            "info": "Stripe internal event bus'ını dışarıya açar. `payment_intent.succeeded` event'i webhook olarak senin endpoint'ine düşer.",
+            "detail": "**Stripe webhook** nedir?\n\nStripe internal event bus'ını dışarıya açar. `payment_intent.succeeded` event'i webhook olarak senin endpoint'ine düşer.\n\n**Amaç:** Modüllerin birbirine doğrudan değil olay (event) yayını üstünden bağlı olduğu altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç event bus bilmeyen biri için: bu özellik, event bus sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Backend mühendisi",
+                "context": "\"Stripe webhook\" özelliğini event-driven entegrasyon sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Stripe internal event bus'ını dışarıya açar. `payment_intent.succeeded` event'i  pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin yazarı",
+                "context": "Olay tetikleyici otomatik iş yazar. \"Stripe webhook\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook + tool registry ile no-code automation."
+              },
+              {
+                "persona": "SRE",
+                "context": "Mesaj gecikmesini izler. \"Stripe webhook\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her event'in queue lag'i metriklenir."
+              }
+            ],
+            "terms": [
+              {
+                "term": "Webhook",
+                "abbrev_tr": "Web kancası",
+                "meaning": "Bir olay olduğunda dış sistemin URL'ine HTTP POST atan callback.",
+                "why": "Üçüncü-taraf entegrasyonlar için standart."
+              }
+            ]
+          }
+        },
+        {
+          "label": "AWS S3 → Lambda",
+          "text": "S3'e dosya konunca `ObjectCreated` event'i otomatik Lambda'yı tetikler. Bulutta event bus pattern'inin canonical örneği.",
+          "enrich": {
+            "info": "S3'e dosya konunca `ObjectCreated` event'i otomatik Lambda'yı tetikler. Bulutta event bus pattern'inin canonical örneği.",
+            "detail": "**AWS S3 → Lambda** nedir?\n\nS3'e dosya konunca `ObjectCreated` event'i otomatik Lambda'yı tetikler. Bulutta event bus pattern'inin canonical örneği.\n\n**Amaç:** Modüllerin birbirine doğrudan değil olay (event) yayını üstünden bağlı olduğu altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç event bus bilmeyen biri için: bu özellik, event bus sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Backend mühendisi",
+                "context": "\"AWS S3 → Lambda\" özelliğini event-driven entegrasyon sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici S3'e dosya konunca `ObjectCreated` event'i otomatik Lambda'yı tetikler. Bulutta  pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin yazarı",
+                "context": "Olay tetikleyici otomatik iş yazar. \"AWS S3 → Lambda\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook + tool registry ile no-code automation."
+              },
+              {
+                "persona": "SRE",
+                "context": "Mesaj gecikmesini izler. \"AWS S3 → Lambda\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her event'in queue lag'i metriklenir."
+              }
+            ]
+          }
+        },
+        {
+          "label": "E-ticaret (#3)",
+          "text": "`OrderPlaced` → Stock decrement + Email + Loyalty + Recommendation update + Tax record + Analytics. Hepsi paralel, hiçbiri Order'ı bilmez.",
+          "enrich": {
+            "info": "`OrderPlaced` → Stock decrement + Email + Loyalty + Recommendation update + Tax record + Analytics. Hepsi paralel, hiçbiri Order'ı bilmez.",
+            "detail": "**E-ticaret (#3)** nedir?\n\n`OrderPlaced` → Stock decrement + Email + Loyalty + Recommendation update + Tax record + Analytics. Hepsi paralel, hiçbiri Order'ı bilmez.\n\n**Amaç:** Modüllerin birbirine doğrudan değil olay (event) yayını üstünden bağlı olduğu altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç event bus bilmeyen biri için: bu özellik, event bus sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Backend mühendisi",
+                "context": "\"E-ticaret (#3)\" özelliğini event-driven entegrasyon sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `OrderPlaced` → Stock decrement + Email + Loyalty + Recommendation update + Tax  pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin yazarı",
+                "context": "Olay tetikleyici otomatik iş yazar. \"E-ticaret (#3)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook + tool registry ile no-code automation."
+              },
+              {
+                "persona": "SRE",
+                "context": "Mesaj gecikmesini izler. \"E-ticaret (#3)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her event'in queue lag'i metriklenir."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Sosyal medya (#14)",
+          "text": "`PostCreated` → Fan-out + Search index + Moderation queue + Trend update. Fan-out 100M push olabilir; ana transaction içinde olamaz, async.",
+          "enrich": {
+            "info": "`PostCreated` → Fan-out + Search index + Moderation queue + Trend update. Fan-out 100M push olabilir; ana transaction içinde olamaz, async.",
+            "detail": "**Sosyal medya (#14)** nedir?\n\n`PostCreated` → Fan-out + Search index + Moderation queue + Trend update. Fan-out 100M push olabilir; ana transaction içinde olamaz, async.\n\n**Amaç:** Modüllerin birbirine doğrudan değil olay (event) yayını üstünden bağlı olduğu altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç event bus bilmeyen biri için: bu özellik, event bus sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Backend mühendisi",
+                "context": "\"Sosyal medya (#14)\" özelliğini event-driven entegrasyon sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `PostCreated` → Fan-out + Search index + Moderation queue + Trend update. Fan-ou pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin yazarı",
+                "context": "Olay tetikleyici otomatik iş yazar. \"Sosyal medya (#14)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook + tool registry ile no-code automation."
+              },
+              {
+                "persona": "SRE",
+                "context": "Mesaj gecikmesini izler. \"Sosyal medya (#14)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her event'in queue lag'i metriklenir."
+              }
+            ],
+            "terms": [
+              {
+                "term": "Fan-out",
+                "abbrev_tr": "Dağıtım yelpazesi",
+                "meaning": "Bir post'u N takipçinin feed'ine dağıtma stratejisi (push/pull/hybrid).",
+                "why": "Twitter ölçeğinde maliyet/perf farkı 1000× olabilir."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: K04 Hook & Event Bus"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **K04 — Hook & Event Bus** (Faz 1 · P0 · Kernel Squad) Drupal hook'larının **async + agent-aware eşdeğeri**. Sync hook + async event ayrımı net. *Event delivery p95 <50ms, hook timeout <%0.1, dead-letter recovery >%95.*"
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "Hook Registry",
+          "desc": "`hook_name` (before_save, after_create vb.) + `plugin_id` + `doctype_target` + `priority` + `blocking` (sync/async) + `max_runtime_ms`",
+          "enrich": {
+            "info": "`hook_name` (before_save, after_create vb.) + `plugin_id` + `doctype_target` + `priority` + `blocking` (sync/async) + `max_runtime_ms`",
+            "detail": "**Hook Registry** nedir?\n\n`hook_name` (before_save, after_create vb.) + `plugin_id` + `doctype_target` + `priority` + `blocking` (sync/async) + `max_runtime_ms`.\n\n**Amaç:** Modüllerin birbirine doğrudan değil olay (event) yayını üstünden bağlı olduğu altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç event bus bilmeyen biri için: bu özellik, event bus sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Backend mühendisi",
+                "context": "\"Hook Registry\" özelliğini event-driven entegrasyon sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `hook_name` (before_save, after_create vb.) + `plugin_id` + `doctype_target` + ` pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin yazarı",
+                "context": "Olay tetikleyici otomatik iş yazar. \"Hook Registry\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook + tool registry ile no-code automation."
+              },
+              {
+                "persona": "SRE",
+                "context": "Mesaj gecikmesini izler. \"Hook Registry\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her event'in queue lag'i metriklenir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Hook Çalıştırma",
+          "desc": "`invocation_id`, `triggered_by` (event/api/**agent**/cron), `payload`, `duration_ms`, `error` — tüm tetikleyiciler arasında agent first-class",
+          "enrich": {
+            "info": "`invocation_id`, `triggered_by` (event/api/**agent**/cron), `payload`, `duration_ms`, `error` — tüm tetikleyiciler arasında agent first-clas",
+            "detail": "**Hook Çalıştırma** nedir?\n\n`invocation_id`, `triggered_by` (event/api/**agent**/cron), `payload`, `duration_ms`, `error` — tüm tetikleyiciler arasında agent first-class.\n\n**Amaç:** Modüllerin birbirine doğrudan değil olay (event) yayını üstünden bağlı olduğu altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç event bus bilmeyen biri için: bu özellik, event bus sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Backend mühendisi",
+                "context": "\"Hook Çalıştırma\" özelliğini event-driven entegrasyon sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `invocation_id`, `triggered_by` (event/api/**agent**/cron), `payload`, `duration pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin yazarı",
+                "context": "Olay tetikleyici otomatik iş yazar. \"Hook Çalıştırma\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook + tool registry ile no-code automation."
+              },
+              {
+                "persona": "SRE",
+                "context": "Mesaj gecikmesini izler. \"Hook Çalıştırma\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her event'in queue lag'i metriklenir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Event Yayını",
+          "desc": "`event_id` (idempotent + mcp), `topic`, `payload`, `emitted_by` (user_id/agent_id/system), `delivery_mode` (at_least_once/at_most_once/exactly_once)",
+          "enrich": {
+            "info": "`event_id` (idempotent + mcp), `topic`, `payload`, `emitted_by` (user_id/agent_id/system), `delivery_mode` (at_least_once/at_most_once/exact",
+            "detail": "**Event Yayını** nedir?\n\n`event_id` (idempotent + mcp), `topic`, `payload`, `emitted_by` (user_id/agent_id/system), `delivery_mode` (at_least_once/at_most_once/exactly_once).\n\n**Amaç:** Modüllerin birbirine doğrudan değil olay (event) yayını üstünden bağlı olduğu altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç event bus bilmeyen biri için: bu özellik, event bus sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Backend mühendisi",
+                "context": "\"Event Yayını\" özelliğini event-driven entegrasyon sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `event_id` (idempotent + mcp), `topic`, `payload`, `emitted_by` (user_id/agent_i pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin yazarı",
+                "context": "Olay tetikleyici otomatik iş yazar. \"Event Yayını\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook + tool registry ile no-code automation."
+              },
+              {
+                "persona": "SRE",
+                "context": "Mesaj gecikmesini izler. \"Event Yayını\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her event'in queue lag'i metriklenir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Subscriber & Delivery",
+          "desc": "`topic_pattern` (wildcard), `delivery_status` (pending/delivered/failed/dead), `retry_count`, `dead_letter_at`, `ack_at`",
+          "enrich": {
+            "info": "`topic_pattern` (wildcard), `delivery_status` (pending/delivered/failed/dead), `retry_count`, `dead_letter_at`, `ack_at`",
+            "detail": "**Subscriber & Delivery** nedir?\n\n`topic_pattern` (wildcard), `delivery_status` (pending/delivered/failed/dead), `retry_count`, `dead_letter_at`, `ack_at`.\n\n**Amaç:** Modüllerin birbirine doğrudan değil olay (event) yayını üstünden bağlı olduğu altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç event bus bilmeyen biri için: bu özellik, event bus sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Backend mühendisi",
+                "context": "\"Subscriber & Delivery\" özelliğini event-driven entegrasyon sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `topic_pattern` (wildcard), `delivery_status` (pending/delivered/failed/dead), ` pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin yazarı",
+                "context": "Olay tetikleyici otomatik iş yazar. \"Subscriber & Delivery\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook + tool registry ile no-code automation."
+              },
+              {
+                "persona": "SRE",
+                "context": "Mesaj gecikmesini izler. \"Subscriber & Delivery\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her event'in queue lag'i metriklenir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Transactional Outbox",
+          "desc": "`outbox_id`, `source_transaction_id`, `event_payload`, `published_at` — DocType save ile aynı transaction",
+          "enrich": {
+            "info": "`outbox_id`, `source_transaction_id`, `event_payload`, `published_at` — DocType save ile aynı transaction",
+            "detail": "**Transactional Outbox** nedir?\n\n`outbox_id`, `source_transaction_id`, `event_payload`, `published_at` — DocType save ile aynı transaction.\n\n**Amaç:** Modüllerin birbirine doğrudan değil olay (event) yayını üstünden bağlı olduğu altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç event bus bilmeyen biri için: bu özellik, event bus sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Backend mühendisi",
+                "context": "\"Transactional Outbox\" özelliğini event-driven entegrasyon sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `outbox_id`, `source_transaction_id`, `event_payload`, `published_at` — DocType  pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin yazarı",
+                "context": "Olay tetikleyici otomatik iş yazar. \"Transactional Outbox\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook + tool registry ile no-code automation."
+              },
+              {
+                "persona": "SRE",
+                "context": "Mesaj gecikmesini izler. \"Transactional Outbox\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her event'in queue lag'i metriklenir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Saga Orchestration",
+          "desc": "`saga_id`, `saga_type`, `step_count`, `compensation_log`, `status` (running/compensating/succeeded/failed)",
+          "enrich": {
+            "info": "`saga_id`, `saga_type`, `step_count`, `compensation_log`, `status` (running/compensating/succeeded/failed)",
+            "detail": "**Saga Orchestration** nedir?\n\n`saga_id`, `saga_type`, `step_count`, `compensation_log`, `status` (running/compensating/succeeded/failed).\n\n**Amaç:** Modüllerin birbirine doğrudan değil olay (event) yayını üstünden bağlı olduğu altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç event bus bilmeyen biri için: bu özellik, event bus sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Backend mühendisi",
+                "context": "\"Saga Orchestration\" özelliğini event-driven entegrasyon sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `saga_id`, `saga_type`, `step_count`, `compensation_log`, `status` (running/comp pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin yazarı",
+                "context": "Olay tetikleyici otomatik iş yazar. \"Saga Orchestration\" özelliği bu süreçte devreye girer.",
+                "outcome": "Webhook + tool registry ile no-code automation."
+              },
+              {
+                "persona": "SRE",
+                "context": "Mesaj gecikmesini izler. \"Saga Orchestration\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her event'in queue lag'i metriklenir."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Module'lerin loose-coupled konuştuğu omurga. Aynı kod, üç ölçek.",
+    "detail": "Module'lerin loose-coupled konuştuğu omurga. Aynı kod, üç ölçek.",
+    "terms": [
+      {
+        "term": "Event Bus",
+        "abbrev_tr": "Olay otoyolu",
+        "meaning": "Modüllerin gevşek bağlı haberleşme kanalı.",
+        "why": "Direkt çağrı bağımlılığını ortadan kaldırır."
+      },
+      {
+        "term": "Polyglot",
+        "abbrev_tr": "Çok-dilli",
+        "meaning": "Bir sistemde birden fazla dil (Python+TS+Go) yan yana.",
+        "why": "Doğru iş, doğru araçla."
+      },
+      {
+        "term": "Pub/Sub",
+        "abbrev_of": "Publisher/Subscriber",
+        "abbrev_tr": "Yayıncı/Abone",
+        "meaning": "Yayıncı event yayar, aboneler dinler.",
+        "why": "Yayıncı kimin dinlediğini bilmez — gevşek bağlama."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

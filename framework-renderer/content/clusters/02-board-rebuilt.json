@@ -1,0 +1,203 @@
+{
+  "id": "board",
+  "title": "Tahta — yeniden yapılandırılmış",
+  "subtitle": "Senin 5 küme iskeletini tam haliyle doldurma. Her küme + neyin neden eklendiği.",
+  "cluster": "meta",
+  "order": 2,
+  "icon": "ph-squares-four",
+  "tags": [
+    "board",
+    "structure"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Senin tahtada yazdığın 5 küme (Kum Tanesi / Küçük Taş / Orta Taş / Büyük Taş / Services) **doğru iskelet** ama eksik. Aşağıda her küme yeniden, eksiklerle birlikte."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "2.1 Kum Tanesi — atomik tipler"
+    },
+    {
+      "type": "paragraph",
+      "text": "Senin yazdığın **Field, Log, Handler, Security** başlangıç ama yetersiz; field'ın altında somut tip sistemi olmalı. Tam liste: {{ref:atomic-types}}."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "2.2 Küçük Taş — kernel + scale primitive"
+    },
+    {
+      "type": "paragraph",
+      "text": "Senin yazdığın **Taxonomy, Kernel, Domain, Tenancy, Workflow, Auth, File Storage, ECA Engine** içinde Layer 0 kernel'in 6 immovable'ı gizli ama düzgün şekillenmemiş."
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Domain",
+        "Sen yazdın mı",
+        "Düzeltme"
+      ],
+      "rows": [
+        [
+          "Schema/DocType engine",
+          "Hayır",
+          "**EN KRİTİK** eksik. Tahtanın merkezine yaz. {{ref:k-schema}}"
+        ],
+        [
+          "Identity (Auth altında)",
+          "Evet",
+          "OK. Session/Token/Impersonation/2FA tamam."
+        ],
+        [
+          "Authorization",
+          "Evet",
+          "RBAC ekle (ReBAC + ABAC + RBAC üçlü). {{ref:k-authz}}"
+        ],
+        [
+          "Tenancy",
+          "Evet",
+          "Sub-tenant kavramı ekle (muhasebe için). {{ref:k-tenancy}}"
+        ],
+        [
+          "Event Bus + Polyglot",
+          "Hayır",
+          "**EN KRİTİK eksik #2**. Loose coupling omurgası. {{ref:k-bus}}"
+        ],
+        [
+          "Plugin Registry/Manifest",
+          "Hayır",
+          "**EN KRİTİK eksik #3**. {{ref:k-plugin}}"
+        ],
+        [
+          "Workflow Engine",
+          "Evet",
+          "OK. State machine + approval chain + ECA. {{ref:l1-workflow}}"
+        ],
+        [
+          "File Storage",
+          "Evet",
+          "OK. Driver pattern (Local/S3/R2) ekle. {{ref:l1-file}}"
+        ],
+        [
+          "Kernel (Task/Cron/Worker)",
+          "Evet",
+          "OK. Scale primitive'lerinin ev sahibi. {{ref:scale-workers}}"
+        ],
+        [
+          "Domain (DNS/SSL)",
+          "Evet",
+          "OK. Multi-tenant custom domain (e-ticaret SaaS için kritik)."
+        ],
+        [
+          "Outbox",
+          "Hayır",
+          "Save pipeline'a örülmeli. {{ref:scale-outbox}}"
+        ],
+        [
+          "Migration Engine",
+          "Hayır",
+          "DocType değişiminde otomatik şema migration."
+        ],
+        [
+          "Cache (interface)",
+          "Hayır",
+          "In-process LRU → Redis → CDN driver pattern."
+        ],
+        [
+          "Rate Limit",
+          "Hayır",
+          "Per-user/IP/tenant. Brute force koruması."
+        ],
+        [
+          "Feature Flag",
+          "Hayır",
+          "Tenant-bazlı, plan-bazlı gating, rollout."
+        ],
+        [
+          "Settings/Config",
+          "Hayır",
+          "Tenant > module > framework hiyerarşi."
+        ],
+        [
+          "Secrets Vault",
+          "Hayır",
+          "API key, OAuth secret. Env'den ayrı."
+        ],
+        [
+          "Health/Readiness",
+          "Hayır",
+          "K8s probe, dependency health."
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "2.3 Orta Taş — Layer 1 in-tree"
+    },
+    {
+      "type": "paragraph",
+      "text": "Senin yazdığın **i18n, Form/Table, Block, Section, ECA Rules, Import/Export, Onboarding, Schedule, Notification, Search, Identity, Calendar** iyi başlangıç ama 15 üründen Odoo/SAP/Shopify çıkacaksa çok eksik. Tam liste için {{ref:l1-party}}, {{ref:l1-file}}, {{ref:l1-search}} vb. ayrı cluster'lara bak."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "2.4 Büyük Taş — Pages (boştu)"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sen \"Büyük Taş (Pages)\" diye yazıp boş bıraktın. Page-level kompozitler — Orta Taş primitive'lerinin sayfaya dönüştüğü yer."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**List Page** — DocType liste, filter/sort/bulk action, view-switch (kanban/calendar/gantt/timeline/map).",
+        "**Detail Page** — Single record form + activity timeline + related sub-records.",
+        "**Form Page** — Create/edit form, validation, dynamic show/hide, conditional fields.",
+        "**Wizard / Multi-step** — Onboarding, checkout, complex create flow.",
+        "**Dashboard Page** — KPI tile + chart + activity. Role-based.",
+        "**Settings Page** — Tenant/user/module config, nested navigation.",
+        "**Inbox Page** — Mail, notification, social feed — infinite scroll, real-time push.",
+        "**Conversation Thread** — Chat, email thread, ticket. DM + history.",
+        "**Storefront Page** — E-ticaret katalog + product + cart. Shopify Liquid muadili.",
+        "**Profile Page** — Public user/org profile, social.",
+        "**Admin Console** — Power-user UI, bulk ops, system stats.",
+        "**Onboarding Flow** — İlk-giriş tur, sample data, role picker.",
+        "**Portal Page** — Customer/vendor self-service portal.",
+        "**POS Page** — Touch-friendly satış noktası. Odoo POS muadili.",
+        "**Print/Report Viewer** — Fatura/sözleşme/rapor preview + PDF export.",
+        "**Builder Page** — Visual page composer (Block + Section editor, Elementor/PageFly muadili)."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "2.5 Services — dış sağlayıcılar"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tam liste için {{ref:services}} cluster'ına bak. Türkiye uyum servisleri ayrı kritik kategori."
+    }
+  ],
+  "enrich": {
+    "info": "Senin 5 küme iskeletini tam haliyle doldurma. Her küme + neyin neden eklendiği.",
+    "detail": "Senin 5 küme iskeletini tam haliyle doldurma. Her küme + neyin neden eklendiği.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

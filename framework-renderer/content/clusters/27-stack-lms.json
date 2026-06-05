@@ -1,0 +1,381 @@
+{
+  "id": "s-lms",
+  "title": "LMS Stack",
+  "subtitle": "Moodle, Canvas, Udemy, Coursera, Frappe LMS muadili.",
+  "cluster": "stack",
+  "layer": "l2",
+  "order": 27,
+  "icon": "ph-graduation-cap",
+  "badge": "Layer 2 Stack #5",
+  "tags": [
+    "lms",
+    "learning",
+    "scorm",
+    "xapi"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "LMS (#6) ana stack. CMS authoring'den içerik tüketir, HRMS'ten employee'leri öğrenen olarak alır."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Module'ler"
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "Curriculum",
+          "desc": "Course, Chapter, Lesson, Path, prereq, sequencing",
+          "enrich": {
+            "info": "Course, Chapter, Lesson, Path, prereq, sequencing",
+            "detail": "**Curriculum** nedir?\n\nCourse, Chapter, Lesson, Path, prereq, sequencing.\n\n**Amaç:** Kurumların eğitim içeriklerini, sınavları, öğrenci takibini dijital ortamda tuttuğu modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç eğitim / öğrenme yönetim bilmeyen biri için: bu özellik, eğitim / öğrenme yönetim sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Eğitim koordinatörü",
+                "context": "\"Curriculum\" özelliğini kurs ve öğrenci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Course, Chapter, Lesson, Path, prereq, sequencing pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Eğitmen",
+                "context": "Yeni kurs hazırlar. \"Curriculum\" özelliği bu süreçte devreye girer.",
+                "outcome": "Video + quiz + sertifika; ders modülünü tek bir UI ile kurar."
+              },
+              {
+                "persona": "Öğrenci",
+                "context": "Mobil app'ten ders izler. \"Curriculum\" özelliği bu süreçte devreye girer.",
+                "outcome": "Offline indirir, sonra sync olur; sertifikası otomatik gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Enrollment + Progress",
+          "desc": "Kayıt, % ilerleme, completion",
+          "critical": true,
+          "enrich": {
+            "info": "Kayıt, % ilerleme, completion",
+            "detail": "**Enrollment + Progress** nedir?\n\nKayıt, % ilerleme, completion.\n\n**Amaç:** Kurumların eğitim içeriklerini, sınavları, öğrenci takibini dijital ortamda tuttuğu modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç eğitim / öğrenme yönetim bilmeyen biri için: bu özellik, eğitim / öğrenme yönetim sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Eğitim koordinatörü",
+                "context": "\"Enrollment + Progress\" özelliğini kurs ve öğrenci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Kayıt, % ilerleme, completion pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Eğitmen",
+                "context": "Yeni kurs hazırlar. \"Enrollment + Progress\" özelliği bu süreçte devreye girer.",
+                "outcome": "Video + quiz + sertifika; ders modülünü tek bir UI ile kurar."
+              },
+              {
+                "persona": "Öğrenci",
+                "context": "Mobil app'ten ders izler. \"Enrollment + Progress\" özelliği bu süreçte devreye girer.",
+                "outcome": "Offline indirir, sonra sync olur; sertifikası otomatik gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Assessment",
+          "desc": "Quiz, attempt, question bank, rubric, geçme eşiği",
+          "enrich": {
+            "info": "Quiz, attempt, question bank, rubric, geçme eşiği",
+            "detail": "**Assessment** nedir?\n\nQuiz, attempt, question bank, rubric, geçme eşiği.\n\n**Amaç:** Kurumların eğitim içeriklerini, sınavları, öğrenci takibini dijital ortamda tuttuğu modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç eğitim / öğrenme yönetim bilmeyen biri için: bu özellik, eğitim / öğrenme yönetim sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Eğitim koordinatörü",
+                "context": "\"Assessment\" özelliğini kurs ve öğrenci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Quiz, attempt, question bank, rubric, geçme eşiği pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Eğitmen",
+                "context": "Yeni kurs hazırlar. \"Assessment\" özelliği bu süreçte devreye girer.",
+                "outcome": "Video + quiz + sertifika; ders modülünü tek bir UI ile kurar."
+              },
+              {
+                "persona": "Öğrenci",
+                "context": "Mobil app'ten ders izler. \"Assessment\" özelliği bu süreçte devreye girer.",
+                "outcome": "Offline indirir, sonra sync olur; sertifikası otomatik gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Assignment + Submission",
+          "desc": "Ödev, peer review, plagiarism check",
+          "enrich": {
+            "info": "Ödev, peer review, plagiarism check",
+            "detail": "**Assignment + Submission** nedir?\n\nÖdev, peer review, plagiarism check.\n\n**Amaç:** Kurumların eğitim içeriklerini, sınavları, öğrenci takibini dijital ortamda tuttuğu modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç eğitim / öğrenme yönetim bilmeyen biri için: bu özellik, eğitim / öğrenme yönetim sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Eğitim koordinatörü",
+                "context": "\"Assignment + Submission\" özelliğini kurs ve öğrenci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Ödev, peer review, plagiarism check pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Eğitmen",
+                "context": "Yeni kurs hazırlar. \"Assignment + Submission\" özelliği bu süreçte devreye girer.",
+                "outcome": "Video + quiz + sertifika; ders modülünü tek bir UI ile kurar."
+              },
+              {
+                "persona": "Öğrenci",
+                "context": "Mobil app'ten ders izler. \"Assignment + Submission\" özelliği bu süreçte devreye girer.",
+                "outcome": "Offline indirir, sonra sync olur; sertifikası otomatik gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Gradebook",
+          "desc": "Ağırlıklı not, transkript",
+          "enrich": {
+            "info": "Ağırlıklı not, transkript",
+            "detail": "**Gradebook** nedir?\n\nAğırlıklı not, transkript.\n\n**Amaç:** Kurumların eğitim içeriklerini, sınavları, öğrenci takibini dijital ortamda tuttuğu modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç eğitim / öğrenme yönetim bilmeyen biri için: bu özellik, eğitim / öğrenme yönetim sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Eğitim koordinatörü",
+                "context": "\"Gradebook\" özelliğini kurs ve öğrenci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Ağırlıklı not, transkript pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Eğitmen",
+                "context": "Yeni kurs hazırlar. \"Gradebook\" özelliği bu süreçte devreye girer.",
+                "outcome": "Video + quiz + sertifika; ders modülünü tek bir UI ile kurar."
+              },
+              {
+                "persona": "Öğrenci",
+                "context": "Mobil app'ten ders izler. \"Gradebook\" özelliği bu süreçte devreye girer.",
+                "outcome": "Offline indirir, sonra sync olur; sertifikası otomatik gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Certification",
+          "desc": "Verifiable credential, badge, blockchain opsiyonel",
+          "enrich": {
+            "info": "Verifiable credential, badge, blockchain opsiyonel",
+            "detail": "**Certification** nedir?\n\nVerifiable credential, badge, blockchain opsiyonel.\n\n**Amaç:** Kurumların eğitim içeriklerini, sınavları, öğrenci takibini dijital ortamda tuttuğu modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç eğitim / öğrenme yönetim bilmeyen biri için: bu özellik, eğitim / öğrenme yönetim sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Eğitim koordinatörü",
+                "context": "\"Certification\" özelliğini kurs ve öğrenci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Verifiable credential, badge, blockchain opsiyonel pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Eğitmen",
+                "context": "Yeni kurs hazırlar. \"Certification\" özelliği bu süreçte devreye girer.",
+                "outcome": "Video + quiz + sertifika; ders modülünü tek bir UI ile kurar."
+              },
+              {
+                "persona": "Öğrenci",
+                "context": "Mobil app'ten ders izler. \"Certification\" özelliği bu süreçte devreye girer.",
+                "outcome": "Offline indirir, sonra sync olur; sertifikası otomatik gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Cohort & Term",
+          "desc": "Sınıf, dönem, batch",
+          "enrich": {
+            "info": "Sınıf, dönem, batch",
+            "detail": "**Cohort & Term** nedir?\n\nSınıf, dönem, batch.\n\n**Amaç:** Kurumların eğitim içeriklerini, sınavları, öğrenci takibini dijital ortamda tuttuğu modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç eğitim / öğrenme yönetim bilmeyen biri için: bu özellik, eğitim / öğrenme yönetim sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Eğitim koordinatörü",
+                "context": "\"Cohort & Term\" özelliğini kurs ve öğrenci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Sınıf, dönem, batch pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Eğitmen",
+                "context": "Yeni kurs hazırlar. \"Cohort & Term\" özelliği bu süreçte devreye girer.",
+                "outcome": "Video + quiz + sertifika; ders modülünü tek bir UI ile kurar."
+              },
+              {
+                "persona": "Öğrenci",
+                "context": "Mobil app'ten ders izler. \"Cohort & Term\" özelliği bu süreçte devreye girer.",
+                "outcome": "Offline indirir, sonra sync olur; sertifikası otomatik gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Instructor",
+          "desc": "Eğitmen, atama, notlandırma",
+          "enrich": {
+            "info": "Eğitmen, atama, notlandırma",
+            "detail": "**Instructor** nedir?\n\nEğitmen, atama, notlandırma.\n\n**Amaç:** Kurumların eğitim içeriklerini, sınavları, öğrenci takibini dijital ortamda tuttuğu modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç eğitim / öğrenme yönetim bilmeyen biri için: bu özellik, eğitim / öğrenme yönetim sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Eğitim koordinatörü",
+                "context": "\"Instructor\" özelliğini kurs ve öğrenci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Eğitmen, atama, notlandırma pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Eğitmen",
+                "context": "Yeni kurs hazırlar. \"Instructor\" özelliği bu süreçte devreye girer.",
+                "outcome": "Video + quiz + sertifika; ders modülünü tek bir UI ile kurar."
+              },
+              {
+                "persona": "Öğrenci",
+                "context": "Mobil app'ten ders izler. \"Instructor\" özelliği bu süreçte devreye girer.",
+                "outcome": "Offline indirir, sonra sync olur; sertifikası otomatik gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Live Session",
+          "desc": "Zoom/Daily entegrasyonu, attendance",
+          "enrich": {
+            "info": "Zoom/Daily entegrasyonu, attendance",
+            "detail": "**Live Session** nedir?\n\nZoom/Daily entegrasyonu, attendance.\n\n**Amaç:** Kurumların eğitim içeriklerini, sınavları, öğrenci takibini dijital ortamda tuttuğu modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç eğitim / öğrenme yönetim bilmeyen biri için: bu özellik, eğitim / öğrenme yönetim sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Eğitim koordinatörü",
+                "context": "\"Live Session\" özelliğini kurs ve öğrenci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Zoom/Daily entegrasyonu, attendance pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Eğitmen",
+                "context": "Yeni kurs hazırlar. \"Live Session\" özelliği bu süreçte devreye girer.",
+                "outcome": "Video + quiz + sertifika; ders modülünü tek bir UI ile kurar."
+              },
+              {
+                "persona": "Öğrenci",
+                "context": "Mobil app'ten ders izler. \"Live Session\" özelliği bu süreçte devreye girer.",
+                "outcome": "Offline indirir, sonra sync olur; sertifikası otomatik gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Competency & Skills",
+          "desc": "Yetkinlik çerçevesi, skill gap analysis",
+          "enrich": {
+            "info": "Yetkinlik çerçevesi, skill gap analysis",
+            "detail": "**Competency & Skills** nedir?\n\nYetkinlik çerçevesi, skill gap analysis.\n\n**Amaç:** Kurumların eğitim içeriklerini, sınavları, öğrenci takibini dijital ortamda tuttuğu modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç eğitim / öğrenme yönetim bilmeyen biri için: bu özellik, eğitim / öğrenme yönetim sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Eğitim koordinatörü",
+                "context": "\"Competency & Skills\" özelliğini kurs ve öğrenci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Yetkinlik çerçevesi, skill gap analysis pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Eğitmen",
+                "context": "Yeni kurs hazırlar. \"Competency & Skills\" özelliği bu süreçte devreye girer.",
+                "outcome": "Video + quiz + sertifika; ders modülünü tek bir UI ile kurar."
+              },
+              {
+                "persona": "Öğrenci",
+                "context": "Mobil app'ten ders izler. \"Competency & Skills\" özelliği bu süreçte devreye girer.",
+                "outcome": "Offline indirir, sonra sync olur; sertifikası otomatik gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Standards (SCORM/xAPI/cmi5)",
+          "desc": "Interoperability, LRS",
+          "critical": true,
+          "enrich": {
+            "info": "Interoperability, LRS",
+            "detail": "**Standards (SCORM/xAPI/cmi5)** nedir?\n\nInteroperability, LRS.\n\n**Amaç:** Kurumların eğitim içeriklerini, sınavları, öğrenci takibini dijital ortamda tuttuğu modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç eğitim / öğrenme yönetim bilmeyen biri için: bu özellik, eğitim / öğrenme yönetim sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Eğitim koordinatörü",
+                "context": "\"Standards (SCORM/xAPI/cmi5)\" özelliğini kurs ve öğrenci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Interoperability, LRS pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Eğitmen",
+                "context": "Yeni kurs hazırlar. \"Standards (SCORM/xAPI/cmi5)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Video + quiz + sertifika; ders modülünü tek bir UI ile kurar."
+              },
+              {
+                "persona": "Öğrenci",
+                "context": "Mobil app'ten ders izler. \"Standards (SCORM/xAPI/cmi5)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Offline indirir, sonra sync olur; sertifikası otomatik gelir."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Proctoring",
+          "desc": "Sınav gözetimi, kopya önleme",
+          "enrich": {
+            "info": "Sınav gözetimi, kopya önleme",
+            "detail": "**Proctoring** nedir?\n\nSınav gözetimi, kopya önleme.\n\n**Amaç:** Kurumların eğitim içeriklerini, sınavları, öğrenci takibini dijital ortamda tuttuğu modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç eğitim / öğrenme yönetim bilmeyen biri için: bu özellik, eğitim / öğrenme yönetim sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Eğitim koordinatörü",
+                "context": "\"Proctoring\" özelliğini kurs ve öğrenci yönetimi sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Sınav gözetimi, kopya önleme pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Eğitmen",
+                "context": "Yeni kurs hazırlar. \"Proctoring\" özelliği bu süreçte devreye girer.",
+                "outcome": "Video + quiz + sertifika; ders modülünü tek bir UI ile kurar."
+              },
+              {
+                "persona": "Öğrenci",
+                "context": "Mobil app'ten ders izler. \"Proctoring\" özelliği bu süreçte devreye girer.",
+                "outcome": "Offline indirir, sonra sync olur; sertifikası otomatik gelir."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Standartlar — cmi5 önerisi"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**SCORM 2004 4th Edition** (ADL, 2009 son güncelleme) — content package + RTE JavaScript API, iframe-bound. Tarayıcı dışı (mobil, VR) izlenemez.",
+        "**xAPI / Tin Can** (2013) — \"actor-verb-object\" statement, **LRS** (Learning Record Store) merkezli, herhangi aktivite kayıt.",
+        "**cmi5** (ADL, 2016) — SCORM launch contract + xAPI esnekliği. AU, launch URL, session, defined verbs (Launched/Initialized/Completed/Passed/Failed).",
+        "**2026 modern öneri**: **cmi5** ileriye dönük standart. SCORM 2004 geriye uyumluluk için, xAPI ek telemetri için yan yana."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "AI integration"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Adaptive learning path (performansa göre)",
+        "Açık uçlu cevap otomatik notlandırma",
+        "İçerikten otomatik soru üretimi",
+        "AI tutor, knowledge gap tespit"
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Moodle, Canvas, Udemy, Coursera, Frappe LMS muadili.",
+    "detail": "Moodle, Canvas, Udemy, Coursera, Frappe LMS muadili.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

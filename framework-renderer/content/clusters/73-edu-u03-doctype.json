@@ -1,0 +1,558 @@
+{
+  "id": "edu-u03",
+  "title": "DocType ile Model — anlatımsal giriş",
+  "subtitle": "Sen tip dizisi tanımlarsın; framework DB tablosu, REST endpoint, form, audit'i otomatik üretir. Metadata-driven model.",
+  "cluster": "layer0",
+  "order": 2,
+  "icon": "ph-database",
+  "granularity": "buyuk-tas",
+  "state": "ok",
+  "tags": [
+    "education",
+    "u03",
+    "doctype",
+    "model"
+  ],
+  "blocks": [
+    {
+      "type": "lesson-header",
+      "unit": "Ünite 03",
+      "title": "DocType — kod yazmadan ürün modeli kurmak",
+      "level": "orta",
+      "duration_min": 75,
+      "prereq": [
+        "edu-u01",
+        "edu-u02"
+      ],
+      "goals": [
+        "Bir DocType tanımının hangi 8+ çıktıyı otomatik ürettiğini sayabilirsin.",
+        "Field, naming series, child table, hook kavramlarını projeden örneklerle anlatabilirsin.",
+        "Bir 'Müşteri Şikayeti' DocType'ını YAML olarak yazabilirsin.",
+        "Custom field vs property setter farkını söyleyebilirsin."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Kavramlar"
+    },
+    {
+      "type": "terms",
+      "terms": [
+        {
+          "term": "DocType",
+          "abbrev_of": "Document Type",
+          "abbrev_tr": "Belge tipi",
+          "meaning": "Metadata-driven varlık tanımı. 'Müşteri', 'Fatura', 'Şikayet'.",
+          "why": "Tek kaynak: DB + UI + API + audit hepsi bundan türer."
+        },
+        {
+          "term": "Field",
+          "abbrev_tr": "Alan",
+          "meaning": "DocType içindeki bir kayıt parçası — `title`, `amount`, `assignee`.",
+          "why": "Field = DB kolonu + form input + API alan."
+        },
+        {
+          "term": "Fieldtype",
+          "abbrev_tr": "Alan tipi",
+          "meaning": "Field'ın hangi primitive tip olduğu — Data, Decimal, Link, Table …",
+          "why": "Tipi söyle, framework gerisini halletsin."
+        },
+        {
+          "term": "Naming series",
+          "abbrev_tr": "İsimlendirme dizisi",
+          "meaning": "Bir kaydın ID'sinin nasıl üretileceği. `SO-{####}` → SO-0001, SO-0002 …",
+          "why": "Otomatik, okunaklı, tahmin edilemeyen veya tahmin edilebilir formatlar."
+        },
+        {
+          "term": "Child table",
+          "abbrev_tr": "Çocuk tablo",
+          "meaning": "Bir parent kayda ait satırlar (Sipariş → SiparişKalemleri).",
+          "why": "Bir başlık altında çoklu satır; 'Order has many lines' patterni."
+        },
+        {
+          "term": "Hook",
+          "abbrev_tr": "Kanca",
+          "meaning": "Belirli bir olayda çağrılan fonksiyon. `before_insert`, `on_submit`, `on_change`.",
+          "why": "Plugin'in framework'ün doğal akışına müdahale ettiği yer."
+        },
+        {
+          "term": "Custom field",
+          "abbrev_tr": "Özel alan",
+          "meaning": "Bir tenant'ın bir DocType'a eklediği ek alan. Kod değişmeden.",
+          "why": "Müşteriye özelleştirme — runtime esneklik."
+        },
+        {
+          "term": "Property setter",
+          "abbrev_tr": "Özellik ayarlayıcı",
+          "meaning": "Mevcut bir field'ın bir özelliğini tenant-spesifik değiştirme (örn. zorunlu yap).",
+          "why": "Field'ı silmeden davranışını değiştir."
+        },
+        {
+          "term": "Submittable",
+          "abbrev_tr": "Onaylanabilir",
+          "meaning": "draft → submitted → cancelled yaşam döngülü DocType (fatura, journal entry).",
+          "why": "Mali kayıtlar gönderildikten sonra dondurulur."
+        },
+        {
+          "term": "docstatus",
+          "abbrev_tr": "belge durumu",
+          "meaning": "0=draft, 1=submitted, 2=cancelled. Submittable DocType'a otomatik eklenir.",
+          "why": "Hangi alanların kilitleneceğini belirler."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Anlatım — bir DocType tanımladığında ne olur?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Frappe'nin **devrimsel fikri** şu: yazılım modelini koda değil **metadata'ya** koy. Sen 'Müşteri Şikayeti' DocType'ı tanımlarsın — alanlar, izinler, naming — framework gerisini üretir.",
+      "enrich": {
+        "info": "Schema = kod değil, veri. Drupal Entity API, Salesforce Object, Strapi Content-Type hepsi aynı patern.",
+        "stories": [
+          {
+            "persona": "Plugin geliştirici",
+            "context": "Yeni 'Yedek Parça Talebi' tipi eklemek istiyor.",
+            "outcome": "Manifest'e DocType ekler; deploy sonrası DB, API, form hazır. Kod yazmadı."
+          }
+        ]
+      }
+    },
+    {
+      "type": "feature-list",
+      "title": "Bir DocType tanımlandığında framework otomatik üretir",
+      "items": [
+        {
+          "name": "PostgreSQL fiziksel tablo",
+          "desc": "`tabMusteriSikayeti` — alanlar gerçek kolon, indeksli.",
+          "enrich": {
+            "info": "JSON-her-şey değil — gerçek kolon (JOIN, ORDER, WHERE hızlı).",
+            "terms": [
+              {
+                "term": "Index",
+                "abbrev_tr": "İndeks",
+                "meaning": "Kolon değerlerini hızlı arayan veri yapısı (B-tree).",
+                "why": "WHERE ve ORDER BY 1000× hızlanır."
+              }
+            ],
+            "detail": "**PostgreSQL fiziksel tablo** nedir?\n\n`tabMusteriSikayeti` — alanlar gerçek kolon, indeksli.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"PostgreSQL fiziksel tablo\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"PostgreSQL fiziksel tablo\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"PostgreSQL fiziksel tablo\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "REST API endpoint",
+          "desc": "`GET /api/resource/MusteriSikayeti`, `POST`, `PUT`, `DELETE`.",
+          "enrich": {
+            "info": "CRUD + list + filter + pagination otomatik.",
+            "detail": "**REST API endpoint** nedir?\n\n`GET /api/resource/MusteriSikayeti`, `POST`, `PUT`, `DELETE`.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "terms": [
+              {
+                "term": "REST",
+                "abbrev_of": "Representational State Transfer",
+                "abbrev_tr": "Temsili Durum Aktarımı",
+                "meaning": "Kaynak-merkezli HTTP API mimarisi.",
+                "why": "Standart, cache-friendly."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"REST API endpoint\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `GET /api/resource/MusteriSikayeti`, `POST`, `PUT`, `DELETE`. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"REST API endpoint\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"REST API endpoint\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "GraphQL schema",
+          "desc": "`type MusteriSikayeti { … }` + `query musteriSikayetleri(filter)`.",
+          "enrich": {
+            "info": "Modern frontend'ler GraphQL ister; otomatik üretilir.",
+            "detail": "**GraphQL schema** nedir?\n\n`type MusteriSikayeti { … }` + `query musteriSikayetleri(filter)`.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "terms": [
+              {
+                "term": "GraphQL",
+                "abbrev_tr": "Graf sorgu dili",
+                "meaning": "Tek endpoint, istemci hangi alanları istediğini söyler.",
+                "why": "Mobile için over-fetching'i çözer."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"GraphQL schema\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `type MusteriSikayeti { … }` + `query musteriSikayetleri(filter)`. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"GraphQL schema\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"GraphQL schema\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Admin form",
+          "desc": "List view, form view, kanban, calendar (DocType metadata'sına bağlı).",
+          "enrich": {
+            "info": "Field tipine göre input widget seçilir; sen widget kodlamazsın.",
+            "detail": "**Admin form** nedir?\n\nList view, form view, kanban, calendar (DocType metadata'sına bağlı).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Admin form\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici List view, form view, kanban, calendar (DocType metadata'sına bağlı). pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Admin form\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Admin form\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Permission engine",
+          "desc": "Role-based kurallar query'ye otomatik WHERE eklenir.",
+          "enrich": {
+            "info": "Manager hepsi görsün, Müşteri sadece kendisini — kod yok, kural var.",
+            "detail": "**Permission engine** nedir?\n\nRole-based kurallar query'ye otomatik WHERE eklenir.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Permission engine\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Role-based kurallar query'ye otomatik WHERE eklenir. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Permission engine\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Permission engine\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Audit logger",
+          "desc": "Her save'de alan diff'i `audit_log` tablosuna yazılır.",
+          "enrich": {
+            "info": "Her save'de alan diff'i `audit_log` tablosuna yazılır.",
+            "detail": "**Audit logger** nedir?\n\nHer save'de alan diff'i `audit_log` tablosuna yazılır.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Audit logger\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Her save'de alan diff'i `audit_log` tablosuna yazılır. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Audit logger\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Audit logger\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Search indexer",
+          "desc": "Yeni satırda event yayınlanır, Search projection güncellenir.",
+          "enrich": {
+            "info": "Yeni satırda event yayınlanır, Search projection güncellenir.",
+            "detail": "**Search indexer** nedir?\n\nYeni satırda event yayınlanır, Search projection güncellenir.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Search indexer\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Yeni satırda event yayınlanır, Search projection güncellenir. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Search indexer\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Search indexer\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Hook noktaları",
+          "desc": "`before_insert`, `validate`, `on_submit`, `on_change` … plugin tepki verir.",
+          "enrich": {
+            "info": "Hook = framework'ün size kapı bıraktığı yer.",
+            "stories": [
+              {
+                "persona": "Helpdesk plugin",
+                "context": "Yeni 'Şikayet' kayıtlarına otomatik ticket açmak istiyor.",
+                "outcome": "`on_change` hook'una abone olur; iş tek satır plugin koduyla biter."
+              },
+              {
+                "persona": "Yazılım mimarı",
+                "context": "Mimari karar verir. \"Hook noktaları\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Hook noktaları\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Hook noktaları\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ],
+            "detail": "**Hook noktaları** nedir?\n\n`before_insert`, `validate`, `on_submit`, `on_change` … plugin tepki verir.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+          }
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Adım-adım: 'Müşteri Şikayeti' DocType'ını yaz"
+    },
+    {
+      "type": "code",
+      "lang": "yaml",
+      "title": "doctype/musteri_sikayeti.yml",
+      "content": "doctype: MusteriSikayeti\nnaming: format:SIK-{YYYY}-{####}\nis_submittable: false\nfields:\n  - name: konu          # Field name (DB kolon adı)\n    type: Data          # max 140 char string\n    required: true\n    in_list_view: true  # liste sayfasında görünsün\n\n  - name: aciklama\n    type: Text          # uzun metin\n    required: true\n\n  - name: oncelik\n    type: Select        # closed enum\n    options: [\"dusuk\", \"orta\", \"yuksek\", \"acil\"]\n    default: \"orta\"\n\n  - name: atanan\n    type: Link          # başka DocType'a FK\n    options: User       # hangi DocType — User\n\n  - name: musteri\n    type: Link\n    options: Customer\n    required: true\n    in_list_view: true\n\n  - name: ekler\n    type: Table         # child table (1-N)\n    options: SikayetEki # child DocType\n\npermissions:\n  - role: Manager\n    perm: [read, write, create, delete]\n  - role: Customer\n    perm: [read, create]\n    ifowner: true       # sadece kendi kayıtlarını görsün\n\nhooks:\n  on_change: helpdesk.handlers.on_complaint_change",
+      "enrich": {
+        "info": "Tek bir YAML dosyası → DB + API + form + audit + permission.",
+        "detail": "**Naming series** açıklaması: `SIK-{YYYY}-{####}` → `SIK-2026-0001`, `SIK-2026-0002`. Yıl değişince ####'ler resetlenir. Distributed-safe olması için worker-lock kullanılır."
+      }
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Custom field vs Property setter — tenant özelleştirmesi"
+    },
+    {
+      "type": "grid",
+      "columns": 2,
+      "items": [
+        {
+          "title": "Custom field",
+          "icon": "ph-plus-circle",
+          "body": "Tenant 'Acme Ltd' kendi şikayet formuna `is_urgent: bool` eklemek ister. Admin → Custom Field. Kod değişmedi. Sadece Acme görür.",
+          "tone": "good",
+          "enrich": {
+            "info": "Yeni alan eklemek; mevcut alanlara dokunmaz.",
+            "detail": "**Custom field** nedir?\n\nTenant 'Acme Ltd' kendi şikayet formuna `is_urgent: bool` eklemek ister. Admin → Custom Field. Kod değişmedi. Sadece Acme görür.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Custom field\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Tenant 'Acme Ltd' kendi şikayet formuna `is_urgent: bool` eklemek ister. Admin → pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Custom field\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Custom field\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Property setter",
+          "icon": "ph-sliders",
+          "body": "Tenant 'Beta Inc' `atanan` alanını zorunlu yapmak ister (varsayılan değil). Admin → Property Setter → `atanan.required = 1`. Kod değişmedi.",
+          "tone": "good",
+          "enrich": {
+            "info": "Mevcut alanın bir özelliğini değiştir; alan silmez.",
+            "detail": "**Property setter** nedir?\n\nTenant 'Beta Inc' `atanan` alanını zorunlu yapmak ister (varsayılan değil). Admin → Property Setter → `atanan.required = 1`. Kod değişmedi.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Property setter\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Tenant 'Beta Inc' `atanan` alanını zorunlu yapmak ister (varsayılan değil). Admi pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Property setter\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Property setter\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Tuzak — JSON-her-şey",
+      "body": "'Tüm DocType'ları tek `records` tablosunda JSON kolonda tutsam ya' diye düşünebilirsin. WordPress `wp_postmeta` bu yola gitti — felaket. WHERE/ORDER/JOIN performansı çöker, index zor, tip safety yok.\n\n**Doğru yol:** Her DocType kendi fiziksel tablosu. JSON sadece schema-less ek için.",
+      "enrich": {
+        "terms": [
+          {
+            "term": "EAV",
+            "abbrev_of": "Entity-Attribute-Value",
+            "abbrev_tr": "Varlık-Nitelik-Değer",
+            "meaning": "(id, attr, value) satırlarıyla şema-less davranma.",
+            "why": "Kolay başlar, sorgu cehennemi olur."
+          }
+        ]
+      }
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Submittable DocType — fatura örneği"
+    },
+    {
+      "type": "steps",
+      "items": [
+        {
+          "title": "Draft (docstatus=0)",
+          "body": "Tüm alanlar düzenlenebilir. Kullanıcı yazıyor."
+        },
+        {
+          "title": "Submit (docstatus=1)",
+          "body": "Belge gönderildi. Mali alanlar **kilitlenir** — fatura no, tutar değiştirilemez.",
+          "enrich": {
+            "info": "Mali integrity. Düzeltme = iptal + yeni belge."
+          }
+        },
+        {
+          "title": "On_submit hook çalışır",
+          "body": "Muhasebe yevmiye girişi otomatik oluşur. Stok azalır. Müşteriye mail gider."
+        },
+        {
+          "title": "Cancel (docstatus=2)",
+          "body": "Belge iptal. Yevmiye ters kayıt, stok geri yüklenir — hook tarafından."
+        }
+      ]
+    },
+    {
+      "type": "checklist",
+      "title": "Bu üniteyi anladığımı nereden anlarım?",
+      "storageKey": "edu.u03",
+      "items": [
+        {
+          "label": "DocType tanımlandığında otomatik üretilen 8 çıktıyı sayabilirim.",
+          "hint": "DB, REST, GraphQL, form, permission, audit, search, hooks"
+        },
+        {
+          "label": "Naming series'in ne işe yaradığını ve formatını anlatabilirim."
+        },
+        {
+          "label": "Child table'ı bir gerçek dünya örneğiyle açıklayabilirim.",
+          "hint": "Sipariş → SiparişKalemleri."
+        },
+        {
+          "label": "Custom field ile Property setter farkını söyleyebilirim."
+        },
+        {
+          "label": "Submittable DocType'ın 3 docstatus değerini ve ne anlama geldiğini biliyorum."
+        },
+        {
+          "label": "Bir 'Görev (Task)' DocType'ını YAML olarak yazdım.",
+          "optional": true,
+          "hint": "Mini-projeyi yaptıysan."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Mini-proje"
+    },
+    {
+      "type": "paragraph",
+      "text": "Defterine bir 'Görev (Task)' DocType'ı yaz. Alanlar: başlık, açıklama, atanan kişi, son tarih, durum (todo/doing/done), öncelik, etiketler (multi-select), proje (link). Naming `TASK-{####}`. Hooks: `on_change` → atananın takvimine ekle.",
+      "enrich": {
+        "detail": "**Bonus:** İki child table ekle: (a) `comments` (yorumlar), (b) `time_entries` (zaman kaydı). Permission: User kendi atadığı görevleri görsün; Manager hepsini."
+      }
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Sonraki ünite",
+      "body": "{{ref:edu-u04}} — Veritabanı Temelleri. DocType'ın altındaki PostgreSQL kolon-indeks-ilişki mantığını öğreneceğiz. Mimari bu seviyede şekilleniyor."
+    }
+  ],
+  "related": [
+    "edu-u02",
+    "edu-u04",
+    "k-schema"
+  ],
+  "enrich": {
+    "info": "Sen tip dizisi tanımlarsın; framework DB tablosu, REST endpoint, form, audit'i otomatik üretir. Metadata-driven model.",
+    "detail": "Sen tip dizisi tanımlarsın; framework DB tablosu, REST endpoint, form, audit'i otomatik üretir. Metadata-driven model.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

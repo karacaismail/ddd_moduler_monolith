@@ -1,0 +1,465 @@
+{
+  "id": "cc-tr",
+  "title": "Türkiye Uyum Birinci Sınıf",
+  "subtitle": "e-Belge, e-Defter, SGK, KVKK, BES, MERSİS, KEP — framework-level paket.",
+  "cluster": "crosscut",
+  "order": 35,
+  "icon": "ph-flag",
+  "tags": [
+    "tr",
+    "compliance",
+    "kvkk",
+    "e-fatura"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Hetzner'de host, müşteriler TR'de. Türkiye uyum *add-on plugin değil, framework-level paket*."
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "e-Belge Provider Driver",
+          "desc": "Foriba/İzibiz/Uyumsoft/Logo plug edilebilir",
+          "enrich": {
+            "info": "Foriba/İzibiz/Uyumsoft/Logo plug edilebilir",
+            "detail": "**e-Belge Provider Driver** nedir?\n\nForiba/İzibiz/Uyumsoft/Logo plug edilebilir.\n\n**Amaç:** Türkiye yasal düzenlemelerine (kvkk, e-fatura, e-defter, sgk) uyum sağlayan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç TR uyum (KVKK/GİB/SGK) bilmeyen biri için: bu özellik, TR uyum (KVKK/GİB/SGK) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "TR mevzuat sorumlusu",
+                "context": "\"e-Belge Provider Driver\" özelliğini TR uyum (KVKK/GİB/SGK) sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Foriba/İzibiz/Uyumsoft/Logo plug edilebilir pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Mali müşavir",
+                "context": "e-Fatura keser. \"e-Belge Provider Driver\" özelliği bu süreçte devreye girer.",
+                "outcome": "UBL-TR XML otomatik üretilir, GİB'e gönderilir."
+              },
+              {
+                "persona": "KVKK sorumlusu",
+                "context": "Kullanıcı verisini siler. \"e-Belge Provider Driver\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft → audit → hard-delete + yasal yanıt mektubu."
+              },
+              {
+                "persona": "İK",
+                "context": "SGK bildirgesini hazırlar. \"e-Belge Provider Driver\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bordrolardan otomatik agreement."
+              }
+            ]
+          }
+        },
+        {
+          "name": "GİB Internet Vergi Dairesi",
+          "desc": "Beyanname, mükellef sorgulama",
+          "enrich": {
+            "info": "Beyanname, mükellef sorgulama",
+            "detail": "**GİB Internet Vergi Dairesi** nedir?\n\nBeyanname, mükellef sorgulama.\n\n**Amaç:** Türkiye yasal düzenlemelerine (kvkk, e-fatura, e-defter, sgk) uyum sağlayan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç TR uyum (KVKK/GİB/SGK) bilmeyen biri için: bu özellik, TR uyum (KVKK/GİB/SGK) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "TR mevzuat sorumlusu",
+                "context": "\"GİB Internet Vergi Dairesi\" özelliğini TR uyum (KVKK/GİB/SGK) sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Beyanname, mükellef sorgulama pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Mali müşavir",
+                "context": "e-Fatura keser. \"GİB Internet Vergi Dairesi\" özelliği bu süreçte devreye girer.",
+                "outcome": "UBL-TR XML otomatik üretilir, GİB'e gönderilir."
+              },
+              {
+                "persona": "KVKK sorumlusu",
+                "context": "Kullanıcı verisini siler. \"GİB Internet Vergi Dairesi\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft → audit → hard-delete + yasal yanıt mektubu."
+              },
+              {
+                "persona": "İK",
+                "context": "SGK bildirgesini hazırlar. \"GİB Internet Vergi Dairesi\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bordrolardan otomatik agreement."
+              }
+            ]
+          }
+        },
+        {
+          "name": "SGK e-Bildirge",
+          "desc": "APHB, MUHSGK, İAB",
+          "enrich": {
+            "info": "APHB, MUHSGK, İAB",
+            "detail": "**SGK e-Bildirge** nedir?\n\nAPHB, MUHSGK, İAB.\n\n**Amaç:** Türkiye yasal düzenlemelerine (kvkk, e-fatura, e-defter, sgk) uyum sağlayan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç TR uyum (KVKK/GİB/SGK) bilmeyen biri için: bu özellik, TR uyum (KVKK/GİB/SGK) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "TR mevzuat sorumlusu",
+                "context": "\"SGK e-Bildirge\" özelliğini TR uyum (KVKK/GİB/SGK) sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici APHB, MUHSGK, İAB pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Mali müşavir",
+                "context": "e-Fatura keser. \"SGK e-Bildirge\" özelliği bu süreçte devreye girer.",
+                "outcome": "UBL-TR XML otomatik üretilir, GİB'e gönderilir."
+              },
+              {
+                "persona": "KVKK sorumlusu",
+                "context": "Kullanıcı verisini siler. \"SGK e-Bildirge\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft → audit → hard-delete + yasal yanıt mektubu."
+              },
+              {
+                "persona": "İK",
+                "context": "SGK bildirgesini hazırlar. \"SGK e-Bildirge\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bordrolardan otomatik agreement."
+              }
+            ]
+          }
+        },
+        {
+          "name": "MERSİS",
+          "desc": "Şirket sorgulama API",
+          "enrich": {
+            "info": "Şirket sorgulama API",
+            "detail": "**MERSİS** nedir?\n\nŞirket sorgulama API.\n\n**Amaç:** Türkiye yasal düzenlemelerine (kvkk, e-fatura, e-defter, sgk) uyum sağlayan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç TR uyum (KVKK/GİB/SGK) bilmeyen biri için: bu özellik, TR uyum (KVKK/GİB/SGK) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "TR mevzuat sorumlusu",
+                "context": "\"MERSİS\" özelliğini TR uyum (KVKK/GİB/SGK) sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Şirket sorgulama API pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Mali müşavir",
+                "context": "e-Fatura keser. \"MERSİS\" özelliği bu süreçte devreye girer.",
+                "outcome": "UBL-TR XML otomatik üretilir, GİB'e gönderilir."
+              },
+              {
+                "persona": "KVKK sorumlusu",
+                "context": "Kullanıcı verisini siler. \"MERSİS\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft → audit → hard-delete + yasal yanıt mektubu."
+              },
+              {
+                "persona": "İK",
+                "context": "SGK bildirgesini hazırlar. \"MERSİS\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bordrolardan otomatik agreement."
+              }
+            ]
+          }
+        },
+        {
+          "name": "e-Devlet OAuth",
+          "desc": "Kimlik doğrulama",
+          "enrich": {
+            "info": "Kimlik doğrulama",
+            "detail": "**e-Devlet OAuth** nedir?\n\nKimlik doğrulama.\n\n**Amaç:** Türkiye yasal düzenlemelerine (kvkk, e-fatura, e-defter, sgk) uyum sağlayan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç TR uyum (KVKK/GİB/SGK) bilmeyen biri için: bu özellik, TR uyum (KVKK/GİB/SGK) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "terms": [
+              {
+                "term": "OAuth",
+                "abbrev_of": "Open Authorization",
+                "abbrev_tr": "Açık Yetkilendirme",
+                "meaning": "Üçüncü-taraf erişim için standart yetkilendirme protokolü.",
+                "why": "Google/Apple ile giriş için."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "TR mevzuat sorumlusu",
+                "context": "\"e-Devlet OAuth\" özelliğini TR uyum (KVKK/GİB/SGK) sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Kimlik doğrulama pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Mali müşavir",
+                "context": "e-Fatura keser. \"e-Devlet OAuth\" özelliği bu süreçte devreye girer.",
+                "outcome": "UBL-TR XML otomatik üretilir, GİB'e gönderilir."
+              },
+              {
+                "persona": "KVKK sorumlusu",
+                "context": "Kullanıcı verisini siler. \"e-Devlet OAuth\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft → audit → hard-delete + yasal yanıt mektubu."
+              },
+              {
+                "persona": "İK",
+                "context": "SGK bildirgesini hazırlar. \"e-Devlet OAuth\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bordrolardan otomatik agreement."
+              }
+            ]
+          }
+        },
+        {
+          "name": "m-imza / e-imza",
+          "desc": "TÜRKKEP integration",
+          "enrich": {
+            "info": "TÜRKKEP integration",
+            "detail": "**m-imza / e-imza** nedir?\n\nTÜRKKEP integration.\n\n**Amaç:** Türkiye yasal düzenlemelerine (kvkk, e-fatura, e-defter, sgk) uyum sağlayan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç TR uyum (KVKK/GİB/SGK) bilmeyen biri için: bu özellik, TR uyum (KVKK/GİB/SGK) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "TR mevzuat sorumlusu",
+                "context": "\"m-imza / e-imza\" özelliğini TR uyum (KVKK/GİB/SGK) sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici TÜRKKEP integration pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Mali müşavir",
+                "context": "e-Fatura keser. \"m-imza / e-imza\" özelliği bu süreçte devreye girer.",
+                "outcome": "UBL-TR XML otomatik üretilir, GİB'e gönderilir."
+              },
+              {
+                "persona": "KVKK sorumlusu",
+                "context": "Kullanıcı verisini siler. \"m-imza / e-imza\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft → audit → hard-delete + yasal yanıt mektubu."
+              },
+              {
+                "persona": "İK",
+                "context": "SGK bildirgesini hazırlar. \"m-imza / e-imza\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bordrolardan otomatik agreement."
+              }
+            ]
+          }
+        },
+        {
+          "name": "KEP (Kayıtlı E-Posta)",
+          "desc": "Yasal tebligat",
+          "enrich": {
+            "info": "Yasal tebligat",
+            "detail": "**KEP (Kayıtlı E-Posta)** nedir?\n\nYasal tebligat.\n\n**Amaç:** Türkiye yasal düzenlemelerine (kvkk, e-fatura, e-defter, sgk) uyum sağlayan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç TR uyum (KVKK/GİB/SGK) bilmeyen biri için: bu özellik, TR uyum (KVKK/GİB/SGK) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "TR mevzuat sorumlusu",
+                "context": "\"KEP (Kayıtlı E-Posta)\" özelliğini TR uyum (KVKK/GİB/SGK) sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Yasal tebligat pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Mali müşavir",
+                "context": "e-Fatura keser. \"KEP (Kayıtlı E-Posta)\" özelliği bu süreçte devreye girer.",
+                "outcome": "UBL-TR XML otomatik üretilir, GİB'e gönderilir."
+              },
+              {
+                "persona": "KVKK sorumlusu",
+                "context": "Kullanıcı verisini siler. \"KEP (Kayıtlı E-Posta)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft → audit → hard-delete + yasal yanıt mektubu."
+              },
+              {
+                "persona": "İK",
+                "context": "SGK bildirgesini hazırlar. \"KEP (Kayıtlı E-Posta)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bordrolardan otomatik agreement."
+              }
+            ]
+          }
+        },
+        {
+          "name": "KVKK / VERBİS",
+          "desc": "DSR endpoint, veri envanteri, açık rıza versioning",
+          "critical": true,
+          "enrich": {
+            "info": "DSR endpoint, veri envanteri, açık rıza versioning",
+            "detail": "**KVKK / VERBİS** nedir?\n\nDSR endpoint, veri envanteri, açık rıza versioning.\n\n**Amaç:** Türkiye yasal düzenlemelerine (kvkk, e-fatura, e-defter, sgk) uyum sağlayan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç TR uyum (KVKK/GİB/SGK) bilmeyen biri için: bu özellik, TR uyum (KVKK/GİB/SGK) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "terms": [
+              {
+                "term": "KVKK",
+                "abbrev_of": "Kişisel Verilerin Korunması Kanunu",
+                "meaning": "Türkiye'nin veri koruma kanunu (6698).",
+                "why": "TR pazarında zorunlu uyum."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "TR mevzuat sorumlusu",
+                "context": "\"KVKK / VERBİS\" özelliğini TR uyum (KVKK/GİB/SGK) sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici DSR endpoint, veri envanteri, açık rıza versioning pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Mali müşavir",
+                "context": "e-Fatura keser. \"KVKK / VERBİS\" özelliği bu süreçte devreye girer.",
+                "outcome": "UBL-TR XML otomatik üretilir, GİB'e gönderilir."
+              },
+              {
+                "persona": "KVKK sorumlusu",
+                "context": "Kullanıcı verisini siler. \"KVKK / VERBİS\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft → audit → hard-delete + yasal yanıt mektubu."
+              },
+              {
+                "persona": "İK",
+                "context": "SGK bildirgesini hazırlar. \"KVKK / VERBİS\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bordrolardan otomatik agreement."
+              }
+            ]
+          }
+        },
+        {
+          "name": "ETK İzin (IYS)",
+          "desc": "SMS/Email opt-in yönetimi",
+          "enrich": {
+            "info": "SMS/Email opt-in yönetimi",
+            "detail": "**ETK İzin (IYS)** nedir?\n\nSMS/Email opt-in yönetimi.\n\n**Amaç:** Türkiye yasal düzenlemelerine (kvkk, e-fatura, e-defter, sgk) uyum sağlayan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç TR uyum (KVKK/GİB/SGK) bilmeyen biri için: bu özellik, TR uyum (KVKK/GİB/SGK) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "TR mevzuat sorumlusu",
+                "context": "\"ETK İzin (IYS)\" özelliğini TR uyum (KVKK/GİB/SGK) sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici SMS/Email opt-in yönetimi pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Mali müşavir",
+                "context": "e-Fatura keser. \"ETK İzin (IYS)\" özelliği bu süreçte devreye girer.",
+                "outcome": "UBL-TR XML otomatik üretilir, GİB'e gönderilir."
+              },
+              {
+                "persona": "KVKK sorumlusu",
+                "context": "Kullanıcı verisini siler. \"ETK İzin (IYS)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft → audit → hard-delete + yasal yanıt mektubu."
+              },
+              {
+                "persona": "İK",
+                "context": "SGK bildirgesini hazırlar. \"ETK İzin (IYS)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bordrolardan otomatik agreement."
+              }
+            ]
+          }
+        },
+        {
+          "name": "BKM Express / TROY",
+          "desc": "Yerel ödeme",
+          "enrich": {
+            "info": "Yerel ödeme",
+            "detail": "**BKM Express / TROY** nedir?\n\nYerel ödeme.\n\n**Amaç:** Türkiye yasal düzenlemelerine (kvkk, e-fatura, e-defter, sgk) uyum sağlayan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç TR uyum (KVKK/GİB/SGK) bilmeyen biri için: bu özellik, TR uyum (KVKK/GİB/SGK) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "TR mevzuat sorumlusu",
+                "context": "\"BKM Express / TROY\" özelliğini TR uyum (KVKK/GİB/SGK) sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Yerel ödeme pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Mali müşavir",
+                "context": "e-Fatura keser. \"BKM Express / TROY\" özelliği bu süreçte devreye girer.",
+                "outcome": "UBL-TR XML otomatik üretilir, GİB'e gönderilir."
+              },
+              {
+                "persona": "KVKK sorumlusu",
+                "context": "Kullanıcı verisini siler. \"BKM Express / TROY\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft → audit → hard-delete + yasal yanıt mektubu."
+              },
+              {
+                "persona": "İK",
+                "context": "SGK bildirgesini hazırlar. \"BKM Express / TROY\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bordrolardan otomatik agreement."
+              }
+            ]
+          }
+        },
+        {
+          "name": "TCMB FX",
+          "desc": "Günlük kur (15:30 yayın)",
+          "enrich": {
+            "info": "Günlük kur (15:30 yayın)",
+            "detail": "**TCMB FX** nedir?\n\nGünlük kur (15:30 yayın).\n\n**Amaç:** Türkiye yasal düzenlemelerine (kvkk, e-fatura, e-defter, sgk) uyum sağlayan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç TR uyum (KVKK/GİB/SGK) bilmeyen biri için: bu özellik, TR uyum (KVKK/GİB/SGK) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "TR mevzuat sorumlusu",
+                "context": "\"TCMB FX\" özelliğini TR uyum (KVKK/GİB/SGK) sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Günlük kur (15:30 yayın) pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Mali müşavir",
+                "context": "e-Fatura keser. \"TCMB FX\" özelliği bu süreçte devreye girer.",
+                "outcome": "UBL-TR XML otomatik üretilir, GİB'e gönderilir."
+              },
+              {
+                "persona": "KVKK sorumlusu",
+                "context": "Kullanıcı verisini siler. \"TCMB FX\" özelliği bu süreçte devreye girer.",
+                "outcome": "Soft → audit → hard-delete + yasal yanıt mektubu."
+              },
+              {
+                "persona": "İK",
+                "context": "SGK bildirgesini hazırlar. \"TCMB FX\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bordrolardan otomatik agreement."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tr",
+      "label": "KVKK — yazılım gereksinimleri (Madde 11)",
+      "body": "Veri sahibi hakları endpoint'leri:\n- **Erişim:** `GET /kvkk/my-data` — kullanıcının tüm verisi.\n- **Düzeltme:** standart edit endpoint'leri.\n- **Silme/Anonimleştirme:** `POST /kvkk/forget-me` — PII alanlar null, ID korunur (referential integrity).\n- **Aktarım engelleme:** consent versioning per category.\n- **Otomatik karar itirazı:** AI scoring kararına itiraz akışı.\n\n**Veri envanteri (Madde 16)** — entity'lerde PII tagging, otomatik VERBİS bildirim formatı export.\n\n**İhlal bildirimi** — 72 saat içinde KVKK'ya bildirim, framework alert tetikler. **VERBİS** kayıt yükümlülüğü: yıllık çalışan >50 veya yıllık bilanço >100M TL."
+    },
+    {
+      "type": "callout",
+      "variant": "tr",
+      "label": "Yurt dışı veri aktarımı (Mart 2024 yönetmelik)",
+      "body": "KVKK Mart 2024 yönetmeliği yurt dışı aktarım için standart sözleşme/BCR yolu tanımladı. Framework: hangi DocType verileri hangi servise gidiyor (örn. SES/SendGrid yurt dışı SMTP), tenant admin'e bildirimle açık rıza alır. Default driver TR-içi opsiyonlara öncelik (Foriba TR'de, NetGSM TR'de, Hetzner FSN1 Almanya AB)."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: D02 PII Governance + D03 Compliance Framework"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **D02 — PII Governance & Data Classification** (Faz 3 · P0 · Compliance + Security) KVKK uyumunu otomatize eder: otomatik PII keşfi, data classification (public/internal/confidential/restricted), field-level encryption policy, redaction in logs."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**PII Discovery** — DocType field tarama, hangi alanlar PII (otomatik flag)",
+        "**Data Classification** — public/internal/confidential/restricted",
+        "**Field-level Encryption Policy** — hangi alanlar at-rest şifreli, key rotation",
+        "**Log Redaction** — Pino redact + structured log scrubbing",
+        "**KVKK Madde 7 (Silme) Automation** — DSR otomatik (legal_hold_check, AI review)",
+        "**KVKK Madde 11 (Erişim) Automation** — kullanıcı export endpoint'i + audit"
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **D03 — Compliance Framework (KVKK / GDPR / SOC2)** (Faz 4 · P1) uyumluluk kontrol matrisini, kanıt toplama otomasyonunu, periyodik taramayı ve discrepancy ticket'ı yönetir. **KVKK Veri Sorumluları Sicili (VERBİS) entegrasyonu** native — yıllık çalışan >50 veya bilanço >100M TL için zorunlu kayıt otomatik."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "Control Matrix",
+          "value": "KVKK + GDPR Article 30 records + SOC2 evidence — tek matrix"
+        },
+        {
+          "key": "Evidence Collection",
+          "value": "Otomatik kanıt toplama (log + audit + screenshot) — auditor-ready paket"
+        },
+        {
+          "key": "Periodic Scan",
+          "value": "Aylık compliance scan, discrepancy ticket otomatik (severity'ye göre)"
+        },
+        {
+          "key": "VERBİS Integration",
+          "value": "Veri envanteri (Madde 16) otomatik üretim → VERBİS formatına export"
+        }
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "e-Belge, e-Defter, SGK, KVKK, BES, MERSİS, KEP — framework-level paket.",
+    "detail": "e-Belge, e-Defter, SGK, KVKK, BES, MERSİS, KEP — framework-level paket.",
+    "terms": [
+      {
+        "term": "KVKK",
+        "abbrev_of": "Kişisel Verilerin Korunması Kanunu",
+        "meaning": "Türkiye'nin GDPR muadili (6698 sayılı).",
+        "why": "TR pazarında zorunlu."
+      },
+      {
+        "term": "GİB",
+        "abbrev_of": "Gelir İdaresi Başkanlığı",
+        "meaning": "e-Fatura/e-Arşiv'in bağlı olduğu kurum.",
+        "why": "Mükellef bildirimleri için API."
+      },
+      {
+        "term": "VUK",
+        "abbrev_of": "Vergi Usul Kanunu",
+        "meaning": "Belge saklama, defter, denetim kuralları.",
+        "why": "10 yıl saklama gibi pratikler buradan gelir."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Muhasebe ekibi",
+        "context": "Bir B2B müşteriye e-Fatura kesilmesi gerekiyor.",
+        "outcome": "DocType invoice submit edildiğinde GİB UBL-TR XML üretilir; yanıt başarılıysa audit'e kayıt."
+      }
+    ]
+  }
+}

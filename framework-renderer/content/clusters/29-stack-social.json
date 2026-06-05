@@ -1,0 +1,397 @@
+{
+  "id": "s-social",
+  "title": "Social Stack",
+  "subtitle": "Twitter, Threads, Instagram, Facebook muadili. Scale primitives sınavı.",
+  "cluster": "stack",
+  "layer": "l2",
+  "order": 29,
+  "icon": "ph-users-three",
+  "badge": "Layer 2 Stack #7",
+  "tags": [
+    "social",
+    "feed",
+    "fanout",
+    "scale"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Sosyal medya (#15) ana stack. Asıl ürün ölçekte teslimat: model basit, fan-out + ranking + moderation zor. Scale primitives ({{ref:scale-outbox}}, {{ref:scale-counter}}, {{ref:scale-workers}}) gerçek sınavı burada."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Module'ler"
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "Social Graph",
+          "desc": "Follow/friend, asimetrik + simetrik, block, mute",
+          "critical": true,
+          "enrich": {
+            "info": "Follow/friend, asimetrik + simetrik, block, mute",
+            "detail": "**Social Graph** nedir?\n\nFollow/friend, asimetrik + simetrik, block, mute.\n\n**Amaç:** Kullanıcıların paylaşım yaptığı, takipleştiği, mesajlaştığı topluluk modülü. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sosyal medya bilmeyen biri için: bu özellik, sosyal medya sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Topluluk yöneticisi",
+                "context": "\"Social Graph\" özelliğini sosyal etkileşim sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Follow/friend, asimetrik + simetrik, block, mute pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Influencer",
+                "context": "Takipçileri ile etkileşim kurar. \"Social Graph\" özelliği bu süreçte devreye girer.",
+                "outcome": "Live yayın, story, DM tek platformda."
+              },
+              {
+                "persona": "Kullanıcı",
+                "context": "Arkadaşıyla mesajlaşır. \"Social Graph\" özelliği bu süreçte devreye girer.",
+                "outcome": "Realtime DM, presence, read receipt — modern messenger UX."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Post / UGC",
+          "desc": "Gönderi, reply (thread), quote, repost",
+          "enrich": {
+            "info": "Gönderi, reply (thread), quote, repost",
+            "detail": "**Post / UGC** nedir?\n\nGönderi, reply (thread), quote, repost.\n\n**Amaç:** Kullanıcıların paylaşım yaptığı, takipleştiği, mesajlaştığı topluluk modülü. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sosyal medya bilmeyen biri için: bu özellik, sosyal medya sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Topluluk yöneticisi",
+                "context": "\"Post / UGC\" özelliğini sosyal etkileşim sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Gönderi, reply (thread), quote, repost pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Influencer",
+                "context": "Takipçileri ile etkileşim kurar. \"Post / UGC\" özelliği bu süreçte devreye girer.",
+                "outcome": "Live yayın, story, DM tek platformda."
+              },
+              {
+                "persona": "Kullanıcı",
+                "context": "Arkadaşıyla mesajlaşır. \"Post / UGC\" özelliği bu süreçte devreye girer.",
+                "outcome": "Realtime DM, presence, read receipt — modern messenger UX."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Feed / Timeline",
+          "desc": "Fan-out (push/pull/hybrid, ~10K celebrity threshold), ranking",
+          "critical": true,
+          "enrich": {
+            "info": "Fan-out (push/pull/hybrid, ~10K celebrity threshold), ranking",
+            "detail": "**Feed / Timeline** nedir?\n\nFan-out (push/pull/hybrid, ~10K celebrity threshold), ranking.\n\n**Amaç:** Kullanıcıların paylaşım yaptığı, takipleştiği, mesajlaştığı topluluk modülü. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sosyal medya bilmeyen biri için: bu özellik, sosyal medya sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "terms": [
+              {
+                "term": "Fan-out",
+                "abbrev_tr": "Dağıtım yelpazesi",
+                "meaning": "Bir post'u N takipçinin feed'ine dağıtma stratejisi (push/pull/hybrid).",
+                "why": "Twitter ölçeğinde maliyet/perf farkı 1000× olabilir."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Topluluk yöneticisi",
+                "context": "\"Feed / Timeline\" özelliğini sosyal etkileşim sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Fan-out (push/pull/hybrid, ~10K celebrity threshold), ranking pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Influencer",
+                "context": "Takipçileri ile etkileşim kurar. \"Feed / Timeline\" özelliği bu süreçte devreye girer.",
+                "outcome": "Live yayın, story, DM tek platformda."
+              },
+              {
+                "persona": "Kullanıcı",
+                "context": "Arkadaşıyla mesajlaşır. \"Feed / Timeline\" özelliği bu süreçte devreye girer.",
+                "outcome": "Realtime DM, presence, read receipt — modern messenger UX."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Engagement",
+          "desc": "Like, reaction, repost, reply, bookmark — hot counter",
+          "enrich": {
+            "info": "Like, reaction, repost, reply, bookmark — hot counter",
+            "detail": "**Engagement** nedir?\n\nLike, reaction, repost, reply, bookmark — hot counter.\n\n**Amaç:** Kullanıcıların paylaşım yaptığı, takipleştiği, mesajlaştığı topluluk modülü. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sosyal medya bilmeyen biri için: bu özellik, sosyal medya sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Topluluk yöneticisi",
+                "context": "\"Engagement\" özelliğini sosyal etkileşim sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Like, reaction, repost, reply, bookmark — hot counter pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Influencer",
+                "context": "Takipçileri ile etkileşim kurar. \"Engagement\" özelliği bu süreçte devreye girer.",
+                "outcome": "Live yayın, story, DM tek platformda."
+              },
+              {
+                "persona": "Kullanıcı",
+                "context": "Arkadaşıyla mesajlaşır. \"Engagement\" özelliği bu süreçte devreye girer.",
+                "outcome": "Realtime DM, presence, read receipt — modern messenger UX."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Direct Messaging",
+          "desc": "Realtime DM, group chat, presence, read receipt",
+          "enrich": {
+            "info": "Realtime DM, group chat, presence, read receipt",
+            "detail": "**Direct Messaging** nedir?\n\nRealtime DM, group chat, presence, read receipt.\n\n**Amaç:** Kullanıcıların paylaşım yaptığı, takipleştiği, mesajlaştığı topluluk modülü. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sosyal medya bilmeyen biri için: bu özellik, sosyal medya sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "terms": [
+              {
+                "term": "Presence",
+                "abbrev_tr": "Varlık (online/offline)",
+                "meaning": "Kullanıcının o an aktif olup olmadığı bilgisi.",
+                "why": "Sohbet/topluluk UX'inin temel parçası."
+              },
+              {
+                "term": "Read receipt",
+                "abbrev_tr": "Okundu bildirimi",
+                "meaning": "Mesajın okunup okunmadığı durumu.",
+                "why": "Modern messenger UX standardı."
+              },
+              {
+                "term": "Realtime",
+                "abbrev_tr": "Anlık (canlı)",
+                "meaning": "Server-Sent Events veya WebSocket ile push güncelleme.",
+                "why": "Chat, dashboard, notification için."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Topluluk yöneticisi",
+                "context": "\"Direct Messaging\" özelliğini sosyal etkileşim sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Realtime DM, group chat, presence, read receipt pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Influencer",
+                "context": "Takipçileri ile etkileşim kurar. \"Direct Messaging\" özelliği bu süreçte devreye girer.",
+                "outcome": "Live yayın, story, DM tek platformda."
+              },
+              {
+                "persona": "Kullanıcı",
+                "context": "Arkadaşıyla mesajlaşır. \"Direct Messaging\" özelliği bu süreçte devreye girer.",
+                "outcome": "Realtime DM, presence, read receipt — modern messenger UX."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Trends & Discovery",
+          "desc": "Hashtag, trending topics, explore",
+          "enrich": {
+            "info": "Hashtag, trending topics, explore",
+            "detail": "**Trends & Discovery** nedir?\n\nHashtag, trending topics, explore.\n\n**Amaç:** Kullanıcıların paylaşım yaptığı, takipleştiği, mesajlaştığı topluluk modülü. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sosyal medya bilmeyen biri için: bu özellik, sosyal medya sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Topluluk yöneticisi",
+                "context": "\"Trends & Discovery\" özelliğini sosyal etkileşim sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Hashtag, trending topics, explore pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Influencer",
+                "context": "Takipçileri ile etkileşim kurar. \"Trends & Discovery\" özelliği bu süreçte devreye girer.",
+                "outcome": "Live yayın, story, DM tek platformda."
+              },
+              {
+                "persona": "Kullanıcı",
+                "context": "Arkadaşıyla mesajlaşır. \"Trends & Discovery\" özelliği bu süreçte devreye girer.",
+                "outcome": "Realtime DM, presence, read receipt — modern messenger UX."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Privacy & Audience",
+          "desc": "Public/followers/friends/close-friends/private",
+          "enrich": {
+            "info": "Public/followers/friends/close-friends/private",
+            "detail": "**Privacy & Audience** nedir?\n\nPublic/followers/friends/close-friends/private.\n\n**Amaç:** Kullanıcıların paylaşım yaptığı, takipleştiği, mesajlaştığı topluluk modülü. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sosyal medya bilmeyen biri için: bu özellik, sosyal medya sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Topluluk yöneticisi",
+                "context": "\"Privacy & Audience\" özelliğini sosyal etkileşim sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Public/followers/friends/close-friends/private pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Influencer",
+                "context": "Takipçileri ile etkileşim kurar. \"Privacy & Audience\" özelliği bu süreçte devreye girer.",
+                "outcome": "Live yayın, story, DM tek platformda."
+              },
+              {
+                "persona": "Kullanıcı",
+                "context": "Arkadaşıyla mesajlaşır. \"Privacy & Audience\" özelliği bu süreçte devreye girer.",
+                "outcome": "Realtime DM, presence, read receipt — modern messenger UX."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Stories / Ephemeral",
+          "desc": "24h auto-expire",
+          "enrich": {
+            "info": "24h auto-expire",
+            "detail": "**Stories / Ephemeral** nedir?\n\n24h auto-expire.\n\n**Amaç:** Kullanıcıların paylaşım yaptığı, takipleştiği, mesajlaştığı topluluk modülü. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sosyal medya bilmeyen biri için: bu özellik, sosyal medya sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Topluluk yöneticisi",
+                "context": "\"Stories / Ephemeral\" özelliğini sosyal etkileşim sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici 24h auto-expire pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Influencer",
+                "context": "Takipçileri ile etkileşim kurar. \"Stories / Ephemeral\" özelliği bu süreçte devreye girer.",
+                "outcome": "Live yayın, story, DM tek platformda."
+              },
+              {
+                "persona": "Kullanıcı",
+                "context": "Arkadaşıyla mesajlaşır. \"Stories / Ephemeral\" özelliği bu süreçte devreye girer.",
+                "outcome": "Realtime DM, presence, read receipt — modern messenger UX."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Groups & Communities",
+          "desc": "Topluluk, sayfa, etkinlik",
+          "enrich": {
+            "info": "Topluluk, sayfa, etkinlik",
+            "detail": "**Groups & Communities** nedir?\n\nTopluluk, sayfa, etkinlik.\n\n**Amaç:** Kullanıcıların paylaşım yaptığı, takipleştiği, mesajlaştığı topluluk modülü. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sosyal medya bilmeyen biri için: bu özellik, sosyal medya sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Topluluk yöneticisi",
+                "context": "\"Groups & Communities\" özelliğini sosyal etkileşim sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Topluluk, sayfa, etkinlik pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Influencer",
+                "context": "Takipçileri ile etkileşim kurar. \"Groups & Communities\" özelliği bu süreçte devreye girer.",
+                "outcome": "Live yayın, story, DM tek platformda."
+              },
+              {
+                "persona": "Kullanıcı",
+                "context": "Arkadaşıyla mesajlaşır. \"Groups & Communities\" özelliği bu süreçte devreye girer.",
+                "outcome": "Realtime DM, presence, read receipt — modern messenger UX."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Live & Spaces",
+          "desc": "Canlı video, ses odası",
+          "enrich": {
+            "info": "Canlı video, ses odası",
+            "detail": "**Live & Spaces** nedir?\n\nCanlı video, ses odası.\n\n**Amaç:** Kullanıcıların paylaşım yaptığı, takipleştiği, mesajlaştığı topluluk modülü. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sosyal medya bilmeyen biri için: bu özellik, sosyal medya sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Topluluk yöneticisi",
+                "context": "\"Live & Spaces\" özelliğini sosyal etkileşim sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Canlı video, ses odası pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Influencer",
+                "context": "Takipçileri ile etkileşim kurar. \"Live & Spaces\" özelliği bu süreçte devreye girer.",
+                "outcome": "Live yayın, story, DM tek platformda."
+              },
+              {
+                "persona": "Kullanıcı",
+                "context": "Arkadaşıyla mesajlaşır. \"Live & Spaces\" özelliği bu süreçte devreye girer.",
+                "outcome": "Realtime DM, presence, read receipt — modern messenger UX."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Creator & Monetization",
+          "desc": "Bahşiş, abonelik, ad revenue share",
+          "enrich": {
+            "info": "Bahşiş, abonelik, ad revenue share",
+            "detail": "**Creator & Monetization** nedir?\n\nBahşiş, abonelik, ad revenue share.\n\n**Amaç:** Kullanıcıların paylaşım yaptığı, takipleştiği, mesajlaştığı topluluk modülü. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sosyal medya bilmeyen biri için: bu özellik, sosyal medya sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Topluluk yöneticisi",
+                "context": "\"Creator & Monetization\" özelliğini sosyal etkileşim sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Bahşiş, abonelik, ad revenue share pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Influencer",
+                "context": "Takipçileri ile etkileşim kurar. \"Creator & Monetization\" özelliği bu süreçte devreye girer.",
+                "outcome": "Live yayın, story, DM tek platformda."
+              },
+              {
+                "persona": "Kullanıcı",
+                "context": "Arkadaşıyla mesajlaşır. \"Creator & Monetization\" özelliği bu süreçte devreye girer.",
+                "outcome": "Realtime DM, presence, read receipt — modern messenger UX."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Moderation / T&S",
+          "desc": "AI ön-filtre + human review queue",
+          "critical": true,
+          "enrich": {
+            "info": "AI ön-filtre + human review queue",
+            "detail": "**Moderation / T&S** nedir?\n\nAI ön-filtre + human review queue.\n\n**Amaç:** Kullanıcıların paylaşım yaptığı, takipleştiği, mesajlaştığı topluluk modülü. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sosyal medya bilmeyen biri için: bu özellik, sosyal medya sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Topluluk yöneticisi",
+                "context": "\"Moderation / T&S\" özelliğini sosyal etkileşim sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici AI ön-filtre + human review queue pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Influencer",
+                "context": "Takipçileri ile etkileşim kurar. \"Moderation / T&S\" özelliği bu süreçte devreye girer.",
+                "outcome": "Live yayın, story, DM tek platformda."
+              },
+              {
+                "persona": "Kullanıcı",
+                "context": "Arkadaşıyla mesajlaşır. \"Moderation / T&S\" özelliği bu süreçte devreye girer.",
+                "outcome": "Realtime DM, presence, read receipt — modern messenger UX."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Fan-out — kernel primitive, module policy"
+    },
+    {
+      "type": "paragraph",
+      "text": "Asıl prensip: kernel **primitive**'leri sağlar (event bus, outbox, async worker, hot counter, projection); Feed module **policy**'yi yazar (push vs pull, celebrity threshold, hybrid merge). Twitter ~10K follower cutoff'u commonly cited."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Tuzak — ölçek-blindness",
+      "body": "Domain modeli trivial (gönderi/takip/beğeni). Asıl iş fan-out + ranking + moderation hacmi. Ölçeği teslimat detayı sayarsan yüksek trafikte çökersin. Bu üründe **ölçek = domain**."
+    }
+  ],
+  "enrich": {
+    "info": "Twitter, Threads, Instagram, Facebook muadili. Scale primitives sınavı.",
+    "detail": "Twitter, Threads, Instagram, Facebook muadili. Scale primitives sınavı.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

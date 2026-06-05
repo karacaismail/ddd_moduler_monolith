@@ -1,0 +1,313 @@
+{
+  "id": "fe-deploy",
+  "title": "Frontend — Deploy + OTA + Store Rollout",
+  "subtitle": "Hetzner + Docker + Caddy · GitHub Actions · Fastlane · TestFlight + Play Internal Testing · kendi OTA server.",
+  "cluster": "frontend",
+  "order": 58,
+  "icon": "ph-rocket-launch",
+  "tags": [
+    "frontend",
+    "deploy",
+    "ci",
+    "ota",
+    "store"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.15 Deploy & OTA"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Katman",
+        "Seçim",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "Web hosting",
+          "**Hetzner Debian + Docker + Caddy** (auto-TLS)",
+          "Mevcut altyapı"
+        ],
+        [
+          "Web CI",
+          "GitHub Actions Ubuntu",
+          "docker build → registry → SSH compose pull"
+        ],
+        [
+          "iOS CI",
+          "GitHub Actions macOS runner + Fastlane + match",
+          "Apple Silicon Xcode"
+        ],
+        [
+          "Android CI",
+          "GitHub Actions Ubuntu + Fastlane supply",
+          "AAB → Play Console"
+        ],
+        [
+          "**OTA**",
+          "**Kendi FastAPI server + Hetzner Object Storage**",
+          "Capgo Supabase çelişkisi yok"
+        ],
+        [
+          "OTA client",
+          "@capgo/capacitor-updater (self-host modunda)",
+          "Plugin MPL-2.0, backend kendi"
+        ],
+        [
+          "CDN",
+          "Cloudflare veya BunnyCDN",
+          "Static asset edge"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "OTA server kontratı (apps/ota-server)"
+    },
+    {
+      "type": "code",
+      "lang": "http",
+      "content": "GET /channels/:channel/manifest?version=:current\n  → { latestVersion, bundleUrl, sha256, mandatory, releaseNotes }\n\nPOST /channels/:channel/releases (admin)\n  → multipart bundle upload, sha256 doğrulama\n\nGET /channels/:channel/rollout\n  → { percentage, audience }\n\nRollout: yüzde + audience (org id, tenant tier) bazlı.\nRollback: POST /channels/:channel/releases/:id/rollback"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "5. CI/CD pipeline"
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "5.1 Web (PR + main)",
+          "desc": "PR → Biome lint, vite-plugin-checker TS, Vitest unit + MSW → Playwright E2E (Docker Compose preview deploy) → Lighthouse CI score gate → axe-core a11y gate. Main merge → Docker image build → Hetzner registry → SSH compose pull.",
+          "enrich": {
+            "info": "PR → Biome lint, vite-plugin-checker TS, Vitest unit + MSW → Playwright E2E (Docker Compose preview deploy) → Lighthouse CI score gate → axe",
+            "detail": "**5.1 Web (PR + main)** nedir?\n\nPR → Biome lint, vite-plugin-checker TS, Vitest unit + MSW → Playwright E2E (Docker Compose preview deploy) → Lighthouse CI score gate → axe-core a11y gate. Main merge → Docker image build → Hetzner registry → SSH compose pull.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"5.1 Web (PR + main)\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici PR → Biome lint, vite-plugin-checker TS, Vitest unit + MSW → Playwright E2E (Doc pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"5.1 Web (PR + main)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"5.1 Web (PR + main)\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "5.2 iOS",
+          "desc": "main merge + tag `mobile-v*` → macOS runner → `npx cap sync ios` → Fastlane match (sertifika), gym (build), pilot (TestFlight) → Sentry release + dSYM upload → PostHog event.",
+          "enrich": {
+            "info": "main merge + tag `mobile-v*` → macOS runner → `npx cap sync ios` → Fastlane match (sertifika), gym (build), pilot (TestFlight) → Sentry rele",
+            "detail": "**5.2 iOS** nedir?\n\nmain merge + tag `mobile-v*` → macOS runner → `npx cap sync ios` → Fastlane match (sertifika), gym (build), pilot (TestFlight) → Sentry release + dSYM upload → PostHog event.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"5.2 iOS\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici main merge + tag `mobile-v*` → macOS runner → `npx cap sync ios` → Fastlane matc pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"5.2 iOS\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"5.2 iOS\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "5.3 Android",
+          "desc": "Aynı tag → Ubuntu runner → `npx cap sync android` → Fastlane gradle build, supply (Play Console) → Sentry release upload → PostHog event.",
+          "enrich": {
+            "info": "Aynı tag → Ubuntu runner → `npx cap sync android` → Fastlane gradle build, supply (Play Console) → Sentry release upload → PostHog event.",
+            "detail": "**5.3 Android** nedir?\n\nAynı tag → Ubuntu runner → `npx cap sync android` → Fastlane gradle build, supply (Play Console) → Sentry release upload → PostHog event.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"5.3 Android\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Aynı tag → Ubuntu runner → `npx cap sync android` → Fastlane gradle build, suppl pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"5.3 Android\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"5.3 Android\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "name": "5.4 OTA (JS-only)",
+          "desc": "Tag `ota-v*` → Web bundle build → SHA256 hesapla, manifest oluştur → Hetzner Object Storage'a upload → OTA server'a POST `/channels/production/releases` → Rollout başlat (önce %10, gözlem, sonra %100).",
+          "enrich": {
+            "info": "Tag `ota-v*` → Web bundle build → SHA256 hesapla, manifest oluştur → Hetzner Object Storage'a upload → OTA server'a POST `/channels/producti",
+            "detail": "**5.4 OTA (JS-only)** nedir?\n\nTag `ota-v*` → Web bundle build → SHA256 hesapla, manifest oluştur → Hetzner Object Storage'a upload → OTA server'a POST `/channels/production/releases` → Rollout başlat (önce %10, gözlem, sonra %100).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"5.4 OTA (JS-only)\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Tag `ota-v*` → Web bundle build → SHA256 hesapla, manifest oluştur → Hetzner Obj pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"5.4 OTA (JS-only)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"5.4 OTA (JS-only)\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Store Rollout (Haziran 2026 Closed Beta)"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Adım",
+        "Süre",
+        "Detay"
+      ],
+      "rows": [
+        [
+          "D-U-N-S başvurusu",
+          "≈ 5 iş günü (2 haftaya kadar)",
+          "Dun & Bradstreet — Apple Organization enrollment için zorunlu, takvimsel en uzun kalem"
+        ],
+        [
+          "Apple D&B veri çekimi",
+          "+ 2 iş günü",
+          "D-U-N-S oluşunca Apple'ın D&B'den veri alması"
+        ],
+        [
+          "Apple Developer Program enrollment",
+          "1–7 iş günü",
+          "99 USD/yıl, identity verification, doğrulama çağrısı"
+        ],
+        [
+          "Google Play Console Organization",
+          "2–7 iş günü (max 2 hafta)",
+          "25 USD tek seferlik, evrak doğrulama, **12 testers × 14 gün** kuralından MUAF"
+        ],
+        [
+          "iOS Distribution Cert + Provisioning",
+          "Aynı gün",
+          "fastlane match"
+        ],
+        [
+          "TestFlight ilk build (internal)",
+          "Build process bittiği gibi",
+          "Beta App Review **gereksiz** internal'da"
+        ],
+        [
+          "TestFlight external",
+          "+ 24–48 saat",
+          "Beta App Review external testerlar için zorunlu"
+        ],
+        [
+          "Play Internal Testing",
+          "Birkaç dakika",
+          "Opt-in link, 100 tester max"
+        ],
+        [
+          "**Closed Beta açık**",
+          "Toplam 3–4 hafta",
+          "100 internal + 50–200 external + 100 Play"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Google Play 12 testers × 14 gün kuralı",
+      "body": "13 Kasım 2023 sonrası **personal account** ile yeni uygulama yayınlamak için minimum 12 opted-in tester ile 14 ardışık gün closed testing zorunludur. **Organization (verified) hesaplar bu kuraldan MUAFTIR**. arsam tüzel kişilik → Google Play Console'a Organization olarak kayıt → 14 günlük takvim parçası kritik path'ten çıkar."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "6. OpenClaw + n8n otomasyon noktaları"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Olay",
+        "Otomasyon"
+      ],
+      "rows": [
+        [
+          "PR açıldı",
+          "OpenClaw Lobster → kod review özet → Slack/WhatsApp"
+        ],
+        [
+          "Test failed",
+          "n8n → ilgili geliştiriciye WhatsApp"
+        ],
+        [
+          "Release published (TestFlight/Play)",
+          "n8n → Crowdin string sync → PostHog feature flag flip → release notes Slack"
+        ],
+        [
+          "Sentry error spike",
+          "n8n → severity'ye göre WhatsApp/email + PostHog session replay link"
+        ],
+        [
+          "OTA rollout başladı",
+          "n8n → 30 dk sonra crash rate kontrol → %10 → %50 → %100 veya otomatik rollback"
+        ],
+        [
+          "KYC submission",
+          "n8n → KYB queue → Veriff webhook bekle → onay/red mail"
+        ]
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Hetzner + Docker + Caddy · GitHub Actions · Fastlane · TestFlight + Play Internal Testing · kendi OTA server.",
+    "detail": "Hetzner + Docker + Caddy · GitHub Actions · Fastlane · TestFlight + Play Internal Testing · kendi OTA server.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

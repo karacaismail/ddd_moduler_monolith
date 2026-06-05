@@ -1,0 +1,216 @@
+{
+  "id": "fe-ai-rt",
+  "title": "Frontend — AI + Realtime + Offline",
+  "subtitle": "Vercel AI SDK, multi-provider, SSE + WS + Yjs CRDT, TanStack Query offline.",
+  "cluster": "frontend",
+  "order": 55,
+  "icon": "ph-lightning",
+  "tags": [
+    "frontend",
+    "ai",
+    "realtime",
+    "offline",
+    "crdt"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.8 AI katmanı"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Katman",
+        "Seçim",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "AI client core",
+          "**Vercel AI SDK**",
+          "Framework-agnostic, useChat/useCompletion"
+        ],
+        [
+          "Anthropic",
+          "@ai-sdk/anthropic",
+          "Claude Opus 4.7 / Sonnet 4.6"
+        ],
+        [
+          "OpenAI",
+          "@ai-sdk/openai",
+          "GPT-4o, o serisi"
+        ],
+        [
+          "Gemini",
+          "@ai-sdk/google",
+          "Gemini 2.x, vision güçlü"
+        ],
+        [
+          "Provider router",
+          "`packages/ai/router.ts` (custom)",
+          "Maliyet/yetenek/fallback dispatch"
+        ],
+        [
+          "Streaming transport",
+          "SSE",
+          "AI SDK varsayılan"
+        ],
+        [
+          "Tool calls",
+          "AI SDK tool API + Zod schema",
+          "Tek tanım, server + client"
+        ],
+        [
+          "Generative UI",
+          "Schema-driven dispatcher (custom registry)",
+          "RSC yok, Vite uyumlu"
+        ],
+        [
+          "Artifact render",
+          "iframe sandboxed + Shiki + react-markdown",
+          "Code, doc, chart preview"
+        ],
+        [
+          "Markdown",
+          "react-markdown + remark-gfm + rehype-raw + **DOMPurify**",
+          "XSS zorunlu"
+        ],
+        [
+          "Code highlight",
+          "Shiki",
+          "VS Code grammar"
+        ],
+        [
+          "Voice STT",
+          "Whisper API + @ricky0123/vad-web",
+          "Voice activity detection ile auto-record"
+        ],
+        [
+          "Voice TTS",
+          "OpenAI TTS veya ElevenLabs",
+          "Streaming"
+        ],
+        [
+          "Mobile voice",
+          "@capacitor-community/speech-recognition (fallback)",
+          "Native STT"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Provider router stratejisi"
+    },
+    {
+      "type": "code",
+      "lang": "typescript",
+      "title": "packages/ai/router.ts (kontrat)",
+      "content": "type Capability = 'reasoning' | 'vision' | 'long-context' | 'cheap' | 'tool-use';\n\ntype ModelChoice = { provider: 'anthropic' | 'openai' | 'google'; model: string };\n\ninterface AIRouter {\n  pick(capabilities: Capability[]): ModelChoice;\n  fallbackChain(primary: ModelChoice): ModelChoice[];\n  estimateCost(input: number, output: number, choice: ModelChoice): number;\n}"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.6 Realtime — 3 kanal, tek abstraction zorlaması yok"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Katman",
+        "Seçim",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "Notification, toast push, dashboard refresh",
+          "**SSE (EventSource)**",
+          "Tek yönlü, basit, proxy dostu"
+        ],
+        [
+          "Presence, live cursor",
+          "**Native WebSocket**",
+          "İki yönlü, küçük payload"
+        ],
+        [
+          "Collaborative editing",
+          "**Yjs + Hocuspocus (self-host)**",
+          "CRDT, conflict-free, offline persist"
+        ],
+        [
+          "Offline doc persist",
+          "y-indexeddb",
+          "Yjs'in IDB adapter'ı"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "socket.io YOK",
+      "body": "SSE notification, WS presence, Yjs collab — **üç kanal, tek abstraction zorlaması yok**. socket.io'nun bağladığı her şey bu üçlüyle daha temiz, daha küçük, daha standart."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "2.7 Offline"
+    },
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "Katman",
+        "Seçim",
+        "Gerekçe"
+      ],
+      "rows": [
+        [
+          "Read cache",
+          "**TanStack Query + @tanstack/query-persist-client + idb-keyval**",
+          "Built-in, hafif"
+        ],
+        [
+          "Write queue",
+          "**TanStack Query paused mutations**",
+          "Online'da auto-resume"
+        ],
+        [
+          "Conflict resolution",
+          "Last-write-wins (varsayılan) + Yjs (collab alanlarda)",
+          "Pragmatik"
+        ],
+        [
+          "Service worker",
+          "vite-plugin-pwa (Workbox altta)",
+          "Manifest + cache strategy"
+        ],
+        [
+          "Background sync",
+          "Workbox Background Sync API",
+          "Browser native, fallback queue"
+        ]
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Vercel AI SDK, multi-provider, SSE + WS + Yjs CRDT, TanStack Query offline.",
+    "detail": "Vercel AI SDK, multi-provider, SSE + WS + Yjs CRDT, TanStack Query offline.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "id": "s-helpdesk",
+  "title": "Helpdesk + Knowledge Stack",
+  "subtitle": "Gorgias, Zendesk, Frappe Helpdesk, Confluence muadili.",
+  "cluster": "stack",
+  "layer": "l2",
+  "order": 33,
+  "icon": "ph-headset",
+  "badge": "Layer 2 Stack #11",
+  "tags": [
+    "helpdesk",
+    "ticket",
+    "sla",
+    "wiki"
+  ],
+  "blocks": [
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "Ticket",
+          "desc": "Yaratım, atama, eskalasyon, SLA timer",
+          "enrich": {
+            "info": "Yaratım, atama, eskalasyon, SLA timer",
+            "detail": "**Ticket** nedir?\n\nYaratım, atama, eskalasyon, SLA timer.\n\n**Amaç:** Müşterilerin sorunlarını ticket'a dönüştürüp izleyen, çözüme kavuşturan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç müşteri destek bilmeyen biri için: bu özellik, müşteri destek sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "terms": [
+              {
+                "term": "SLA",
+                "abbrev_of": "Service Level Agreement",
+                "abbrev_tr": "Hizmet seviyesi anlaşması",
+                "meaning": "Cevap/çözüm süresi taahhüdü.",
+                "why": "Helpdesk ürünlerinin temel ölçüsü."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Destek temsilcisi",
+                "context": "\"Ticket\" özelliğini ticket ve bilgi tabanı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Yaratım, atama, eskalasyon, SLA timer pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Self-service ile sorununu çözer. \"Ticket\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bilgi tabanı (KB) çoğu sorunu tek başına çözüyor."
+              },
+              {
+                "persona": "Yönetici",
+                "context": "SLA ihlallerini izler. \"Ticket\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi konu en çok ticket'a dönüşüyor — ürün ekibine geri besleme."
+              }
+            ]
+          }
+        },
+        {
+          "name": "SLA",
+          "desc": "Response time, resolution time, plan-bazlı",
+          "enrich": {
+            "info": "Response time, resolution time, plan-bazlı",
+            "detail": "**SLA** nedir?\n\nResponse time, resolution time, plan-bazlı.\n\n**Amaç:** Müşterilerin sorunlarını ticket'a dönüştürüp izleyen, çözüme kavuşturan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç müşteri destek bilmeyen biri için: bu özellik, müşteri destek sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "terms": [
+              {
+                "term": "SLA",
+                "abbrev_of": "Service Level Agreement",
+                "abbrev_tr": "Hizmet seviyesi anlaşması",
+                "meaning": "Cevap/çözüm süresi taahhüdü.",
+                "why": "Helpdesk ürünlerinin temel ölçüsü."
+              }
+            ],
+            "stories": [
+              {
+                "persona": "Destek temsilcisi",
+                "context": "\"SLA\" özelliğini ticket ve bilgi tabanı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Response time, resolution time, plan-bazlı pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Self-service ile sorununu çözer. \"SLA\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bilgi tabanı (KB) çoğu sorunu tek başına çözüyor."
+              },
+              {
+                "persona": "Yönetici",
+                "context": "SLA ihlallerini izler. \"SLA\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi konu en çok ticket'a dönüşüyor — ürün ekibine geri besleme."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Knowledge Base",
+          "desc": "Article, search, voting, AI search",
+          "enrich": {
+            "info": "Article, search, voting, AI search",
+            "detail": "**Knowledge Base** nedir?\n\nArticle, search, voting, AI search.\n\n**Amaç:** Müşterilerin sorunlarını ticket'a dönüştürüp izleyen, çözüme kavuşturan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç müşteri destek bilmeyen biri için: bu özellik, müşteri destek sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Destek temsilcisi",
+                "context": "\"Knowledge Base\" özelliğini ticket ve bilgi tabanı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Article, search, voting, AI search pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Self-service ile sorununu çözer. \"Knowledge Base\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bilgi tabanı (KB) çoğu sorunu tek başına çözüyor."
+              },
+              {
+                "persona": "Yönetici",
+                "context": "SLA ihlallerini izler. \"Knowledge Base\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi konu en çok ticket'a dönüşüyor — ürün ekibine geri besleme."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Community Forum",
+          "desc": "Q&A, vote, accepted answer",
+          "enrich": {
+            "info": "Q&A, vote, accepted answer",
+            "detail": "**Community Forum** nedir?\n\nQ&A, vote, accepted answer.\n\n**Amaç:** Müşterilerin sorunlarını ticket'a dönüştürüp izleyen, çözüme kavuşturan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç müşteri destek bilmeyen biri için: bu özellik, müşteri destek sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Destek temsilcisi",
+                "context": "\"Community Forum\" özelliğini ticket ve bilgi tabanı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Q&A, vote, accepted answer pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Self-service ile sorununu çözer. \"Community Forum\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bilgi tabanı (KB) çoğu sorunu tek başına çözüyor."
+              },
+              {
+                "persona": "Yönetici",
+                "context": "SLA ihlallerini izler. \"Community Forum\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi konu en çok ticket'a dönüşüyor — ürün ekibine geri besleme."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Customer Portal",
+          "desc": "Self-service ticket, kb, downloads",
+          "enrich": {
+            "info": "Self-service ticket, kb, downloads",
+            "detail": "**Customer Portal** nedir?\n\nSelf-service ticket, kb, downloads.\n\n**Amaç:** Müşterilerin sorunlarını ticket'a dönüştürüp izleyen, çözüme kavuşturan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç müşteri destek bilmeyen biri için: bu özellik, müşteri destek sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Destek temsilcisi",
+                "context": "\"Customer Portal\" özelliğini ticket ve bilgi tabanı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Self-service ticket, kb, downloads pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Self-service ile sorununu çözer. \"Customer Portal\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bilgi tabanı (KB) çoğu sorunu tek başına çözüyor."
+              },
+              {
+                "persona": "Yönetici",
+                "context": "SLA ihlallerini izler. \"Customer Portal\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi konu en çok ticket'a dönüşüyor — ürün ekibine geri besleme."
+              }
+            ]
+          }
+        },
+        {
+          "name": "Field Service",
+          "desc": "Saha hizmeti, route, scheduling",
+          "enrich": {
+            "info": "Saha hizmeti, route, scheduling",
+            "detail": "**Field Service** nedir?\n\nSaha hizmeti, route, scheduling.\n\n**Amaç:** Müşterilerin sorunlarını ticket'a dönüştürüp izleyen, çözüme kavuşturan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç müşteri destek bilmeyen biri için: bu özellik, müşteri destek sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Destek temsilcisi",
+                "context": "\"Field Service\" özelliğini ticket ve bilgi tabanı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Saha hizmeti, route, scheduling pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Müşteri",
+                "context": "Self-service ile sorununu çözer. \"Field Service\" özelliği bu süreçte devreye girer.",
+                "outcome": "Bilgi tabanı (KB) çoğu sorunu tek başına çözüyor."
+              },
+              {
+                "persona": "Yönetici",
+                "context": "SLA ihlallerini izler. \"Field Service\" özelliği bu süreçte devreye girer.",
+                "outcome": "Hangi konu en çok ticket'a dönüşüyor — ürün ekibine geri besleme."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Gorgias, Zendesk, Frappe Helpdesk, Confluence muadili.",
+    "detail": "Gorgias, Zendesk, Frappe Helpdesk, Confluence muadili.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

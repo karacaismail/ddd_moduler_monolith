@@ -1,0 +1,241 @@
+{
+  "id": "scale-projections",
+  "title": "CQRS Projections (Materialized Read Models)",
+  "subtitle": "Yazma normalize, okuma denormalize. Event-driven senkron.",
+  "cluster": "scale",
+  "layer": "scale",
+  "order": 11,
+  "icon": "ph-projector-screen-chart",
+  "badge": "Scale primitive #2",
+  "tags": [
+    "cqrs",
+    "projection",
+    "read-model",
+    "scale"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Write model normalize, transaction-safe; read model denormalize, hız için. Event-driven olarak senkronize."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Klasik problem"
+    },
+    {
+      "type": "paragraph",
+      "text": "E-ticaret dashboard'unda \"müşterinin son 30 günde toplam harcaması\". Naif:"
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "content": "SELECT SUM(total) FROM orders\nWHERE customer_id = ?\n  AND created_at > NOW() - INTERVAL '30 days'"
+    },
+    {
+      "type": "paragraph",
+      "text": "10M sipariş, 1M müşteri olunca her dashboard request'inde aynı query. Yavaş. Cache'liyorsun, stale."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Projection ile"
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "content": "# Bir tabloya CustomerStats projection'ı kur\n# customer_id, total_spent_30d, order_count, last_order_at\n\n@bus.on(OrderPlaced)\ndef update_customer_stats(event):\n    stats = db.get_or_create_stats(event.customer_id)\n    stats.total_spent_30d += event.total\n    stats.order_count += 1\n    stats.last_order_at = event.timestamp\n    db.save(stats)"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dashboard request'inde tek SELECT, hazır agrege. Eventual consistency = event işlenene kadar 1-2 saniye gecikme olabilir. Çoğu zaman OK."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "DocType'a projection metadata"
+    },
+    {
+      "type": "code",
+      "lang": "yaml",
+      "content": "doctype: CustomerStats\nis_projection: true\nsource_events: [OrderPlaced, OrderCancelled, OrderRefunded]\nrebuild_strategy: replay  # event store'dan baştan kur\n\nprojection_handler:\n  OrderPlaced: |\n    customer = stats.get(event.customer_id)\n    customer.total_spent += event.total\n    customer.order_count += 1\n  OrderCancelled: |\n    customer = stats.get(event.customer_id)\n    customer.total_spent -= event.refund_amount"
+    },
+    {
+      "type": "paragraph",
+      "text": "Framework bunu görür, otomatik subscriber kurar. Projection rebuild komutu: `framework rebuild-projection CustomerStats` — event store'dan baştan replay eder (durable workflow ile, kesintide kaldığı yerden)."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Eventual consistency penceresi"
+    },
+    {
+      "type": "paragraph",
+      "text": "Event işlenene kadar 1-5 saniye gecikme tipik. Dashboard \"total spent\"i 2 saniye stale olabilir. Çoğu zaman OK. Ödeme/finansal sayfalarda fresh-read gerekirse: `?fresh=true` param → write model'den oku (yavaş ama kesin)."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Gerçek dünya örnekleri"
+    },
+    {
+      "type": "examples",
+      "items": [
+        {
+          "label": "Twitter timeline",
+          "text": "PostCreated event'inden materialize edilmiş per-user timeline. Okuma anında JOIN yok.",
+          "enrich": {
+            "info": "PostCreated event'inden materialize edilmiş per-user timeline. Okuma anında JOIN yok.",
+            "detail": "**Twitter timeline** nedir?\n\nPostCreated event'inden materialize edilmiş per-user timeline. Okuma anında JOIN yok.\n\n**Amaç:** Yüksek-okuma dashboard'lar için ana tablodan türetilmiş hazır okuma tabloları. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç CQRS projections bilmeyen biri için: bu özellik, CQRS projections sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Performans mühendisi",
+                "context": "\"Twitter timeline\" özelliğini okuma odaklı query optimizasyonu sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici PostCreated event'inden materialize edilmiş per-user timeline. Okuma anında JOIN pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Frontend mühendisi",
+                "context": "Karmaşık dashboard'a veri çeker. \"Twitter timeline\" özelliği bu süreçte devreye girer.",
+                "outcome": "JOIN cehennemi yerine projection'dan tek sorgu."
+              },
+              {
+                "persona": "DB yöneticisi",
+                "context": "Yavaş sorguyu optimize eder. \"Twitter timeline\" özelliği bu süreçte devreye girer.",
+                "outcome": "Projection oluşturur, ana tablo yazma performansı korunur."
+              },
+              {
+                "persona": "Ürün yöneticisi",
+                "context": "Yeni metrik ister. \"Twitter timeline\" özelliği bu süreçte devreye girer.",
+                "outcome": "Yeni projection eklenir, eski okumalar etkilenmez."
+              }
+            ]
+          }
+        },
+        {
+          "label": "YouTube view count",
+          "text": "yazma: `view++`, okuma: cached projection.",
+          "enrich": {
+            "info": "yazma: `view++`, okuma: cached projection.",
+            "detail": "**YouTube view count** nedir?\n\nyazma: `view++`, okuma: cached projection.\n\n**Amaç:** Yüksek-okuma dashboard'lar için ana tablodan türetilmiş hazır okuma tabloları. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç CQRS projections bilmeyen biri için: bu özellik, CQRS projections sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Performans mühendisi",
+                "context": "\"YouTube view count\" özelliğini okuma odaklı query optimizasyonu sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici yazma: `view++`, okuma: cached projection. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Frontend mühendisi",
+                "context": "Karmaşık dashboard'a veri çeker. \"YouTube view count\" özelliği bu süreçte devreye girer.",
+                "outcome": "JOIN cehennemi yerine projection'dan tek sorgu."
+              },
+              {
+                "persona": "DB yöneticisi",
+                "context": "Yavaş sorguyu optimize eder. \"YouTube view count\" özelliği bu süreçte devreye girer.",
+                "outcome": "Projection oluşturur, ana tablo yazma performansı korunur."
+              },
+              {
+                "persona": "Ürün yöneticisi",
+                "context": "Yeni metrik ister. \"YouTube view count\" özelliği bu süreçte devreye girer.",
+                "outcome": "Yeni projection eklenir, eski okumalar etkilenmez."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Stripe dashboard",
+          "text": "\"this month revenue\" — her ödeme event'i projection update'i.",
+          "enrich": {
+            "info": "\"this month revenue\" — her ödeme event'i projection update'i.",
+            "detail": "**Stripe dashboard** nedir?\n\n\"this month revenue\" — her ödeme event'i projection update'i.\n\n**Amaç:** Yüksek-okuma dashboard'lar için ana tablodan türetilmiş hazır okuma tabloları. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç CQRS projections bilmeyen biri için: bu özellik, CQRS projections sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Performans mühendisi",
+                "context": "\"Stripe dashboard\" özelliğini okuma odaklı query optimizasyonu sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici \"this month revenue\" — her ödeme event'i projection update'i. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Frontend mühendisi",
+                "context": "Karmaşık dashboard'a veri çeker. \"Stripe dashboard\" özelliği bu süreçte devreye girer.",
+                "outcome": "JOIN cehennemi yerine projection'dan tek sorgu."
+              },
+              {
+                "persona": "DB yöneticisi",
+                "context": "Yavaş sorguyu optimize eder. \"Stripe dashboard\" özelliği bu süreçte devreye girer.",
+                "outcome": "Projection oluşturur, ana tablo yazma performansı korunur."
+              },
+              {
+                "persona": "Ürün yöneticisi",
+                "context": "Yeni metrik ister. \"Stripe dashboard\" özelliği bu süreçte devreye girer.",
+                "outcome": "Yeni projection eklenir, eski okumalar etkilenmez."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Sosyal medya feed (#14)",
+          "text": "bütün fan-out işi projection.",
+          "enrich": {
+            "info": "bütün fan-out işi projection.",
+            "detail": "**Sosyal medya feed (#14)** nedir?\n\nbütün fan-out işi projection.\n\n**Amaç:** Yüksek-okuma dashboard'lar için ana tablodan türetilmiş hazır okuma tabloları. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç CQRS projections bilmeyen biri için: bu özellik, CQRS projections sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Performans mühendisi",
+                "context": "\"Sosyal medya feed (#14)\" özelliğini okuma odaklı query optimizasyonu sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici bütün fan-out işi projection. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Frontend mühendisi",
+                "context": "Karmaşık dashboard'a veri çeker. \"Sosyal medya feed (#14)\" özelliği bu süreçte devreye girer.",
+                "outcome": "JOIN cehennemi yerine projection'dan tek sorgu."
+              },
+              {
+                "persona": "DB yöneticisi",
+                "context": "Yavaş sorguyu optimize eder. \"Sosyal medya feed (#14)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Projection oluşturur, ana tablo yazma performansı korunur."
+              },
+              {
+                "persona": "Ürün yöneticisi",
+                "context": "Yeni metrik ister. \"Sosyal medya feed (#14)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Yeni projection eklenir, eski okumalar etkilenmez."
+              }
+            ],
+            "terms": [
+              {
+                "term": "Fan-out",
+                "abbrev_tr": "Dağıtım yelpazesi",
+                "meaning": "Bir post'u N takipçinin feed'ine dağıtma stratejisi (push/pull/hybrid).",
+                "why": "Twitter ölçeğinde maliyet/perf farkı 1000× olabilir."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Yazma normalize, okuma denormalize. Event-driven senkron.",
+    "detail": "Yazma normalize, okuma denormalize. Event-driven senkron.",
+    "terms": [
+      {
+        "term": "CQRS",
+        "abbrev_of": "Command Query Responsibility Segregation",
+        "abbrev_tr": "Komut-Sorgu Ayrımı",
+        "meaning": "Yazma modeli ile okuma modeli ayrı.",
+        "why": "Karmaşık dashboard sorguları için optimize."
+      },
+      {
+        "term": "Projection",
+        "abbrev_tr": "İzdüşüm",
+        "meaning": "Event'lerden türetilen okuma tablosu.",
+        "why": "JOIN cehenneminden kurtulma."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

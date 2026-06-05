@@ -1,0 +1,455 @@
+{
+  "id": "edu-u04",
+  "title": "Veritabanı Temelleri — DocType'tan önce",
+  "subtitle": "PostgreSQL, tablo, kolon, indeks, FK, transaction, ACID, normalize/denormalize.",
+  "cluster": "layer0",
+  "order": 1,
+  "icon": "ph-database",
+  "granularity": "buyuk-tas",
+  "state": "ok",
+  "tags": [
+    "education",
+    "u04",
+    "veritabani",
+    "postgresql"
+  ],
+  "blocks": [
+    {
+      "type": "lesson-header",
+      "unit": "Ünite 04",
+      "title": "Veritabanı temelleri — DocType'ın altında ne var?",
+      "level": "orta",
+      "duration_min": 80,
+      "prereq": [
+        "edu-u02",
+        "edu-u03"
+      ],
+      "goals": [
+        "PostgreSQL tablo/kolon/indeks/FK kavramlarını anlatabilirsin.",
+        "Transaction ve ACID'i bir gerçek hayat örneğiyle açıklayabilirsin.",
+        "Normalize vs denormalize'ın neden ikisinin de yeri olduğunu söyleyebilirsin.",
+        "Bir DocType'ın hangi tablo + indekslere dönüştüğünü tahmin edebilirsin."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Kavramlar"
+    },
+    {
+      "type": "terms",
+      "terms": [
+        {
+          "term": "RDBMS",
+          "abbrev_of": "Relational Database Management System",
+          "abbrev_tr": "İlişkisel Veritabanı Yönetim Sistemi",
+          "meaning": "Tablo bazlı, ilişkili veritabanı (PostgreSQL, MySQL).",
+          "why": "Sağlam tip, tutarlı sorgu, on yıllarca optimize edilmiş."
+        },
+        {
+          "term": "PostgreSQL",
+          "abbrev_tr": "Açık kaynak RDBMS",
+          "meaning": "Bizim DB tercihimiz. JSONB, range, vector, PostGIS gibi modern uzantılarla.",
+          "why": "Tek DB ile çoğu ihtiyacı karşılar; ekosistem geniş."
+        },
+        {
+          "term": "Tablo",
+          "abbrev_of": "Table",
+          "meaning": "Bir DocType'a karşılık gelen veri yapısı. Satır = kayıt.",
+          "why": "Veri organizasyonunun temel birimi."
+        },
+        {
+          "term": "Kolon",
+          "abbrev_of": "Column",
+          "abbrev_tr": "Sütun",
+          "meaning": "Bir tablo alanı — `title text`, `amount numeric(20,4)`.",
+          "why": "Field = kolon; tip burada belirlenir."
+        },
+        {
+          "term": "Satır",
+          "abbrev_of": "Row",
+          "abbrev_tr": "Kayıt",
+          "meaning": "Bir tablodaki bir veri girdisi.",
+          "why": "Bir DocType belgesi = bir satır."
+        },
+        {
+          "term": "Primary Key",
+          "abbrev_tr": "Birincil anahtar",
+          "meaning": "Bir satırı tek başına tanımlayan kolon (genelde id).",
+          "why": "UUID v7 kullanıyoruz; tek-kimlik garanti."
+        },
+        {
+          "term": "Foreign Key",
+          "abbrev_of": "FK",
+          "abbrev_tr": "Yabancı anahtar",
+          "meaning": "Bir tablonun başka tablodaki kayda işaret eden kolonu.",
+          "why": "İlişki kurar; integrity sağlar (yetim engellenir)."
+        },
+        {
+          "term": "İndeks",
+          "abbrev_of": "Index",
+          "meaning": "Kolon değerlerini hızlı arayan yardımcı veri yapısı.",
+          "why": "Olmadan: O(N) tarama. Var: O(log N) arama."
+        },
+        {
+          "term": "B-tree",
+          "abbrev_tr": "Dengelenmiş ağaç",
+          "meaning": "Klasik indeks veri yapısı — sıralı veri için.",
+          "why": "WHERE, ORDER BY için varsayılan."
+        },
+        {
+          "term": "Transaction",
+          "abbrev_tr": "İşlem (atomik)",
+          "meaning": "Birden fazla SQL'in 'ya hepsi ya hiçbiri' garantili çalışması.",
+          "why": "Para transferi: çekme + yatırma birlikte; biri olmazsa ikisi de olmaz."
+        },
+        {
+          "term": "ACID",
+          "abbrev_of": "Atomicity, Consistency, Isolation, Durability",
+          "abbrev_tr": "Atomiklik, Tutarlılık, İzolasyon, Dayanıklılık",
+          "meaning": "Transaction'ın 4 garantisi.",
+          "why": "Mali sistemler için zorunlu; framework varsayılan."
+        },
+        {
+          "term": "Normalize",
+          "abbrev_tr": "Normalleştirme",
+          "meaning": "Veriyi tekrarsız tablolara bölme (1NF/2NF/3NF).",
+          "why": "Tek kaynak; güncelleme tek noktada."
+        },
+        {
+          "term": "Denormalize",
+          "abbrev_tr": "Tekrar-yığma",
+          "meaning": "Performans için bilinçli kopyalama (örn. projection).",
+          "why": "Yüksek-okuma noktalarında JOIN yorgunluğunu önler."
+        },
+        {
+          "term": "JOIN",
+          "abbrev_tr": "Birleştirme",
+          "meaning": "İki tabloyu FK üzerinden eşleştirme.",
+          "why": "Sipariş + Müşteri ad-soyad: tek sorguda."
+        },
+        {
+          "term": "Migration",
+          "abbrev_tr": "Göç (şema değişikliği)",
+          "meaning": "Tablo yapısını sürümler arasında değiştiren komut dosyası.",
+          "why": "Yeni kolon, yeni indeks; production'a güvenli geçiş."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Anlatım — tablo, satır, kolon"
+    },
+    {
+      "type": "paragraph",
+      "text": "**PostgreSQL** ilişkisel bir veritabanıdır. Bir **tablo** Excel sayfası gibidir: kolonlar (alanlar) sabit, satırlar (kayıtlar) ekleyebilirsin. Fark: tip katıdır (`age` kolonu int ise string giremezsin) ve satırlar arasında **ilişki** kurabilirsin.",
+      "enrich": {
+        "info": "DocType = tablo. Field = kolon. Bir belge = satır."
+      }
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "title": "Üniteden öğrendiklerinin SQL hali",
+      "content": "CREATE TABLE musteri_sikayeti (\n  id           uuid PRIMARY KEY,\n  konu         text NOT NULL,\n  aciklama     text NOT NULL,\n  oncelik      text NOT NULL DEFAULT 'orta',\n  atanan_id    uuid REFERENCES users(id),   -- Foreign Key\n  musteri_id   uuid NOT NULL REFERENCES customers(id),\n  created_at   timestamptz NOT NULL DEFAULT now(),\n  updated_at   timestamptz NOT NULL DEFAULT now(),\n  tenant_id    uuid NOT NULL,\n  version      int NOT NULL DEFAULT 1       -- optimistic concurrency\n);\n\n-- İndeksler (sık aranan kolonlar)\nCREATE INDEX musteri_sikayeti_musteri_idx ON musteri_sikayeti(musteri_id);\nCREATE INDEX musteri_sikayeti_atanan_idx  ON musteri_sikayeti(atanan_id);\nCREATE INDEX musteri_sikayeti_tenant_idx  ON musteri_sikayeti(tenant_id, created_at DESC);"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "İndeks — neden bu kadar önemli?"
+    },
+    {
+      "type": "paragraph",
+      "text": "100k satırlık tabloda `WHERE musteri_id='X'` sorgusu: indekssiz tablo baştan sona tarar (~100k satır okur). İndeks ile B-tree'den hedefe gider (~17 okuma, log₂ 100000).",
+      "enrich": {
+        "info": "Olmazsa O(N), olursa O(log N). 1000× hız farkı.",
+        "stories": [
+          {
+            "persona": "Junior geliştirici",
+            "context": "Yeni endpoint slow; 5 saniye dönüyor.",
+            "outcome": "EXPLAIN ANALYZE → 'Seq Scan' görür; doğru kolona index ekler → 50ms."
+          }
+        ]
+      }
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Index ne zaman EKLENMEZ?",
+      "body": "Her kolona index eklemek: yazma yavaşlar (her INSERT/UPDATE indexi de günceller). Sadece **sık WHERE/ORDER/JOIN** edilen kolonlara index. Yazma-ağır tablolarda az index."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Foreign Key — ilişki ve integrity"
+    },
+    {
+      "type": "steps",
+      "items": [
+        {
+          "title": "FK kurulur",
+          "body": "`musteri_id uuid REFERENCES customers(id)` — bu kolon `customers` tablosundaki bir id olmak ZORUNDA."
+        },
+        {
+          "title": "Var olmayan ID engellenir",
+          "body": "`INSERT … musteri_id='yok'` → hata. Yetim kayıt engellenmiş olur."
+        },
+        {
+          "title": "Silme davranışı seçilir",
+          "body": "`ON DELETE CASCADE` (müşteri silinince şikayetleri de sil), `SET NULL` (atananı boşalt), `RESTRICT` (şikayet varsa sil-me)."
+        },
+        {
+          "title": "Tenant-scope check",
+          "body": "Bizim framework FK üstüne **otomatik** ekler: link tenant A'dan tenant B'ye gidemez — güvenlik."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Transaction + ACID — para transferinde"
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "title": "Atomic transaction",
+      "content": "BEGIN;\n  UPDATE accounts SET balance = balance - 100 WHERE id = 'A';\n  UPDATE accounts SET balance = balance + 100 WHERE id = 'B';\nCOMMIT;\n\n-- Eğer 2. UPDATE'te hata olursa:\nROLLBACK;  -- 1. UPDATE de geri alınır."
+    },
+    {
+      "type": "grid",
+      "columns": 2,
+      "items": [
+        {
+          "title": "Atomicity",
+          "icon": "ph-atom",
+          "body": "Ya hepsi başarılı, ya hiçbiri uygulanmadı.",
+          "tone": "good",
+          "enrich": {
+            "info": "Ya hepsi başarılı, ya hiçbiri uygulanmadı.",
+            "detail": "**Atomicity** nedir?\n\nYa hepsi başarılı, ya hiçbiri uygulanmadı.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Atomicity\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Ya hepsi başarılı, ya hiçbiri uygulanmadı. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Atomicity\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Atomicity\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Consistency",
+          "icon": "ph-equals",
+          "body": "Transaction sonrası DB tutarlı (FK + check kurallar korunur).",
+          "tone": "good",
+          "enrich": {
+            "info": "Transaction sonrası DB tutarlı (FK + check kurallar korunur).",
+            "detail": "**Consistency** nedir?\n\nTransaction sonrası DB tutarlı (FK + check kurallar korunur).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Consistency\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Transaction sonrası DB tutarlı (FK + check kurallar korunur). pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Consistency\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Consistency\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Isolation",
+          "icon": "ph-shield-check",
+          "body": "Eşzamanlı transaction'lar birbirini bozmaz.",
+          "tone": "good",
+          "enrich": {
+            "info": "Eşzamanlı transaction'lar birbirini bozmaz.",
+            "detail": "**Isolation** nedir?\n\nEşzamanlı transaction'lar birbirini bozmaz.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Isolation\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Eşzamanlı transaction'lar birbirini bozmaz. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Isolation\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Isolation\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Durability",
+          "icon": "ph-hard-drives",
+          "body": "COMMIT sonrası elektrik kesilse bile veri korunur.",
+          "tone": "good",
+          "enrich": {
+            "info": "COMMIT sonrası elektrik kesilse bile veri korunur.",
+            "detail": "**Durability** nedir?\n\nCOMMIT sonrası elektrik kesilse bile veri korunur.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Durability\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici COMMIT sonrası elektrik kesilse bile veri korunur. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Durability\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Durability\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Tuzak — dual write",
+      "body": "Bazen 'DB'ye yaz, sonra Kafka'ya yaz' istersin. Eğer 2. yazma başarısız olursa: DB ile mesaj sistemi tutarsız kalır. Çözüm: **Transactional Outbox** — DB içinde bir kuyruk satırı, ayrı bir worker bunu publisher'a iter.",
+      "enrich": {
+        "detail": "Bu paterni ileri ünitelerde göreceğiz — şimdilik 'iki sistemin atomik tutulması zordur, outbox şart' kalsın."
+      }
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Normalize vs Denormalize"
+    },
+    {
+      "type": "table",
+      "filterable": false,
+      "headers": [
+        "Yaklaşım",
+        "Ne yapar",
+        "Ne zaman",
+        "Risk"
+      ],
+      "rows": [
+        [
+          "Normalize (3NF)",
+          "Veriyi tekrarsız tablolara böler",
+          "Yazma-ağır, mali sistemler",
+          "Çoklu JOIN, okuma yavaşlar"
+        ],
+        [
+          "Denormalize",
+          "Performans için kopyalar",
+          "Okuma-ağır dashboard, raporlar",
+          "Tutarsızlık (kaynak değişir, kopya kalır)"
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "**Bizim kararımız:** ana veri normalize (DocType tabloları). Okuma için **CQRS projections** (denormalize) — bunlar event'ten otomatik update edilir, tutarsızlık riski kontrol altında.",
+      "enrich": {
+        "terms": [
+          {
+            "term": "CQRS",
+            "abbrev_of": "Command Query Responsibility Segregation",
+            "abbrev_tr": "Komut-Sorgu Ayrımı",
+            "meaning": "Yazma modeli ile okuma modeli ayrı; okuma için projection.",
+            "why": "Dashboard JOIN cehenneminden kurtulur."
+          }
+        ]
+      }
+    },
+    {
+      "type": "checklist",
+      "title": "Bu üniteyi anladığımı nereden anlarım?",
+      "storageKey": "edu.u04",
+      "items": [
+        {
+          "label": "Tablo, kolon, satır, primary key, foreign key kavramlarını söyleyebilirim."
+        },
+        {
+          "label": "İndeksin neden önemli olduğunu ve neden 'her kolona index' yanlış olduğunu açıklayabilirim."
+        },
+        {
+          "label": "ACID'in 4 harfini ve her birinin garantisini bilirim."
+        },
+        {
+          "label": "Transaction'ı para transferi örneğiyle anlatabilirim."
+        },
+        {
+          "label": "Normalize vs denormalize ayrımını ve neden ikisini de kullandığımızı söyleyebilirim."
+        },
+        {
+          "label": "Migration'ın ne işe yaradığını biliyorum.",
+          "hint": "Yeni kolon, yeni index — production'a güvenli."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Mini-proje"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ünite 03'te yazdığın 'Görev' DocType'ını SQL CREATE TABLE olarak yaz. Hangi kolonlara indeks ekleyeceğini ve neden seçtiğini not düş. Bonus: comments child table için ayrı tablo ve FK göster.",
+      "enrich": {
+        "detail": "**Beklenen indeks:** atanan_id (kim bana atanmış sorgusu), proje_id (proje görevleri), durum (todo/doing filter), tenant_id+created_at (her tenant için son görevler)."
+      }
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Sonraki ünite",
+      "body": "{{ref:edu-u05}} — API: REST ve GraphQL. DocType'ın üst katmanına çıkıyoruz: HTTP istek-cevap, JSON, endpoint, idempotency."
+    }
+  ],
+  "related": [
+    "edu-u03",
+    "edu-u05",
+    "k-schema"
+  ],
+  "enrich": {
+    "info": "PostgreSQL, tablo, kolon, indeks, FK, transaction, ACID, normalize/denormalize.",
+    "detail": "PostgreSQL, tablo, kolon, indeks, FK, transaction, ACID, normalize/denormalize.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

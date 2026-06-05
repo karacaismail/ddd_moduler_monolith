@@ -1,0 +1,409 @@
+{
+  "id": "k-tenancy",
+  "title": "Tenancy",
+  "subtitle": "SaaS = aynı yazılım çok müşteriye, izole veri. Day-1'den tenant_id her satırda.",
+  "cluster": "layer0",
+  "layer": "kernel",
+  "order": 7,
+  "icon": "ph-buildings",
+  "badge": "Layer 0 — Kernel #4",
+  "tags": [
+    "tenancy",
+    "multi-tenant",
+    "rls",
+    "kernel"
+  ],
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "\"SaaS yapıyoruz\" = \"aynı yazılımı çok müşteriye, herkesin verisi izole\" demek. Tenancy bunun mekanizması."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Üç model"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Single-tenant (DB-per-tenant)** — her müşteri kendi DB'si. Enterprise müşteri \"verim kimseyle aynı yerde olmasın\" diyorsa. Operasyon cehennemi, migration zorlaşır.",
+        "**Multi-tenant shared schema + tenant_id** — tek DB, tüm tablolarda `tenant_id`. En yaygın. Default'umuz bu.",
+        "**Multi-tenant schema-per-tenant** — tek DB, her tenant kendi PostgreSQL schema'sı. Backup/restore kolay; 10K+ tenant'ta migration zorlaşır.",
+        "**Hybrid (Shopify pattern)** — küçük tenant'lar shared \"pod\"larda, dev müşteriler dedicated pod. Pod-aware routing."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "İki seviyeli tenancy — muhasebe senaryosu"
+    },
+    {
+      "type": "paragraph",
+      "text": "Mali müşavir bürosu senin müşterin. Bürosunun 50 mükellefi var, her mükellefin defteri ayrı. **İki seviyeli tenancy**:"
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "content": "tenant_id   = office_uuid       # mali müşavir bürosu (faturalama, login)\ncompany_id  = client_company    # mükellef şirket (defter, fatura, beyanname)\n\n-- Her finansal kayıtta her iki kolon\nCREATE TABLE journal_entry (\n  id uuid PRIMARY KEY,\n  tenant_id uuid NOT NULL,\n  company_id uuid NOT NULL,\n  ...\n);\nCREATE INDEX ON journal_entry (tenant_id, company_id);"
+    },
+    {
+      "type": "paragraph",
+      "text": "RLS policy iki seviyeyi de kontrol eder. Bunu modellemezsen büro tüm mükellefleri karıştırır."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Tenant ≠ User"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bir user birden çok tenant'ta üye olabilir (Slack workspace switcher). User ↔ Tenant **many-to-many**:"
+    },
+    {
+      "type": "code",
+      "lang": "sql",
+      "content": "CREATE TABLE membership (\n  user_id uuid REFERENCES users(id),\n  tenant_id uuid REFERENCES tenants(id),\n  role text NOT NULL,\n  joined_at timestamptz NOT NULL,\n  PRIMARY KEY (user_id, tenant_id)\n);"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Tenant ≠ Site"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bir tenant birden çok site (subdomain, custom domain) işletebilir. CMS müşterisinin 5 marka sitesi olabilir, hepsi aynı tenant'a ait. `site` tablosu ayrı, `tenant_id`'ye bağlı."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Custom domain — e-ticaret SaaS"
+    },
+    {
+      "type": "paragraph",
+      "text": "Shopify gibi: her merchant kendi domain'ini kullanır (acme-store.com). DNS provisioning (CNAME), SSL certificate (Let's Encrypt + ACME), routing (host header → tenant lookup). Senin \"Domain\" küme'n bunu modelliyor — DNS + SSL/TLS + Wildcard."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "title": "Tenant resolver middleware",
+      "content": "@app.middleware(\"http\")\nasync def tenant_resolver(request, call_next):\n    host = request.headers[\"host\"]\n    # 1. Custom domain mi?  acme-store.com → tenant lookup\n    # 2. Subdomain mi?       acme.myplatform.com → \"acme\" prefix\n    # 3. Path-based mi?      myplatform.com/acme/... → path prefix\n    tenant = await resolve_tenant(host, request.url.path)\n    request.state.tenant = tenant\n    # PostgreSQL RLS context\n    await db.execute(f\"SET LOCAL app.tenant_id = '{tenant.id}'\")\n    return await call_next(request)"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "15 üründe tenant tanımı"
+    },
+    {
+      "type": "examples",
+      "items": [
+        {
+          "label": "Notion",
+          "text": "workspace = tenant. Personal + Acme Inc. ayrı workspace. workspace_id = tenant_id.",
+          "enrich": {
+            "info": "workspace = tenant. Personal + Acme Inc. ayrı workspace. workspace_id = tenant_id.",
+            "detail": "**Notion** nedir?\n\nworkspace = tenant. Personal + Acme Inc. ayrı workspace. workspace_id = tenant_id.\n\n**Amaç:** Tek kod tabanı üstünde birden fazla müşterinin (tenant) izole hizmet aldığı çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç çoklu-kiracılık bilmeyen biri için: bu özellik, çoklu-kiracılık sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "SaaS operasyon ekibi",
+                "context": "\"Notion\" özelliğini çoklu-kiracı izolasyonu sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici workspace = tenant. Personal + Acme Inc. ayrı workspace. workspace_id = tenant_i pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "SaaS operasyon",
+                "context": "Yeni müşteriyi onboarding eder. \"Notion\" özelliği bu süreçte devreye girer.",
+                "outcome": "Self-service signup → tenant açılır, default ayarlar gelir, müşteri 5 dakikada başlar."
+              },
+              {
+                "persona": "Güvenlik mühendisi",
+                "context": "Cross-tenant sızıntı testi yapar. \"Notion\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her sorguya otomatik WHERE tenant_id eklenir — sızıntı imkansız."
+              },
+              {
+                "persona": "Muhasebe yöneticisi",
+                "context": "Holdingin alt şirketlerini ister. \"Notion\" özelliği bu süreçte devreye girer.",
+                "outcome": "Sub-tenant ile konsolide rapor + ayrı operasyon."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Slack",
+          "text": "workspace = tenant. Her message, channel, file workspace'e ait.",
+          "enrich": {
+            "info": "workspace = tenant. Her message, channel, file workspace'e ait.",
+            "detail": "**Slack** nedir?\n\nworkspace = tenant. Her message, channel, file workspace'e ait.\n\n**Amaç:** Tek kod tabanı üstünde birden fazla müşterinin (tenant) izole hizmet aldığı çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç çoklu-kiracılık bilmeyen biri için: bu özellik, çoklu-kiracılık sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "SaaS operasyon ekibi",
+                "context": "\"Slack\" özelliğini çoklu-kiracı izolasyonu sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici workspace = tenant. Her message, channel, file workspace'e ait. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "SaaS operasyon",
+                "context": "Yeni müşteriyi onboarding eder. \"Slack\" özelliği bu süreçte devreye girer.",
+                "outcome": "Self-service signup → tenant açılır, default ayarlar gelir, müşteri 5 dakikada başlar."
+              },
+              {
+                "persona": "Güvenlik mühendisi",
+                "context": "Cross-tenant sızıntı testi yapar. \"Slack\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her sorguya otomatik WHERE tenant_id eklenir — sızıntı imkansız."
+              },
+              {
+                "persona": "Muhasebe yöneticisi",
+                "context": "Holdingin alt şirketlerini ister. \"Slack\" özelliği bu süreçte devreye girer.",
+                "outcome": "Sub-tenant ile konsolide rapor + ayrı operasyon."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Shopify (#12)",
+          "text": "her merchant kendi store'una sahip — customer DB, ürün, domain, tema. tenant_id = store_id.",
+          "enrich": {
+            "info": "her merchant kendi store'una sahip — customer DB, ürün, domain, tema. tenant_id = store_id.",
+            "detail": "**Shopify (#12)** nedir?\n\nher merchant kendi store'una sahip — customer DB, ürün, domain, tema. tenant_id = store_id.\n\n**Amaç:** Tek kod tabanı üstünde birden fazla müşterinin (tenant) izole hizmet aldığı çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç çoklu-kiracılık bilmeyen biri için: bu özellik, çoklu-kiracılık sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "SaaS operasyon ekibi",
+                "context": "\"Shopify (#12)\" özelliğini çoklu-kiracı izolasyonu sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici her merchant kendi store'una sahip — customer DB, ürün, domain, tema. tenant_id  pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "SaaS operasyon",
+                "context": "Yeni müşteriyi onboarding eder. \"Shopify (#12)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Self-service signup → tenant açılır, default ayarlar gelir, müşteri 5 dakikada başlar."
+              },
+              {
+                "persona": "Güvenlik mühendisi",
+                "context": "Cross-tenant sızıntı testi yapar. \"Shopify (#12)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her sorguya otomatik WHERE tenant_id eklenir — sızıntı imkansız."
+              },
+              {
+                "persona": "Muhasebe yöneticisi",
+                "context": "Holdingin alt şirketlerini ister. \"Shopify (#12)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Sub-tenant ile konsolide rapor + ayrı operasyon."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Linear",
+          "text": "organization = tenant. Issue, project organization'a bağlı.",
+          "enrich": {
+            "info": "organization = tenant. Issue, project organization'a bağlı.",
+            "detail": "**Linear** nedir?\n\norganization = tenant. Issue, project organization'a bağlı.\n\n**Amaç:** Tek kod tabanı üstünde birden fazla müşterinin (tenant) izole hizmet aldığı çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç çoklu-kiracılık bilmeyen biri için: bu özellik, çoklu-kiracılık sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "SaaS operasyon ekibi",
+                "context": "\"Linear\" özelliğini çoklu-kiracı izolasyonu sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici organization = tenant. Issue, project organization'a bağlı. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "SaaS operasyon",
+                "context": "Yeni müşteriyi onboarding eder. \"Linear\" özelliği bu süreçte devreye girer.",
+                "outcome": "Self-service signup → tenant açılır, default ayarlar gelir, müşteri 5 dakikada başlar."
+              },
+              {
+                "persona": "Güvenlik mühendisi",
+                "context": "Cross-tenant sızıntı testi yapar. \"Linear\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her sorguya otomatik WHERE tenant_id eklenir — sızıntı imkansız."
+              },
+              {
+                "persona": "Muhasebe yöneticisi",
+                "context": "Holdingin alt şirketlerini ister. \"Linear\" özelliği bu süreçte devreye girer.",
+                "outcome": "Sub-tenant ile konsolide rapor + ayrı operasyon."
+              }
+            ]
+          }
+        },
+        {
+          "label": "HRMS (#9)",
+          "text": "tenant = company. Türk + Alman şirket aynı tabloda, tenant_id ile izole.",
+          "enrich": {
+            "info": "tenant = company. Türk + Alman şirket aynı tabloda, tenant_id ile izole.",
+            "detail": "**HRMS (#9)** nedir?\n\ntenant = company. Türk + Alman şirket aynı tabloda, tenant_id ile izole.\n\n**Amaç:** Tek kod tabanı üstünde birden fazla müşterinin (tenant) izole hizmet aldığı çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç çoklu-kiracılık bilmeyen biri için: bu özellik, çoklu-kiracılık sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "SaaS operasyon ekibi",
+                "context": "\"HRMS (#9)\" özelliğini çoklu-kiracı izolasyonu sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici tenant = company. Türk + Alman şirket aynı tabloda, tenant_id ile izole. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "SaaS operasyon",
+                "context": "Yeni müşteriyi onboarding eder. \"HRMS (#9)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Self-service signup → tenant açılır, default ayarlar gelir, müşteri 5 dakikada başlar."
+              },
+              {
+                "persona": "Güvenlik mühendisi",
+                "context": "Cross-tenant sızıntı testi yapar. \"HRMS (#9)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her sorguya otomatik WHERE tenant_id eklenir — sızıntı imkansız."
+              },
+              {
+                "persona": "Muhasebe yöneticisi",
+                "context": "Holdingin alt şirketlerini ister. \"HRMS (#9)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Sub-tenant ile konsolide rapor + ayrı operasyon."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Muhasebe (#10)",
+          "text": "tenant = mali müşavir bürosu + sub-tenant = mükellef. İki seviyeli.",
+          "enrich": {
+            "info": "tenant = mali müşavir bürosu + sub-tenant = mükellef. İki seviyeli.",
+            "detail": "**Muhasebe (#10)** nedir?\n\ntenant = mali müşavir bürosu + sub-tenant = mükellef. İki seviyeli.\n\n**Amaç:** Tek kod tabanı üstünde birden fazla müşterinin (tenant) izole hizmet aldığı çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç çoklu-kiracılık bilmeyen biri için: bu özellik, çoklu-kiracılık sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "SaaS operasyon ekibi",
+                "context": "\"Muhasebe (#10)\" özelliğini çoklu-kiracı izolasyonu sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici tenant = mali müşavir bürosu + sub-tenant = mükellef. İki seviyeli. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "SaaS operasyon",
+                "context": "Yeni müşteriyi onboarding eder. \"Muhasebe (#10)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Self-service signup → tenant açılır, default ayarlar gelir, müşteri 5 dakikada başlar."
+              },
+              {
+                "persona": "Güvenlik mühendisi",
+                "context": "Cross-tenant sızıntı testi yapar. \"Muhasebe (#10)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her sorguya otomatik WHERE tenant_id eklenir — sızıntı imkansız."
+              },
+              {
+                "persona": "Muhasebe yöneticisi",
+                "context": "Holdingin alt şirketlerini ister. \"Muhasebe (#10)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Sub-tenant ile konsolide rapor + ayrı operasyon."
+              }
+            ]
+          }
+        },
+        {
+          "label": "LMS (#6)",
+          "text": "tenant = okul/kurum. 500 okul aynı LMS kodunu kullanır.",
+          "enrich": {
+            "info": "tenant = okul/kurum. 500 okul aynı LMS kodunu kullanır.",
+            "detail": "**LMS (#6)** nedir?\n\ntenant = okul/kurum. 500 okul aynı LMS kodunu kullanır.\n\n**Amaç:** Tek kod tabanı üstünde birden fazla müşterinin (tenant) izole hizmet aldığı çekirdek. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç çoklu-kiracılık bilmeyen biri için: bu özellik, çoklu-kiracılık sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "SaaS operasyon ekibi",
+                "context": "\"LMS (#6)\" özelliğini çoklu-kiracı izolasyonu sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici tenant = okul/kurum. 500 okul aynı LMS kodunu kullanır. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "SaaS operasyon",
+                "context": "Yeni müşteriyi onboarding eder. \"LMS (#6)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Self-service signup → tenant açılır, default ayarlar gelir, müşteri 5 dakikada başlar."
+              },
+              {
+                "persona": "Güvenlik mühendisi",
+                "context": "Cross-tenant sızıntı testi yapar. \"LMS (#6)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Her sorguya otomatik WHERE tenant_id eklenir — sızıntı imkansız."
+              },
+              {
+                "persona": "Muhasebe yöneticisi",
+                "context": "Holdingin alt şirketlerini ister. \"LMS (#6)\" özelliği bu süreçte devreye girer.",
+                "outcome": "Sub-tenant ile konsolide rapor + ayrı operasyon."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "Tuzak #1 — \"önce tek tenant\"",
+      "body": "\"İlk müşterim için tutarlı çalışsın, sonradan çoklarım\" düşüncesi. Kaybedilen 6-12 ay. Çünkü retrofit = tüm tabloları rebuild + tüm query'leri rewrite + cross-tenant leak penceresi. **Day-1'de tenant_id her satırda.**"
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Tuzak #2 — PgBouncer + RLS",
+      "body": "PgBouncer transaction mode kullanıyorsan `SET LOCAL app.tenant_id` yapmalısın (transaction scope). `SET` (session scope) kullanırsan bir sonraki transaction farklı tenant'a bağlanır → **veri sızıntısı**."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Sharding hazırlığı (Shopify)",
+      "body": "Shopify Black Friday'de saniyede 80K request'i shop_id ile pod sharding ile karşıladı. Sen şimdiden sharding yapmayacaksın ama her query tenant_id ile filtre olunca, pod routing eklemek future-day mesele olur — kod değişikliği değil, infra."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "icon": "ph-grid-four",
+      "text": "LandX bakışı: I01 Tenant Lifecycle + I05 Multi-Tenant Isolation"
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **I01 — Tenant Lifecycle Management** (Faz 1 · P0) tenant provisioning'i state machine olarak modeller: `provisioning/active/suspended/archived/deleted`. *Provisioning p95 <60sn, isolation breach 0* hedefi."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "Provisioning adımları",
+          "value": "reserve → create_schema → seed → finalize. Her adım `rollback_token` üretir."
+        },
+        {
+          "key": "Quota kaynakları",
+          "value": "users / storage_gb / api_calls / **llm_tokens** / agents — soft warning + hard limit + renewal period"
+        },
+        {
+          "key": "Configuration Profile",
+          "value": "brand_name, logo_url, primary_color, locale (tr-TR/en-US/de-DE), timezone, plugin subscription"
+        },
+        {
+          "key": "Suspension reason",
+          "value": "payment_failed / abuse / customer_request / **legal_hold** — `ai_summary` ile özetli"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "LandX **I05 — Multi-Tenant Isolation** (Faz 2 · P0 · Identity + Security Squad) bu cluster'ın PostgreSQL RLS bölümünü bir adım öteye götürür: **agent çağrıları tenant context'i kaybetmeden alt servislere taşınmalı**. *Cross-tenant breach 0, schema switch overhead p99 <2ms.*"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Tenant Context Propagation** — `Request Context` (tenant_id + principal_id + agent_id + trace_id + entry_point: http/mcp/cron/event/agent_tool)",
+        "**Context Sealing** — `seal_id`, `signature` (encrypted), `expires_at` — agent çağrıları context'i değiştiremez",
+        "**Query Interception** — orijinal query rewrite, `tenant_filter_added` kontrol, `Cross-Tenant Detection` (AI classification)",
+        "**Schema Routing** — `pg_schema` resolver, connection pool eşleme",
+        "**KVKK Madde 7 entegrasyonu** — `Tenant Deletion` (legal_hold_check zorunlu, AI review recommendation)"
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "SaaS = aynı yazılım çok müşteriye, izole veri. Day-1'den tenant_id her satırda.",
+    "detail": "SaaS = aynı yazılım çok müşteriye, izole veri. Day-1'den tenant_id her satırda.",
+    "terms": [
+      {
+        "term": "Multi-tenancy",
+        "abbrev_tr": "Çoklu kiracılık",
+        "meaning": "Tek kod tabanı, birçok müşteri (tenant) hizmet verir.",
+        "why": "SaaS'ın temel ekonomisi."
+      },
+      {
+        "term": "Tenant scope",
+        "abbrev_tr": "Kiracı kapsamı",
+        "meaning": "Her sorguya otomatik WHERE tenant_id=X eklenmesi.",
+        "why": "Veri sızıntısının teknik garantisi."
+      },
+      {
+        "term": "Sub-tenant",
+        "abbrev_tr": "Alt-kiracı",
+        "meaning": "Bir kiracının altındaki iş birimi (örn: holding altı şirketler).",
+        "why": "Muhasebede konsolide rapor için gerekli."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Multi-tenant ML modeli",
+        "context": "Tenant A'nın verisi yanlışlıkla Tenant B'ye gösterilmek üzere sorgulanır.",
+        "outcome": "Tenant scope guardrail otomatik WHERE ekler → sıfır satır döner, sızıntı yok."
+      }
+    ]
+  }
+}

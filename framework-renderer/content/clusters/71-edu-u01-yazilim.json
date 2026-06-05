@@ -1,0 +1,374 @@
+{
+  "id": "edu-u01",
+  "title": "Yazılım nedir? — temel zihinsel model",
+  "subtitle": "Kod, derleyici, runtime, framework, monolit ve meta-framework — bu projenin yazılım dünyasındaki yeri.",
+  "cluster": "meta",
+  "order": 4,
+  "icon": "ph-book-open",
+  "granularity": "buyuk-tas",
+  "state": "ok",
+  "tags": [
+    "education",
+    "u01",
+    "temel"
+  ],
+  "blocks": [
+    {
+      "type": "lesson-header",
+      "unit": "Ünite 01",
+      "title": "Yazılım nedir? Bu projenin yeri ne?",
+      "level": "baslangic",
+      "duration_min": 45,
+      "prereq": [],
+      "goals": [
+        "Kod, derleme, çalışma zamanı, kütüphane, framework farkını anlatabilirsin.",
+        "Monolit, mikro-servis, meta-framework arasındaki farkı bilirsin.",
+        "Bu projenin neden 'meta-framework' olduğunu açıklayabilirsin."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Kavramlar — bu ünitede geçecek tüm terimler"
+    },
+    {
+      "type": "terms",
+      "terms": [
+        {
+          "term": "Kod",
+          "abbrev_tr": "Yazılım talimatları",
+          "meaning": "Bilgisayara ne yapacağını söyleyen, insanın okuyabildiği metin (Python, TypeScript vb.).",
+          "why": "Yazılımın hammaddesidir; ama tek başına çalışmaz — onu çalıştıracak bir ortam gerekir."
+        },
+        {
+          "term": "Derleyici",
+          "abbrev_of": "Compiler",
+          "meaning": "İnsan-okur kodu makine-okur talimata çeviren program. C/Rust/Go'da var; Python'da yok (yorumlanır).",
+          "why": "Hızlı çalışma için kod önceden makineye çevrilir."
+        },
+        {
+          "term": "Yorumlayıcı",
+          "abbrev_of": "Interpreter",
+          "meaning": "Kodu satır satır okuyup anında çalıştıran program. Python, JavaScript böyle çalışır.",
+          "why": "Daha hızlı geliştirme; hata düzeltme daha kolay."
+        },
+        {
+          "term": "Çalışma zamanı",
+          "abbrev_of": "Runtime",
+          "meaning": "Kodun çalıştığı ortam — Node.js (JS için), Python interpreter, JVM (Java).",
+          "why": "Kodun nerede koşacağını belirler; biz Python (FastAPI) + Node (Vite) kullanıyoruz."
+        },
+        {
+          "term": "Kütüphane",
+          "abbrev_of": "Library",
+          "meaning": "Hazır fonksiyonlar paketi — sen çağırırsın, sen kontrol edersin.",
+          "why": "Tekerleği yeniden icat etme; örn. tarih hesabı için `dayjs`."
+        },
+        {
+          "term": "Framework",
+          "abbrev_tr": "Çerçeve",
+          "meaning": "Kütüphaneden farkı: o seni çağırır (inversion of control). Senin kodun framework'ün boşluklarını doldurur.",
+          "why": "Bir kalıp dayatır; tutarlı yapı + hız."
+        },
+        {
+          "term": "Inversion of Control",
+          "abbrev_tr": "Kontrolün tersine çevrilmesi",
+          "meaning": "Sen library çağırırsın → library sen çağırır. Yani 'sen ne zaman tetikleyeceğini değil, ne yapacağını söylersin'.",
+          "why": "Framework'lerin temel ayrım noktası."
+        },
+        {
+          "term": "Monolit",
+          "abbrev_tr": "Tek-parça",
+          "meaning": "Tüm modüller tek uygulamada, tek deploy.",
+          "why": "Az ekip, az operasyon yükü; ölçek limiti var ama bizim ölçeğimizde optimal."
+        },
+        {
+          "term": "Mikro-servis",
+          "abbrev_of": "Microservices",
+          "meaning": "Her özellik ayrı uygulama, ayrı deploy, ağ üstünden konuşur.",
+          "why": "Çok büyük ekipte ölçek; küçük ekipte gereksiz yük."
+        },
+        {
+          "term": "Modüler monolit",
+          "abbrev_tr": "Modüler tek-parça",
+          "meaning": "Tek deploy, içeride sıkı modüller — modüllerin bağımsızlığı korunur.",
+          "why": "Mikro-servisin sakıncalarını almadan modülerlik."
+        },
+        {
+          "term": "Meta-framework",
+          "abbrev_tr": "Üst-çerçeve",
+          "meaning": "Framework yazmaya yarayan framework. Frappe, Drupal, Salesforce buna örnek.",
+          "why": "Tek ürün değil, birden çok ürün yapmak için."
+        },
+        {
+          "term": "DDD",
+          "abbrev_of": "Domain-Driven Design",
+          "abbrev_tr": "Alana Dayalı Tasarım",
+          "meaning": "İş alanını (domain) yazılım modeline merkez yapan tasarım yaklaşımı.",
+          "why": "İş dili = kod dili; modüller daha az sızdırır."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Anlatım — kod'dan meta-framework'e"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Kod**, bilgisayara ne yapacağını söyleyen metindir. Tek başına çalışmaz; bir **çalışma zamanı** (runtime) gerekir. Çoğu **kütüphane** kullanır; az kısmı bir **framework** içinde yaşar.",
+      "enrich": {
+        "info": "Library = sen çağırırsın. Framework = framework seni çağırır."
+      }
+    },
+    {
+      "type": "paragraph",
+      "text": "Bir framework'ün üzerine **ürün** koymak yetebilir (e-ticaret sitesi). Ama biz **15 farklı ürün** koyacağız (HRMS, e-ticaret, muhasebe, …). Bunun için framework'ün kendisini parametrize edilebilir yapmamız lazım — buna **meta-framework** denir. Sen yeni bir 'Müşteri Şikayeti' tipi tanımlıyorsun, ortalık otomatik kuruluyor.",
+      "enrich": {
+        "info": "Meta-framework = framework yazmaya yarayan framework.",
+        "stories": [
+          {
+            "persona": "İş sahibi",
+            "context": "Bir SaaS müşterisi 'kendi şirketim için CRM yapın' der.",
+            "outcome": "Meta-framework'te yeni DocType'lar tanımlayarak ona özel CRM çıkar — kod yazmadan."
+          }
+        ]
+      }
+    },
+    {
+      "type": "grid",
+      "columns": 3,
+      "items": [
+        {
+          "title": "Library",
+          "icon": "ph-toolbox",
+          "body": "Sen çağırırsın. Örn: `dayjs.format(date)` — tarihi formatlamak için fonksiyon.",
+          "tone": "neutral",
+          "enrich": {
+            "info": "Sen çağırırsın. Örn: `dayjs.format(date)` — tarihi formatlamak için fonksiyon.",
+            "detail": "**Library** nedir?\n\nSen çağırırsın. Örn: `dayjs.format(date)` — tarihi formatlamak için fonksiyon.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Library\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Sen çağırırsın. Örn: `dayjs.format(date)` — tarihi formatlamak için fonksiyon. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Library\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Library\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Framework",
+          "icon": "ph-stack",
+          "body": "Framework seni çağırır. Örn: Django senin `view()` fonksiyonunu HTTP isteği gelince çağırır.",
+          "tone": "neutral",
+          "enrich": {
+            "info": "Framework seni çağırır. Örn: Django senin `view()` fonksiyonunu HTTP isteği gelince çağırır.",
+            "detail": "**Framework** nedir?\n\nFramework seni çağırır. Örn: Django senin `view()` fonksiyonunu HTTP isteği gelince çağırır.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Framework\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Framework seni çağırır. Örn: Django senin `view()` fonksiyonunu HTTP isteği geli pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Framework\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Framework\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        },
+        {
+          "title": "Meta-framework",
+          "icon": "ph-cube",
+          "body": "Sen DocType tanımlarsın → framework DB+API+UI üretir. Kod yazmadan ürün doğar.",
+          "tone": "good",
+          "enrich": {
+            "info": "Sen DocType tanımlarsın → framework DB+API+UI üretir. Kod yazmadan ürün doğar.",
+            "detail": "**Meta-framework** nedir?\n\nSen DocType tanımlarsın → framework DB+API+UI üretir. Kod yazmadan ürün doğar.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
+            "stories": [
+              {
+                "persona": "Yazılım mimarı",
+                "context": "\"Meta-framework\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
+                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Sen DocType tanımlarsın → framework DB+API+UI üretir. Kod yazmadan ürün doğar. pratiğini sıfırdan yazmaz."
+              },
+              {
+                "persona": "Plugin geliştirici",
+                "context": "Bu özelliği kullanır. \"Meta-framework\" özelliği bu süreçte devreye girer.",
+                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
+              },
+              {
+                "persona": "Son kullanıcı",
+                "context": "Sonucunu görür. \"Meta-framework\" özelliği bu süreçte devreye girer.",
+                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Monolit, mikro-servis, modüler monolit — kararımız neden?"
+    },
+    {
+      "type": "table",
+      "filterable": false,
+      "headers": [
+        "Yaklaşım",
+        "Avantaj",
+        "Sakınca",
+        "Bizim için"
+      ],
+      "rows": [
+        [
+          "Monolit",
+          "Basit deploy, hızlı iteration",
+          "Modüller birbirine sızar, refactor zor",
+          "Eksik — modüler bir yana iter"
+        ],
+        [
+          "Mikro-servis",
+          "Ekip bağımsız, ayrı ölçek",
+          "Ağ karmaşası, operasyon yükü 10×",
+          "Erken; küçük ekipte boğar"
+        ],
+        [
+          {
+            "text": "Modüler monolit",
+            "state": "ok"
+          },
+          "Tek deploy + sıkı modül sınırı",
+          "Disiplin gerektirir",
+          {
+            "text": "Kararımız",
+            "state": "ok"
+          }
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Neden bu seçim?",
+      "body": "Modüler monolit, **15 ürünü tek ekip + tek deploy** ile taşımanın matematiğidir. Frappe (ERPNext), Odoo, Salesforce hepsi bu paterni izledi. Mikro-servise geçiş gerekirse modüller hazır sınırlı — kesim kolay.",
+      "enrich": {
+        "detail": "**Anti-pattern:** Mikro-servis ile başlayıp her özellik için yeni servis açmak. Sonuç: 40 mikro-servis, 1 ekip, ölü proje. Önce monolit; ölçek dayatınca böl."
+      }
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Adım-adım: bir 'Yeni Kayıt' özelliği bizim sistemde nasıl çalışır?"
+    },
+    {
+      "type": "steps",
+      "items": [
+        {
+          "title": "Sen DocType tanımlarsın",
+          "body": "Admin panelden 'Müşteri Şikayeti' isimli yeni bir DocType oluştururşun. Alanlar: konu, açıklama, öncelik.",
+          "enrich": {
+            "info": "DocType = metadata-driven model. Frappe'den ilham."
+          }
+        },
+        {
+          "title": "Framework devralır",
+          "body": "Anında: DB'de `tabMusteriSikayeti` tablosu, REST endpoint (`/api/resource/MusteriSikayeti`), admin formu, audit log, search index oluşur."
+        },
+        {
+          "title": "Kullanıcı kayıt girer",
+          "body": "Form doldurur → REST POST → DB INSERT → audit log → event bus 'yeni şikayet' yayını → bildirim worker maile düşer."
+        },
+        {
+          "title": "Plugin tepki verir",
+          "body": "Helpdesk plugin'i event'i dinler; otomatik ticket açar, atama yapar."
+        },
+        {
+          "title": "Sen kod yazmadın",
+          "body": "Bütün bu zincirin tek girdisi: bir DocType tanımı + bir plugin manifest."
+        }
+      ]
+    },
+    {
+      "type": "checklist",
+      "title": "Bu üniteyi anladığımı nereden anlarım?",
+      "storageKey": "edu.u01",
+      "items": [
+        {
+          "label": "Kod, derleyici, runtime, library, framework arasındaki farkı bir başkasına anlatabilirim."
+        },
+        {
+          "label": "Library ve framework farkını 'kim kimi çağırır' üzerinden açıklayabilirim."
+        },
+        {
+          "label": "Meta-framework'ün neden 15 ürün hedefimizle örtüştüğünü söyleyebilirim."
+        },
+        {
+          "label": "Modüler monolitin neden tercihimiz olduğunu 1-2 cümleyle özetleyebilirim."
+        },
+        {
+          "label": "Bir DocType tanımı yapıldığında framework'ün ne ürettiğini sıralayabilirim (DB tablo, REST, form, audit, …).",
+          "hint": "5 çıktıyı sayman yeterli."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Mini-proje (zorunlu değil)"
+    },
+    {
+      "type": "paragraph",
+      "text": "Defterine 3 sütun yaz: **Library / Framework / Meta-framework**. Şu araçları sınıflandır: jQuery, Django, React, Frappe, Odoo, Vue, Tailwind, Salesforce, dayjs, FastAPI. (Cevaplar **?** butonunda.)",
+      "enrich": {
+        "detail": "**Cevap:**\n- **Library**: jQuery, React (UI library), Vue (UI library), Tailwind (CSS library), dayjs\n- **Framework**: Django, FastAPI\n- **Meta-framework**: Frappe, Odoo, Salesforce\n\nReact'in 'framework mi library mi' tartışması var; resmi olarak 'library' diye geçer çünkü sen çağırırsın."
+      }
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Sonraki ünite",
+      "body": "{{ref:edu-u02}} — Veri ve Tipler. Bilgisayarın bir 'Müşteri Şikayeti'ni hangi sayılar/harfler ile sakladığını öğreneceğiz."
+    }
+  ],
+  "related": [
+    "edu-overview",
+    "edu-u02",
+    "philosophy"
+  ],
+  "enrich": {
+    "info": "Kod, derleyici, runtime, framework, monolit ve meta-framework — bu projenin yazılım dünyasındaki yeri.",
+    "detail": "Kod, derleyici, runtime, framework, monolit ve meta-framework — bu projenin yazılım dünyasındaki yeri.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

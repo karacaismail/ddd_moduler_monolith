@@ -1,0 +1,69 @@
+{
+  "id": "dx-cli",
+  "title": "Plugin CLI + Scaffolding",
+  "subtitle": "create-module CLI, hook contract, test harness.",
+  "cluster": "dx",
+  "order": 38,
+  "icon": "ph-terminal",
+  "tags": [
+    "dx",
+    "cli",
+    "scaffolding"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "CLI scaffolding"
+    },
+    {
+      "type": "code",
+      "lang": "sh",
+      "content": "$ framework create-module my-inventory-ext\n? Module name: my-inventory-ext\n? Publisher: acme-corp\n? License: LGPL-3.0\n? Depends on: [framework, commerce]\n? Language: TypeScript / Python / Both\n\nCreated:\n  my-inventory-ext/\n    plugin.yaml\n    handlers/\n      sales_order.ts        # TypeScript hook\n      sales_order.py        # Python hook\n    doctypes/\n      MyInventoryItem.json\n    fixtures/\n      categories.json\n    translations/\n      tr.po, en.po\n    tests/\n      test_sales_order.py\n      test_sales_order.test.ts\n    README.md\n    .gitignore"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Hook contract specification"
+    },
+    {
+      "type": "code",
+      "lang": "typescript",
+      "title": "@framework/sdk types",
+      "content": "export interface HookContext {\n  tenant: { id: string; locale: string; timezone: string };\n  user: { id: string; roles: string[]; email: string };\n  trace: { traceId: string; spanId: string };\n  events: { publish(event: DomainEvent): Promise<void> };\n  tax: TaxService;\n  storage: StorageService;\n  ai: AIService;\n  db: ReadOnlyDB;        // read-only, write only via aggregate\n  logger: Logger;\n}\n\nexport type DocumentHook<T> = (doc: T, ctx: HookContext) => Promise<void> | void;\nexport type ValidationHook<T> = (doc: T, ctx: HookContext) => Promise<ValidationError[] | void>;"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Testing"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Unit test**: pytest (Python), vitest (TS). Mock framework SDK.",
+        "**Integration test**: framework test harness — gerçek DB, gerçek event bus.",
+        "**E2E test**: Playwright + framework dev server.",
+        "**Boundary test**: importlinter — modül A modül B internal'ına dokunmasın."
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "create-module CLI, hook contract, test harness.",
+    "detail": "create-module CLI, hook contract, test harness.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}

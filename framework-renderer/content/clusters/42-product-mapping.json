@@ -1,0 +1,136 @@
+{
+  "id": "product-mapping",
+  "title": "15 Ürün → Stack Mapping",
+  "subtitle": "Hangi ürün hangi Layer 2 stack'lerini kullanır.",
+  "cluster": "build",
+  "order": 42,
+  "icon": "ph-list-numbers",
+  "tags": [
+    "mapping",
+    "products",
+    "stacks"
+  ],
+  "blocks": [
+    {
+      "type": "table",
+      "compact": true,
+      "headers": [
+        "#",
+        "Ürün",
+        "Birincil stack",
+        "İkincil stack"
+      ],
+      "rows": [
+        [
+          "1",
+          "Sahibinden klonu",
+          "Commerce (listing), Search (geo), CMS (storefront), Social (lead)",
+          "AI (valuation, oto-ilan, moderation), Marketing"
+        ],
+        [
+          "2",
+          "Alibaba klonu (B2B2B)",
+          "Commerce (RFQ, quotation, escrow), Accounting (e-Belge)",
+          "AI (supplier match), Logistics"
+        ],
+        [
+          "3",
+          "AliExpress klonu",
+          "Commerce (cart, promotion, loyalty), Marketing",
+          "AI (recsys), Helpdesk"
+        ],
+        [
+          "4",
+          "Amazon klonu",
+          "Commerce (1P/3P, BuyBox), MRP/Warehouse",
+          "AI (ads PPC, ranking)"
+        ],
+        [
+          "5",
+          "CMS yenilikçi",
+          "CMS (full stack)",
+          "AI (auto-content), Marketing"
+        ],
+        [
+          "6",
+          "LMS",
+          "LMS (full stack)",
+          "AI (adaptive), CMS, Calendar"
+        ],
+        [
+          "7",
+          "Drive (AI Dropbox)",
+          "Drive (sync, block storage)",
+          "AI (semantic search, OCR)"
+        ],
+        [
+          "8",
+          "Stok / PIM / WMS",
+          "Commerce.Inventory + MRP.Warehouse",
+          "AI (forecast, slotting), Accounting"
+        ],
+        [
+          "9",
+          "HRMS / Payroll",
+          "HRMS (full stack), TR compliance",
+          "LMS (training), AI (attrition)"
+        ],
+        [
+          "10",
+          "Muhasebe SaaS",
+          "Accounting (full stack), TR e-Belge",
+          "AI (auto-categorize), Capture"
+        ],
+        [
+          "11",
+          "PMS",
+          "PMS (full stack)",
+          "Helpdesk, AI (slippage)"
+        ],
+        [
+          "12",
+          "E-ticaret SaaS (Shopify)",
+          "Commerce + CMS + Tenancy (custom domain) + Payment Facilitation",
+          "AI (auto-merchandise), Marketing"
+        ],
+        [
+          "13",
+          "ERP",
+          "Accounting + HRMS + Commerce + MRP (entegre)",
+          "AI (anomaly, forecast)"
+        ],
+        [
+          "14",
+          "MRP / Manufacturing",
+          "MRP (full stack)",
+          "Accounting, Maintenance, AI (predictive)"
+        ],
+        [
+          "15",
+          "Sosyal medya",
+          "Social (full stack), AI (moderation), Scale primitives sınavı",
+          "Marketing, Realtime, Drive (medya)"
+        ]
+      ]
+    }
+  ],
+  "enrich": {
+    "info": "Hangi ürün hangi Layer 2 stack'lerini kullanır.",
+    "detail": "Hangi ürün hangi Layer 2 stack'lerini kullanır.",
+    "terms": [
+      {
+        "term": "Cluster",
+        "abbrev_tr": "Konu kümesi",
+        "meaning": "Bu döküman birimi — kendi başına okunabilir mimari konu.",
+        "why": "Tek dosyada tek bağımsız konu prensibi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yazılım mimarı",
+        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
+        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+      }
+    ]
+  }
+}
