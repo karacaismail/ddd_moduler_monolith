@@ -110,30 +110,17 @@ body {
 }
 
 // ------ App layout ------
+// NOT: Asıl layout kuralları dosya sonundaki "LAYOUT FINAL" bloğunda.
+// Buradakiler sadece display/sığa/typography — position/sticky orada belirlenir.
 #app {
-  display: grid;
-  grid-template-columns: 260px minmax(0, 1fr) 400px;
   min-height: 100vh;
   max-width: 1680px;
   margin: 0 auto;
   background: var(--bg);
-
-  @media (max-width: 1280px) {
-    grid-template-columns: 260px 1fr;
-  }
-  @media (max-width: 980px) {
-    grid-template-columns: 1fr;
-  }
 }
 
 .sidebar {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
   background: var(--bg-soft);
-  border-right: 1px solid var(--line);
-  padding: 1.5rem 1.25rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -158,13 +145,8 @@ body {
 }
 
 .main {
-  padding: 3rem 3.5rem 8rem;
   width: 100%;
   min-width: 0;
-
-  @media (max-width: 1280px) {
-    padding: 2.5rem 3rem 6rem;
-  }
 }
 
 // ------ Hero ------
@@ -1650,32 +1632,9 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
 }
 
 // ============================================================================
-// Detail Panel — sağdaki sticky derin açıklama
+// Detail Panel — yalnız iç tipografi/placeholder. Konumlanma LAYOUT FINAL'de.
 // ============================================================================
 .detail-panel {
-  position: sticky;
-  top: 0;
-  align-self: start;
-  height: 100vh;
-  overflow-y: auto;
-  background: linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 32%);
-  border-left: 1px solid var(--line);
-  padding: 2rem 1.5rem 3rem;
-
-  @media (max-width: 1280px) {
-    position: fixed;
-    top: 0; right: 0;
-    width: min(420px, 100vw);
-    z-index: 90;
-    transform: translateX(100%);
-    transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
-    box-shadow: -20px 0 50px rgba(0,0,0,0.08);
-    background: var(--bg);
-  }
-  &--open {
-    @media (max-width: 1280px) { transform: translateX(0); }
-  }
-
   &__inner {
     position: relative;
     font-size: 0.95rem;
@@ -2533,12 +2492,26 @@ tr.is-clickable {
 }
 
 // Layer cards: arkaplan ve çerçeve yok — flat, sadece üst-renk vurgusu
+// Hepsi TUTARLI: aynı padding, aynı border treatment, hover/active sadece üst-border'ı kalınlaştırır
 .layer-card {
   background: transparent !important;
   border: 0 !important;
   border-top: 3px solid currentColor;
   border-radius: 0 !important;
-  padding: var(--space-3) 0 var(--space-2) !important;
+  padding: var(--space-3) var(--space-3) var(--space-3) !important;
+  transition: border-top-width 120ms ease, background 120ms ease;
+}
+.layer-card.is-clickable:hover {
+  background: color-mix(in srgb, currentColor 4%, transparent) !important;
+  border-top-width: 4px !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+// Active state: sol bar yok, üstte daha kalın renk + soft arkaplan
+.layer-card.is-detail-active {
+  background: color-mix(in srgb, currentColor 6%, transparent) !important;
+  border-top-width: 5px !important;
+  box-shadow: none !important;
 }
 
 // ============================================================================
@@ -2560,10 +2533,10 @@ tr.is-clickable {
 // 5N1K — kompakt grid, kategori ikonu sol, kısa label üstte, değer altta
 // ============================================================================
 .dp__5n1k {
-  display: grid !important;
-  grid-template-columns: 1fr;
-  gap: var(--space-2) !important;
-  @media (min-width: 720px) { grid-template-columns: 1fr 1fr; }
+  display: flex !important;
+  flex-direction: column !important;
+  grid-template-columns: none !important;
+  gap: var(--space-3) !important;
 }
 .dp__5n1k-row {
   display: grid !important;
@@ -2903,57 +2876,37 @@ tr.is-clickable {
 // Önceki tüm parçalı kuralları override eder.
 // ============================================================================
 
-// 1) Mobile (default 320px+): tek sütun, header üstte sticky
+// Base #app
 #app {
   display: grid !important;
-  grid-template-columns: 1fr !important;
   gap: 0 !important;
   min-height: 100vh;
 }
-.sidebar {
-  position: fixed !important;
-  top: 0; left: 0;
-  width: min(85vw, 320px) !important;
-  height: 100vh !important;
-  z-index: 80;
-  transform: translateX(-100%);
-  transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  background: var(--bg) !important;
-  border-right: 1px solid var(--line-2);
-  overflow-y: auto;
-  padding: var(--space-3) var(--space-3) var(--space-6) !important;
+.main { width: 100%; min-width: 0; padding: var(--space-4) var(--space-3) var(--space-7) !important; }
 
-  &.sidebar--open { transform: translateX(0); }
-}
-.detail-panel {
-  position: fixed !important;
-  top: 0; right: 0;
-  width: min(90vw, 720px) !important;
-  height: 100vh !important;
-  z-index: 95;
-  transform: translateX(100%);
-  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  overflow-y: auto;
-  background: color-mix(in srgb, var(--bg) 78%, transparent) !important;
-  backdrop-filter: saturate(160%) blur(18px);
-  -webkit-backdrop-filter: saturate(160%) blur(18px);
-  box-shadow: -20px 0 60px rgba(0,0,0,0.18);
-  border-left: 1px solid color-mix(in srgb, var(--line) 50%, transparent) !important;
-  padding: var(--space-4) var(--space-4) var(--space-6) !important;
+// 1) Mobile (< 820px): tek sütun, sidebar+detail drawer
+@media (max-width: 819px) {
+  #app { grid-template-columns: 1fr !important; }
+  .sidebar {
+    position: fixed !important;
+    top: 0; left: 0;
+    width: min(85vw, 320px) !important;
+    height: 100vh !important;
+    z-index: 80;
+    transform: translateX(-100%);
+    transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    background: var(--bg) !important;
+    border-right: 1px solid var(--line-2);
+    overflow-y: auto;
+    padding: var(--space-3) var(--space-3) var(--space-6) !important;
 
-  &.detail-panel--open { transform: translateX(0); }
-}
-.main {
-  width: 100%;
-  min-width: 0;
-  padding: var(--space-4) var(--space-3) var(--space-7) !important;
-}
-
-// 2) Tablet (820px+): sidebar her zaman sticky kolon, detail panel hâlâ drawer
-@media (min-width: 820px) {
-  #app {
-    grid-template-columns: 280px minmax(0, 1fr) !important;
+    &.sidebar--open { transform: translateX(0); }
   }
+}
+
+// 2) Tablet (820px – 1239px): sidebar sticky 2-sütun grid, detail panel DRAWER
+@media (min-width: 820px) and (max-width: 1239px) {
+  #app { grid-template-columns: 280px minmax(0, 1fr) !important; }
   .sidebar {
     position: sticky !important;
     top: 0 !important;
@@ -2963,35 +2916,67 @@ tr.is-clickable {
     overflow-y: auto;
     align-self: start;
     z-index: 10;
-    box-shadow: none;
     border-right: 1px solid var(--line-2);
     background: var(--bg-soft) !important;
     padding: var(--space-4) var(--space-3) var(--space-6) !important;
   }
   .main { padding: var(--space-5) var(--space-5) var(--space-8) !important; }
-  // Detail panel hâlâ drawer (sağdan overlay)
 }
 
-// 3) Desktop (1240px+): 3 sütun grid, sidebar + detail panel İKİSİ DE sticky
-@media (min-width: 1240px) {
-  #app {
-    grid-template-columns: 280px minmax(0, 1fr) 320px !important;
-  }
+// Detail panel — DRAWER moda (mobile + tablet, <1240px)
+@media (max-width: 1239px) {
   .detail-panel {
+    position: fixed !important;
+    top: 0; right: 0;
+    width: min(90vw, 720px) !important;
+    height: 100vh !important;
+    z-index: 95;
+    transform: translateX(100%);
+    transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    overflow-y: auto;
+    background: color-mix(in srgb, var(--bg) 78%, transparent) !important;
+    backdrop-filter: saturate(160%) blur(18px);
+    -webkit-backdrop-filter: saturate(160%) blur(18px);
+    box-shadow: -20px 0 60px rgba(0,0,0,0.18);
+    border-left: 1px solid color-mix(in srgb, var(--line) 50%, transparent) !important;
+    padding: var(--space-4) var(--space-4) var(--space-6) !important;
+
+    &.detail-panel--open { transform: translateX(0) !important; }
+  }
+}
+
+// 3) Desktop (1240px+): 3 sütun grid — HER İKİ panel STICKY
+@media (min-width: 1240px) {
+  #app { grid-template-columns: 280px minmax(0, 1fr) 320px !important; }
+  .sidebar {
     position: sticky !important;
     top: 0 !important;
-    right: auto;
     transform: none !important;
     width: auto !important;
     height: 100vh !important;
     overflow-y: auto;
     align-self: start;
     z-index: 10;
-    box-shadow: none;
+    border-right: 1px solid var(--line-2);
+    background: var(--bg-soft) !important;
+    padding: var(--space-4) var(--space-3) var(--space-6) !important;
+  }
+  .detail-panel {
+    position: sticky !important;
+    top: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    width: auto !important;
+    height: 100vh !important;
+    overflow-y: auto;
+    align-self: start;
+    z-index: 10;
+    box-shadow: none !important;
     border-left: 1px solid var(--line-2) !important;
     background: var(--bg-soft) !important;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     padding: var(--space-4) var(--space-4) var(--space-6) !important;
   }
   .main { padding: var(--space-6) var(--space-6) var(--space-9) !important; }
