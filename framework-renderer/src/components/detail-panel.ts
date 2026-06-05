@@ -314,6 +314,23 @@ const PLACEHOLDER = `
   </div>
 `;
 
+function ensureBackdrop(): HTMLElement {
+  let b = document.querySelector<HTMLElement>('.detail-panel-backdrop');
+  if (!b) {
+    b = document.createElement('div');
+    b.className = 'detail-panel-backdrop';
+    b.setAttribute('aria-hidden', 'true');
+    b.addEventListener('click', () => closeDetail());
+    document.body.appendChild(b);
+  }
+  return b;
+}
+
+// Drawer modu: panel sticky değil, fixed/overlay olarak açılır
+function isDrawerMode(): boolean {
+  return window.matchMedia('(max-width: 1239px)').matches;
+}
+
 export function openDetail(key: string): void {
   const payload = store.get(key);
   if (!payload || !panelInner) return;
@@ -321,6 +338,11 @@ export function openDetail(key: string): void {
   panelInner.innerHTML = render(payload);
   panelInner.scrollTop = 0;
   panelInner.parentElement?.classList.add('detail-panel--open');
+  // Backdrop ve body lock SADECE drawer modunda (mobile/tablet)
+  if (isDrawerMode()) {
+    ensureBackdrop().classList.add('is-visible');
+    document.body.style.overflow = 'hidden';
+  }
   highlightActive(key);
 }
 
@@ -328,6 +350,8 @@ export function closeDetail(): void {
   if (!panelInner) return;
   panelInner.innerHTML = PLACEHOLDER;
   panelInner.parentElement?.classList.remove('detail-panel--open');
+  document.querySelector('.detail-panel-backdrop')?.classList.remove('is-visible');
+  document.body.style.overflow = '';
   highlightActive(null);
   currentKey = null;
 }

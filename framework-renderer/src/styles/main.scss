@@ -2432,9 +2432,13 @@ tr.is-clickable {
 // Granularity legend
 .block-gran-legend { padding: 1.25rem 1.5rem 1.5rem !important; margin: 1.5rem 0 1.75rem; }
 .gran-grid {
-  gap: 0.85rem !important;
-  &__item { padding: 0.95rem 1.1rem !important; line-height: 1.55; }
-  &__desc { line-height: 1.6; margin-top: 0.35rem; }
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+  gap: var(--space-3) !important;
+  // 7 sütundan fazla olmasın — granularity 7 kategori
+  > * { max-width: 100%; }
+  &__item { padding: var(--space-3) var(--space-4) !important; line-height: 1.55; }
+  &__desc { line-height: 1.6; margin-top: var(--space-2); }
 }
 
 // Lesson header
