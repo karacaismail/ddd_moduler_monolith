@@ -1,0 +1,44 @@
+{
+  "id": "edu-u06",
+  "title": "Multi-tenancy — bir kod, çok müşteri",
+  "subtitle": "Tek kod tabanı üstünde birden fazla müşteri (tenant) izole hizmet alır. Row-level vs schema vs cluster.",
+  "cluster": "layer0",
+  "order": 3,
+  "icon": "ph-users-three",
+  "granularity": "buyuk-tas",
+  "state": "ok",
+  "tags": ["education", "u06", "tenancy", "saas"],
+  "blocks": [
+    { "type": "lesson-header", "unit": "Ünite 06", "title": "Multi-tenancy — tek kod, çok müşteri", "level": "orta", "duration_min": 60, "prereq": ["edu-u04"], "goals": [
+      "Multi-tenancy'nin SaaS ekonomisindeki yerini anlatabilirsin.",
+      "Row-level / schema-level / cluster-level izolasyon farkını biliyorsun.",
+      "Cross-tenant veri sızıntısının nasıl engellendiğini söyleyebilirsin.",
+      "Sub-tenant kavramını ve ne zaman gerektiğini açıklayabilirsin."
+    ] },
+    { "type": "terms", "terms": [
+      { "term": "Tenant", "abbrev_tr": "Kiracı", "meaning": "Bir SaaS uygulamasını kullanan tek bir müşteri/şirket.", "why": "İzolasyonun birim ölçeği." },
+      { "term": "Multi-tenancy", "abbrev_tr": "Çoklu kiracılık", "meaning": "Tek kod tabanı, birden fazla tenant'a hizmet.", "why": "SaaS ekonomisinin temeli — paylaşılan altyapı, ayrı veri." },
+      { "term": "Tenant scope", "abbrev_tr": "Kiracı kapsamı", "meaning": "Her sorguya otomatik WHERE tenant_id=X eklenmesi.", "why": "Sızıntının teknik garantisi." },
+      { "term": "Row-level isolation", "abbrev_tr": "Satır seviyesi izolasyon", "meaning": "Aynı tablo, tenant_id kolonu ile ayrım.", "why": "En basit, en yaygın." },
+      { "term": "Schema-level", "abbrev_tr": "Şema seviyesi", "meaning": "Her tenant ayrı PostgreSQL schema.", "why": "Orta izolasyon; backup ayrı yapılabilir." },
+      { "term": "Cluster-level", "abbrev_tr": "Sunucu seviyesi", "meaning": "Her tenant ayrı DB instance.", "why": "Enterprise/regülasyon istediği zaman." },
+      { "term": "Sub-tenant", "abbrev_tr": "Alt-kiracı", "meaning": "Bir tenant'ın altındaki iş birimi (holding altı şirketler).", "why": "Konsolide rapor + ayrı operasyon için." }
+    ] },
+    { "type": "paragraph", "text": "SaaS'ın matematiği basit: bir kod tabanı 1000 müşteriye hizmet ederse altyapı maliyeti müşteri başına 1/1000'e iner. Ama bunun bedeli sıkı **izolasyon**: A müşterisi B müşterisinin verisini asla görmemeli." },
+    { "type": "grid", "columns": 3, "items": [
+      { "title": "Row-level", "body": "Aynı tabloda `tenant_id` kolonu; her sorguya WHERE eklenir. **Bizim seçim.**", "tone": "good" },
+      { "title": "Schema-level", "body": "PostgreSQL'de her tenant ayrı schema. Orta yol; backup ayrı yapılabilir.", "tone": "neutral" },
+      { "title": "Cluster-level", "body": "Her tenant ayrı DB instance. En izole ama en pahalı.", "tone": "neutral" }
+    ] },
+    { "type": "callout", "variant": "critical", "label": "Tenant scope guardrail",
+      "body": "Cross-tenant sızıntıyı **kod incelemesiyle** engellemeye çalışma — bir gün unutursun. Query layer her SELECT/UPDATE/DELETE'e otomatik `WHERE tenant_id = :current` ekler. İnsan müdahalesi gerektirmez." },
+    { "type": "checklist", "title": "Bu üniteyi anladığımı nereden anlarım?", "storageKey": "edu.u06", "items": [
+      { "label": "Multi-tenancy'nin SaaS'ın ekonomik tabanı olduğunu söyleyebilirim." },
+      { "label": "Row/Schema/Cluster izolasyon farkını biliyorum." },
+      { "label": "Query layer tenant scope'unun neden insan müdahalesinden bağımsız olması gerektiğini anlatabilirim." },
+      { "label": "Sub-tenant'ı holding örneğiyle açıklayabilirim." }
+    ] },
+    { "type": "callout", "variant": "info", "label": "Sonraki ünite", "body": "{{ref:edu-u07}} — Yetkilendirme & Güvenlik. RBAC/ABAC, audit, encryption." }
+  ],
+  "related": ["edu-u04", "edu-u07", "k-tenancy"]
+}

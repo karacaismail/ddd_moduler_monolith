@@ -277,7 +277,7 @@ export function enrichButtonsHtml(en?: Enrichment): string {
       data-popover="info"
       data-info-text="${htmlEscape(en.info)}"
       aria-label="Kısa açıklama"
-><i class="ph ph-info"></i></button>`;
+><i class="ph-bold ph-lightbulb"></i></button>`;
   }
 
   const hasDetail =
@@ -294,7 +294,7 @@ export function enrichButtonsHtml(en?: Enrichment): string {
       data-popover="detail"
       data-detail-key="${key}"
       aria-label="Detaylı açıklama"
-><i class="ph ph-question"></i></button>`;
+><i class="ph-bold ph-book-open-text"></i></button>`;
   }
 
   return html;

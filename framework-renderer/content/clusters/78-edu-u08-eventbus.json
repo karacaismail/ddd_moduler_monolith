@@ -1,0 +1,39 @@
+{
+  "id": "edu-u08",
+  "title": "Event Bus & Outbox",
+  "subtitle": "Senkron vs asenkron, event-driven, transactional outbox, idempotency.",
+  "cluster": "scale",
+  "order": 0,
+  "icon": "ph-broadcast",
+  "granularity": "buyuk-tas",
+  "state": "ok",
+  "tags": ["education", "u08", "event", "outbox"],
+  "blocks": [
+    { "type": "lesson-header", "unit": "Ünite 08", "title": "Event Bus & Outbox — modüller arası gevşek bağ", "level": "ileri", "duration_min": 70, "prereq": ["edu-u04", "edu-u05"], "goals": [
+      "Senkron ile asenkron iletişimin farkı.",
+      "Event bus'ın neden direct call'a tercih edildiğini söyleyebilirsin.",
+      "Dual-write tuzağını ve transactional outbox çözümünü anlatabilirsin.",
+      "Idempotent consumer'ın retry mekaniğindeki rolünü biliyorsun."
+    ] },
+    { "type": "terms", "terms": [
+      { "term": "Event", "abbrev_tr": "Olay", "meaning": "Olmuş bir şeyin kaydı: 'order.created', 'user.deleted'.", "why": "Geçmiş zaman: bilgi yayını, soru değil." },
+      { "term": "Pub/Sub", "abbrev_of": "Publisher/Subscriber", "meaning": "Yayıncı yayar, aboneler dinler. Yayıncı kimi dinlediğini bilmez.", "why": "Gevşek bağlamanın temel ilkesi." },
+      { "term": "Outbox", "abbrev_tr": "Giden kutusu", "meaning": "DB transaction içinde mesaj satırı; worker iletir.", "why": "Dual-write sorununu çözer." },
+      { "term": "Dual-write", "abbrev_tr": "Çift yazma", "meaning": "DB + Kafka'ya aynı anda yaz; biri başarısız → tutarsızlık.", "why": "Tehlikeli! Outbox şart." },
+      { "term": "Idempotent consumer", "abbrev_tr": "Tekrar-güvenli tüketici", "meaning": "Aynı event'i 2 kez işlerse hata vermez.", "why": "At-least-once delivery'de zorunlu." },
+      { "term": "DLQ", "abbrev_of": "Dead Letter Queue", "abbrev_tr": "Ölü mesaj kuyruğu", "meaning": "İşlenemeyen mesajların atıldığı kuyruk.", "why": "Sistemin tıkanmasını engeller; manuel inceleme için." }
+    ] },
+    { "type": "paragraph", "text": "İki modül A→B doğrudan konuşursa: B değişirse A da değişir. Event bus ile A 'order.created' yayar, B dinler — B değişirse A'nın haberi olmaz." },
+    { "type": "callout", "variant": "critical", "label": "Dual-write tuzağı",
+      "body": "Sipariş kaydı + Kafka mesajı için iki ayrı `INSERT`. Eğer DB başarılı ama Kafka düşerse: müşterinin parası çekildi ama kargo yola çıkmadı. **Çözüm: Outbox**. DB transaction içinde 'outbox' tablosuna bir satır INSERT et. Ayrı worker bu satırları Kafka'ya iletir; iletilince siler. Atomik garanti." },
+    { "type": "checklist", "title": "Kontrol listesi", "storageKey": "edu.u08", "items": [
+      { "label": "Senkron ile asenkron'un avantaj/sakıncaları." },
+      { "label": "Pub/Sub'da yayıncının abone listesini bilmeme avantajı." },
+      { "label": "Dual-write'ın neden tehlikeli olduğunu örnekle anlatabilirim." },
+      { "label": "Outbox pattern'in atomik garantiyi nasıl sağladığını söyleyebilirim." },
+      { "label": "DLQ'nun rolünü biliyorum." }
+    ] },
+    { "type": "callout", "variant": "info", "label": "Sonraki ünite", "body": "{{ref:edu-u09}} — Plugin Mimarisi. Çekirdeği bozmadan davranış eklemek." }
+  ],
+  "related": ["edu-u05", "edu-u09", "k-bus", "scale-outbox"]
+}

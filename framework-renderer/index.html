@@ -12,13 +12,26 @@
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
 </head>
 <body>
+<header id="appbar" class="appbar">
+  <button id="mobile-menu-toggle" class="appbar__menu" aria-label="Menüyü aç/kapat">
+    <i class="ph-bold ph-list"></i>
+  </button>
+  <a class="appbar__brand" href="#overview">
+    <i class="ph-duotone ph-stack"></i>
+    <span>Framework Master</span>
+  </a>
+  <div id="search-box" class="appbar__search search-box"></div>
+  <div class="appbar__actions">
+    <button id="dark-toggle" class="appbar__action" aria-label="Karanlık mod">
+      <i class="ph-bold ph-moon"></i>
+    </button>
+    <a class="appbar__action" href="https://github.com/karacaismail/ddd_moduler_monolith" target="_blank" rel="noopener" aria-label="GitHub repo">
+      <i class="ph-bold ph-github-logo"></i>
+    </a>
+  </div>
+</header>
 <div id="app">
   <aside id="sidebar" class="sidebar">
-    <div class="sidebar__brand">
-      <i class="ph-duotone ph-stack"></i>
-      <span>Framework Master</span>
-    </div>
-    <div id="search-box" class="search-box"></div>
     <nav id="toc" class="toc"></nav>
     <aside class="sidebar__gran-legend" aria-label="Kilometre taşları">
       <div class="sidebar__gran-legend__title">Kilometre taşları (SP)</div>
@@ -30,9 +43,6 @@
       <div class="sidebar__gran-legend__row"><i class="ph ph-dot-outline"></i> Toz tanesi <span style="margin-left:auto;font-size:.7rem;color:var(--ink-4)">~1</span></div>
       <div class="sidebar__gran-legend__row"><i class="ph ph-atom"></i> Atom <span style="margin-left:auto;font-size:.7rem;color:var(--ink-4)">~1</span></div>
     </aside>
-    <div class="sidebar__footer">
-      <a href="https://github.com" class="sidebar__link">LGPLv3</a>
-    </div>
   </aside>
 
   <main id="main" class="main">
@@ -40,10 +50,24 @@
     <div id="filter-bar" class="filter-bar"></div>
     <div id="content" class="content">
       <div class="loading">
-        <i class="ph ph-circle-notch ph-spin"></i>
+        <i class="ph-bold ph-circle-notch ph-spin"></i>
         <span>İçerik yükleniyor…</span>
       </div>
     </div>
+    <footer class="appfooter">
+      <div class="appfooter__col">
+        <strong>Framework Master</strong>
+        <div>JSON-driven, AI-first, modüler monolith</div>
+      </div>
+      <div class="appfooter__col">
+        <strong>Kısayollar</strong>
+        <div><kbd>/</kbd> arama · <kbd>Esc</kbd> paneli kapat</div>
+      </div>
+      <div class="appfooter__col">
+        <strong>Lisans</strong>
+        <div>LGPL-3.0</div>
+      </div>
+    </footer>
   </main>
 
   <aside id="detail-panel" class="detail-panel" aria-label="Detay paneli">

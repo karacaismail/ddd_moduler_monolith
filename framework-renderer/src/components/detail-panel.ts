@@ -9,6 +9,20 @@
 
 import type { Term, UserStory, Enrichment } from '@/types/content';
 
+export interface FiveWH {
+  ne?: string;        // What
+  nicin?: string;     // Why
+  nasil?: string;     // How
+  nerede?: string;    // Where
+  ne_zaman?: string;  // When
+  kim?: string;       // Who
+}
+export interface SideUsage {
+  yer: string;          // Hangi katman/component/bileşen
+  gereklilik: string;   // Neden lazım
+  ornek: string;        // Somut örnek
+}
+
 export interface DetailPayload {
   contextLabel?: string;
   title: string;
@@ -17,6 +31,9 @@ export interface DetailPayload {
   terms?: Term[];
   stories?: UserStory[];
   refs?: string[];
+  fivewh?: FiveWH;
+  frontend?: SideUsage;
+  backend?: SideUsage;
 }
 
 const store = new Map<string, DetailPayload>();
@@ -24,9 +41,13 @@ let keyCounter = 0;
 let panelInner: HTMLElement | null = null;
 let currentKey: string | null = null;
 let refResolver: ((id: string) => { title: string; cluster: string } | null) | null = null;
+let clusterLookup: ((titleQuery: string) => { id: string; title: string; subtitle?: string } | null) | null = null;
 
 export function setRefResolver(fn: typeof refResolver): void {
   refResolver = fn;
+}
+export function setClusterLookup(fn: typeof clusterLookup): void {
+  clusterLookup = fn;
 }
 
 export function registerDetail(payload: DetailPayload): string {
@@ -84,6 +105,24 @@ export function makeDetailKeyFromText(
 ): string | null {
   const clean = stripMarkup(text);
   if (!clean || clean.length < 6) return null;
+
+  // Cluster ref tespiti: ilk kelimeler bir cluster başlığıyla eşleşiyor mu?
+  if (clusterLookup) {
+    const hit = clusterLookup(clean.slice(0, 80));
+    if (hit) {
+      // O cluster'a yönlendiren mini-detail üret
+      return registerDetail({
+        contextLabel: ctx.contextLabel,
+        title: hit.title,
+        summary: hit.subtitle || clean.slice(0, 140),
+        detail:
+          `**Bu konunun ana sayfası var.**\n\n${clean}\n\n` +
+          `**Önerilen:** Sol sidebar'dan **"${hit.title}"** cluster'ına geç; tüm terim, örnek ve adım orada detaylı.`,
+        refs: [hit.id],
+      });
+    }
+  }
+
   const title = ctx.title || clean.slice(0, 60) + (clean.length > 60 ? '…' : '');
   const detail =
     `**Bu içerik nedir?**\n\n${clean}\n\n` +
@@ -150,6 +189,45 @@ function storiesHtml(stories: UserStory[]): string {
   </section>`;
 }
 
+function fiveWhHtml(f: FiveWH): string {
+  const rows: Array<[string, string | undefined, string]> = [
+    ['Ne?',       f.ne,       'ph-question'],
+    ['Niçin?',    f.nicin,    'ph-target'],
+    ['Nasıl?',    f.nasil,    'ph-path'],
+    ['Nerede?',   f.nerede,   'ph-map-pin'],
+    ['Ne zaman?', f.ne_zaman, 'ph-clock'],
+    ['Kim?',      f.kim,      'ph-user-circle'],
+  ];
+  const items = rows
+    .filter(([, val]) => !!val)
+    .map(([k, v, icon]) => `
+      <div class="dp__5n1k-row">
+        <div class="dp__5n1k-key"><i class="ph ${icon}"></i> ${k}</div>
+        <div class="dp__5n1k-val">${htmlEscape(v as string)}</div>
+      </div>
+    `).join('');
+  if (!items) return '';
+  return `<section class="dp__section">
+    <h4><i class="ph-duotone ph-list-magnifying-glass"></i> 5N1K analizi</h4>
+    <div class="dp__5n1k">${items}</div>
+  </section>`;
+}
+
+function sideUsageHtml(side: 'frontend' | 'backend', usage: SideUsage): string {
+  const isFE = side === 'frontend';
+  const label = isFE ? 'Frontend tarafı' : 'Backend tarafı';
+  const icon = isFE ? 'ph-monitor' : 'ph-database';
+  const tone = isFE ? 'fe' : 'be';
+  return `<section class="dp__section">
+    <h4><i class="ph-duotone ${icon}"></i> ${label}</h4>
+    <div class="dp__side dp__side--${tone}">
+      <div class="dp__side-row"><span class="dp__side-label">Yeri:</span> ${htmlEscape(usage.yer)}</div>
+      <div class="dp__side-row"><span class="dp__side-label">Gereklilik:</span> ${htmlEscape(usage.gereklilik)}</div>
+      <div class="dp__side-row"><span class="dp__side-label">Örnek:</span> ${htmlEscape(usage.ornek)}</div>
+    </div>
+  </section>`;
+}
+
 function refsHtml(refs: string[]): string {
   if (!refResolver) return '';
   const items = refs
@@ -167,12 +245,42 @@ function refsHtml(refs: string[]): string {
   </section>`;
 }
 
+function autoFiveWH(p: DetailPayload): FiveWH {
+  const summary = p.summary || p.title;
+  return {
+    ne: summary,
+    nicin: `Çözdüğü problem: ${p.contextLabel ?? 'bu konunun'} bağlamında tekrar tekrar ihtiyaç duyulan bir kararı/davranışı standartlaştırır.`,
+    nasil: `Framework primitive olarak hazır sunar; plugin/kullanıcı sıfırdan yazmaz, kuralın kullanımı tek nokta.`,
+    nerede: `Mimaride: ${p.contextLabel ?? 'ilgili cluster'} katmanında konumlanır. UI'da form/sayfa/panel; backend'de DocType/hook/scale primitive seviyesinde.`,
+    ne_zaman: 'İlgili olay/kayıt tetiklendiğinde (kullanıcı eylemi, scheduled job, event bus mesajı).',
+    kim: 'Plugin geliştirici tanımlar, son kullanıcı sonucunu deneyimler, operasyon/CISO izler.',
+  };
+}
+function autoFrontend(p: DetailPayload): SideUsage {
+  return {
+    yer: `Frontend katmanında bir bileşen/sayfa/form alanı olarak görünür (örn. liste, dropdown, modal, dashboard widget).`,
+    gereklilik: `Kullanıcı bu özelliği UI'da görmeden anlayamaz; UX'in net olması için frontend zorunludur.`,
+    ornek: `Kullanıcı "${p.title}" ile ilgili bir kaydı UI'da açar, ilgili formu/listeyi görür, eylemi gerçekleştirir.`,
+  };
+}
+function autoBackend(p: DetailPayload): SideUsage {
+  return {
+    yer: `Backend katmanında DocType/handler/hook/scale primitive olarak yaşar (Layer-0/Layer-1 katmanlarında).`,
+    gereklilik: `Veri bütünlüğü, audit, yetkilendirme ve ölçek garantileri sadece backend'de uygulanabilir; frontend sözleşmeyi yansıtır.`,
+    ornek: `API isteği gelir → permission check + validation → DB transaction + audit log → event yayını → bağlı modüller tepki verir.`,
+  };
+}
+
 function render(payload: DetailPayload): string {
   const hasRichContent =
     !!payload.detail ||
     (payload.terms && payload.terms.length > 0) ||
     (payload.stories && payload.stories.length > 0) ||
     (payload.refs && payload.refs.length > 0);
+
+  const fivewh = payload.fivewh ?? autoFiveWH(payload);
+  const frontend = payload.frontend ?? autoFrontend(payload);
+  const backend = payload.backend ?? autoBackend(payload);
 
   return `
     <button class="dp__close" aria-label="Detay panelini kapat"><i class="ph ph-x"></i></button>
@@ -182,6 +290,9 @@ function render(payload: DetailPayload): string {
       ${payload.summary ? `<p class="dp__summary">${htmlEscape(payload.summary)}</p>` : ''}
     </div>
     ${payload.detail ? `<section class="dp__section dp__detail">${inlineMarkup(payload.detail)}</section>` : ''}
+    ${fiveWhHtml(fivewh)}
+    ${sideUsageHtml('frontend', frontend)}
+    ${sideUsageHtml('backend', backend)}
     ${payload.terms && payload.terms.length > 0 ? termsHtml(payload.terms) : ''}
     ${payload.stories && payload.stories.length > 0 ? storiesHtml(payload.stories) : ''}
     ${payload.refs && payload.refs.length > 0 ? refsHtml(payload.refs) : ''}

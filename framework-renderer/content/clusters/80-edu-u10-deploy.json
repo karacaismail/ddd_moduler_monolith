@@ -1,0 +1,41 @@
+{
+  "id": "edu-u10",
+  "title": "Deploy & Operations",
+  "subtitle": "Git, CI/CD, GitHub Actions, Hetzner, observability, on-call.",
+  "cluster": "build",
+  "order": 46,
+  "icon": "ph-rocket",
+  "granularity": "buyuk-tas",
+  "state": "ok",
+  "tags": ["education", "u10", "deploy", "ops"],
+  "blocks": [
+    { "type": "lesson-header", "unit": "Ünite 10", "title": "Deploy & Operations — production hayatı", "level": "ileri", "duration_min": 60, "prereq": ["edu-u08"], "goals": [
+      "Git workflow + CI/CD'nin amaçlarını ve farkını anlatabilirsin.",
+      "Frontend (GitHub Pages) vs backend (Hetzner) deploy farkını biliyorsun.",
+      "Observability üçlüsünü (metrics/logs/traces) sayabilirsin.",
+      "On-call rotasyonunun mantığını söyleyebilirsin."
+    ] },
+    { "type": "terms", "terms": [
+      { "term": "CI", "abbrev_of": "Continuous Integration", "meaning": "Her push'ta test/lint/build.", "why": "Bozuk kod main'e karışmasın." },
+      { "term": "CD", "abbrev_of": "Continuous Deployment", "meaning": "Geçen test otomatik canlıya.", "why": "Manuel deploy adımındaki hata yok." },
+      { "term": "Blue/Green", "abbrev_tr": "Mavi/Yeşil deploy", "meaning": "Eski sürüm 'mavi' çalışırken yeni 'yeşil' deploy; traffic switch.", "why": "Sıfır kesinti." },
+      { "term": "Canary", "abbrev_tr": "Kanarya yayın", "meaning": "Yeni sürümü önce %5 kullanıcıya yayıp metric'i izle.", "why": "Hata erken yakalanır." },
+      { "term": "Observability", "abbrev_tr": "Gözlemlenebilirlik", "meaning": "Sistem sağlığı için 3'lü: metrics, logs, traces.", "why": "Hata olunca 5 dakikada sebebini bul." },
+      { "term": "On-call", "abbrev_tr": "Nöbet", "meaning": "Belirli bir mühendisin alarm geldiğinde müdahale ettiği dönem.", "why": "Sistem 7/24; insan dönüşümlü." },
+      { "term": "Runbook", "abbrev_tr": "Çalıştırma rehberi", "meaning": "Belirli bir alarmda ne yapılır adım listesi.", "why": "Gece 03:00'te tasarımcı bile çözebilsin." }
+    ] },
+    { "type": "paragraph", "text": "Production canlı sistemdir; geri alınmayan etkiler vardır. **CI** her commit'i test eder, **CD** geçen testi canlıya çıkarır. Bozulursa observability ile sebep bulunur." },
+    { "type": "callout", "variant": "tip", "label": "Bizim deploy",
+      "body": "**Frontend:** Mac'te `yap` → GitHub Actions → Pages. **Backend:** Hetzner sunucu, ayrı pipeline (SSH/rsync veya Docker). Detay: {{ref:deploy-yap}}." },
+    { "type": "checklist", "title": "Kontrol listesi", "storageKey": "edu.u10", "items": [
+      { "label": "CI ile CD farkını söyleyebilirim." },
+      { "label": "Blue/Green ile Canary'nin farklı kullanım nedenlerini biliyorum." },
+      { "label": "Observability'nin 3 ayağını sayabilirim." },
+      { "label": "On-call rotasyonunun amacını söyleyebilirim." },
+      { "label": "Bir alarm için runbook ne içerir, açıklayabilirim." }
+    ] },
+    { "type": "callout", "variant": "tip", "label": "Tebrikler — müfredat sonu",
+      "body": "10 ünite bitti. Artık bu projenin mimarısın. Detaylı teknik için Layer-0 ve Layer-1 cluster'larına dal: {{ref:k-schema}}, {{ref:k-identity}}, {{ref:scale-outbox}}, {{ref:l1-workflow}}." }
+  ],
+  "related": ["edu-u08", "edu-u09", "deploy-yap", "cc-obs"]
+}

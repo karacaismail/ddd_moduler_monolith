@@ -1,0 +1,42 @@
+{
+  "id": "edu-u09",
+  "title": "Plugin Mimarisi",
+  "subtitle": "Manifest, registry, hook, semver, marketplace, contract test.",
+  "cluster": "layer0",
+  "order": 5,
+  "icon": "ph-puzzle-piece",
+  "granularity": "buyuk-tas",
+  "state": "ok",
+  "tags": ["education", "u09", "plugin"],
+  "blocks": [
+    { "type": "lesson-header", "unit": "Ünite 09", "title": "Plugin Mimarisi — çekirdeği bozmadan davranış ekle", "level": "ileri", "duration_min": 65, "prereq": ["edu-u03", "edu-u08"], "goals": [
+      "Plugin manifest'inin yapısını ve neden gerektiğini bilirsin.",
+      "Plugin registry'nin çakışma çözümündeki rolünü anlatabilirsin.",
+      "Hook noktalarına nasıl abone olunduğunu söyleyebilirsin.",
+      "Semver'in marketplace'teki anlamını biliyorsun."
+    ] },
+    { "type": "terms", "terms": [
+      { "term": "Plugin", "abbrev_tr": "Eklenti", "meaning": "Çekirdek değişmeden eklenebilen davranış paketi.", "why": "15 ürün tek çekirdeğin üstünde böyle yaşar." },
+      { "term": "Manifest", "abbrev_tr": "Bildirim dosyası", "meaning": "Plugin'in adı, sürümü, izinleri, hook'larını listeleyen YAML/JSON.", "why": "Çekirdek manifest'e bakarak plugin'i yükler." },
+      { "term": "Registry", "abbrev_tr": "Sicil", "meaning": "Yüklü plugin'lerin merkezi listesi + sürüm bilgisi.", "why": "Çakışma, bağımlılık, yüklü mü kontrolü için." },
+      { "term": "Hook", "abbrev_tr": "Kanca", "meaning": "Çekirdeğin plugin'e bıraktığı tetikleme noktası (before_save, on_change).", "why": "Plugin çekirdeğin akışına girip iş yapar." },
+      { "term": "Semver", "abbrev_of": "Semantic Versioning", "meaning": "MAJOR.MINOR.PATCH — kırılan değişiklik MAJOR'ı arttırır.", "why": "Marketplace'te güvenli güncelleme." },
+      { "term": "Contract test", "abbrev_tr": "Sözleşme testi", "meaning": "Plugin API'sinin geriye uyumlu kalmasını garanti eden test.", "why": "Çekirdek güncellenince plugin'ler bozulmasın." }
+    ] },
+    { "type": "paragraph", "text": "WordPress, Drupal, Frappe ve Salesforce'un ortak başarısı: çekirdek küçük + plugin sistemi açık. Sen yeni özellik için çekirdeğe dokunmuyorsun; manifest + hook yazıyorsun." },
+    { "type": "feature-list", "items": [
+      { "name": "Manifest", "desc": "name, version, requires, hooks, doctypes, permissions.", "enrich": { "info": "Plugin'in 'kimliği' — yüklenmeden okunur." } },
+      { "name": "Registry", "desc": "Hangi plugin yüklü, hangi sürüm, hangi tenant'ta aktif.", "enrich": { "info": "Çakışma + bağımlılık çözümü buradan." } },
+      { "name": "Hook noktaları", "desc": "before_insert, validate, on_submit, on_change.", "enrich": { "info": "Çekirdeğin plugin'e açtığı 'kapı'lar." } },
+      { "name": "Contract test", "desc": "Plugin API'sini bozmayacağını garanti eden test seti.", "enrich": { "info": "Çekirdek güncellenince plugin'ler hâlâ çalışır." } }
+    ] },
+    { "type": "checklist", "title": "Kontrol listesi", "storageKey": "edu.u09", "items": [
+      { "label": "Manifest'in 5 zorunlu alanını sayabilirim.", "hint": "name, version, requires, hooks, doctypes" },
+      { "label": "Plugin registry'nin çakışmayı nasıl çözdüğünü biliyorum." },
+      { "label": "Hook'a abone olmayı 'before_save' örneğiyle anlatabilirim." },
+      { "label": "Semver MAJOR/MINOR/PATCH ayrımını söyleyebilirim." }
+    ] },
+    { "type": "callout", "variant": "info", "label": "Sonraki ünite", "body": "{{ref:edu-u10}} — Deploy & Operations. Production'a güvenli geçiş + monitoring." }
+  ],
+  "related": ["edu-u03", "edu-u08", "edu-u10", "k-plugin"]
+}

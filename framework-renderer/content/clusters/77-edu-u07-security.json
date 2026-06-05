@@ -1,0 +1,39 @@
+{
+  "id": "edu-u07",
+  "title": "Yetkilendirme & Güvenlik",
+  "subtitle": "Identity, session, RBAC/ABAC, audit, KVKK, encryption at rest.",
+  "cluster": "layer0",
+  "order": 4,
+  "icon": "ph-shield-check",
+  "granularity": "buyuk-tas",
+  "state": "ok",
+  "tags": ["education", "u07", "security"],
+  "blocks": [
+    { "type": "lesson-header", "unit": "Ünite 07", "title": "Yetkilendirme & Güvenlik", "level": "orta", "duration_min": 65, "prereq": ["edu-u06"], "goals": [
+      "Authentication (kimlik) vs authorization (yetki) farkı.",
+      "RBAC / ABAC / ReBAC modellerini birer örnekle anlatabilirsin.",
+      "Encryption at rest vs in transit farkı.",
+      "KVKK silme talebinin sistem üzerindeki yansımasını biliyorsun."
+    ] },
+    { "type": "terms", "terms": [
+      { "term": "Authentication", "abbrev_tr": "Kimlik doğrulama", "meaning": "Kullanıcının kim olduğunu kanıtlama.", "why": "Sistem konuştuğu kişiyi bilmeli." },
+      { "term": "Authorization", "abbrev_tr": "Yetkilendirme", "meaning": "Bu kullanıcı bu işlemi yapabilir mi?", "why": "Kimlik yetmez — neyi yapabileceği ayrı karar." },
+      { "term": "RBAC", "abbrev_of": "Role-Based Access Control", "meaning": "İzinler rollere atanır, kullanıcı rol alır.", "why": "Çoğu sistem için yeterli." },
+      { "term": "ABAC", "abbrev_of": "Attribute-Based Access Control", "meaning": "İzin niteliklere göre dinamik (tutar, saat, lokasyon).", "why": "Karmaşık kurallar için." },
+      { "term": "ReBAC", "abbrev_of": "Relationship-Based Access Control", "meaning": "İzin ilişkilerden türer (Google Docs paylaşımı).", "why": "Modern paylaşım modeli." },
+      { "term": "Encryption at rest", "abbrev_tr": "Saklamada şifreleme", "meaning": "DB/diskte şifreli; çalınsa açılmaz.", "why": "KVKK/PCI-DSS şartı." },
+      { "term": "TLS", "abbrev_of": "Transport Layer Security", "meaning": "Ağ trafiğini şifreler (HTTPS).", "why": "İletim sırasında dinlenmeyi engeller." }
+    ] },
+    { "type": "paragraph", "text": "Güvenlik üç sırayla işler: **1) Kim?** (authentication) → **2) Ne yapabilir?** (authorization) → **3) Ne yaptı?** (audit). Bu üçlüyü kafanda ayır." },
+    { "type": "callout", "variant": "tr", "label": "KVKK silme talebi",
+      "body": "Kullanıcı 'beni unutun' der → sistem **soft-delete** (deleted_at = now) → 30 gün bekleme → **hard-delete** + audit log + KVKK kayıt mektubu. Her aşama audit'lenir; geriye dönüş yok." },
+    { "type": "checklist", "title": "Kontrol listesi", "storageKey": "edu.u07", "items": [
+      { "label": "Authentication ile authorization farkını söyleyebilirim." },
+      { "label": "RBAC/ABAC/ReBAC için bir örnek verebilirim." },
+      { "label": "Encryption at rest + in transit'in neden ikisinin de gerektiğini biliyorum." },
+      { "label": "KVKK silme akışını adım adım anlatabilirim." }
+    ] },
+    { "type": "callout", "variant": "info", "label": "Sonraki ünite", "body": "{{ref:edu-u08}} — Event Bus & Outbox. Modüller birbirine doğrudan değil, olay ile bağlanır." }
+  ],
+  "related": ["edu-u06", "edu-u08", "k-authz", "cc-security"]
+}

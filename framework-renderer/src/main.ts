@@ -10,7 +10,7 @@ import { mountSearchBox } from '@/components/search-box';
 import { renderHero } from '@/components/hero';
 import { mountFilterBar } from '@/components/filter-bar';
 import { mountPopover } from '@/components/popover';
-import { mountDetailPanel, setRefResolver, closeDetail } from '@/components/detail-panel';
+import { mountDetailPanel, setRefResolver, setClusterLookup, closeDetail } from '@/components/detail-panel';
 
 import '@/styles/main.scss';
 
@@ -19,6 +19,42 @@ async function boot(): Promise<void> {
   mountPopover();
   const detailPanelEl = document.getElementById('detail-panel');
   if (detailPanelEl) mountDetailPanel(detailPanelEl);
+
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('mobile-menu-toggle');
+  const sidebarEl = document.getElementById('sidebar');
+  if (menuToggle && sidebarEl) {
+    menuToggle.addEventListener('click', () => {
+      sidebarEl.classList.toggle('sidebar--open');
+    });
+    sidebarEl.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) {
+        sidebarEl.classList.remove('sidebar--open');
+      }
+    });
+  }
+
+  // Dark mode toggle (localStorage persist)
+  const darkToggle = document.getElementById('dark-toggle');
+  const applyTheme = (t: 'light' | 'dark') => {
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('fw.theme', t);
+    if (darkToggle) {
+      const i = darkToggle.querySelector('i');
+      if (i) i.className = t === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon';
+    }
+  };
+  const savedTheme = (localStorage.getItem('fw.theme') as 'light' | 'dark' | null) ?? 'light';
+  applyTheme(savedTheme);
+  darkToggle?.addEventListener('click', () => {
+    const cur = (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') ?? 'light';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  });
+
+  // Esc → detail panel kapat (global)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDetail();
+  });
 
   // 1. Registry + tüm block renderer'ları
   const registry = new BlockRegistry();
@@ -39,6 +75,20 @@ async function boot(): Promise<void> {
   setRefResolver((id) => {
     const c = loader.getCluster(id);
     return c ? { title: c.title, cluster: c.cluster } : null;
+  });
+
+  // Cluster fuzzy lookup — tablo satırı vb. metinden başlık eşleştir
+  const allClusters = loader.allClusters();
+  setClusterLookup((q) => {
+    const lc = q.toLowerCase();
+    for (const c of allClusters) {
+      // 3+ karakter eşleşmesi ve kısa konu adı koşulu
+      const t = c.title.toLowerCase();
+      if (t.length >= 4 && lc.includes(t.split(' ')[0]!) && lc.includes(t.split(' ')[1] ?? t.split(' ')[0]!)) {
+        return { id: c.id, title: c.title, subtitle: c.subtitle };
+      }
+    }
+    return null;
   });
   if (loader.errors().length > 0) {
     console.warn(`[boot] ${loader.errors().length} cluster hatalı:`, loader.errors());
