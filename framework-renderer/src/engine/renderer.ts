@@ -34,13 +34,16 @@ export class Renderer {
   /** Tek bir cluster'ı render et. */
   renderCluster(cluster: Cluster): HTMLElement {
     const section = document.createElement('section');
-    section.className = 'cluster';
+    // Collapsed by default — accordion. Hash hedefi olursa main.ts açar.
+    section.className = 'cluster cluster--collapsed';
     section.id = cluster.id;
     section.setAttribute('data-cluster', cluster.cluster);
     if (cluster.layer) section.setAttribute('data-layer', cluster.layer);
 
-    // Cluster header
+    // Cluster header — chevron toggle eklenmiş
     const header = this.renderClusterHeader(cluster);
+    header.setAttribute('aria-expanded', 'false');
+    header.setAttribute('aria-controls', `${cluster.id}__body`);
     section.appendChild(header);
 
     // Context
@@ -57,10 +60,14 @@ export class Renderer {
       renderBlock: (block) => this.registry.render(block, ctx),
     };
 
-    // Blocks
+    // Body — accordion içeriği
+    const body = document.createElement('div');
+    body.className = 'cluster__body';
+    body.id = `${cluster.id}__body`;
     for (const block of cluster.blocks) {
-      section.appendChild(this.registry.render(block, ctx));
+      body.appendChild(this.registry.render(block, ctx));
     }
+    section.appendChild(body);
 
     return section;
   }
@@ -150,6 +157,15 @@ export class Renderer {
       }
       header.appendChild(tagWrap);
     }
+
+    // Accordion toggle butonu — sağ üst köşede chevron
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'cluster__toggle';
+    toggle.setAttribute('aria-label', 'Aç / kapat');
+    toggle.dataset.clusterToggle = '1';
+    toggle.innerHTML = '<i class="ph ph-caret-down"></i>';
+    header.appendChild(toggle);
 
     return header;
   }

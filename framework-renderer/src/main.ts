@@ -181,10 +181,55 @@ async function boot(): Promise<void> {
     cluster: initialRoute.filterCluster,
   });
 
-  // 10. Hash scroll
+  // 10. Hash scroll — initial hedef cluster'ı aç + scroll
   if (initialRoute.hash) {
-    setTimeout(() => scrollToHash(initialRoute.hash, 'auto'), 50);
+    setTimeout(() => {
+      const hash = initialRoute.hash!;
+      // Hedef bir cluster mi yoksa cluster içi anchor mı?
+      const el = document.getElementById(hash);
+      const sec = el?.closest<HTMLElement>('.cluster');
+      if (sec) sec.classList.remove('cluster--collapsed');
+      scrollToHash(hash, 'auto');
+    }, 50);
   }
+
+  // Cluster accordion toggle + hash hedefini otomatik aç
+  const expandCluster = (id: string) => {
+    const el = document.getElementById(id);
+    if (!el || !el.classList.contains('cluster')) return;
+    el.classList.remove('cluster--collapsed');
+    const h = el.querySelector('.cluster__header');
+    h?.setAttribute('aria-expanded', 'true');
+  };
+  const toggleCluster = (el: HTMLElement) => {
+    el.classList.toggle('cluster--collapsed');
+    const collapsed = el.classList.contains('cluster--collapsed');
+    el.querySelector('.cluster__header')?.setAttribute('aria-expanded', String(!collapsed));
+  };
+
+  // Toggle butonuna VEYA collapsed header'ın gövdesine tıklayınca aç/kapat
+  document.body.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    // Link / enrich-btn / detail close → toggle değil
+    if (target.closest('a, .enrich-btn, .dp__close, .sidebar__close, .sidebar-backdrop')) return;
+    // Açıkça toggle butonu
+    const toggleBtn = target.closest<HTMLElement>('[data-cluster-toggle]');
+    if (toggleBtn) {
+      e.stopPropagation();
+      const sec = toggleBtn.closest<HTMLElement>('.cluster');
+      if (sec) toggleCluster(sec);
+      return;
+    }
+    // Collapsed cluster header'ına tıklayınca da aç (detail panel açılmadan önce)
+    const header = target.closest<HTMLElement>('.cluster__header');
+    if (header) {
+      const sec = header.closest<HTMLElement>('.cluster');
+      if (sec && sec.classList.contains('cluster--collapsed')) {
+        e.preventDefault();
+        toggleCluster(sec);
+      }
+    }
+  }, true); // capture: detail-panel click handler'ından önce çalış
 
   let lastHash = window.location.hash;
   onRouteChange((state) => {
@@ -192,7 +237,15 @@ async function boot(): Promise<void> {
       closeDetail();
       lastHash = state.hash;
     }
-    if (state.hash) scrollToHash(state.hash);
+    if (state.hash) {
+      // Hedef cluster'ı aç, sonra scroll
+      expandCluster(state.hash);
+      // Cluster id'si değil item anchor'ı ise, parent cluster'ı bul
+      const targetEl = document.getElementById(state.hash);
+      const parentCluster = targetEl?.closest<HTMLElement>('.cluster');
+      if (parentCluster) expandCluster(parentCluster.id);
+      setTimeout(() => scrollToHash(state.hash!), 30);
+    }
   });
 
   console.info('[boot] tamamlandı');

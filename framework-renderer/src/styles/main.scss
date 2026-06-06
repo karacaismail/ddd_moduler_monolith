@@ -3059,6 +3059,145 @@ body { min-width: 0; }
   box-sizing: border-box;
 }
 
+// ============================================================================
+// MOBILE FLATTENING — iç içe wrapper'ların görsel tedavisini kaldır (<720px)
+// Kural: DIŞ wrapper'lar (block-terms, block-callout, lesson-header,
+// kv listesi, grid kapsayıcısı) mobilde flat görünür — bg/border/padding 0.
+// SADECE en içteki kart (pair, item, card) kendi görsel kimliğini korur.
+// ============================================================================
+@media (max-width: 719px) {
+  // Cluster içi nefes payı — sadece tek katman padding
+  .cluster {
+    padding: var(--space-3) var(--space-2) var(--space-4) !important;
+    margin-bottom: var(--space-4) !important;
+    border-radius: var(--radius-md);
+  }
+  .cluster__body { margin-top: var(--space-3) !important; }
+
+  // OUTER wrapper'lar — bg/border/padding'i kaldır
+  .block-terms,
+  .block-callout,
+  .block-kv,
+  .block-layer-cards,
+  .block-grid,
+  .block-steps,
+  .block-checklist,
+  .block-user-stories,
+  .block-feature-list,
+  .block-examples,
+  .lesson-header {
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: var(--space-3) 0 !important;
+    box-shadow: none !important;
+  }
+
+  // Outer wrapper'ın "iç başlığı" (Terim sözlüğü, Bu ünitenin sonunda…) için minik üst boşluk
+  .block-terms__title,
+  .block-steps__title,
+  .block-checklist__title,
+  .block-user-stories__title,
+  .block-callout__title,
+  .lesson-header__top {
+    padding: 0 var(--space-1) !important;
+    margin: 0 0 var(--space-2) !important;
+  }
+
+  // Inner kartlar — kendi visual'ını koru, tam genişlik
+  .block-terms__pair,
+  .block-callout__body,
+  .block-kv__pair,
+  .layer-card,
+  .block-grid__item,
+  .step,
+  .checklist__item,
+  .story-card,
+  .feature-list__item,
+  .block-examples li {
+    padding: var(--space-3) var(--space-3) !important;
+    border-radius: var(--radius-md) !important;
+    margin: 0 0 var(--space-2) !important;
+  }
+
+  // Detail panel iç wrapper'ları (lesson-header gibi geliyor) — header alanları
+  .lesson-header__prereq,
+  .lesson-header__goals {
+    padding: 0 var(--space-1) !important;
+    margin-top: var(--space-2) !important;
+    border: 0 !important;
+  }
+
+  // Cluster body içindeki paragraf/heading'lere sol-sağ ekstra padding verme
+  .cluster__body > p,
+  .cluster__body > h3,
+  .cluster__body > h4,
+  .cluster__body > h5 {
+    padding: 0 var(--space-1) !important;
+  }
+}
+.cluster {
+  position: relative;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  margin-bottom: var(--space-5);
+  padding: var(--space-4) var(--space-5) var(--space-5) !important;
+  transition: box-shadow 160ms ease, border-color 160ms ease;
+
+  &__header {
+    position: relative;
+    cursor: pointer;
+    padding-right: 3rem; // toggle butonu için yer
+    user-select: none;
+  }
+
+  &__toggle {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 999px;
+    background: var(--bg-soft);
+    border: 1px solid var(--line-2);
+    color: var(--ink-2);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1), background 140ms;
+    z-index: 2;
+    i { font-size: 1rem; transition: transform 200ms ease; }
+    &:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  }
+
+  &__body {
+    overflow: hidden;
+    transition: max-height 280ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 200ms ease, margin-top 200ms ease;
+  }
+
+  // Açık state: chevron yukarı
+  &:not(.cluster--collapsed) .cluster__toggle i { transform: rotate(180deg); }
+
+  // Kapalı state: body gizli + header padding daralt
+  &.cluster--collapsed {
+    padding-bottom: var(--space-4) !important;
+    .cluster__body { max-height: 0; opacity: 0; margin-top: 0; pointer-events: none; }
+    .cluster__header { padding-bottom: 0; border-bottom: 0; margin-bottom: 0; }
+    &:hover {
+      border-color: var(--ink-4);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+  &:not(.cluster--collapsed) .cluster__body {
+    max-height: none;
+    opacity: 1;
+    margin-top: var(--space-4);
+  }
+}
+
 // Uzun string/code mobilde sığsın
 pre, code { max-width: 100%; word-break: break-word; white-space: pre-wrap; }
 .block-code pre { white-space: pre; overflow-x: auto; }
@@ -3298,6 +3437,52 @@ input, select, textarea { max-width: 100%; }
   --state-wip-bg:       #182333;
   --state-blocked-bg:   #1a1c20;
   --state-deprecated-bg:#1c1f24;
+
+  // Education / lesson tema
+  --edu:        #4dd9d4;        // light teal — dark üzerinde okunaklı
+  --edu-soft:   #16302e;        // soft dark teal
+  --edu-accent: #ffd166;
+
+  // Card / cluster yüzeyleri
+  --card-bg:       #1c1f23;
+  --card-bg-soft:  #1f2329;
+  --card-border:   #2a2e34;
+
+  // Enrich button renkleri (dark)
+  --enrich-info:   #6aa3ff;
+  --enrich-detail: #c79bff;
+}
+
+// Dark mode özel düzeltmeler — light bg kullanan component'ler
+:root[data-theme="dark"] {
+  .lesson-header {
+    background: var(--edu-soft);
+    border-color: color-mix(in srgb, var(--edu) 30%, transparent);
+    border-left-color: var(--edu);
+  }
+  .lesson-header__unit,
+  .lesson-header__goals-title,
+  .lesson-header__prereq a { color: var(--edu) !important; }
+  .lesson-header__title { color: var(--ink) !important; }
+  .lesson-header__prereq { color: var(--ink-2) !important; }
+  .lesson-header__goals ul li { color: var(--ink-2) !important; }
+  .lesson-header__time { color: var(--ink-3) !important; }
+
+  // Cluster body içi paragraf/list okunabilirlik
+  .cluster__body p,
+  .cluster__body li,
+  .feature-list__desc { color: var(--ink-2); }
+
+  // Hero, filter bar, sidebar nüansı
+  .sidebar { background: var(--bg-soft); }
+  .hero { background: var(--bg); }
+
+  // Tag chips dark
+  .tag { background: var(--bg-soft); color: var(--ink-3); border: 1px solid var(--line-2); }
+
+  // Mermer-yumuşak yüzeyler için kontrast
+  .block-callout { background: var(--card-bg-soft); border-color: var(--line); }
+  .block-callout__title { color: var(--ink); }
 }
 
 // Cluster header — clickable variant
