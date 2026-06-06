@@ -245,29 +245,65 @@ function refsHtml(refs: string[]): string {
   </section>`;
 }
 
+// İçeriğe duyarlı 5N1K — item title'ı her cevaba enjekte eder.
+// Böylece "Bundle analiz" ile "Changelog" tıklayınca farklı cevaplar görürsün.
 function autoFiveWH(p: DetailPayload): FiveWH {
-  const summary = p.summary || p.title;
+  const title = p.title.trim();
+  const titleShort = title.length > 40 ? title.slice(0, 40) + '…' : title;
+  const summary = p.summary || title;
+  const ctx = p.contextLabel ?? 'bu cluster';
   return {
-    ne: summary,
-    nicin: `Çözdüğü problem: ${p.contextLabel ?? 'bu konunun'} bağlamında tekrar tekrar ihtiyaç duyulan bir kararı/davranışı standartlaştırır.`,
-    nasil: `Framework primitive olarak hazır sunar; plugin/kullanıcı sıfırdan yazmaz, kuralın kullanımı tek nokta.`,
-    nerede: `Mimaride: ${p.contextLabel ?? 'ilgili cluster'} katmanında konumlanır. UI'da form/sayfa/panel; backend'de DocType/hook/scale primitive seviyesinde.`,
-    ne_zaman: 'İlgili olay/kayıt tetiklendiğinde (kullanıcı eylemi, scheduled job, event bus mesajı).',
-    kim: 'Plugin geliştirici tanımlar, son kullanıcı sonucunu deneyimler, operasyon/CISO izler.',
+    ne: `**${title}** — ${summary}`,
+    nicin:
+      `"${titleShort}" çözümünün gerekçesi: aynı problemi farklı yerlerde yeniden çözmek yerine, ` +
+      `${ctx} bağlamında **tek-noktadan tutarlı** bir karar yayar. ` +
+      `Tutarsızlık ve kopya kod riskini ortadan kaldırır.`,
+    nasil:
+      `Framework "${titleShort}"'ı **primitive** olarak sunar: plugin/kullanıcı sıfırdan yazmaz, ` +
+      `hazır API'yi çağırır veya kuralı consume eder. Değişiklik tek noktadan yapılır, ` +
+      `tüm tüketiciler otomatik fayda görür.`,
+    nerede:
+      `**${ctx}** katmanında konumlanır. ` +
+      `"${titleShort}" frontend tarafında UI bileşeni / sayfa / form alanı; ` +
+      `backend tarafında DocType / hook / scale primitive seviyesinde yer alır.`,
+    ne_zaman:
+      `"${titleShort}" şu durumlarda devreye girer: kullanıcı eylemi (form submit, buton tıklaması), ` +
+      `scheduled job (cron/worker), event bus mesajı, veya başka bir modülden gelen ` +
+      `senkron/asenkron tetik. Olayın türü ${ctx} bağlamında belirlenir.`,
+    kim:
+      `"${titleShort}" ile ilgili roller: **Plugin geliştirici** bu primitive'i tanımlar/genişletir; ` +
+      `**Son kullanıcı** sonucunu UI/UX olarak deneyimler; **Operasyon / CISO** denetim ve gözlemlenebilirlik için izler.`,
   };
 }
 function autoFrontend(p: DetailPayload): SideUsage {
+  const title = p.title.trim();
+  const titleShort = title.length > 40 ? title.slice(0, 40) + '…' : title;
   return {
-    yer: `Frontend katmanında bir bileşen/sayfa/form alanı olarak görünür (örn. liste, dropdown, modal, dashboard widget).`,
-    gereklilik: `Kullanıcı bu özelliği UI'da görmeden anlayamaz; UX'in net olması için frontend zorunludur.`,
-    ornek: `Kullanıcı "${p.title}" ile ilgili bir kaydı UI'da açar, ilgili formu/listeyi görür, eylemi gerçekleştirir.`,
+    yer:
+      `"${titleShort}" frontend katmanında somut bir bileşen olarak görünür: ` +
+      `${p.summary ? p.summary.slice(0, 80) : 'liste / form / dropdown / modal / dashboard widget'} bağlamında render edilir.`,
+    gereklilik:
+      `Kullanıcı "${titleShort}" özelliğini UI'da görmeden anlayamaz veya kullanamaz. ` +
+      `UX akışının net olması için frontend tarafının bu işlevi expose etmesi zorunludur.`,
+    ornek:
+      `Kullanıcı "${titleShort}" ile ilgili bir kaydı UI'da açar → ilgili formu/listeyi görür → ` +
+      `eylemi (kaydet, gönder, sil, filtrele) gerçekleştirir → anlık feedback alır.`,
   };
 }
 function autoBackend(p: DetailPayload): SideUsage {
+  const title = p.title.trim();
+  const titleShort = title.length > 40 ? title.slice(0, 40) + '…' : title;
+  const ctx = p.contextLabel ?? 'ilgili katman';
   return {
-    yer: `Backend katmanında DocType/handler/hook/scale primitive olarak yaşar (Layer-0/Layer-1 katmanlarında).`,
-    gereklilik: `Veri bütünlüğü, audit, yetkilendirme ve ölçek garantileri sadece backend'de uygulanabilir; frontend sözleşmeyi yansıtır.`,
-    ornek: `API isteği gelir → permission check + validation → DB transaction + audit log → event yayını → bağlı modüller tepki verir.`,
+    yer:
+      `"${titleShort}" backend katmanında DocType / handler / hook / scale primitive olarak yaşar. ` +
+      `${ctx} bağlamında Layer-0 (kernel) veya Layer-1 (in-tree) seviyesinde konumlanır.`,
+    gereklilik:
+      `Veri bütünlüğü, audit, yetkilendirme, ölçek garantileri SADECE backend'de uygulanabilir. ` +
+      `Frontend "${titleShort}"'ı yansıtır, ama kuralın kendisi backend'in sözleşmesidir.`,
+    ornek:
+      `API isteği "${titleShort}" için gelir → permission check + validation → ` +
+      `DB transaction + audit log → event bus'a yayın → bağlı modüller (notification, projection, downstream) tepki verir.`,
   };
 }
 
