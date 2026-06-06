@@ -2,8 +2,16 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Framework Master — JSON-driven render</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<title>Framework Master — JSON-driven DDD Modüler Monolith</title>
+<meta name="description" content="JSON-driven, AI-first eğitim ve mimari referans rehberi. DDD modüler monolith framework için interaktif dokümantasyon." />
+<meta property="og:title" content="Framework Master — JSON-driven DDD Modüler Monolith" />
+<meta property="og:description" content="JSON-driven, AI-first eğitim ve mimari referans rehberi." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f172a'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h10' stroke='%2360a5fa' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap&subset=latin,latin-ext" rel="stylesheet">
@@ -36,6 +44,12 @@
   </a>
   <div id="search-box" class="appbar__search search-box"></div>
   <div class="appbar__actions">
+    <button id="share-toggle" class="appbar__action" aria-label="Bağlantıyı paylaş" title="Bu sayfanın bağlantısını kopyala">
+      <i class="ph ph-share-network"></i>
+    </button>
+    <a id="edit-on-github" class="appbar__action" href="https://github.com/karacaismail/ddd_moduler_monolith/tree/main/framework-renderer/content" target="_blank" rel="noopener" aria-label="GitHub'da düzenle" title="Bu cluster'ı GitHub'da düzenle">
+      <i class="ph ph-pencil-simple"></i>
+    </a>
     <button id="dark-toggle" class="appbar__action" aria-label="Karanlık mod">
       <i class="ph ph-moon"></i>
     </button>

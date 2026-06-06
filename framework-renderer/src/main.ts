@@ -105,6 +105,47 @@ async function boot(): Promise<void> {
     applyTheme(cur === 'dark' ? 'light' : 'dark');
   });
 
+  // Share URL (Web Share API → clipboard fallback)
+  const shareToggle = document.getElementById('share-toggle');
+  shareToggle?.addEventListener('click', async () => {
+    const url = window.location.href;
+    const title = document.title;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, url });
+        return;
+      }
+    } catch {
+      /* ignore — user cancel */
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      const { toast } = await import('@/components/toast');
+      toast('Bağlantı kopyalandı', 'success');
+    } catch {
+      const { toast } = await import('@/components/toast');
+      toast('Kopyalanamadı — URL: ' + url, 'error', 6000);
+    }
+  });
+
+  // Edit on GitHub — aktif cluster ID'sine göre dosya yolunu kur
+  const editLink = document.getElementById('edit-on-github') as HTMLAnchorElement | null;
+  const updateEditLink = (): void => {
+    if (!editLink) return;
+    const hash = window.location.hash.slice(1);
+    const base = 'https://github.com/karacaismail/ddd_moduler_monolith/blob/main/framework-renderer/content/clusters';
+    if (hash && /^[a-z0-9-]+$/i.test(hash)) {
+      // Dosya formatı: NN-prefix.json — sadece hash'i path olarak gösteremeyiz, GitHub search'e yönlendir
+      editLink.href = `https://github.com/karacaismail/ddd_moduler_monolith/search?q=${encodeURIComponent('"id":"' + hash + '"')}+path%3Aframework-renderer%2Fcontent`;
+      editLink.title = `"${hash}" cluster JSON'ını GitHub'da bul`;
+    } else {
+      editLink.href = `${base}`;
+      editLink.title = 'İçerik klasörünü GitHub\'da aç';
+    }
+  };
+  window.addEventListener('hashchange', updateEditLink);
+  updateEditLink();
+
   // ESC sırası (priority): popover → detail-panel → sidebar drawer
   // Hangisi açıksa onu kapat. Aynı anda iki açık olabilir.
   document.addEventListener('keydown', (e) => {
