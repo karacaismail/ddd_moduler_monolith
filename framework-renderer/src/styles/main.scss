@@ -2925,9 +2925,9 @@ tr.is-clickable {
 }
 
 // 3) Desktop (1240px+): 3 sütun grid — HER İKİ panel STICKY
-// Sol sidebar 280px, sağ detail panel ~%50 daha geniş = 480px
+// Sol sidebar 280px, sağ detail panel +%50 daha geniş = 720px
 @media (min-width: 1240px) {
-  #app { grid-template-columns: 280px minmax(0, 1fr) 480px !important; }
+  #app { grid-template-columns: 280px minmax(0, 1fr) 720px !important; }
   .sidebar {
     position: sticky !important;
     top: var(--appbar-h) !important;

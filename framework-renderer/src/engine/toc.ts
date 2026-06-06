@@ -2,10 +2,17 @@ import type { Cluster, Manifest } from '@/types/content';
 
 /**
  * TOC builder + accordion sidebar.
- * - Her grup (manifest.groups) bir accordion section.
- * - Açık/kapalı state localStorage'da persist edilir.
- * - Aktif cluster'ın grubu otomatik açılır.
- * - IntersectionObserver ile scroll spy.
+ *
+ * ## TEK-AÇIK ACCORDION KURALI (kullanıcı kararı, asla bozma)
+ * ──────────────────────────────────────────────────────────────
+ * 1. Aynı anda SADECE BİR grup açık olur. Bir grup açılınca diğerleri kapanır.
+ * 2. İçerikte aktif olan cluster'ın bulunduğu grup otomatik açık tutulur.
+ * 3. Scrollspy aktif cluster'ı değiştirince → onun grubu açılır, diğerleri kapanır.
+ * 4. Kullanıcı bir grup başlığına tıklayınca → o grup açılır, diğerleri kapanır.
+ * 5. Aktif cluster'ın grubu manuel kapatılırsa, scrollspy bir sonraki aktif tetikte
+ *    tekrar açar (zorla değil; tutarlılık için).
+ *
+ * Bu kural localStorage persistence'ı geçersiz kılar.
  */
 
 export interface TocGroup {
@@ -40,26 +47,32 @@ export function buildToc(manifest: Manifest, loadedClusters: Cluster[]): TocGrou
 }
 
 /**
- * Açılış davranışı:
- * - localStorage'da kayıt varsa onu kullan.
- * - Yoksa: ilk 2 grup açık, diğerleri kapalı (kompakt görünüm).
- * - Aktif hash içeren grup her zaman açık.
+ * TEK-AÇIK kuralında: sadece aktif cluster'ın grubu açılır.
+ * localStorage artık sadece "son açık grup" bilgisini tutar — multi-state YOK.
  */
-function defaultOpenState(groupIndex: number): boolean {
-  const stored = localStorage.getItem(STORAGE_PREFIX + 'init');
-  if (stored === '1') return false; // user previously interacted, use saved state
-  return groupIndex < 2;
+const STORAGE_OPEN_GROUP = 'fw.toc.openGroup';
+
+function loadOpenGroup(): string | null {
+  return localStorage.getItem(STORAGE_OPEN_GROUP);
 }
 
-function loadGroupState(groupId: string, fallback: boolean): boolean {
-  const v = localStorage.getItem(STORAGE_PREFIX + groupId);
-  if (v === null) return fallback;
-  return v === '1';
+function saveOpenGroup(groupId: string | null): void {
+  if (groupId) localStorage.setItem(STORAGE_OPEN_GROUP, groupId);
+  else localStorage.removeItem(STORAGE_OPEN_GROUP);
 }
 
-function saveGroupState(groupId: string, open: boolean): void {
-  localStorage.setItem(STORAGE_PREFIX + groupId, open ? '1' : '0');
-  localStorage.setItem(STORAGE_PREFIX + 'init', '1');
+/**
+ * TEK grup aç — diğerlerini kapat. TOC element içindeki tüm grupları gezer.
+ */
+function openOnlyGroup(toc: HTMLElement, targetGroupId: string): void {
+  toc.querySelectorAll<HTMLElement>('.toc__group').forEach((g) => {
+    const id = g.getAttribute('data-group-id');
+    const isTarget = id === targetGroupId;
+    g.setAttribute('data-collapsed', String(!isTarget));
+    const header = g.querySelector<HTMLButtonElement>('.toc__group-header');
+    if (header) header.setAttribute('aria-expanded', String(isTarget));
+  });
+  saveOpenGroup(targetGroupId);
 }
 
 export function renderTocElement(toc: TocGroup[], activeClusterId?: string): HTMLElement {
@@ -67,10 +80,23 @@ export function renderTocElement(toc: TocGroup[], activeClusterId?: string): HTM
   nav.className = 'toc';
   nav.setAttribute('aria-label', 'İçerik');
 
-  toc.forEach((group, index) => {
-    const containsActive =
-      !!activeClusterId && group.clusters.some((c) => c.id === activeClusterId);
-    const initiallyOpen = containsActive || loadGroupState(group.id, defaultOpenState(index));
+  // TEK-AÇIK kuralı: hangisini açacağız?
+  // 1) activeClusterId'nin grubu (öncelik)
+  // 2) localStorage'daki son açık grup
+  // 3) ilk grup (fallback)
+  let openGroupId: string | undefined;
+  if (activeClusterId) {
+    const matchGroup = toc.find((g) => g.clusters.some((c) => c.id === activeClusterId));
+    if (matchGroup) openGroupId = matchGroup.id;
+  }
+  if (!openGroupId) {
+    const stored = loadOpenGroup();
+    if (stored && toc.some((g) => g.id === stored)) openGroupId = stored;
+  }
+  if (!openGroupId && toc[0]) openGroupId = toc[0].id;
+
+  toc.forEach((group) => {
+    const initiallyOpen = group.id === openGroupId;
 
     const section = document.createElement('div');
     section.className = 'toc__group';
@@ -112,10 +138,15 @@ export function renderTocElement(toc: TocGroup[], activeClusterId?: string): HTM
 
     header.addEventListener('click', () => {
       const wasCollapsed = section.getAttribute('data-collapsed') === 'true';
-      const nextOpen = wasCollapsed; // opening
-      section.setAttribute('data-collapsed', String(!nextOpen));
-      header.setAttribute('aria-expanded', String(nextOpen));
-      saveGroupState(group.id, nextOpen);
+      if (wasCollapsed) {
+        // TEK-AÇIK kuralı: bu grubu aç, diğerlerini kapat
+        openOnlyGroup(nav, group.id);
+      } else {
+        // Açıkken tıklarsa kapat (hiç açık grup kalmaz; scrollspy ileride açar)
+        section.setAttribute('data-collapsed', 'true');
+        header.setAttribute('aria-expanded', 'false');
+        saveOpenGroup(null);
+      }
     });
 
     section.appendChild(header);
@@ -168,15 +199,12 @@ export function setupScrollSpy(toc: HTMLElement): void {
           for (const link of links) {
             link.classList.toggle('toc__link--active', link.dataset.clusterId === id);
           }
-          // Aktif olan link kapalı bir gruptaysa, grubu aç + sidebar'da görünür kıl
+          // TEK-AÇIK kuralı: aktif link'in grubunu aç, diğerlerini kapat
           const activeLink = links.find((l) => l.dataset.clusterId === id);
           if (activeLink) {
             const group = activeLink.closest<HTMLElement>('.toc__group');
-            if (group && group.getAttribute('data-collapsed') === 'true') {
-              group.setAttribute('data-collapsed', 'false');
-              const header = group.querySelector<HTMLButtonElement>('.toc__group-header');
-              if (header) header.setAttribute('aria-expanded', 'true');
-            }
+            const groupId = group?.getAttribute('data-group-id');
+            if (groupId) openOnlyGroup(toc, groupId);
             // Sidebar viewport içinde değilse scroll-into-view
             const sidebar = activeLink.closest<HTMLElement>('.sidebar');
             if (sidebar) {
@@ -196,13 +224,20 @@ export function setupScrollSpy(toc: HTMLElement): void {
   for (const section of sectionMap.values()) observer.observe(section);
 }
 
-/** Tüm grupları aç/kapat. Bağımsız helper. */
+/**
+ * TEK-AÇIK kuralında "tümünü aç" anlamsız — sadece "tümünü kapat" mantıklı.
+ * Yine de eski API kalabilir; open=true geldiğinde sadece ilki açılır.
+ */
 export function setAllGroups(toc: HTMLElement, open: boolean): void {
-  toc.querySelectorAll<HTMLElement>('.toc__group').forEach((g) => {
-    g.setAttribute('data-collapsed', String(!open));
-    const header = g.querySelector<HTMLButtonElement>('.toc__group-header');
-    if (header) header.setAttribute('aria-expanded', String(open));
-    const id = g.getAttribute('data-group-id');
-    if (id) saveGroupState(id, open);
-  });
+  if (!open) {
+    toc.querySelectorAll<HTMLElement>('.toc__group').forEach((g) => {
+      g.setAttribute('data-collapsed', 'true');
+      g.querySelector<HTMLButtonElement>('.toc__group-header')?.setAttribute('aria-expanded', 'false');
+    });
+    saveOpenGroup(null);
+    return;
+  }
+  const first = toc.querySelector<HTMLElement>('.toc__group');
+  const firstId = first?.getAttribute('data-group-id');
+  if (firstId) openOnlyGroup(toc, firstId);
 }
