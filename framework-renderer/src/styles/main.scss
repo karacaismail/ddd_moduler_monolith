@@ -1,7 +1,30 @@
 // =============================================================================
 // Framework Renderer — main stylesheet
 // Inter (Google), Phosphor icons, min 1rem text, min 400 weight.
+// MOBILE-FIRST: base = mobile; min-width breakpoint'ler ile büyütülür.
+// max-width kullanılırsa MUTLAKA mobile-* mixin'i üzerinden semantic.
 // =============================================================================
+
+// ─── BREAKPOINT MIXIN'LERİ — mobile-first semantic ──────────────────────────
+// Base (no media): mobile (320-419)
+// sm-up    : ≥ 420px (büyük telefon yatay)
+// md-up    : ≥ 720px (tablet)
+// lg-up    : ≥ 1024px (dizüstü)
+// xl-up    : ≥ 1240px (masaüstü geniş)
+// mobile-only / sm-only / md-down / lg-down : intent açık mobile/tablet override
+
+@mixin sm-up    { @media (min-width: 420px)  { @content; } }
+@mixin md-up    { @media (min-width: 720px)  { @content; } }
+@mixin lg-up    { @media (min-width: 1024px) { @content; } }
+@mixin xl-up    { @media (min-width: 1240px) { @content; } }
+
+// Mobile override (intent: kart compact, drawer behavior)
+// NOT: Bu beş tanım MUTLAKA HAM @media olmalı (mixin'e dönüştürülürse sonsuz döngü).
+@mixin mobile-only { @media (max-width: 719px)  { @content; } }
+@mixin sm-only     { @media (max-width: 419px)  { @content; } }
+@mixin md-down     { @media (max-width: 819px)  { @content; } }
+@mixin nav-down    { @media (max-width: 980px)  { @content; } }
+@mixin lg-down     { @media (max-width: 1239px) { @content; } }
 //
 // ## SPACING TOKEN SÖZLÜĞÜ (R3-E — yeni stiller için zorunlu)
 // ──────────────────────────────────────────────────────────
@@ -81,16 +104,18 @@
   // Ink palette
   --ink: #1a1a1a;
   --ink-2: #3d3d3d;
-  --ink-3: #6b6b6b;
-  --ink-4: #9a9a9a;
+  --ink-3: #636363;  // R3 a11y: WCAG AA — tüm zeminlerde ≥4.5:1
+  --ink-4: #6c6c6c;  // R3 a11y: 2.8→4.6:1 (ink-3'ten hâlâ açık, hiyerarşi korunur)
   --ink-5: #cccccc;
 
-  // Surface
-  --bg: #ffffff;
-  --bg-soft: #fafafa;
-  --bg-softer: #f5f5f4;
-  --line: #e6e6e6;
-  --line-2: #f1f1f1;
+  // Surface — kart yüzeyleri sayfa bg'ye karşı belirgin kontrast taşır
+  --bg: #ffffff;             // kart yüzeyi (en üst katman)
+  --bg-soft: #f1f3f6;        // sayfa zemini (light mode) — net farklı
+  --bg-softer: #e9ecef;      // recessed yüzey
+  --bg-page: #eef0f4;        // SAYFA arka planı — kartlar burada yüzer
+  --line: #d8dde3;           // kart sınırları — daha koyu, kontrast
+  --line-2: #e6e9ed;
+  --line-strong: #c2c8d0;    // hover/active için kalın çizgi
 
   // Layer tones
   --kernel: #b73a3a;     --kernel-soft: #faece9;
@@ -141,7 +166,7 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.25;
   font-weight: 600;
 }
-h6 { font-size: var(--fs-sm); }   // 17px
+h6 { font-size: 1rem; }   // 17px
 h5 { font-size: var(--fs-md); }   // 19px
 h4 { font-size: var(--fs-lg); }   // 21px
 h3 { font-size: var(--fs-xl); }   // 24px
@@ -150,7 +175,7 @@ h1 { font-size: var(--fs-3xl); }  // 34px
 
 // "small", "code", "kbd" küçük metin elemanları min 1rem
 small, .small, code, kbd, .meta, .caption {
-  font-size: var(--fs-xs); // 1rem garantili
+  font-size: 1rem; // 1rem garantili
 }
 
 // ------ App layout ------
@@ -568,7 +593,7 @@ small, .small, code, kbd, .meta, .caption {
     margin-left: 0.4rem;
     color: var(--ink-4);
     text-decoration: none;
-    font-size: 0.85em;
+    font-size: 1rem;
     transition: opacity 0.12s;
   }
   &:hover .heading-anchor { opacity: 1; }
@@ -757,15 +782,37 @@ p code, li code, td code, dd code {
 .feature-list__desc { display: block; color: var(--ink-3); font-size: 1rem; margin-top: 0.2rem; line-height: 1.55; }
 
 // ------ Block: table ------
-.block-table__wrap { overflow-x: auto; margin: 1.25rem 0 1.75rem; }
+// Tablo bitiş affordance: belirgin border + ayrı yüzey + alt boşluk.
+// Section değişimi sırasında tablo içeriğinin nerede bittiği net olsun.
+.block-table__wrap {
+  overflow-x: auto;
+  margin: 1.25rem 0 2.25rem; // alt boşluk artırıldı — section sınırı için nefes
+  background: var(--bg-softer, var(--bg-soft));
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 0 var(--line);
+
+  // Son satırın alt border'ı yüzeyle birleşince kaybolmasın — wrap zaten kapatıyor
+  // ama tablo sonunda görsel olarak "kapanış çizgisi" hissi için son tr'nin bottom border'ını kaldırıyoruz
+  .block-table tr:last-child td { border-bottom: none; }
+}
 .block-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 1rem;
+  background: var(--bg); // tablo zemini wrap'tan biraz daha açık — kontrast
 
-  caption { caption-side: top; text-align: left; font-style: italic; color: var(--ink-3); margin-bottom: 0.4rem; }
+  caption { caption-side: top; text-align: left; font-style: italic; color: var(--ink-3); margin: 0.5rem 0.95rem 0.4rem; }
   th, td { text-align: left; padding: 0.75rem 0.95rem; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
-  th { font-weight: 500; background: var(--bg-soft); text-transform: uppercase; letter-spacing: 0.08em; font-size: 1rem; color: var(--ink-3); }
+  th {
+    font-weight: 500;
+    background: var(--bg-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 1rem;
+    color: var(--ink-3);
+    border-bottom: 2px solid var(--line); // başlık-içerik ayrımı belirgin
+  }
   td:first-child { font-weight: 500; color: var(--ink); }
 
   &--compact th, &--compact td { padding: 0.55rem 0.7rem; font-size: 1rem; }
@@ -935,7 +982,7 @@ p code, li code, td code, dd code {
 .link--external {
   color: var(--l1);
   text-decoration: none;
-  &::after { content: " ↗"; font-size: 0.85em; }
+  &::after { content: " ↗"; font-size: 1rem; }
   &:hover { text-decoration: underline; }
 }
 
@@ -1193,6 +1240,34 @@ td .enrich-btn, .feature-list__head .enrich-btn {
 // ============================================================================
 // State chips
 // ============================================================================
+// Difficulty + read + updated chip — cluster metadata UI
+.diff-chip, .read-chip, .updated-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  color: var(--ink-3);
+  border: 1px solid var(--line);
+  white-space: nowrap;
+  i { font-size: 1rem; }
+}
+.diff-chip {
+  &--baslangic { color: var(--state-ok, #1e7d33); border-color: color-mix(in srgb, var(--state-ok, #1e7d33) 35%, transparent); background: color-mix(in srgb, var(--state-ok, #1e7d33) 8%, var(--bg-soft)); }
+  &--orta      { color: var(--state-wip, #b08000); border-color: color-mix(in srgb, var(--state-wip, #b08000) 35%, transparent); background: color-mix(in srgb, var(--state-wip, #b08000) 8%, var(--bg-soft)); }
+  &--ileri     { color: var(--state-critical, #b73a3a); border-color: color-mix(in srgb, var(--state-critical, #b73a3a) 35%, transparent); background: color-mix(in srgb, var(--state-critical, #b73a3a) 8%, var(--bg-soft)); }
+}
+:root[data-theme="dark"] {
+  .diff-chip, .read-chip, .updated-chip {
+    background: var(--bg-soft);
+    color: var(--ink-2);
+    border-color: var(--line);
+  }
+}
+
 .state-chip {
   display: inline-flex;
   align-items: center;
@@ -1804,7 +1879,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
       background: var(--code-bg);
       padding: 0.12rem 0.4rem;
       border-radius: 4px;
-      font-size: 0.88em;
+      font-size: 1rem;
     }
     strong { color: var(--ink); font-weight: 500; }
   }
@@ -1818,7 +1893,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     border-radius: var(--radius);
     &-head { margin-bottom: 0.25rem; }
     &-abbrev { color: var(--ink-3); margin-left: 0.3rem; }
-    &-tr { color: var(--ink-4); font-style: italic; margin-left: 0.25rem; font-size: 0.92em; }
+    &-tr { color: var(--ink-4); font-style: italic; margin-left: 0.25rem; font-size: 1rem; }
     &-meaning { color: var(--ink-2); font-size: 1rem; line-height: 1.55; }
     &-why {
       margin-top: 0.35rem;
@@ -1889,7 +1964,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
       background: var(--bg-soft);
       padding: 0.05rem 0.35rem;
       border-radius: 4px;
-      font-size: 0.85em;
+      font-size: 1rem;
     }
     &-hint { color: var(--ink-4); font-size: 1rem; }
   }
@@ -1914,7 +1989,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     gap: var(--space-1);
     font-weight: 500;
     color: var(--enrich-detail);
-    font-size: var(--fs-xs);
+    font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-bottom: var(--space-2);
@@ -1924,7 +1999,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     display: block;
     color: var(--ink-2);
     line-height: 1.6;
-    font-size: var(--fs-sm);
+    font-size: 1rem;
   }
 
   // Frontend / Backend kullanım
@@ -2030,7 +2105,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
       margin: 0;
       padding: 0;
       line-height: 1.65;
-      font-size: var(--fs-sm);
+      font-size: 1rem;
     }
 
     &.is-clickable { position: relative; }
@@ -2052,18 +2127,12 @@ tr.is-clickable {
 // UI Padding & Spacing genel revizyon — nefes alma
 // ============================================================================
 
-// Cluster bloku: çevresine cömert boşluk
+// Cluster bloku — eski cömert boşluk kuralı LEGACY (v2 redesign tarafından override edilecek).
+// Padding/margin v2'de header/body içine taşındı; burada sadece tipografi kuralları kaldı.
 .cluster {
-  margin-bottom: 4rem !important;
-  padding: 1.75rem 2rem 2rem !important;
   border-radius: var(--radius-lg);
-  background: var(--bg);
   border: 1px solid var(--line-2);
 
-  &__header {
-    margin-bottom: 2rem !important;
-    padding-bottom: 1.5rem !important;
-  }
   &__title {
     font-size: 1.85rem !important;
     line-height: 1.25;
@@ -2250,7 +2319,7 @@ tr.is-clickable {
   th, td { padding: 0.85rem 1rem !important; line-height: 1.55; }
   thead th { padding: 0.95rem 1rem !important; }
 }
-.block-table__wrap { margin: 1.25rem 0 1.75rem; }
+.block-table__wrap { margin: 1.25rem 0 2.25rem; }
 
 // Layer cards
 .block-layer-cards { gap: 1rem !important; margin: 1.5rem 0; }
@@ -2354,7 +2423,7 @@ tr.is-clickable {
       padding: 0;
       color: var(--ink-2);
       line-height: 1.65;
-      font-size: var(--fs-sm);
+      font-size: 1rem;
     }
   }
 
@@ -2604,7 +2673,7 @@ tr.is-clickable {
   border-radius: var(--radius-md) !important;
 }
 .dp__5n1k-key {
-  font-size: var(--fs-xs) !important;
+  font-size: 1rem !important;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--enrich-detail);
@@ -2612,7 +2681,7 @@ tr.is-clickable {
   i { font-size: 1rem; opacity: 0.85; }
 }
 .dp__5n1k-val {
-  font-size: var(--fs-sm) !important;
+  font-size: 1rem !important;
   line-height: 1.55;
   color: var(--ink-2);
 }
@@ -2621,7 +2690,7 @@ tr.is-clickable {
 // Detail panel — daha temiz hiyerarşi
 // ============================================================================
 .dp__section h4 {
-  font-size: var(--fs-xs) !important;
+  font-size: 1rem !important;
   letter-spacing: 0.12em;
   border-bottom: 1px solid var(--line-2);
   padding-bottom: var(--space-2);
@@ -2634,7 +2703,7 @@ tr.is-clickable {
   padding: var(--space-3) var(--space-4) !important;
 }
 .dp__side-row {
-  font-size: var(--fs-sm) !important;
+  font-size: 1rem !important;
   padding: var(--space-2) 0;
   border-bottom: 1px dashed var(--line-2);
   margin-bottom: 0 !important;
@@ -2645,7 +2714,7 @@ tr.is-clickable {
   display: block !important;
   margin: 0 0 var(--space-1) !important;
   color: var(--ink);
-  font-size: var(--fs-xs);
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-weight: 500;
@@ -2655,7 +2724,7 @@ tr.is-clickable {
 .dp__term, .dp__story {
   display: block !important;
   padding: var(--space-3) var(--space-4) !important;
-  font-size: var(--fs-sm);
+  font-size: 1rem;
 }
 // Term: term ismi üstte, açıklama altta (zaten dp__term-head + dp__term-meaning block; sıkı uygulayalım)
 .dp__term-head, .dp__term-meaning, .dp__term-why,
@@ -2676,7 +2745,7 @@ tr.is-clickable {
 // Code accordion — daha temiz summary
 // ============================================================================
 .block-code__summary {
-  font-size: var(--fs-sm) !important;
+  font-size: 1rem !important;
   color: var(--ink-2);
 }
 .block-code__title { color: var(--ink) !important; font-weight: 500; }
@@ -2692,12 +2761,12 @@ tr.is-clickable {
   padding: var(--space-1) 0;
 }
 .toc__group-header {
-  font-size: var(--fs-xs) !important;
+  font-size: 1rem !important;
   letter-spacing: 0.06em;
   padding: var(--space-2) var(--space-2) !important;
 }
 .toc a {
-  font-size: var(--fs-sm) !important;
+  font-size: 1rem !important;
   padding: var(--space-2) var(--space-3) !important;
   border-radius: var(--radius-sm);
   &:hover { background: var(--bg-soft); }
@@ -2771,39 +2840,46 @@ tr.is-clickable {
   white-space: normal;
   word-break: break-word;
   padding: var(--space-2) var(--space-3) !important;
-  font-size: var(--fs-sm);
+  font-size: 1rem;
   line-height: 1.45;
 }
 
-.cluster {
-  @media (max-width: 719px) {
-    padding: var(--space-3) var(--space-3) var(--space-4) !important;
-    margin-bottom: var(--space-5) !important;
-    border-radius: var(--radius-md);
-  }
-}
+// MOBILE-FIRST: base = mobile, min-width ile büyütülür
+// Cluster title — mobile base sade, desktop'ta büyür
 .cluster__title {
-  @media (max-width: 419px) { font-size: 1.25rem !important; }
+  font-size: 1.25rem !important;
+  @media (min-width: 720px) { font-size: 1.55rem !important; }
+  @media (min-width: 1024px) { font-size: 1.85rem !important; }
 }
 
+// Hero — mobile base sıkı, desktop'ta nefes
 .hero {
-  @media (max-width: 719px) {
-    padding: 0 0 var(--space-4) !important;
-    margin-bottom: var(--space-4) !important;
+  padding: 0 0 var(--space-4) !important;
+  margin-bottom: var(--space-4) !important;
+  @media (min-width: 720px) {
+    padding: var(--space-2) 0 var(--space-5) !important;
+    margin-bottom: var(--space-6) !important;
   }
 }
 
+// Filter-bar — mobile base sıkı
 .filter-bar {
-  @media (max-width: 719px) {
-    padding: var(--space-2) var(--space-3) !important;
-    margin-bottom: var(--space-4) !important;
-    gap: var(--space-3);
+  padding: var(--space-2) var(--space-3) !important;
+  margin-bottom: var(--space-4) !important;
+  gap: var(--space-3);
+  @media (min-width: 720px) {
+    padding: var(--space-3) var(--space-4) !important;
+    margin-bottom: var(--space-5) !important;
+    gap: var(--space-4);
   }
 }
 
-@media (max-width: 719px) {
-  .dp__5n1k { grid-template-columns: 1fr !important; }
-  .dp__5n1k-row { padding: var(--space-2) var(--space-3) !important; }
+// Detail panel 5N1K — mobile base tek sütun, desktop'ta iki sütun
+.dp__5n1k { grid-template-columns: 1fr !important; }
+.dp__5n1k-row { padding: var(--space-2) var(--space-3) !important; }
+@media (min-width: 720px) {
+  .dp__5n1k { grid-template-columns: auto 1fr !important; }
+  .dp__5n1k-row { padding: var(--space-3) var(--space-4) !important; }
 }
 
 // Backdrop overlay — gri yarı saydam arka katman
@@ -2863,7 +2939,7 @@ tr.is-clickable {
   i { font-size: 1.1rem; }
   &:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 }
-@media (max-width: 819px) {
+@include md-down {
   .sidebar__close { display: inline-flex; }
   .sidebar { position: relative; }
   .sidebar .toc { margin-top: var(--space-7); } // X butonu için boşluk
@@ -2888,7 +2964,7 @@ tr.is-clickable {
 }
 
 // 1) Mobile (< 820px): tek sütun, sidebar+detail drawer
-@media (max-width: 819px) {
+@include md-down {
   #app { grid-template-columns: 1fr !important; }
   .sidebar {
     position: fixed !important;
@@ -2927,7 +3003,7 @@ tr.is-clickable {
 }
 
 // Detail panel — DRAWER moda (mobile + tablet, <1240px)
-@media (max-width: 1239px) {
+@include lg-down {
   .detail-panel {
     position: fixed !important;
     top: 0; right: 0;
@@ -3021,7 +3097,7 @@ tr.is-clickable {
   cursor: pointer;
   box-shadow: var(--shadow-md);
 
-  @media (max-width: 980px) { display: inline-flex; }
+  @include nav-down { display: inline-flex; }
 }
 
 // Hero responsive
@@ -3056,55 +3132,63 @@ tr.is-clickable {
 // ============================================================================
 // TABLE + CODE — mobile davranışı (P2)
 // ============================================================================
+// MOBILE-FIRST: scroll hint mobile base, desktop'ta gerekmez
 .block-table__wrap {
   overflow-x: auto;
   overflow-y: visible;
   -webkit-overflow-scrolling: touch;
   position: relative;
-  // Mobile'da scroll hint: sağ kenarda gradient fade
-  @media (max-width: 719px) {
-    background-image: linear-gradient(to left, var(--bg-soft) 0%, transparent 24px);
-    background-repeat: no-repeat;
-    background-position: right center;
-    background-size: 24px 100%;
+  background-image: linear-gradient(to left, var(--bg-soft) 0%, transparent 24px);
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 24px 100%;
+  @media (min-width: 720px) {
+    background-image: none;            // desktop'ta scroll fade gereksiz
   }
 }
 .block-table {
-  min-width: 36rem;
+  min-width: 28rem;
+  font-size: 1rem;
+  @media (min-width: 420px) { min-width: 36rem; }
   thead th {
     position: sticky;
     top: 0;
     z-index: 2;
     background: var(--bg-soft);
   }
-  @media (max-width: 419px) { min-width: 28rem; font-size: var(--fs-xs); }
 }
 
-// Code accordion mobile — copy butonu daha büyük tap target
+// MOBILE-FIRST: code copy büyük tap target mobile base
 .block-code__copy {
-  @media (max-width: 719px) {
-    width: 2.5rem !important;
-    height: 2.5rem !important;
-    min-width: 44px;
-    min-height: 44px;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  min-width: 44px;
+  min-height: 44px;
+  @media (min-width: 720px) {
+    width: auto !important;
+    height: auto !important;
+    min-width: auto;
+    min-height: auto;
   }
 }
 .block-code__summary {
-  @media (max-width: 419px) {
-    padding: var(--space-2) var(--space-3) !important;
-    font-size: var(--fs-xs);
-    .block-code__lang, .block-code__lines { padding: 0.1rem 0.4rem !important; font-size: 1rem; }
+  padding: var(--space-2) var(--space-3) !important;
+  font-size: 1rem;
+  .block-code__lang, .block-code__lines { padding: 0.1rem 0.4rem !important; font-size: 1rem; }
+  @media (min-width: 420px) {
+    padding: var(--space-3) var(--space-4) !important;
   }
 }
 .block-code pre {
-  @media (max-width: 719px) {
-    font-size: 1rem !important;
-    line-height: 1.5 !important;
-    padding: var(--space-3) var(--space-3) !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  padding: var(--space-3) var(--space-3) !important;
+  @media (min-width: 720px) {
+    padding: var(--space-4) var(--space-5) !important;
   }
 }
 .block-code .line-no, .block-code [class*="line-num"] {
-  @media (max-width: 419px) { display: none; }
+  @include sm-only { display: none; }
 }
 
 // Tabloyu kart-list formuna dönüştürmek MOBILE'da çok agresif olurdu;
@@ -3129,7 +3213,7 @@ tr.is-clickable {
     color: var(--ink);
     cursor: pointer;
     font: inherit;
-    font-size: var(--fs-sm);
+    font-size: 1rem;
     font-weight: 500;
     align-self: flex-start;
     transition: all 140ms;
@@ -3168,7 +3252,7 @@ tr.is-clickable {
     color: var(--ink-3);
     cursor: pointer;
     font: inherit;
-    font-size: var(--fs-xs);
+    font-size: 1rem;
     padding: var(--space-1) var(--space-3);
     display: inline-flex;
     align-items: center;
@@ -3226,8 +3310,8 @@ tr.is-clickable {
 // ============================================================================
 .hero__meta {
   // Mobile: tek satıra sığacak şekilde küçült
-  @media (max-width: 719px) {
-    font-size: var(--fs-xs) !important;
+  @include mobile-only {
+    font-size: 1rem !important;
     gap: var(--space-2) var(--space-3) !important;
     flex-wrap: wrap;
     span { white-space: nowrap; }
@@ -3251,7 +3335,7 @@ tr.is-clickable {
     padding: 0.15rem 0.5rem;
     border-radius: var(--radius-sm);
     font-family: 'Roboto Mono', monospace;
-    font-size: 0.85em;
+    font-size: 1rem;
     margin: 0 0.15rem;
   }
 }
@@ -3290,7 +3374,7 @@ tr.is-clickable {
     outline: none;
     color: var(--ink);
     font: inherit;
-    font-size: var(--fs-xs);
+    font-size: 1rem;
     &::placeholder { color: var(--ink-4); }
   }
   &:focus-within {
@@ -3316,7 +3400,7 @@ tr.is-clickable {
   flex-direction: column;
   gap: var(--space-2);
   pointer-events: none;
-  @media (max-width: 719px) {
+  @include mobile-only {
     bottom: var(--space-4);
     left: var(--space-3);
     right: var(--space-3);
@@ -3331,7 +3415,7 @@ tr.is-clickable {
   background: var(--ink);
   color: var(--bg);
   border-radius: var(--radius-pill);
-  font-size: var(--fs-sm);
+  font-size: 1rem;
   box-shadow: 0 8px 32px rgba(0,0,0,0.25);
   opacity: 0;
   transform: translateY(20px);
@@ -3352,7 +3436,7 @@ tr.is-clickable {
 // ============================================================================
 // 420px ekstra mobile sıkıştırma + detail panel iç flat (R2-G)
 // ============================================================================
-@media (max-width: 419px) {
+@include sm-only {
   // iPhone 5 — minimum padding
   .cluster {
     padding: var(--space-3) var(--space-3) var(--space-3) !important;
@@ -3381,7 +3465,7 @@ tr.is-clickable {
 }
 
 // Detail panel iç bloklarına flat pattern — mobile'da iç içe padding'i sıfırla
-@media (max-width: 719px) {
+@include mobile-only {
   .dp__term, .dp__story, .dp__5n1k-row, .dp__side, .dp__ref {
     padding: var(--space-3) var(--space-3) !important;
     border-radius: var(--radius-md) !important;
@@ -3406,12 +3490,12 @@ tr.is-clickable {
     @media (min-width: 1240px) {
       height: calc(100dvh - var(--appbar-h)) !important;
     }
-    @media (max-width: 1239px) {
+    @include lg-down {
       height: 100dvh !important;
     }
   }
   .pop.pop--detail {
-    @media (max-width: 719px) {
+    @include mobile-only {
       max-height: 80dvh !important;
     }
   }
@@ -3453,7 +3537,7 @@ tr.is-clickable {
 
 // Footer — mobile 1 sütun, kbd hatırlatma sticky değil ama belirgin
 .appfooter {
-  @media (max-width: 719px) {
+  @include mobile-only {
     grid-template-columns: 1fr !important;
     text-align: center;
     padding: var(--space-5) var(--space-3) !important;
@@ -3497,7 +3581,7 @@ tr.is-clickable {
 }
 // Tablet + mobile drawer açıkken sidebar tıklanmasın (pointer-events kapat)
 body:has(.detail-panel--open) .sidebar {
-  @media (max-width: 1239px) {
+  @include lg-down {
     pointer-events: none;
     opacity: 0.4;
     transition: opacity 200ms;
@@ -3521,7 +3605,7 @@ body:has(.detail-panel--open) .sidebar {
   // Touch device'da pop'a tıklamaya odaklı; iframe scroll'ı çakışmasın
   -webkit-overflow-scrolling: touch;
 
-  @media (max-width: 719px) {
+  @include mobile-only {
     // Mobile'da bottom-sheet mantığı için detail popover
     &.pop--detail {
       position: fixed !important;
@@ -3555,7 +3639,7 @@ body:has(.detail-panel--open) .sidebar {
   }
 }
 body.pop-open {
-  @media (max-width: 719px) {
+  @include mobile-only {
     overflow: hidden;
   }
 }
@@ -3577,7 +3661,7 @@ body.pop-open {
     border-radius: var(--radius-md);
     box-shadow: 0 12px 40px rgba(0,0,0,0.15);
     z-index: 90;
-    @media (max-width: 719px) {
+    @include mobile-only {
       // Mobile: appbar grid'inde alt satırdaysa search-box, results full-width
       position: fixed;
       top: auto;
@@ -3588,7 +3672,7 @@ body.pop-open {
   }
   &__count {
     padding: var(--space-1) var(--space-3);
-    font-size: var(--fs-xs);
+    font-size: 1rem;
     color: var(--ink-3);
     border-bottom: 1px solid var(--line-2);
     background: var(--bg-soft);
@@ -3608,7 +3692,7 @@ body.pop-open {
       strong { color: var(--ink); }
     }
     &-hint {
-      font-size: var(--fs-xs);
+      font-size: 1rem;
       color: var(--ink-4);
       margin-top: var(--space-2) !important;
     }
@@ -3629,7 +3713,7 @@ body.pop-open {
   &__title {
     font-weight: 500;
     color: var(--ink);
-    font-size: var(--fs-sm);
+    font-size: 1rem;
     mark {
       background: color-mix(in srgb, var(--enrich-detail) 30%, transparent);
       color: var(--enrich-detail);
@@ -3638,7 +3722,7 @@ body.pop-open {
     }
   }
   &__snippet {
-    font-size: var(--fs-xs);
+    font-size: 1rem;
     color: var(--ink-3);
     margin-top: 0.15rem;
     line-height: 1.4;
@@ -3700,7 +3784,7 @@ body.pop-open {
   // Linkler: URL'i parantezde göster
   a[href^="http"]:not([href*="/ddd_moduler_monolith"])::after {
     content: " (" attr(href) ")";
-    font-size: 0.85em;
+    font-size: 1rem;
     color: #666;
   }
   // Hero başlığı sayfa başında
@@ -3781,7 +3865,7 @@ body.pop-open {
   border-left: 4px solid var(--state-critical);
   border-radius: var(--radius-md);
   color: var(--state-critical);
-  font-size: var(--fs-sm);
+  font-size: 1rem;
   margin: var(--space-3) 0;
   i { font-size: 1.25rem; flex-shrink: 0; }
   code {
@@ -3821,7 +3905,7 @@ body.pop-open {
 }
 
 // Detail panel close on mobile
-@media (max-width: 980px) {
+@include nav-down {
   .sidebar__gran-legend { display: none; }
 }
 
@@ -3879,7 +3963,7 @@ body { min-width: 0; }
 // kv listesi, grid kapsayıcısı) mobilde flat görünür — bg/border/padding 0.
 // SADECE en içteki kart (pair, item, card) kendi görsel kimliğini korur.
 // ============================================================================
-@media (max-width: 719px) {
+@include mobile-only {
   // Cluster içi nefes payı — sadece tek katman padding
   .cluster {
     padding: var(--space-3) var(--space-2) var(--space-4) !important;
@@ -3951,152 +4035,297 @@ body { min-width: 0; }
     padding: 0 var(--space-1) !important;
   }
 }
+// ============================================================================
+// CLUSTER ACCORDION — v2 REDESIGN (kart-içinde-kart + net hiyerarşi)
+//
+// Tasarım kararları:
+//  1. Sayfa zemini (recessed)  → cluster kartı (elevated, beyaz)
+//                              → açık body (recessed-içte, soft)
+//     Üç seviye → görsel hiyerarşi anında okunur.
+//  2. Layer rengi: kalın üst şerit (top stripe 5px) + ince sol şerit
+//     → renk hâkim ama metni boğmuyor.
+//  3. Toggle: 44×44 büyük buton, daire şeklinde, contrast bg,
+//     chevron 180° döner. Açık/kapalı net ayrılır.
+//  4. Header: kapalı durumda tek bir geniş tıklama alanı + hover'da
+//     +2px yükselme + accent border + "Aç →" mikro yazısı.
+//  5. Açık durumda: header üstünde küçük "AÇIK" rozeti + body üst
+//     kenarında ayraç + body soft zemin.
+// ============================================================================
+
+// Sayfa içeriği zemini — kart'tan recessed (içe gömük)
+.content { background: var(--bg-soft); }
+
 .cluster {
   position: relative;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  // Page bg'ye karşı yüksek kontrast: collapsed iken "elevate edilmiş kart"
-  background: var(--bg-soft);
-  margin-bottom: var(--space-5);
-  padding: var(--space-5) var(--space-5) var(--space-5) !important;
-  // Sol kenarda kalın accent — modül ailesini görsel olarak işaretler
+  background: var(--bg);                  // 1. Kart yüzeyi: en açık (beyaz)
+  margin-bottom: var(--space-4) !important; // Kartlar arası KOMPAKT nefes (önceden space-6 fazlaydı)
+  padding: 0 !important;                   // Padding header/body içine taşındı
+  overflow: hidden;                        // Top stripe yuvarlatma için
+  // Layer rengini ince sol kenar olarak tut
   border-left: 4px solid var(--enrich-detail);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.04),
-    0 4px 12px rgba(0, 0, 0, 0.06);
-  transition: box-shadow 200ms ease, border-color 200ms ease, transform 200ms ease, background 200ms ease;
+    0 6px 18px rgba(0, 0, 0, 0.05);
+  transition:
+    box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 200ms ease,
+    transform 200ms ease,
+    background 200ms ease;
 
+  // Top stripe — layer rengi üst kenarda 5px şerit (kapalı durumda da görünür)
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: var(--enrich-detail);
+    opacity: 0.85;
+    z-index: 1;
+  }
+
+  // -------- Header (kapalı veya açık her zaman görünür) --------
   &__header {
     position: relative;
     cursor: pointer;
-    padding-right: 4rem; // toggle butonu + label için yer
     user-select: none;
+    padding: var(--space-4) var(--space-5);
+    padding-right: 4.5rem; // Toggle için yer
+    padding-top: calc(var(--space-4) + 5px); // Top stripe için extra
+    transition: background 180ms ease;
   }
 
-  // Toggle = "Genişlet/Daralt" pill butonu (chevron + label)
+  &__header:hover { background: var(--bg-soft); }
+
+  // -------- Toggle butonu (büyük, dairesel, net) --------
   &__toggle {
     position: absolute;
-    top: 50%;
-    right: var(--space-2);
-    transform: translateY(-50%);
-    min-width: 2.75rem;
-    height: 2.5rem;
-    padding: 0 var(--space-3);
-    border-radius: 999px;
-    background: var(--bg);
-    border: 1.5px solid var(--enrich-detail);
-    color: var(--enrich-detail);
+    top: calc(var(--space-3) + 5px);        // Top stripe + üst boşluk
+    right: var(--space-3);
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--bg-soft);
+    border: 2px solid var(--line);
+    color: var(--ink-2);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-1);
-    font-size: var(--fs-xs);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    transition: all 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
-    z-index: 2;
-    i { font-size: 1.1rem; transition: transform 220ms ease; }
-    // Pseudo-label (chevron yanında "AÇ" yazısı; açıkken "KAPAT")
-    &::after {
-      content: "AÇ";
-      display: inline-block;
+    transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    z-index: 3;
+    i {
+      font-size: 1.25rem;
+      transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
     }
     &:hover {
       background: var(--enrich-detail);
-      color: var(--bg);
-      transform: translateY(-50%) scale(1.04);
+      color: #fff;
+      border-color: var(--enrich-detail);
+      transform: scale(1.08);
       box-shadow: 0 4px 14px color-mix(in srgb, var(--enrich-detail) 35%, transparent);
     }
+    &:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--enrich-detail) 50%, transparent);
+      outline-offset: 2px;
+    }
   }
 
+  // -------- Body (açıldığında görünür alan) --------
   &__body {
     overflow: hidden;
-    transition: max-height 320ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 240ms ease, margin-top 240ms ease;
+    transition:
+      max-height 360ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 260ms ease,
+      padding 260ms ease;
   }
 
-  // Açık state: chevron yukarı + label değişir + kart farklı görünür
+  // ============ AÇIK STATE ============
   &:not(.cluster--collapsed) {
-    background: var(--bg);
-    border-color: var(--line-2);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    border-color: var(--ink-4);            // Belirgin kenar
+    box-shadow:
+      0 4px 10px rgba(0, 0, 0, 0.06),
+      0 16px 36px rgba(0, 0, 0, 0.08);     // Yüzer hissi
+
     .cluster__toggle {
+      background: var(--enrich-detail);
+      color: #fff;
+      border-color: var(--enrich-detail);
       i { transform: rotate(180deg); }
-      &::after { content: "KAPAT"; }
     }
-    .cluster__body { max-height: none; opacity: 1; margin-top: var(--space-5); }
+
+    .cluster__header {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .cluster__body {
+      max-height: none;
+      opacity: 1;
+      padding: var(--space-5) var(--space-5) var(--space-6);
+      background: var(--bg-soft);          // Body recessed (kart içi çukur)
+      border-top: 1px solid var(--line-2); // Header ile body arası ince çizgi
+    }
+
+    // Açık rozetı: header sağ üst köşede mini etiket
+    .cluster__header::after {
+      content: "AÇIK";
+      position: absolute;
+      top: calc(var(--space-1) + 5px);
+      right: calc(4rem + var(--space-3));
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--enrich-detail);
+      background: color-mix(in srgb, var(--enrich-detail) 12%, transparent);
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      pointer-events: none;
+    }
   }
 
-  // Kapalı state: kart kompakt — gereksiz boşluk YOK
+  // ============ KAPALI STATE ============
   &.cluster--collapsed {
-    // Header'ın etrafında tek katman padding; alt boşluk minimal
-    padding: var(--space-3) var(--space-5) var(--space-3) !important;
     .cluster__body {
       max-height: 0;
       opacity: 0;
-      margin: 0;
       padding: 0;
       pointer-events: none;
-      overflow: hidden;
+      display: none;                  // boşluk almasın → render maliyeti de düşer
     }
+    // Collapsed'da header alt boşluğunu KÜÇÜLT — tags'in altında dead space olmasın
     .cluster__header {
-      padding-bottom: 0;
-      border-bottom: 0;
-      margin-bottom: 0;
+      padding-bottom: var(--space-3) !important;  // ≈ 12px, en az nefes
     }
-    // Cluster header içindeki opsiyonel sub-elementlerin kapanmış altı
     .cluster__subtitle,
     .cluster__tags,
     .cluster__meta-row {
-      margin-bottom: 0;
-      padding-bottom: 0;
+      margin-bottom: 0 !important;
+      // Son eleman olduğunda kendi alt padding'i de sıfır
+      &:last-child { padding-bottom: 0 !important; }
     }
 
+    // Hover: kart yükselir, accent border, "tıklanır" hissi
     &:hover {
-      background: var(--bg);
       border-color: var(--enrich-detail);
+      transform: translateY(-3px);
       box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.08),
-        0 8px 28px color-mix(in srgb, var(--enrich-detail) 18%, transparent);
-      transform: translateY(-2px);
+        0 6px 14px rgba(0, 0, 0, 0.08),
+        0 18px 38px color-mix(in srgb, var(--enrich-detail) 22%, transparent);
+
+      .cluster__toggle {
+        background: var(--enrich-detail);
+        color: #fff;
+        border-color: var(--enrich-detail);
+      }
     }
-    // Kart altında "Genişletmek için tıkla" hint
+
+    // Mikro hint: başlık altında "tıkla → aç" yazısı (kapalı durumda)
     .cluster__title::after {
-      content: " · tıkla → genişlet";
-      font-size: var(--fs-xs);
+      content: " → aç";
+      font-size: 1rem;
       font-weight: 400;
       color: var(--ink-3);
       letter-spacing: 0;
       text-transform: none;
-      opacity: 0.7;
+      opacity: 0.65;
+      margin-left: 0.5rem;
+    }
+  }
+
+  // ============ FOCUS-VISIBLE — klavye erişilebilirliği ============
+  &__header:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--enrich-detail) 50%, transparent);
+    outline-offset: -3px;
+    border-radius: var(--radius-lg);
+  }
+}
+
+// ============================================================================
+// CLUSTER — Dark mode redesign
+// ============================================================================
+:root[data-theme="dark"] {
+  .content { background: #0d0f12; }       // Sayfa: en koyu (recessed)
+
+  .cluster {
+    background: #1c1f24;                   // Kart: orta ton (elevated)
+    border-color: #2e3239;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.5),
+      0 6px 22px rgba(0, 0, 0, 0.35);
+
+    &__header:hover { background: #20242a; }
+
+    &__toggle {
+      background: #20242a;
+      border-color: #3a3f47;
+      color: var(--ink-2);
+    }
+
+    &:not(.cluster--collapsed) {
+      border-color: #454b54;
+      box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.6),
+        0 18px 44px rgba(0, 0, 0, 0.45);
+
+      .cluster__header { border-bottom-color: #2e3239; }
+      .cluster__body {
+        background: #15171b;                // Body: en koyu (kart içi çukur)
+        border-top-color: #2e3239;
+      }
+    }
+
+    &.cluster--collapsed:hover {
+      border-color: var(--enrich-detail);
+      box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.6),
+        0 20px 44px color-mix(in srgb, var(--enrich-detail) 28%, transparent);
     }
   }
 }
 
-// Dark mode: card kontrast farklı
-:root[data-theme="dark"] .cluster {
-  background: #1a1d22;
-  border-color: #2e3239;
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.4),
-    0 4px 14px rgba(0, 0, 0, 0.3);
+// ============================================================================
+// CLUSTER — Mobile optimizasyonu
+// ============================================================================
+@include mobile-only {
+  .cluster {
+    margin-bottom: var(--space-5);
+    border-radius: var(--radius-md);
 
-  &:not(.cluster--collapsed) {
-    background: #20242a;
-    border-color: #353a42;
-  }
-
-  &.cluster--collapsed:hover {
-    background: #20242a;
-    box-shadow:
-      0 4px 14px rgba(0, 0, 0, 0.5),
-      0 10px 32px color-mix(in srgb, var(--enrich-detail) 24%, transparent);
-  }
-  .cluster__toggle {
-    background: #20242a;
+    &__header {
+      padding: var(--space-3) var(--space-3);
+      padding-right: 3.5rem;
+      padding-top: calc(var(--space-3) + 5px);
+    }
+    &__toggle {
+      width: 2.5rem;
+      height: 2.5rem;
+      top: calc(var(--space-2) + 5px);
+      right: var(--space-2);
+      i { font-size: 1.1rem; }
+    }
+    &:not(.cluster--collapsed) .cluster__body {
+      padding: var(--space-3) var(--space-3) var(--space-4);
+    }
+    // Mobilde "AÇIK" rozeti çakışıyor → gizle
+    &:not(.cluster--collapsed) .cluster__header::after { display: none; }
+    // Mobilde "tıkla → aç" hint daha minik
+    &.cluster--collapsed .cluster__title::after {
+      display: block;
+      margin-left: 0;
+      margin-top: 0.2rem;
+    }
   }
 }
+
+// ============================================================================
+// CLUSTER v2 — eski kuralları override için sonra gelen blok
+// (Aşağıda eski kurallar duruyor; v2 stilleri specificity üstünlüğü için
+//  body[data-theme] altında olmasalar da `:root[data-theme] .cluster` ile
+//  tutuluyor.)
+// ============================================================================
+
+// Eski legacy kalıntısı temizlendi — yeni v2 dark mode bloğu yukarıda.
 
 // Uzun string/code mobilde sığsın
 pre, code { max-width: 100%; word-break: break-word; white-space: pre-wrap; }
@@ -4106,7 +4335,7 @@ img, iframe, video { max-width: 100%; height: auto; }
 input, select, textarea { max-width: 100%; }
 
 // Layer cards 4-5 sütun zorlamasın 320'de
-@media (max-width: 419px) {
+@include sm-only {
   .block-layer-cards { grid-template-columns: 1fr !important; }
   .gran-grid { grid-template-columns: 1fr !important; }
   .block-grid--cols-2, .block-grid--cols-3 { grid-template-columns: 1fr !important; }
@@ -4153,7 +4382,7 @@ input, select, textarea { max-width: 100%; }
     align-items: center;
     gap: var(--space-2);
     font-weight: 500;
-    font-size: var(--fs-sm);
+    font-size: 1rem;
     color: var(--ink);
     text-decoration: none;
     padding: var(--space-1) var(--space-2);
@@ -4165,7 +4394,7 @@ input, select, textarea { max-width: 100%; }
     i { font-size: 1.25rem; color: var(--l1); flex-shrink: 0; }
 
     // Çok dar ekranda sadece icon (320–419)
-    @media (max-width: 419px) {
+    @include sm-only {
       span { display: none; }
     }
     @media (min-width: 720px) { font-size: var(--fs-md); }
@@ -4221,9 +4450,9 @@ input, select, textarea { max-width: 100%; }
   padding: var(--space-1) var(--space-2) !important;
   width: 100%;
 }
-.appbar .search-box__input { font-size: var(--fs-sm) !important; }
+.appbar .search-box__input { font-size: 1rem !important; }
 // Slash hint mobilde gizle (sığmayabilir)
-@media (max-width: 419px) {
+@include sm-only {
   .search-box__hint { display: none !important; }
 }
 
@@ -4232,8 +4461,8 @@ input, select, textarea { max-width: 100%; }
   display: flex !important;
   flex-wrap: wrap !important;
   gap: var(--space-3) var(--space-4) !important;
-  font-size: var(--fs-sm);
-  @media (max-width: 419px) { gap: var(--space-2) var(--space-3) !important; }
+  font-size: 1rem;
+  @include sm-only { gap: var(--space-2) var(--space-3) !important; }
 }
 .hero__meta span { white-space: nowrap; }
 
@@ -4251,7 +4480,7 @@ input, select, textarea { max-width: 100%; }
     width: 100%;
     @media (min-width: 720px) { flex-direction: row; align-items: center; width: auto; }
   }
-  &__label { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-3); }
+  &__label { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-3); }
   &__chips {
     display: flex !important;
     flex-wrap: wrap !important;
@@ -4260,12 +4489,12 @@ input, select, textarea { max-width: 100%; }
   }
 }
 .chip {
-  font-size: var(--fs-xs) !important;
+  font-size: 1rem !important;
   padding: var(--space-1) var(--space-3) !important;
   white-space: nowrap;
   flex-shrink: 0;
 }
-@media (max-width: 419px) {
+@include sm-only {
   .chip { padding: var(--space-1) var(--space-2) !important; font-size: 1rem !important; }
 }
 
@@ -4286,7 +4515,7 @@ input, select, textarea { max-width: 100%; }
   grid-template-columns: 1fr;
   gap: var(--space-5);
   color: var(--ink-3);
-  font-size: var(--fs-sm);
+  font-size: 1rem;
 
   @media (min-width: 720px) { grid-template-columns: repeat(3, 1fr); }
 
@@ -4297,7 +4526,7 @@ input, select, textarea { max-width: 100%; }
     border: 1px solid var(--line);
     padding: 0.05rem 0.4rem;
     border-radius: var(--radius-sm);
-    font-size: 0.85em;
+    font-size: 1rem;
     margin: 0 0.15rem;
   }
 }
@@ -4314,7 +4543,7 @@ input, select, textarea { max-width: 100%; }
   --ink: #ebebed;
   --ink-2: #c2c5cb;
   --ink-3: #8a8f96;
-  --ink-4: #5a5f66;
+  --ink-4: #83878e;  // R3 a11y: 2.8→4.6:1 (dark yüzeylerde WCAG AA)
   --ink-5: #3a3e44;
   --code-bg: #1a1d22;
   --card-bg: #1c1f23;
@@ -4423,8 +4652,11 @@ input, select, textarea { max-width: 100%; }
   .block-table__wrap {
     border: 1px solid var(--line);
     border-radius: var(--radius-md);
-    background: var(--bg-soft);
+    background: #1a1d22; // wrap zemini, tablo bg-soft'tan biraz daha koyu — kontrast
+    box-shadow: 0 1px 0 var(--line);
+    margin-bottom: 2.25rem;
   }
+  .block-table tr:last-child td { border-bottom: none; }
 
   // --- Block-code (accordion) ---
   .block-code {
@@ -4916,10 +5148,552 @@ input, select, textarea { max-width: 100%; }
 a.link--external, .ref--internal { transition: color 120ms; }
 
 // ------ Responsive (sadece içerik tipografi/grid — layout YOK) ------
-@media (max-width: 980px) {
+@include nav-down {
   .block-grid--cols-2,
   .block-grid--cols-3 { grid-template-columns: 1fr; }
   .block-layer-cards { grid-template-columns: 1fr 1fr; }
   .hero__title { font-size: 1.75rem; }
   .pop { max-width: calc(100vw - 2rem); }
 }
+
+// ============================================================================
+// P0-B Block tipleri sweep — daha önce dark mode'da boşlukta kalan bloklar
+// ============================================================================
+:root[data-theme="dark"] {
+  // --- Block-paragraph ---
+  .block-paragraph { color: var(--ink-2); }
+  .block-paragraph strong { color: var(--ink); }
+  .block-paragraph em { color: var(--enrich-info); }
+
+  // --- Block-heading ---
+  .block-heading { color: var(--ink); }
+  .block-heading--h2 { border-bottom-color: var(--line); }
+
+  // --- Block-divider ---
+  .block-divider { border-top-color: var(--line); }
+
+  // --- Block-list ---
+  .block-list { color: var(--ink-2); }
+  .block-list li::marker { color: var(--ink-4); }
+
+  // --- Block-kv-row / pair ---
+  .block-kv,
+  .block-kv__pair {
+    background: var(--bg-soft);
+    border-color: var(--line-2);
+    color: var(--ink-2);
+  }
+  .block-kv__key { color: var(--ink); }
+  .block-kv__value { color: var(--ink-2); }
+
+  // --- Block-steps ---
+  .block-steps { color: var(--ink-2); }
+  .step {
+    background: var(--card-bg-soft, var(--bg-soft));
+    border: 1px solid var(--line-2);
+    color: var(--ink-2);
+  }
+  .step__num {
+    background: var(--enrich-detail);
+    color: var(--bg);
+  }
+  .step__title { color: var(--ink); }
+  .step__body { color: var(--ink-2); }
+
+  // --- Block-user-stories ---
+  .block-user-stories { color: var(--ink-2); }
+  .story-card__title { color: var(--ink); }
+
+  // --- Block-checklist (görünür item) ---
+  .block-checklist { color: var(--ink-2); }
+  .block-checklist__head { color: var(--ink); }
+  .block-checklist__progress {
+    background: var(--bg-soft);
+    color: var(--ink);
+    border: 1px solid var(--line-2);
+  }
+  .checklist__item {
+    background: var(--card-bg-soft, var(--bg-soft));
+    border-color: var(--line-2);
+    color: var(--ink-2);
+  }
+  .checklist__item--done {
+    opacity: 0.6;
+    text-decoration: line-through var(--ink-4);
+  }
+  .checklist__label { color: var(--ink); }
+  .checklist__hint { color: var(--ink-3); }
+  .checklist__opt { color: var(--ink-4); }
+
+  // --- Lesson-header ---
+  .lesson-header {
+    background: var(--bg-soft);
+    border-color: var(--line-2);
+    color: var(--ink-2);
+  }
+  .lesson-header__title { color: var(--ink); }
+  .lesson-header__meta { color: var(--ink-3); }
+
+  // --- Granularity-legend (sidebar) ---
+  .sidebar__gran-legend {
+    background: var(--bg);
+    border-top: 1px solid var(--line-2);
+    color: var(--ink-3);
+  }
+  .sidebar__gran-legend__title { color: var(--ink-2); }
+  .sidebar__gran-legend__row { color: var(--ink-2); i { color: var(--enrich-detail); } }
+  .sidebar__gran-legend__sp { color: var(--ink-3); }
+}
+
+// ============================================================================
+// P0-B A11y — focus visible standardı tüm interaktif elemanlarda
+// ============================================================================
+:where(a, button, [role="button"], [tabindex="0"], input, select, textarea, summary, .is-clickable):focus-visible {
+  outline: 2px solid var(--enrich-detail);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm, 4px);
+}
+
+// Skip-to-content link — ekran okuyucu + klavye kullanıcısı için
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 9999;
+  background: var(--ink);
+  color: var(--bg);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-weight: 500;
+
+  &:focus,
+  &:focus-visible {
+    left: var(--space-3);
+    top: var(--space-3);
+  }
+}
+
+// ============================================================================
+// Reading progress bar — sayfa scroll yüzdesi
+// ============================================================================
+.reading-progress {
+  position: fixed;
+  top: var(--appbar-h, 56px);
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: transparent;
+  z-index: 50;
+  pointer-events: none;
+}
+.reading-progress__fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--enrich-detail, #2563eb), var(--enrich-info, #2e7d32));
+  transition: width 100ms linear;
+}
+
+// Compare view — iki cluster yan yana
+.compare-view {
+  &__head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--space-3) 0 var(--space-3);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: var(--space-5);
+    h2 {
+      margin: 0; font-size: 1.3rem; font-weight: 500;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      i { color: var(--enrich-detail); }
+    }
+  }
+  &__close {
+    background: var(--bg-soft); border: 1px solid var(--line);
+    padding: var(--space-2) var(--space-3); border-radius: var(--radius-md);
+    cursor: pointer; font: inherit; font-size: 1rem;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    &:hover { background: var(--bg); border-color: var(--ink-4); }
+  }
+  &__grid {
+    display: grid; gap: var(--space-4);
+    grid-template-columns: 1fr;
+    @media (min-width: 1024px) { grid-template-columns: 1fr 1fr; }
+  }
+  &__col {
+    position: relative;
+    .cluster { margin-bottom: 0; }
+  }
+  &__col-close {
+    position: absolute; top: var(--space-2); right: var(--space-2);
+    z-index: 10;
+    background: var(--bg); border: 1px solid var(--line);
+    width: 2rem; height: 2rem; border-radius: 50%;
+    cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    color: var(--ink-3);
+    &:hover { background: var(--bg-soft); color: var(--ink); }
+  }
+  &__missing {
+    background: var(--bg-soft); border: 1px dashed var(--line);
+    border-radius: var(--radius-md); padding: var(--space-5);
+    text-align: center;
+    i { font-size: 2rem; color: var(--ink-3); display: block; margin-bottom: var(--space-2); }
+    strong { display: block; margin-bottom: var(--space-3); color: var(--ink-2); }
+  }
+  &__picker {
+    margin-top: var(--space-4); padding: var(--space-3) var(--space-4);
+    background: var(--bg-soft); border-radius: var(--radius-md);
+    color: var(--ink-3); font-size: 1rem;
+    code { background: var(--bg); padding: 0.1rem 0.35rem; border-radius: 3px; font-family: 'Roboto Mono', monospace; }
+  }
+}
+
+// Search recent queries
+.search-box__recent {
+  padding: var(--space-2);
+
+  &-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--space-1) var(--space-2);
+    color: var(--ink-3); font-size: 1rem;
+    border-bottom: 1px solid var(--line-2);
+    margin-bottom: var(--space-1);
+
+    i { font-size: 1rem; margin-right: 0.4rem; }
+  }
+  &-clear {
+    background: none; border: 0; cursor: pointer;
+    color: var(--ink-3); font-size: 1rem;
+    padding: 0.2rem 0.5rem; border-radius: var(--radius-sm, 4px);
+    &:hover { background: var(--bg-soft); color: var(--ink-2); }
+  }
+  &-item {
+    display: block; width: 100%; text-align: left;
+    background: none; border: 0; cursor: pointer;
+    color: var(--ink-2); font-size: 1rem;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm, 4px);
+    &::before { content: "↗"; color: var(--ink-4); margin-right: 0.5rem; }
+    &:hover { background: var(--bg-soft); color: var(--ink); }
+  }
+}
+:root[data-theme="dark"] .search-box__recent-head { border-color: var(--line-2); }
+
+// Appbar bookmark badge — sayaç
+.appbar__action { position: relative; }
+.appbar__badge {
+  position: absolute;
+  top: 4px; right: 4px;
+  min-width: 1rem; height: 1rem;
+  padding: 0 0.3rem;
+  background: var(--enrich-detail, #f5b400);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 500;
+  display: inline-flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+
+// Bookmark butonu — cluster header
+.cluster__bookmark {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--ink-3);
+  padding: var(--space-1);
+  border-radius: var(--radius-sm, 6px);
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.25rem;
+  transition: color 140ms;
+
+  &:hover { color: var(--enrich-detail, #f5b400); background: var(--bg-soft); }
+  &:focus-visible { outline: 2px solid var(--enrich-detail, #2563eb); outline-offset: 2px; }
+  &--on { color: #f5b400; }
+}
+
+// Sidebar desktop collapse butonu
+.sidebar__collapse {
+  position: absolute;
+  top: var(--space-2);
+  right: calc(-1 * var(--space-3));
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ink-3);
+  z-index: 5;
+
+  @media (min-width: 1024px) {
+    display: inline-flex;
+  }
+  &:hover { color: var(--ink); background: var(--bg-soft); }
+  i { font-size: 1rem; transition: transform 200ms; }
+}
+
+@media (min-width: 1024px) {
+  body.sidebar-collapsed {
+    .sidebar {
+      width: 2.5rem !important;
+      min-width: 2.5rem !important;
+      overflow: hidden;
+      .toc, .toc__quickfilter, .sidebar__gran-legend { display: none; }
+    }
+    .sidebar__collapse i { transform: rotate(180deg); }
+    .main { margin-left: 0; }
+  }
+}
+
+// ============================================================================
+// Media + diagram block: image / video / mermaid
+// ============================================================================
+.block-image, .block-video, .block-mermaid {
+  margin: var(--space-3) 0 var(--space-4);
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  text-align: center;
+
+  img, video {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm, 6px);
+    background: var(--bg);
+  }
+  &__caption, &__title {
+    font-size: 1rem;
+    color: var(--ink-3);
+    margin-top: var(--space-2);
+    text-align: left;
+    line-height: 1.55;
+  }
+  &.is-clickable { cursor: pointer; }
+  &.is-clickable:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+}
+.block-mermaid__chart {
+  display: flex; justify-content: center; align-items: center;
+  min-height: 80px;
+  svg { max-width: 100%; height: auto; }
+}
+.block-mermaid__source {
+  background: var(--code-bg, #1f2329);
+  color: var(--ink, #e2e2e2);
+  padding: var(--space-2);
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1rem;
+  border-radius: var(--radius-sm, 6px);
+  overflow-x: auto;
+  text-align: left;
+}
+:root[data-theme="dark"] {
+  .block-image, .block-video, .block-mermaid {
+    background: var(--bg-soft);
+    border-color: var(--line);
+  }
+  .block-image__caption, .block-video__caption, .block-mermaid__title { color: var(--ink-3); }
+}
+
+// ============================================================================
+// Code syntax highlighting tokens (mini highlighter — Prism/Shiki yerine)
+// ============================================================================
+.tok-kw  { color: #c678dd; font-weight: 500; }
+.tok-str { color: #98c379; }
+.tok-num { color: #d19a66; }
+.tok-cmt { color: #5c6370; font-style: italic; }
+
+// Light mode için tokens
+:root[data-theme="light"] {
+  .tok-kw  { color: #a626a4; }
+  .tok-str { color: #50a14f; }
+  .tok-num { color: #986801; }
+  .tok-cmt { color: #a0a1a7; font-style: italic; }
+}
+
+// ============================================================================
+// Detail panel — gündelik analoji + dürüst placeholder
+// ============================================================================
+.dp__analogy {
+  background: color-mix(in srgb, var(--enrich-info, #2e7d32) 8%, var(--bg));
+  border-left: 3px solid var(--enrich-info, #2e7d32);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4) !important;
+
+  h4 { margin-top: 0 !important; color: var(--enrich-info, #2e7d32) !important; }
+  p { margin: 0; line-height: 1.65; color: var(--ink-2); }
+}
+
+.dp__placeholder {
+  background: color-mix(in srgb, var(--warn, #c47a17) 6%, var(--bg-soft));
+  border: 1px dashed color-mix(in srgb, var(--warn, #c47a17) 40%, transparent);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4) !important;
+
+  &-row {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    i { font-size: 1.5rem; color: var(--warn, #c47a17); flex-shrink: 0; margin-top: 0.1rem; }
+    strong { display: block; color: var(--ink); margin-bottom: var(--space-1); font-weight: 500; }
+    p { margin: 0; line-height: 1.6; color: var(--ink-3); font-size: 1rem; }
+    code {
+      background: var(--bg);
+      padding: 0.1rem 0.35rem;
+      border-radius: var(--radius-sm, 4px);
+      font-family: 'Roboto Mono', monospace;
+      font-size: 1rem;
+    }
+  }
+}
+:root[data-theme="dark"] .dp__placeholder {
+  background: color-mix(in srgb, var(--warn, #f5c75a) 10%, var(--bg-soft));
+  border-color: color-mix(in srgb, var(--warn, #f5c75a) 40%, transparent);
+  i { color: var(--warn, #f5c75a); }
+  strong { color: var(--ink); }
+  p { color: var(--ink-3); }
+}
+
+// ============================================================================
+// Block error UI — registry/render fail için tutarlı yüzey
+// ============================================================================
+.block-error {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-3) var(--space-4);
+  margin: var(--space-3) 0;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--warn, #c47a17);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+
+  i { font-size: 1.25rem; color: var(--warn, #c47a17); flex-shrink: 0; margin-top: 0.1rem; }
+  &__body { flex: 1; min-width: 0; }
+  &__msg { margin-top: var(--space-1); color: var(--ink-3); font-size: 1rem; line-height: 1.5; }
+  code {
+    background: var(--bg);
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--radius-sm, 4px);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1rem;
+  }
+}
+:root[data-theme="dark"] .block-error {
+  background: var(--bg-soft);
+  border-color: var(--line);
+  i { color: var(--warn, #f5c75a); }
+  &__msg { color: var(--ink-3); }
+}
+
+// Reduced motion — animasyon hassasiyeti olan kullanıcılar için
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// ============================================================================
+// R3 — ESTETİK CİLA TURU (token-safe · additive · geri alınabilir) · 2026-06
+// Yalnızca sunum katmanı: motion/focus token'ları, marka seçim rengi, ince
+// scrollbar, focus halo, native accent, mobil dokunma cilası.
+// JSON içerik / layout / mevcut komponentler DEĞİŞMEDİ. Tek blok → kolay revert.
+// ============================================================================
+:root {
+  // Motion — yeni stiller + tutarlılık için tek kaynak
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  // Focus — tek kaynak (mevcut a11y outline standardını besler)
+  --focus-ring: var(--enrich-detail);
+  --focus-halo: color-mix(in srgb, var(--enrich-detail) 22%, transparent);
+  // Scrollbar
+  --scrollbar-thumb: color-mix(in srgb, var(--ink-4) 60%, transparent);
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--ink-3) 75%, transparent);
+  // Native form kontrolleri marka rengi (checkbox/radio/range/progress)
+  accent-color: var(--enrich-detail);
+}
+
+// Mobil: otomatik metin büyütmeyi engelle + dokunma parıltısını markaya çek
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+:where(a, button, [role="button"], [tabindex="0"], summary, .is-clickable) {
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--enrich-detail) 14%, transparent);
+}
+
+// Marka seçim rengi — tema token'ına bağlı; dark modda otomatik uyarlanır
+::selection {
+  background: color-mix(in srgb, var(--enrich-detail) 25%, transparent);
+  color: var(--ink);
+}
+
+// İnce, gösterişsiz scrollbar — overflow yoksa görünmez, layout'u etkilemez
+@supports (scrollbar-width: thin) {
+  html { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
+}
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--radius-pill, 999px);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+  background-clip: padding-box;
+}
+
+// Focus — KLAVYE focus'unda mevcut crisp outline KORUNUR (a11y standardı).
+// Ancak zaten seçili item'da (is-detail-active = sol accent bar göstergesi var)
+// fare tıklamasıyla TAM mor kutu çizmek gereksiz ve ağır görünüyor → o durumda
+// outline kaldırılır, seçim sol-bar ile gösterilir. Klavyeyle gezilen (henüz
+// seçilmemiş) item'larda outline aynen görünür.
+.is-clickable.is-detail-active:focus,
+.is-clickable.is-detail-active:focus-visible {
+  outline: none;
+}
+
+// FIX (R3): "card içinde card" — .cluster__header.is-clickable kendi border-radius
+// + negatif margin ile kartın İÇİNDE ayrı yüzen bir panel gibi görünüyordu.
+// Tek kart = .cluster; header onun içinde FLUSH içerik olmalı. Radius ve yatay
+// negatif margin sıfırlanır; açık state'teki header↔body ayıraç çizgisi korunur.
+.cluster__header.is-clickable {
+  border-radius: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+.cluster--collapsed .cluster__header.is-clickable {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+// ============================================================================
+// FIX (R3·B): SEÇİM GÖSTERGESİNİ SUSTUR — kullanıcı kararı.
+// Tıklanan/seçilen içerik öğelerinde beliren yüzen mor SOL-BAR (inset box-shadow)
+// ve KUTU (focus outline) tamamen kaldırılır. Seçili öğe yalnızca çok hafif bir
+// arka plan tintiyle belli olur. `is-clickable` tüm içerik bloklarına eklendiği
+// için tek kural hepsini (examples li, feature-list, list, kv, step, callout,
+// grid, layer-card, story, checklist, cluster header…) kapsar.
+// Tip/katman göstergesi olan border-left'lere DOKUNULMAZ (onlar seçim değil).
+// ============================================================================
+.is-clickable.is-detail-active,
+.is-detail-active {
+  box-shadow: none !important;   // yüzen sol-bar + inset gölge → yok
+  outline: none !important;      // tıklama kaynaklı mor kutu → yok
+  background: color-mix(in srgb, var(--enrich-detail) 6%, var(--bg-soft)) !important;
+}
+:root[data-theme="dark"] .is-clickable.is-detail-active,
+:root[data-theme="dark"] .is-detail-active {
+  background: color-mix(in srgb, var(--enrich-detail) 16%, var(--bg-soft)) !important;
+}
+// Seçili öğede kalıcı "→" oku da gizlenir (hover ipucu, seçilmemiş öğelerde durur)
+.is-detail-active::after { opacity: 0 !important; }
