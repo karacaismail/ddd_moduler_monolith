@@ -235,6 +235,11 @@ async function boot(): Promise<void> {
   // 8. Filter bar
   const filterBarEl = document.getElementById('filter-bar');
   const initialRoute = parseRoute();
+  // Lazy-render helper — applyFilter ve toggle/expand'in ortak kullanımı için BURADA
+  type LazyCluster = HTMLElement & { __renderBody?: () => void };
+  const lazyRender = (el: LazyCluster): void => {
+    if (typeof el.__renderBody === 'function') el.__renderBody();
+  };
   const applyFilter = (filter: { layer?: string; cluster?: string }): void => {
     const isFiltered = !!(filter.layer || filter.cluster);
     if (isFiltered) {
@@ -284,10 +289,6 @@ async function boot(): Promise<void> {
   }
 
   // Cluster accordion toggle + hash hedefini otomatik aç + LAZY RENDER
-  type LazyCluster = HTMLElement & { __renderBody?: () => void };
-  const lazyRender = (el: LazyCluster): void => {
-    if (typeof el.__renderBody === 'function') el.__renderBody();
-  };
   const expandCluster = (id: string) => {
     const el = document.getElementById(id) as LazyCluster | null;
     if (!el || !el.classList.contains('cluster')) return;
