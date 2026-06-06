@@ -2790,6 +2790,49 @@ tr.is-clickable {
 }
 .main { width: 100%; min-width: 0; padding: var(--space-4) var(--space-3) var(--space-7) !important; }
 
+// Sidebar close button (mobile drawer) — sağ üst, X icon
+.sidebar__close {
+  display: none;
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 1px solid var(--line-2);
+  color: var(--ink-2);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  i { font-size: 1.1rem; }
+  &:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+}
+@media (max-width: 819px) {
+  .sidebar__close { display: inline-flex; }
+  .sidebar { position: relative; }
+  .sidebar .toc { margin-top: var(--space-7); } // X butonu için boşluk
+}
+
+// Sidebar backdrop (mobile drawer)
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 22, 28, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms ease;
+  z-index: 75; // sidebar (80) ALTINDA
+}
+.sidebar-backdrop.is-visible { opacity: 1; pointer-events: auto; }
+:root[data-theme="dark"] .sidebar-backdrop { background: rgba(0, 0, 0, 0.55); }
+@media (min-width: 820px) {
+  .sidebar-backdrop { display: none !important; }
+}
+
 // 1) Mobile (< 820px): tek sütun, sidebar+detail drawer
 @media (max-width: 819px) {
   #app { grid-template-columns: 1fr !important; }
@@ -2852,8 +2895,9 @@ tr.is-clickable {
 }
 
 // 3) Desktop (1240px+): 3 sütun grid — HER İKİ panel STICKY
+// Sol sidebar 280px, sağ detail panel ~%50 daha geniş = 480px
 @media (min-width: 1240px) {
-  #app { grid-template-columns: 280px minmax(0, 1fr) 320px !important; }
+  #app { grid-template-columns: 280px minmax(0, 1fr) 480px !important; }
   .sidebar {
     position: sticky !important;
     top: var(--appbar-h) !important;

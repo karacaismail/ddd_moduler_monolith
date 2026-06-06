@@ -8,13 +8,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap&subset=latin,latin-ext" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
 </head>
 <body>
 <header id="appbar" class="appbar">
   <button id="mobile-menu-toggle" class="appbar__menu" aria-label="Menüyü aç/kapat">
-    <i class="ph-bold ph-list"></i>
+    <i class="ph ph-list"></i>
   </button>
   <a class="appbar__brand" href="#overview">
     <i class="ph-duotone ph-stack"></i>
@@ -23,15 +24,18 @@
   <div id="search-box" class="appbar__search search-box"></div>
   <div class="appbar__actions">
     <button id="dark-toggle" class="appbar__action" aria-label="Karanlık mod">
-      <i class="ph-bold ph-moon"></i>
+      <i class="ph ph-moon"></i>
     </button>
     <a class="appbar__action" href="https://github.com/karacaismail/ddd_moduler_monolith" target="_blank" rel="noopener" aria-label="GitHub repo">
-      <i class="ph-bold ph-github-logo"></i>
+      <i class="ph ph-github-logo"></i>
     </a>
   </div>
 </header>
 <div id="app">
   <aside id="sidebar" class="sidebar">
+    <button id="sidebar-close" class="sidebar__close" aria-label="Menüyü kapat">
+      <i class="ph ph-x"></i>
+    </button>
     <nav id="toc" class="toc"></nav>
     <aside class="sidebar__gran-legend" aria-label="Kilometre taşları">
       <div class="sidebar__gran-legend__title">Tane büyüklüğü · 1 adet için iş yükü (SP)</div>

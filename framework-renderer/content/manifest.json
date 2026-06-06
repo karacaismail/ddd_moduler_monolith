@@ -12,7 +12,7 @@
     { "id": "crosscut", "label": "Çapraz-kesen",              "order": 6, "icon": "ph-arrows-out" },
     { "id": "dx",       "label": "Plugin DX",                 "order": 7, "icon": "ph-code" },
     { "id": "services", "label": "Services — Dış",            "order": 8, "icon": "ph-cloud" },
-    { "id": "build",    "label": "Build sırası + Anti-pattern", "order": 9, "icon": "ph-flag-banner" },
+    { "id": "build",    "label": "Build & Anti-pattern",      "order": 9, "icon": "ph-flag-banner" },
     { "id": "frontend", "label": "Frontend Tech-Stack",        "order": 10, "icon": "ph-device-mobile" }
   ],
   "clusters": [

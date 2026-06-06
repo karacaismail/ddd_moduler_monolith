@@ -20,19 +20,45 @@ async function boot(): Promise<void> {
   const detailPanelEl = document.getElementById('detail-panel');
   if (detailPanelEl) mountDetailPanel(detailPanelEl);
 
-  // Mobile menu toggle
+  // Mobile sidebar drawer — toggle + backdrop + close button + ESC
   const menuToggle = document.getElementById('mobile-menu-toggle');
   const sidebarEl = document.getElementById('sidebar');
-  if (menuToggle && sidebarEl) {
-    menuToggle.addEventListener('click', () => {
-      sidebarEl.classList.toggle('sidebar--open');
-    });
-    sidebarEl.addEventListener('click', (e) => {
-      if ((e.target as HTMLElement).closest('a')) {
-        sidebarEl.classList.remove('sidebar--open');
-      }
-    });
+  const sidebarClose = document.getElementById('sidebar-close');
+
+  // Backdrop oluştur (lazy)
+  let sidebarBackdrop = document.querySelector<HTMLElement>('.sidebar-backdrop');
+  if (!sidebarBackdrop) {
+    sidebarBackdrop = document.createElement('div');
+    sidebarBackdrop.className = 'sidebar-backdrop';
+    sidebarBackdrop.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(sidebarBackdrop);
   }
+
+  const isDrawer = () => window.matchMedia('(max-width: 819px)').matches;
+  const openSidebar = () => {
+    if (!sidebarEl) return;
+    sidebarEl.classList.add('sidebar--open');
+    sidebarBackdrop?.classList.add('is-visible');
+    if (isDrawer()) document.body.style.overflow = 'hidden';
+  };
+  const closeSidebar = () => {
+    if (!sidebarEl) return;
+    sidebarEl.classList.remove('sidebar--open');
+    sidebarBackdrop?.classList.remove('is-visible');
+    document.body.style.overflow = '';
+  };
+
+  menuToggle?.addEventListener('click', () => {
+    if (sidebarEl?.classList.contains('sidebar--open')) closeSidebar();
+    else openSidebar();
+  });
+  sidebarClose?.addEventListener('click', closeSidebar);
+  sidebarBackdrop.addEventListener('click', closeSidebar);
+
+  // Bir link'e tıklayınca drawer'ı kapat (sadece mobile)
+  sidebarEl?.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a') && isDrawer()) closeSidebar();
+  });
 
   // Dark mode toggle (localStorage persist)
   const darkToggle = document.getElementById('dark-toggle');
@@ -51,9 +77,12 @@ async function boot(): Promise<void> {
     applyTheme(cur === 'dark' ? 'light' : 'dark');
   });
 
-  // Esc → detail panel kapat (global)
+  // Esc → detail panel + sidebar drawer kapat (global)
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeDetail();
+    if (e.key === 'Escape') {
+      closeDetail();
+      closeSidebar();
+    }
   });
 
   // 1. Registry + tüm block renderer'ları
