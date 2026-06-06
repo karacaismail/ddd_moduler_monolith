@@ -11,6 +11,19 @@
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<script>
+  // GH Pages 404 fallback — yolu hash'e dönüştür (SPA için)
+  // Eğer URL'de path varsa ve bilinen route değilse, hash'e çevir
+  (function() {
+    var l = window.location;
+    var base = l.pathname.split('/').slice(0, 2).join('/') + '/';
+    var rest = l.pathname.replace(base, '');
+    if (rest && rest !== 'index.html' && !rest.startsWith('content/') && !rest.startsWith('assets/')) {
+      // 404'ten geldiyse — rest'i hash yap
+      l.replace(base + (rest.includes('#') ? '' : '#' + rest.replace(/\/$/, '')));
+    }
+  })();
+</script>
 </head>
 <body>
 <header id="appbar" class="appbar">

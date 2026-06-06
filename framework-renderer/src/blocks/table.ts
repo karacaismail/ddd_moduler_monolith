@@ -178,9 +178,13 @@ export const tableRenderer: BlockRenderer<TableBlock> = (block, ctx) => {
           apply();
         }),
       );
+      let debounceTimer: number | undefined;
       input.addEventListener('input', () => {
-        query = input.value.trim();
-        apply();
+        if (debounceTimer) window.clearTimeout(debounceTimer);
+        debounceTimer = window.setTimeout(() => {
+          query = input.value.trim();
+          apply();
+        }, 180);
       });
     });
   }

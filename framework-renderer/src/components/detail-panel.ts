@@ -298,9 +298,8 @@ function render(payload: DetailPayload): string {
     ${payload.refs && payload.refs.length > 0 ? refsHtml(payload.refs) : ''}
     ${!hasRichContent ? `
       <section class="dp__section dp__empty">
-        <i class="ph-duotone ph-pencil-simple-line"></i>
-        <p>Bu kart için henüz ek <strong>terim sözlüğü</strong> veya <strong>gerçek dünya örneği</strong> eklenmedi.</p>
-        <p class="dp__empty-hint">Geliştirici notu: bu cluster'ın JSON dosyasında ilgili item'a <code>enrich.terms</code> ve <code>enrich.stories</code> alanları eklenebilir.</p>
+        <i class="ph-duotone ph-lightbulb"></i>
+        <p>Bu kart için 5N1K analizi + Frontend/Backend yorumu hazırladık. Daha derinleşmek istiyorsan ilgili konuyu sol menüden seç.</p>
       </section>
     ` : ''}
   `;

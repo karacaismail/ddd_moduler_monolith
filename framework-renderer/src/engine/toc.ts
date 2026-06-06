@@ -168,7 +168,7 @@ export function setupScrollSpy(toc: HTMLElement): void {
           for (const link of links) {
             link.classList.toggle('toc__link--active', link.dataset.clusterId === id);
           }
-          // Aktif olan link kapalı bir gruptaysa, grubu aç
+          // Aktif olan link kapalı bir gruptaysa, grubu aç + sidebar'da görünür kıl
           const activeLink = links.find((l) => l.dataset.clusterId === id);
           if (activeLink) {
             const group = activeLink.closest<HTMLElement>('.toc__group');
@@ -176,6 +176,15 @@ export function setupScrollSpy(toc: HTMLElement): void {
               group.setAttribute('data-collapsed', 'false');
               const header = group.querySelector<HTMLButtonElement>('.toc__group-header');
               if (header) header.setAttribute('aria-expanded', 'true');
+            }
+            // Sidebar viewport içinde değilse scroll-into-view
+            const sidebar = activeLink.closest<HTMLElement>('.sidebar');
+            if (sidebar) {
+              const linkRect = activeLink.getBoundingClientRect();
+              const sbRect = sidebar.getBoundingClientRect();
+              if (linkRect.top < sbRect.top + 40 || linkRect.bottom > sbRect.bottom - 40) {
+                activeLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
             }
           }
         }

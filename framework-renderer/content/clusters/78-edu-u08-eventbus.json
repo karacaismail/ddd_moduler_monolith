@@ -1,39 +1,67 @@
 {
   "id": "edu-u08",
   "title": "Event Bus & Outbox",
-  "subtitle": "Senkron vs asenkron, event-driven, transactional outbox, idempotency.",
+  "subtitle": "Senkron vs asenkron, event-driven, transactional outbox, idempotency, DLQ.",
   "cluster": "scale",
   "order": 0,
   "icon": "ph-broadcast",
   "granularity": "buyuk-tas",
   "state": "ok",
-  "tags": ["education", "u08", "event", "outbox"],
+  "tags": ["education", "u08", "event", "outbox", "saga"],
   "blocks": [
-    { "type": "lesson-header", "unit": "Ünite 08", "title": "Event Bus & Outbox — modüller arası gevşek bağ", "level": "ileri", "duration_min": 70, "prereq": ["edu-u04", "edu-u05"], "goals": [
+    { "type": "lesson-header", "unit": "Ünite 08", "title": "Event Bus & Outbox — modüller arası gevşek bağ", "level": "ileri", "duration_min": 75, "prereq": ["edu-u04", "edu-u05"], "goals": [
       "Senkron ile asenkron iletişimin farkı.",
       "Event bus'ın neden direct call'a tercih edildiğini söyleyebilirsin.",
       "Dual-write tuzağını ve transactional outbox çözümünü anlatabilirsin.",
-      "Idempotent consumer'ın retry mekaniğindeki rolünü biliyorsun."
+      "Idempotent consumer'ın retry mekaniğindeki rolünü biliyorsun.",
+      "At-least-once vs at-most-once vs exactly-once delivery garantilerini ayırt edebilirsin.",
+      "Bir DLQ akışını tasarlayabilirsin (retry budget + jitter + alarm)."
     ] },
     { "type": "terms", "terms": [
       { "term": "Event", "abbrev_tr": "Olay", "meaning": "Olmuş bir şeyin kaydı: 'order.created', 'user.deleted'.", "why": "Geçmiş zaman: bilgi yayını, soru değil." },
+      { "term": "Command", "abbrev_tr": "Komut", "meaning": "Yapılması istenen şey: 'create-order', 'send-email'.", "why": "Event'ten farkı: gelecek zaman, tek alıcı." },
       { "term": "Pub/Sub", "abbrev_of": "Publisher/Subscriber", "meaning": "Yayıncı yayar, aboneler dinler. Yayıncı kimi dinlediğini bilmez.", "why": "Gevşek bağlamanın temel ilkesi." },
       { "term": "Outbox", "abbrev_tr": "Giden kutusu", "meaning": "DB transaction içinde mesaj satırı; worker iletir.", "why": "Dual-write sorununu çözer." },
       { "term": "Dual-write", "abbrev_tr": "Çift yazma", "meaning": "DB + Kafka'ya aynı anda yaz; biri başarısız → tutarsızlık.", "why": "Tehlikeli! Outbox şart." },
       { "term": "Idempotent consumer", "abbrev_tr": "Tekrar-güvenli tüketici", "meaning": "Aynı event'i 2 kez işlerse hata vermez.", "why": "At-least-once delivery'de zorunlu." },
-      { "term": "DLQ", "abbrev_of": "Dead Letter Queue", "abbrev_tr": "Ölü mesaj kuyruğu", "meaning": "İşlenemeyen mesajların atıldığı kuyruk.", "why": "Sistemin tıkanmasını engeller; manuel inceleme için." }
+      { "term": "At-least-once", "meaning": "Mesaj en az bir kez teslim edilir; tekrarlanabilir.", "why": "En yaygın garanti; idempotency şart." },
+      { "term": "Exactly-once", "meaning": "Mesaj tam olarak bir kez işlenir.", "why": "Pahalı/karmaşık; çoğu durumda 'at-least-once + idempotent' yeterli." },
+      { "term": "DLQ", "abbrev_of": "Dead Letter Queue", "abbrev_tr": "Ölü mesaj kuyruğu", "meaning": "İşlenemeyen mesajların atıldığı kuyruk.", "why": "Sistemin tıkanmasını engeller; manuel inceleme için." },
+      { "term": "Saga", "meaning": "Birden fazla mikroservis transaction'ını sıralayan koordinatör.", "why": "Dağıtık işlemler için 2PC alternatifi." },
+      { "term": "Backpressure", "abbrev_tr": "Geri-basınç", "meaning": "Tüketici yavaşsa yayıncıya sinyal: 'yavaşla'.", "why": "Memory overflow + cascading failure'u engeller." }
     ] },
-    { "type": "paragraph", "text": "İki modül A→B doğrudan konuşursa: B değişirse A da değişir. Event bus ile A 'order.created' yayar, B dinler — B değişirse A'nın haberi olmaz." },
+    { "type": "paragraph", "text": "İki modül A→B doğrudan konuşursa: B değişirse A da değişir. Event bus ile A 'order.created' yayar, B dinler — B değişirse A'nın haberi olmaz. **Bağ kopmaz, ama zayıflar.**" },
+    { "type": "steps", "title": "Transactional outbox akışı — adım adım", "items": [
+      { "title": "1. Business write", "body": "Sipariş kaydet: `INSERT INTO orders ...` (DB transaction başlar)." },
+      { "title": "2. Outbox write (aynı transaction)", "body": "`INSERT INTO outbox(event, payload, status='pending')` — atomik, sipariş ile birlikte." },
+      { "title": "3. COMMIT", "body": "İki satır ya birlikte commit ya birlikte rollback. Veri tutarlılığı garanti." },
+      { "title": "4. Worker poll", "body": "Ayrı worker outbox tablosundan 'pending' satırları çeker (interval 1-5sn)." },
+      { "title": "5. Publish + mark sent", "body": "Kafka/RabbitMQ'ya iletir; başarılıysa `UPDATE outbox SET status='sent'` veya satırı siler." },
+      { "title": "6. Consumer + idempotency", "body": "Tüketici event'i alır → idempotency_key kontrolü (gördüm mü?) → değilse işle, sonra kaydet." }
+    ] },
     { "type": "callout", "variant": "critical", "label": "Dual-write tuzağı",
       "body": "Sipariş kaydı + Kafka mesajı için iki ayrı `INSERT`. Eğer DB başarılı ama Kafka düşerse: müşterinin parası çekildi ama kargo yola çıkmadı. **Çözüm: Outbox**. DB transaction içinde 'outbox' tablosuna bir satır INSERT et. Ayrı worker bu satırları Kafka'ya iletir; iletilince siler. Atomik garanti." },
+    { "type": "callout", "variant": "tr", "label": "DLQ disiplini",
+      "body": "Hata alan mesaj **3-5 kez retry** (exponential backoff + jitter) → hâlâ başarısızsa **DLQ**. DLQ'da bekleyen mesaj sayısı **Slack alarmı**. Operatör inceler, fix sonrası replay et. DLQ'ya hiç bakmazsan sessiz veri kaybı." },
+    { "type": "callout", "variant": "info", "label": "Exactly-once myth",
+      "body": "Dağıtık sistemde 'exactly-once' delivery teoride imkânsız (FLP impossibility). Pratik çözüm: **at-least-once delivery + idempotent consumer**. Sonuç pratikte 'exactly-once processing' verir, ama maliyeti milyonda bir gibi." },
+    { "type": "user-stories", "title": "Üç perspektiften event bus",
+      "stories": [
+        { "persona": "Sipariş modülü geliştirici", "context": "Sipariş tamamlanınca kargo, fatura, müşteri-puanı modülleri tetiklenmeli.", "outcome": "`order.completed` event'i yayar — diğer modüller direkt çağrılmadan dinler. Yeni bir modül eklemek için sipariş kodu DEĞİŞMEZ." },
+        { "persona": "Operasyon mühendisi", "context": "Sabaha karşı 3'te Kafka'da 100K bekleyen mesaj görür.", "outcome": "Consumer lag dashboard'una bakar → bir consumer down. Restart → lag eriyor. Outbox sayesinde mesajlar kaybolmadı, sadece geç işlendi." },
+        { "persona": "Mimar", "context": "Yeni 'partner API'ye sipariş bilgisi gönder' özelliği eklenecek.", "outcome": "Event bus'a yeni subscriber ekler → sipariş kodu hiç ellenmez. Saatler yerine dakikalar." }
+      ] },
     { "type": "checklist", "title": "Kontrol listesi", "storageKey": "edu.u08", "items": [
       { "label": "Senkron ile asenkron'un avantaj/sakıncaları." },
+      { "label": "Event vs Command farkını söyleyebilirim (geçmiş/gelecek)." },
       { "label": "Pub/Sub'da yayıncının abone listesini bilmeme avantajı." },
       { "label": "Dual-write'ın neden tehlikeli olduğunu örnekle anlatabilirim." },
       { "label": "Outbox pattern'in atomik garantiyi nasıl sağladığını söyleyebilirim." },
-      { "label": "DLQ'nun rolünü biliyorum." }
+      { "label": "At-least-once + idempotent = pratik exactly-once mantığını biliyorum." },
+      { "label": "DLQ'nun rolünü ve alarm akışını biliyorum." },
+      { "label": "Saga pattern'in dağıtık transaction için 2PC alternatifi olduğunu biliyorum." }
     ] },
     { "type": "callout", "variant": "info", "label": "Sonraki ünite", "body": "{{ref:edu-u09}} — Plugin Mimarisi. Çekirdeği bozmadan davranış eklemek." }
   ],
-  "related": ["edu-u05", "edu-u09", "k-bus", "scale-outbox"]
+  "related": ["edu-u05", "edu-u09", "k-bus", "scale-outbox", "scale-saga"]
 }

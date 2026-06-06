@@ -64,8 +64,25 @@ export class Renderer {
     const body = document.createElement('div');
     body.className = 'cluster__body';
     body.id = `${cluster.id}__body`;
-    for (const block of cluster.blocks) {
-      body.appendChild(this.registry.render(block, ctx));
+    // Null guard: block veya block.type yoksa skip + warn
+    const blocks = Array.isArray(cluster.blocks) ? cluster.blocks : [];
+    for (const block of blocks) {
+      if (!block || typeof block !== 'object' || !('type' in block)) {
+        console.warn(`[renderer] cluster=${cluster.id}: invalid block`, block);
+        continue;
+      }
+      try {
+        body.appendChild(this.registry.render(block, ctx));
+      } catch (err) {
+        console.error(`[renderer] cluster=${cluster.id} block=${(block as { type: string }).type} render hatası:`, err);
+        const fallback = document.createElement('div');
+        fallback.className = 'block-error';
+        fallback.innerHTML = `
+          <i class="ph ph-warning-circle"></i>
+          <span>Bu blok render edilemedi: <code>${(block as { type: string }).type}</code></span>
+        `;
+        body.appendChild(fallback);
+      }
     }
     section.appendChild(body);
 

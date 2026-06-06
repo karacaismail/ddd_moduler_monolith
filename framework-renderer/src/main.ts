@@ -77,13 +77,94 @@ async function boot(): Promise<void> {
     applyTheme(cur === 'dark' ? 'light' : 'dark');
   });
 
-  // Esc → detail panel + sidebar drawer kapat (global)
+  // ESC sırası (priority): popover → detail-panel → sidebar drawer
+  // Hangisi açıksa onu kapat. Aynı anda iki açık olabilir.
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
+    if (e.key !== 'Escape') return;
+    // 1. Popover en üstteki layer
+    const pop = document.querySelector<HTMLElement>('.pop:not([hidden])');
+    if (pop) {
+      pop.hidden = true;
+      return;
+    }
+    // 2. Detail panel
+    const dpOpen = document.querySelector('.detail-panel.detail-panel--open');
+    if (dpOpen) {
       closeDetail();
+      return;
+    }
+    // 3. Sidebar drawer (sadece mobile)
+    const sbOpen = document.querySelector('.sidebar.sidebar--open');
+    if (sbOpen) {
       closeSidebar();
+      return;
     }
   });
+
+  // Cluster header — Enter/Space ile toggle (accordion)
+  document.body.addEventListener('keydown', (e) => {
+    const target = e.target as HTMLElement;
+    if (!target.classList?.contains('cluster__header')) return;
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    const sec = target.closest<HTMLElement>('.cluster');
+    if (!sec) return;
+    sec.classList.toggle('cluster--collapsed');
+    const collapsed = sec.classList.contains('cluster--collapsed');
+    target.setAttribute('aria-expanded', String(!collapsed));
+  });
+
+  // Toggle butonu — Space/Enter
+  document.body.addEventListener('keydown', (e) => {
+    const target = e.target as HTMLElement;
+    if (!target.matches?.('[data-cluster-toggle]')) return;
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    const sec = target.closest<HTMLElement>('.cluster');
+    if (!sec) return;
+    sec.classList.toggle('cluster--collapsed');
+    const collapsed = sec.classList.contains('cluster--collapsed');
+    sec.querySelector('.cluster__header')?.setAttribute('aria-expanded', String(!collapsed));
+  });
+
+  // Focus trap — drawer / detail-panel açıkken
+  const trapFocus = (e: KeyboardEvent, container: HTMLElement): void => {
+    if (e.key !== 'Tab') return;
+    const focusable = container.querySelectorAll<HTMLElement>(
+      'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+    if (focusable.length === 0) return;
+    const first = focusable[0]!;
+    const last = focusable[focusable.length - 1]!;
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const isMobile = window.matchMedia('(max-width: 1239px)').matches;
+    if (!isMobile) return;
+    const dp = document.querySelector<HTMLElement>('.detail-panel.detail-panel--open');
+    if (dp) trapFocus(e, dp);
+    const sb = document.querySelector<HTMLElement>('.sidebar.sidebar--open');
+    if (sb) trapFocus(e, sb);
+  });
+
+  // aria-live region — search/filter sonuç sayısı için
+  if (!document.getElementById('a11y-live')) {
+    const live = document.createElement('div');
+    live.id = 'a11y-live';
+    live.setAttribute('aria-live', 'polite');
+    live.setAttribute('aria-atomic', 'true');
+    live.style.cssText =
+      'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;';
+    document.body.appendChild(live);
+  }
 
   // 1. Registry + tüm block renderer'ları
   const registry = new BlockRegistry();
@@ -207,26 +288,32 @@ async function boot(): Promise<void> {
     el.querySelector('.cluster__header')?.setAttribute('aria-expanded', String(!collapsed));
   };
 
-  // Toggle butonuna VEYA collapsed header'ın gövdesine tıklayınca aç/kapat
+  // Click hierarchy (P5):
+  //   1. Toggle butonu      → SADECE expand/collapse (detail panel açma)
+  //   2. Header (collapsed) → expand + detail panel aç (iki action birlikte)
+  //   3. Header (açık)      → detail panel aç (toggle YOK — eğer kapatmak istersen butonu kullan)
   document.body.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
-    // Link / enrich-btn / detail close → toggle değil
+    // Link / enrich-btn / detail close / sidebar elements → bypass
     if (target.closest('a, .enrich-btn, .dp__close, .sidebar__close, .sidebar-backdrop')) return;
-    // Açıkça toggle butonu
+    // 1. Toggle butonuna tıkla → sadece toggle (detail panel'i KÜLLİYEN AÇMA)
     const toggleBtn = target.closest<HTMLElement>('[data-cluster-toggle]');
     if (toggleBtn) {
       e.stopPropagation();
+      e.preventDefault();
       const sec = toggleBtn.closest<HTMLElement>('.cluster');
       if (sec) toggleCluster(sec);
       return;
     }
-    // Collapsed cluster header'ına tıklayınca da aç (detail panel açılmadan önce)
+    // 2. Collapsed header → expand, ama detail panel handler'ı da çalışsın
     const header = target.closest<HTMLElement>('.cluster__header');
     if (header) {
       const sec = header.closest<HTMLElement>('.cluster');
       if (sec && sec.classList.contains('cluster--collapsed')) {
-        e.preventDefault();
-        toggleCluster(sec);
+        // SADECE expand — detail panel açmaya devam etsin (event continue)
+        sec.classList.remove('cluster--collapsed');
+        header.setAttribute('aria-expanded', 'true');
+        // event.preventDefault YOK → detail panel handler tetiklenir
       }
     }
   }, true); // capture: detail-panel click handler'ından önce çalış
