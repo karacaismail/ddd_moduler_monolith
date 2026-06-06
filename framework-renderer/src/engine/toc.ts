@@ -80,6 +80,35 @@ export function renderTocElement(toc: TocGroup[], activeClusterId?: string): HTM
   nav.className = 'toc';
   nav.setAttribute('aria-label', 'İçerik');
 
+  // Quick filter input — sidebar'da hızlı arama (TOC link metnini filtreler)
+  const filterWrap = document.createElement('div');
+  filterWrap.className = 'toc__quickfilter';
+  filterWrap.innerHTML = `
+    <i class="ph ph-funnel-simple"></i>
+    <input type="search" placeholder="menüde filtrele…" aria-label="TOC quick filter" />
+  `;
+  nav.appendChild(filterWrap);
+  const qfInput = filterWrap.querySelector<HTMLInputElement>('input')!;
+  qfInput.addEventListener('input', () => {
+    const q = qfInput.value.trim().toLowerCase();
+    nav.querySelectorAll<HTMLElement>('.toc__group').forEach((g) => {
+      let visibleCount = 0;
+      g.querySelectorAll<HTMLLIElement>('.toc__item').forEach((li) => {
+        const txt = (li.textContent ?? '').toLowerCase();
+        const show = !q || txt.includes(q);
+        li.style.display = show ? '' : 'none';
+        if (show) visibleCount++;
+      });
+      // Grup tamamen boş ise gizle
+      g.style.display = visibleCount === 0 && q.length > 0 ? 'none' : '';
+      // Arama varsa tüm grupları aç (tek-açık kuralını override et)
+      if (q.length > 0 && visibleCount > 0) {
+        g.setAttribute('data-collapsed', 'false');
+        g.querySelector<HTMLButtonElement>('.toc__group-header')?.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
   // TEK-AÇIK kuralı: hangisini açacağız?
   // 1) activeClusterId'nin grubu (öncelik)
   // 2) localStorage'daki son açık grup

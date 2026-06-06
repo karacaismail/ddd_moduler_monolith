@@ -20,6 +20,34 @@ async function boot(): Promise<void> {
   const detailPanelEl = document.getElementById('detail-panel');
   if (detailPanelEl) mountDetailPanel(detailPanelEl);
 
+  // Appbar height + iOS visualViewport için dinamik CSS variables
+  const appbarEl = document.getElementById('appbar');
+  const setAppbarHeight = (): void => {
+    if (!appbarEl) return;
+    const h = appbarEl.getBoundingClientRect().height;
+    if (h > 0) {
+      document.documentElement.style.setProperty('--appbar-h', `${Math.round(h)}px`);
+    }
+  };
+  setAppbarHeight();
+  if (appbarEl && 'ResizeObserver' in window) {
+    const ro = new ResizeObserver(setAppbarHeight);
+    ro.observe(appbarEl);
+  }
+  window.addEventListener('resize', setAppbarHeight);
+  // iOS Safari: URL bar gizlenince viewport değişir → visualViewport listener
+  if ('visualViewport' in window && window.visualViewport) {
+    const setVh = (): void => {
+      const vh = window.visualViewport!.height;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    setVh();
+    window.visualViewport.addEventListener('resize', setVh);
+    window.visualViewport.addEventListener('scroll', setVh);
+  } else {
+    document.documentElement.style.setProperty('--vh', '100vh');
+  }
+
   // Mobile sidebar drawer — toggle + backdrop + close button + ESC
   const menuToggle = document.getElementById('mobile-menu-toggle');
   const sidebarEl = document.getElementById('sidebar');

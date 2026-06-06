@@ -64,6 +64,14 @@ export class Renderer {
     const body = document.createElement('div');
     body.className = 'cluster__body';
     body.id = `${cluster.id}__body`;
+    // Placeholder skeleton — lazy render başlamadan önce shimmer
+    body.innerHTML = `
+      <div class="cluster__skeleton" aria-hidden="true">
+        <div class="cluster__skeleton-line"></div>
+        <div class="cluster__skeleton-line cluster__skeleton-line--80"></div>
+        <div class="cluster__skeleton-line cluster__skeleton-line--60"></div>
+      </div>
+    `;
     section.appendChild(body);
 
     // Lazy render closure — section.dataset üzerinden tetiklenir
@@ -72,6 +80,8 @@ export class Renderer {
     const renderBody = (): void => {
       if (rendered) return;
       rendered = true;
+      // Skeleton'u temizle
+      body.innerHTML = '';
       for (const block of blocks) {
         if (!block || typeof block !== 'object' || !('type' in block)) {
           console.warn(`[renderer] cluster=${cluster.id}: invalid block`, block);
