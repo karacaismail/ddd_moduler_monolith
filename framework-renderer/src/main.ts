@@ -343,6 +343,20 @@ async function boot(): Promise<void> {
       lastHash = state.hash;
     }
     if (state.hash) {
+      // Hedef cluster DOM'da yok mu? (Filter aktif olabilir) → filtreyi temizle, re-render
+      const exists = document.getElementById(state.hash);
+      if (!exists) {
+        const targetCluster = loader.getCluster(state.hash);
+        if (targetCluster) {
+          // Filter aktifken farklı gruba atlama → filtreyi sıfırla
+          applyFilter({});
+          // Filter chip'lerini de "Tümü" yap
+          document.querySelectorAll<HTMLElement>('.filter-bar__chips').forEach((wrap) => {
+            wrap.querySelectorAll('.chip').forEach((c) => c.classList.remove('chip--active'));
+            wrap.querySelector('.chip[data-value=""]')?.classList.add('chip--active');
+          });
+        }
+      }
       // Hedef cluster'ı aç, sonra scroll
       expandCluster(state.hash);
       // Cluster id'si değil item anchor'ı ise, parent cluster'ı bul
