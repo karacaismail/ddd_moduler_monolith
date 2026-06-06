@@ -1,0 +1,78 @@
+{
+  "id": "sus-metadata",
+  "title": "Her-şey-metadata (introspectable kayıt)",
+  "subtitle": "ServiceNow: \"tablo, rol, workflow, API — her şey introspectable kayıt\". Governance + audit + AI içkin.",
+  "cluster": "sus",
+  "order": 100,
+  "icon": "ph-magnifying-glass-plus",
+  "tags": [
+    "sustainability",
+    "servicenow",
+    "metadata",
+    "introspection"
+  ],
+  "enrich": {
+    "info": "Sistemin her parçası (tablo, rol, workflow, API, feature flag, policy) sorgulanabilir/okunabilir bir kayıt olarak saklanır.",
+    "lesson": {
+      "ne": "Sistemin her bileşeni — bir tablo, bir rol, bir iş akışı, bir API ucu, bir feature flag, bir izin politikası — uygulamanın içinde \"kayıt\" olarak saklanır. İnsan da AI da bu kayıtları sorgulayıp anlayabilir.",
+      "nicin": "Kayıt değilse görünmez; görünmez şey denetlenemez. Her şey kayıt olunca: kim ne değiştirmiş, kim okumuş, hangi versiyon — hepsi izlenebilir. AI sistemin tamamını anlayıp soru cevaplayabilir.",
+      "nasil": "DocType zaten kendini metadata'ya yazıyor. Aynı disiplin: rol, workflow, API, feature flag, policy, scheduled job — hepsi DocType olarak tanımlanır.",
+      "nerede": "framework/kernel/schema/ — meta-metadata: bileşenleri tarif eden DocType'lar.",
+      "ne_zaman": "Yeni bileşen tipi tanımlanmadan önce — \"bu bileşen DocType mu, değil mi\" sorusu.",
+      "kim": "Mimar disiplini koyar; sistem otomatik tutar; AI sistemin tamamını okuyabilir; denetçi ne kim ne zaman değiştirdi sorusunu cevaplayabilir.",
+      "analoji": "Bir kütüphanede her kitabın kart kataloğu var: kitap adı, yazar, basım yılı, raf numarası. Aynı kütüphanenin masaları, sandalyeleri, lambaları için de kart yapılırsa: \"3 numaralı lambanın ampulü kaç watt\" sorusu anında cevap bulur. Her şey metadata = her şeyin kart kataloğu."
+    },
+    "stories": [
+      {
+        "persona": "Esnaf odası kayıt görevlisi Recep Bey",
+        "context": "Sadece üyelerin değil; üyenin sahip olduğu dükkanın, dükkanın bağlı ödeme planının, çalışanlarının — hepsinin kaydı var.",
+        "outcome": "\"Hangi üyenin Beyoğlu'nda dükkanı var, çalışanı kaç\" sorusu tek sorguyla cevaplanıyor. Eğer sadece üye kaydı olsa bu soru bilinmezdi. Her-şey-metadata = esnaf odası sicili."
+      },
+      {
+        "persona": "Hastane bilgi işlem sorumlusu Burak Bey",
+        "context": "Doktorların hangi yetkilere sahip olduğu, hangi hastalara erişebileceği, hangi laboratuvar testini isteyebileceği — hepsi ayrı tabloda.",
+        "outcome": "Yeni bir yetki kuralı eklemek için kod değiştirmiyor; tabloya satır ekliyor. Eski yetkileri sorgulayıp \"5 yıl önce hangi doktorun yetkisi neydi\" diyebilir. Metadata-driven yönetim."
+      },
+      {
+        "persona": "Şehir planlamacısı Aysel Hanım",
+        "context": "Her sokak, her bina, her ağaç ayrı kayıt. Sadece bina değil; binadaki müsait dairelerin sayısı, daire başına bağlı abonelikleri.",
+        "outcome": "\"X sokağında kaç ev sahibi internet aboneliği yok\" gibi karmaşık soru tek sorguyla cevaplanır. Bina-as-data + abone-as-data + sokak-as-data hepsi metadata."
+      }
+    ],
+    "terms": [
+      {
+        "term": "Introspectable",
+        "abbrev_tr": "Sorgulanabilir",
+        "meaning": "Sistemin kendi yapısını sorgulayabilmesi",
+        "why": "AI'nın sistemi anlamasının önkoşulu"
+      },
+      {
+        "term": "Meta-metadata",
+        "meaning": "Metadata'yı tarif eden metadata",
+        "why": "Sistem kendi kendini tanır"
+      },
+      {
+        "term": "ServiceNow Glide",
+        "meaning": "Tablo, rol, workflow, API — hepsini metadata kayıt olarak tutan platform",
+        "why": "Olgun referans"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "ServiceNow disiplini",
+      "body": "*\"One code base, one data model, one architecture — every component (table, role, workflow, API) is stored as a configured record.\"* — sistem kendi kendini sorgulayabilir."
+    },
+    {
+      "type": "paragraph",
+      "text": "**Bu projede:** DocType disiplini diğer bileşenlere genişler — Identity rolü, Authz politikası, Workflow tanımı, Feature flag, Scheduled job: hepsi DocType. Tek tip governance + audit + AI işletilebilirlik."
+    }
+  ],
+  "related": [
+    "k-schema",
+    "k-identity",
+    "k-authz"
+  ]
+}

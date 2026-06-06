@@ -56,8 +56,34 @@ export function resolveInlineMarkup(text: string, resolveRef: RefResolver): stri
   // *italic*
   out = out.replace(/(^|[\s(])\*([^*\s][^*]*?)\*(?=[\s).,;:!?]|$)/g, (_m, lead: string, em: string) => `${lead}<em>${em}</em>`);
 
+  // ~~strikethrough~~
+  out = out.replace(/~~([^~]+)~~/g, (_, s: string) => `<del>${s}</del>`);
+
+  // ==highlight==
+  out = out.replace(/==([^=]+)==/g, (_, s: string) => `<mark>${s}</mark>`);
+
   // newlines inside paragraph
   out = out.replace(/\n/g, '<br/>');
 
+  return out;
+}
+
+/**
+ * Block-level markdown — paragraf bloğu için.
+ * Listeler, blok-quote, başlık gibi unsurları paragraf gövdesinde işler.
+ * Şu an çok hafif: > quote ve - liste başlangıcı.
+ * Daha fazlası için `marked` paketi entegre edilecek (deferred).
+ */
+export function resolveBlockMarkup(text: string, resolveRef: RefResolver): string {
+  // Önce inline pas
+  const inline = resolveInlineMarkup(text, resolveRef);
+  // > quote bloğu — satır başında "&gt; "
+  let out = inline.replace(/(^|<br\/>)&gt;\s+([^<]+?)(?=<br\/>|$)/g,
+    (_, lead: string, q: string) => `${lead}<blockquote>${q}</blockquote>`);
+  // - liste başlangıçları (basit, iç içe değil) — peş peşe satırları <ul> içine al
+  out = out.replace(/((?:(?:^|<br\/>)- [^<]+)+)/g, (m) => {
+    const items = m.split(/(?:^|<br\/>)- /).filter(Boolean);
+    return '<ul>' + items.map((it) => `<li>${it}</li>`).join('') + '</ul>';
+  });
   return out;
 }

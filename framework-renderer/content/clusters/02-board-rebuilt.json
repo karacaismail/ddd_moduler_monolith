@@ -21,7 +21,16 @@
     },
     {
       "type": "paragraph",
-      "text": "Senin yazdığın **Field, Log, Handler, Security** başlangıç ama yetersiz; field'ın altında somut tip sistemi olmalı. Tam liste: {{ref:atomic-types}}."
+      "text": "Senin yazdığın **Field, Log, Handler, Security** başlangıç ama yetersiz; field'ın altında somut tip sistemi olmalı. Tam liste: {{ref:atomic-types}}.",
+      "enrich": {
+        "lesson": {
+          "ne": "Sistemde olan biteni metin satırları halinde kayıt.",
+          "nicin": "Hata teşhisi ve geriye dönük analiz için.",
+          "nasil": "Her olay zaman damgalı kaydedilir.",
+          "kim": "Sistem yazar, geliştirici okur.",
+          "analoji": "Kaptanın seyir defteri."
+        }
+      }
     },
     {
       "type": "heading",
@@ -139,7 +148,16 @@
     },
     {
       "type": "paragraph",
-      "text": "Senin yazdığın **i18n, Form/Table, Block, Section, ECA Rules, Import/Export, Onboarding, Schedule, Notification, Search, Identity, Calendar** iyi başlangıç ama 15 üründen Odoo/SAP/Shopify çıkacaksa çok eksik. Tam liste için {{ref:l1-party}}, {{ref:l1-file}}, {{ref:l1-search}} vb. ayrı cluster'lara bak."
+      "text": "Senin yazdığın **i18n, Form/Table, Block, Section, ECA Rules, Import/Export, Onboarding, Schedule, Notification, Search, Identity, Calendar** iyi başlangıç ama 15 üründen Odoo/SAP/Shopify çıkacaksa çok eksik. Tam liste için {{ref:l1-party}}, {{ref:l1-file}}, {{ref:l1-search}} vb. ayrı cluster'lara bak.",
+      "enrich": {
+        "lesson": {
+          "ne": "Uluslararasılaştırma — yazılımın çoklu dilde çalışması.",
+          "nicin": "Farklı pazarlara hizmet için.",
+          "nasil": "Metinler kod yerine sözlük dosyalarında.",
+          "kim": "Geliştirici yapı kurar, çevirmen doldurur.",
+          "analoji": "Restoran menüsünün arka sayfasında İngilizce hali."
+        }
+      }
     },
     {
       "type": "heading",
@@ -192,12 +210,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Projenin bir bakışta görünen genel durum panosu: hangi parça hazır, hangisi planda, hangi modül kritik. Sprint planlamasının başladığı yer.",
+      "nicin": "100 sayfalık dokümandan önce, bir bakışta projenin nerede olduğunu görmek lazım. Karar verecek kişi 5 dakikada genel durumu anlamalı.",
+      "nasil": "Tablo + renkler: yeşil = hazır, sarı = devam ediyor, kırmızı = bloke, gri = planda. Her satır bir modül.",
+      "nerede": "Pano sayfası — yöneticilerin ilk açtığı ekran.",
+      "ne_zaman": "Her sprint başı ve sonu; karar toplantıları öncesinde.",
+      "kim": "Proje yöneticisi günceller, ekipler kendi satırlarını işaretler, üst yönetim genel durumu okur.",
+      "analoji": "Bir lojistik şirketinin günlük yük tablosu: nereye ne gitti, nerede tıkanıklık var — hepsi tek panoda."
+    }
   }
 }

@@ -19,7 +19,16 @@
       "type": "heading",
       "level": 4,
       "text": "i18n / Localization",
-      "icon": "ph-globe"
+      "icon": "ph-globe",
+      "enrich": {
+        "lesson": {
+          "ne": "Uluslararasılaştırma — yazılımın çoklu dilde çalışması.",
+          "nicin": "Farklı pazarlara hizmet için.",
+          "nasil": "Metinler kod yerine sözlük dosyalarında.",
+          "kim": "Geliştirici yapı kurar, çevirmen doldurur.",
+          "analoji": "Restoran menüsünün arka sayfasında İngilizce hali."
+        }
+      }
     },
     {
       "type": "list",
@@ -71,7 +80,8 @@
       "type": "heading",
       "level": 4,
       "text": "Webhook + API Gateway",
-      "icon": "ph-webhooks-logo"
+      "icon": "ph-webhooks-logo",
+      "enrich": {}
     },
     {
       "type": "list",
@@ -120,7 +130,8 @@
     },
     {
       "type": "paragraph",
-      "text": "LandX L3 Application Surface katmanı bu cluster'ın \"Webhook + API Gateway + Reporting\" bölümünü tamamlar: DocType tanımından otomatik olarak üretilen üç yüzey."
+      "text": "LandX L3 Application Surface katmanı bu cluster'ın \"Webhook + API Gateway + Reporting\" bölümünü tamamlar: DocType tanımından otomatik olarak üretilen üç yüzey.",
+      "enrich": {}
     },
     {
       "type": "feature-list",
@@ -130,7 +141,6 @@
           "desc": "**Faz 1 · P0.** DocType → CRUD + filter + bulk endpoint. Aynı tanımdan OpenAPI spec, MCP tool listesi, GraphQL schema türetilir. *DocType → endpoint p95 <60sn, OpenAPI conformance %100.* Capabilities: CRUD Endpoint Generation, OpenAPI Spec, Bulk & Batch (idempotent), Pagination & Cursor, Webhooks.",
           "enrich": {
             "info": "**Faz 1 · P0.** DocType → CRUD + filter + bulk endpoint. Aynı tanımdan OpenAPI spec, MCP tool listesi, GraphQL schema türetilir. *DocType → ",
-            "detail": "**S01 — Auto REST API Engine** nedir?\n\n**Faz 1 · P0.** DocType → CRUD + filter + bulk endpoint. Aynı tanımdan OpenAPI spec, MCP tool listesi, GraphQL schema türetilir. *DocType → endpoint p95 <60sn, OpenAPI conformance %100.* Capabilities: CRUD Endpoint Generation, OpenAPI Spec, Bulk & Batch (idempotent), Pagination & Cursor, Webhooks.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
             "terms": [
               {
                 "term": "GraphQL",
@@ -145,23 +155,6 @@
                 "meaning": "Kaynak-merkezli HTTP API mimarisi.",
                 "why": "Standart, cache-friendly."
               }
-            ],
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"S01 — Auto REST API Engine\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 1 · P0.** DocType → CRUD + filter + bulk endpoint. Aynı tanımdan OpenAPI s pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"S01 — Auto REST API Engine\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"S01 — Auto REST API Engine\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
             ]
           }
         },
@@ -169,50 +162,14 @@
           "name": "S02 — Auto Admin UI Engine",
           "desc": "**Faz 2 · P0.** DocType → auto-generated admin UI: list, detail, form, bulk action, filter side-panel. Flowbite + React Router v7. **AI co-pilot her ekranda.** *DocType → çalışır UI <2dk, Lighthouse a11y >90.* `Saved View` (filter_state + sort_state + is_shared), `ai_quick_filter` (doğal dil filtresi).",
           "enrich": {
-            "info": "**Faz 2 · P0.** DocType → auto-generated admin UI: list, detail, form, bulk action, filter side-panel. Flowbite + React Router v7. **AI co-p",
-            "detail": "**S02 — Auto Admin UI Engine** nedir?\n\n**Faz 2 · P0.** DocType → auto-generated admin UI: list, detail, form, bulk action, filter side-panel. Flowbite + React Router v7. **AI co-pilot her ekranda.** *DocType → çalışır UI <2dk, Lighthouse a11y >90.* `Saved View` (filter_state + sort_state + is_shared), `ai_quick_filter` (doğal dil filtresi).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"S02 — Auto Admin UI Engine\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 2 · P0.** DocType → auto-generated admin UI: list, detail, form, bulk acti pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"S02 — Auto Admin UI Engine\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"S02 — Auto Admin UI Engine\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "**Faz 2 · P0.** DocType → auto-generated admin UI: list, detail, form, bulk action, filter side-panel. Flowbite + React Router v7. **AI co-p"
           }
         },
         {
           "name": "S03 — Form & Validation Framework",
           "desc": "**Faz 2 · P1.** Form lifecycle, server-side + client-side validation, conditional fields, wizard flows, **AI auto-fill**, draft autosave. Tüm validation kuralları MCP tool olarak dış dünyaya da expose edilir.",
           "enrich": {
-            "info": "**Faz 2 · P1.** Form lifecycle, server-side + client-side validation, conditional fields, wizard flows, **AI auto-fill**, draft autosave. Tü",
-            "detail": "**S03 — Form & Validation Framework** nedir?\n\n**Faz 2 · P1.** Form lifecycle, server-side + client-side validation, conditional fields, wizard flows, **AI auto-fill**, draft autosave. Tüm validation kuralları MCP tool olarak dış dünyaya da expose edilir.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"S03 — Form & Validation Framework\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 2 · P1.** Form lifecycle, server-side + client-side validation, conditiona pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"S03 — Form & Validation Framework\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"S03 — Form & Validation Framework\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "**Faz 2 · P1.** Form lifecycle, server-side + client-side validation, conditional fields, wizard flows, **AI auto-fill**, draft autosave. Tü"
           }
         }
       ]
@@ -229,12 +186,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Sistemin küçük ama vazgeçilmez yardımcı modülleri: takvim, para, dil çevirisi, ayarlar, anlık iletişim. 'Her yerde lazım ama büyük modül değil' işler.",
+      "nicin": "Bu küçük parçaları her ürün ayrı ayrı yazsa zaman kaybı olur. Bir kez yazılır, hepsine sunulur.",
+      "nasil": "Geliştirici lazım olunca 'l1-misc'ten al' der; sistem hazır verir.",
+      "nerede": "Tarih seçici, para birimi gösterimi, dil değiştirme, anlık bildirim — hepsi buradan.",
+      "ne_zaman": "Tüm ürünlerin geliştirilme sürecinde sürekli kullanılır.",
+      "kim": "Tüm ekipler kullanır; bir mimar bakar.",
+      "analoji": "Bir ev aletinin standart bağlantı kabloları: TV, dolap, lamba — hepsi aynı duy kullanır. Ayrı ayrı kablo üretmek anlamsız."
+    }
   }
 }

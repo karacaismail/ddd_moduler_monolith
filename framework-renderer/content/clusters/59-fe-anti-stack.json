@@ -201,7 +201,8 @@
       "type": "callout",
       "variant": "info",
       "label": "Dokümantasyon disiplini",
-      "body": "**Sahibi:** İsmail · **Versiyon:** 1.0.0 · **Son güncelleme:** 2026-05-14. Bu doküman tek doğruluk kaynağıdır. CLAUDE.md, Cursor rules ve AI agent prompt'ları buradan üretilir. Tek bir karar değişimi → yeni ADR + bu dokümana güncelleme."
+      "body": "**Sahibi:** İsmail · **Versiyon:** 1.0.0 · **Son güncelleme:** 2026-05-14. Bu doküman tek doğruluk kaynağıdır. CLAUDE.md, Cursor rules ve AI agent prompt'ları buradan üretilir. Tek bir karar değişimi → yeni ADR + bu dokümana güncelleme.",
+      "enrich": {}
     }
   ],
   "enrich": {
@@ -215,12 +216,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Frontend dünyasında uzak duracağımız teknolojiler.",
+      "nicin": "Bazı teknolojiler popüler olsa da bu projeye uymaz.",
+      "nasil": "Tablo: 'X yasak, çünkü Y'.",
+      "nerede": "Geliştirici dokümanlarının yasaklılar sayfası.",
+      "ne_zaman": "'Bunu kullansak' deyince — yazılı gerekçeye bakılır.",
+      "kim": "Baş geliştirici tutar; ekip uyar.",
+      "analoji": "Mutfakta yasak raf: niye yasak yazılı."
+    }
   }
 }

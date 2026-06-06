@@ -30,25 +30,7 @@
           "name": "Authoring",
           "desc": "Block-based editor (BlockNote, Editor.js, Lexical)",
           "enrich": {
-            "info": "Block-based editor (BlockNote, Editor.js, Lexical)",
-            "detail": "**Authoring** nedir?\n\nBlock-based editor (BlockNote, Editor.js, Lexical).\n\n**Amaç:** Web sitesi/blog/sayfa içeriğinin editör tarafından kod yazmadan yönetildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç içerik yönetim (CMS) bilmeyen biri için: bu özellik, içerik yönetim (CMS) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İçerik editörü",
-                "context": "\"Authoring\" özelliğini çok-dilli içerik yayını sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Block-based editor (BlockNote, Editor.js, Lexical) pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Tasarımcı",
-                "context": "Yeni sayfa tasarlar. \"Authoring\" özelliği bu süreçte devreye girer.",
-                "outcome": "Drag-drop builder ile bileşenleri yerleştirir, kod yazmaz."
-              },
-              {
-                "persona": "Pazarlama",
-                "context": "SEO + A/B test yapar. \"Authoring\" özelliği bu süreçte devreye girer.",
-                "outcome": "Aynı sayfanın iki varyantını yayınlar, hangisi daha çok dönüşüm sağlıyor görür."
-              }
-            ]
+            "info": "Block-based editor (BlockNote, Editor.js, Lexical)"
           }
         },
         {
@@ -57,13 +39,21 @@
           "critical": true,
           "enrich": {
             "info": "Headless API (REST + GraphQL), edge cache",
-            "detail": "**Content Delivery** nedir?\n\nHeadless API (REST + GraphQL), edge cache.\n\n**Amaç:** Web sitesi/blog/sayfa içeriğinin editör tarafından kod yazmadan yönetildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç içerik yönetim (CMS) bilmeyen biri için: bu özellik, içerik yönetim (CMS) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
             "terms": [
               {
                 "term": "Cache",
                 "abbrev_tr": "Önbellek",
                 "meaning": "Sık erişilen veriyi hızlı bellekte tutan katman.",
-                "why": "DB yükünü ve latency'yi düşürür."
+                "why": "DB yükünü ve latency'yi düşürür.",
+                "enrich": {
+                  "lesson": {
+                    "ne": "Sık kullanılan verinin yakın bir yerde tutulması.",
+                    "nicin": "Her seferinde uzaktan çekmek yavaşlar.",
+                    "nasil": "Bellekte yedek; süresi dolunca yenilenir.",
+                    "kim": "Sistem otomatik.",
+                    "analoji": "Tezgâh üstündeki ekmek — depodan her seferinde almak yerine."
+                  }
+                }
               },
               {
                 "term": "Edge",
@@ -84,23 +74,6 @@
                 "meaning": "Kaynak-merkezli HTTP API mimarisi.",
                 "why": "Standart, cache-friendly."
               }
-            ],
-            "stories": [
-              {
-                "persona": "İçerik editörü",
-                "context": "\"Content Delivery\" özelliğini çok-dilli içerik yayını sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Headless API (REST + GraphQL), edge cache pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Tasarımcı",
-                "context": "Yeni sayfa tasarlar. \"Content Delivery\" özelliği bu süreçte devreye girer.",
-                "outcome": "Drag-drop builder ile bileşenleri yerleştirir, kod yazmaz."
-              },
-              {
-                "persona": "Pazarlama",
-                "context": "SEO + A/B test yapar. \"Content Delivery\" özelliği bu süreçte devreye girer.",
-                "outcome": "Aynı sayfanın iki varyantını yayınlar, hangisi daha çok dönüşüm sağlıyor görür."
-              }
             ]
           }
         },
@@ -108,100 +81,28 @@
           "name": "Composition / Page Builder",
           "desc": "Drag-drop sayfa kurma (PageFly muadili)",
           "enrich": {
-            "info": "Drag-drop sayfa kurma (PageFly muadili)",
-            "detail": "**Composition / Page Builder** nedir?\n\nDrag-drop sayfa kurma (PageFly muadili).\n\n**Amaç:** Web sitesi/blog/sayfa içeriğinin editör tarafından kod yazmadan yönetildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç içerik yönetim (CMS) bilmeyen biri için: bu özellik, içerik yönetim (CMS) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İçerik editörü",
-                "context": "\"Composition / Page Builder\" özelliğini çok-dilli içerik yayını sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Drag-drop sayfa kurma (PageFly muadili) pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Tasarımcı",
-                "context": "Yeni sayfa tasarlar. \"Composition / Page Builder\" özelliği bu süreçte devreye girer.",
-                "outcome": "Drag-drop builder ile bileşenleri yerleştirir, kod yazmaz."
-              },
-              {
-                "persona": "Pazarlama",
-                "context": "SEO + A/B test yapar. \"Composition / Page Builder\" özelliği bu süreçte devreye girer.",
-                "outcome": "Aynı sayfanın iki varyantını yayınlar, hangisi daha çok dönüşüm sağlıyor görür."
-              }
-            ]
+            "info": "Drag-drop sayfa kurma (PageFly muadili)"
           }
         },
         {
           "name": "Theme / Template",
           "desc": "Layout inheritance, render",
           "enrich": {
-            "info": "Layout inheritance, render",
-            "detail": "**Theme / Template** nedir?\n\nLayout inheritance, render.\n\n**Amaç:** Web sitesi/blog/sayfa içeriğinin editör tarafından kod yazmadan yönetildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç içerik yönetim (CMS) bilmeyen biri için: bu özellik, içerik yönetim (CMS) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İçerik editörü",
-                "context": "\"Theme / Template\" özelliğini çok-dilli içerik yayını sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Layout inheritance, render pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Tasarımcı",
-                "context": "Yeni sayfa tasarlar. \"Theme / Template\" özelliği bu süreçte devreye girer.",
-                "outcome": "Drag-drop builder ile bileşenleri yerleştirir, kod yazmaz."
-              },
-              {
-                "persona": "Pazarlama",
-                "context": "SEO + A/B test yapar. \"Theme / Template\" özelliği bu süreçte devreye girer.",
-                "outcome": "Aynı sayfanın iki varyantını yayınlar, hangisi daha çok dönüşüm sağlıyor görür."
-              }
-            ]
+            "info": "Layout inheritance, render"
           }
         },
         {
           "name": "Taxonomy & Navigation",
           "desc": "Kategori, etiket, menü",
           "enrich": {
-            "info": "Kategori, etiket, menü",
-            "detail": "**Taxonomy & Navigation** nedir?\n\nKategori, etiket, menü.\n\n**Amaç:** Web sitesi/blog/sayfa içeriğinin editör tarafından kod yazmadan yönetildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç içerik yönetim (CMS) bilmeyen biri için: bu özellik, içerik yönetim (CMS) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İçerik editörü",
-                "context": "\"Taxonomy & Navigation\" özelliğini çok-dilli içerik yayını sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Kategori, etiket, menü pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Tasarımcı",
-                "context": "Yeni sayfa tasarlar. \"Taxonomy & Navigation\" özelliği bu süreçte devreye girer.",
-                "outcome": "Drag-drop builder ile bileşenleri yerleştirir, kod yazmaz."
-              },
-              {
-                "persona": "Pazarlama",
-                "context": "SEO + A/B test yapar. \"Taxonomy & Navigation\" özelliği bu süreçte devreye girer.",
-                "outcome": "Aynı sayfanın iki varyantını yayınlar, hangisi daha çok dönüşüm sağlıyor görür."
-              }
-            ]
+            "info": "Kategori, etiket, menü"
           }
         },
         {
           "name": "Localization",
           "desc": "Çok-dilli içerik, çeviri akışı, fallback",
           "enrich": {
-            "info": "Çok-dilli içerik, çeviri akışı, fallback",
-            "detail": "**Localization** nedir?\n\nÇok-dilli içerik, çeviri akışı, fallback.\n\n**Amaç:** Web sitesi/blog/sayfa içeriğinin editör tarafından kod yazmadan yönetildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç içerik yönetim (CMS) bilmeyen biri için: bu özellik, içerik yönetim (CMS) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İçerik editörü",
-                "context": "\"Localization\" özelliğini çok-dilli içerik yayını sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Çok-dilli içerik, çeviri akışı, fallback pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Tasarımcı",
-                "context": "Yeni sayfa tasarlar. \"Localization\" özelliği bu süreçte devreye girer.",
-                "outcome": "Drag-drop builder ile bileşenleri yerleştirir, kod yazmaz."
-              },
-              {
-                "persona": "Pazarlama",
-                "context": "SEO + A/B test yapar. \"Localization\" özelliği bu süreçte devreye girer.",
-                "outcome": "Aynı sayfanın iki varyantını yayınlar, hangisi daha çok dönüşüm sağlıyor görür."
-              }
-            ]
+            "info": "Çok-dilli içerik, çeviri akışı, fallback"
           }
         },
         {
@@ -209,7 +110,6 @@
           "desc": "Slug, canonical, redirect (301/410), sitemap, schema.org, Open Graph",
           "enrich": {
             "info": "Slug, canonical, redirect (301/410), sitemap, schema.org, Open Graph",
-            "detail": "**SEO** nedir?\n\nSlug, canonical, redirect (301/410), sitemap, schema.org, Open Graph.\n\n**Amaç:** Web sitesi/blog/sayfa içeriğinin editör tarafından kod yazmadan yönetildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç içerik yönetim (CMS) bilmeyen biri için: bu özellik, içerik yönetim (CMS) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
             "terms": [
               {
                 "term": "Slug",
@@ -222,126 +122,53 @@
                 "abbrev_of": "Search Engine Optimization",
                 "abbrev_tr": "Arama motoru optimizasyonu",
                 "meaning": "Google sıralamasına etki eden teknik+içerik kuralları.",
-                "why": "Organik trafik için kritik."
+                "why": "Organik trafik için kritik.",
+                "enrich": {
+                  "lesson": {
+                    "ne": "Arama motorları için optimizasyon.",
+                    "nicin": "Google'da öne çıkmak için.",
+                    "nasil": "Doğru başlık, açıklama, hızlı yükleme, sitemap.",
+                    "kim": "Geliştirici + pazarlama.",
+                    "analoji": "Kitap kapağı + arka tanıtım — okuyucu yolda görür."
+                  }
+                }
               }
             ],
-            "stories": [
-              {
-                "persona": "İçerik editörü",
-                "context": "\"SEO\" özelliğini çok-dilli içerik yayını sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Slug, canonical, redirect (301/410), sitemap, schema.org, Open Graph pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Tasarımcı",
-                "context": "Yeni sayfa tasarlar. \"SEO\" özelliği bu süreçte devreye girer.",
-                "outcome": "Drag-drop builder ile bileşenleri yerleştirir, kod yazmaz."
-              },
-              {
-                "persona": "Pazarlama",
-                "context": "SEO + A/B test yapar. \"SEO\" özelliği bu süreçte devreye girer.",
-                "outcome": "Aynı sayfanın iki varyantını yayınlar, hangisi daha çok dönüşüm sağlıyor görür."
-              }
-            ]
+            "lesson": {
+              "ne": "Arama motorları için optimizasyon.",
+              "nicin": "Google'da öne çıkmak için.",
+              "nasil": "Doğru başlık, açıklama, hızlı yükleme, sitemap.",
+              "kim": "Geliştirici + pazarlama.",
+              "analoji": "Kitap kapağı + arka tanıtım — okuyucu yolda görür."
+            }
           }
         },
         {
           "name": "Personalization",
           "desc": "Audience targeting, A/B content",
           "enrich": {
-            "info": "Audience targeting, A/B content",
-            "detail": "**Personalization** nedir?\n\nAudience targeting, A/B content.\n\n**Amaç:** Web sitesi/blog/sayfa içeriğinin editör tarafından kod yazmadan yönetildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç içerik yönetim (CMS) bilmeyen biri için: bu özellik, içerik yönetim (CMS) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İçerik editörü",
-                "context": "\"Personalization\" özelliğini çok-dilli içerik yayını sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Audience targeting, A/B content pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Tasarımcı",
-                "context": "Yeni sayfa tasarlar. \"Personalization\" özelliği bu süreçte devreye girer.",
-                "outcome": "Drag-drop builder ile bileşenleri yerleştirir, kod yazmaz."
-              },
-              {
-                "persona": "Pazarlama",
-                "context": "SEO + A/B test yapar. \"Personalization\" özelliği bu süreçte devreye girer.",
-                "outcome": "Aynı sayfanın iki varyantını yayınlar, hangisi daha çok dönüşüm sağlıyor görür."
-              }
-            ]
+            "info": "Audience targeting, A/B content"
           }
         },
         {
           "name": "Forms",
           "desc": "Form builder, submission",
           "enrich": {
-            "info": "Form builder, submission",
-            "detail": "**Forms** nedir?\n\nForm builder, submission.\n\n**Amaç:** Web sitesi/blog/sayfa içeriğinin editör tarafından kod yazmadan yönetildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç içerik yönetim (CMS) bilmeyen biri için: bu özellik, içerik yönetim (CMS) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İçerik editörü",
-                "context": "\"Forms\" özelliğini çok-dilli içerik yayını sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Form builder, submission pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Tasarımcı",
-                "context": "Yeni sayfa tasarlar. \"Forms\" özelliği bu süreçte devreye girer.",
-                "outcome": "Drag-drop builder ile bileşenleri yerleştirir, kod yazmaz."
-              },
-              {
-                "persona": "Pazarlama",
-                "context": "SEO + A/B test yapar. \"Forms\" özelliği bu süreçte devreye girer.",
-                "outcome": "Aynı sayfanın iki varyantını yayınlar, hangisi daha çok dönüşüm sağlıyor görür."
-              }
-            ]
+            "info": "Form builder, submission"
           }
         },
         {
           "name": "Multi-site",
           "desc": "Tek tenant çok site, domain mapping",
           "enrich": {
-            "info": "Tek tenant çok site, domain mapping",
-            "detail": "**Multi-site** nedir?\n\nTek tenant çok site, domain mapping.\n\n**Amaç:** Web sitesi/blog/sayfa içeriğinin editör tarafından kod yazmadan yönetildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç içerik yönetim (CMS) bilmeyen biri için: bu özellik, içerik yönetim (CMS) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İçerik editörü",
-                "context": "\"Multi-site\" özelliğini çok-dilli içerik yayını sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Tek tenant çok site, domain mapping pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Tasarımcı",
-                "context": "Yeni sayfa tasarlar. \"Multi-site\" özelliği bu süreçte devreye girer.",
-                "outcome": "Drag-drop builder ile bileşenleri yerleştirir, kod yazmaz."
-              },
-              {
-                "persona": "Pazarlama",
-                "context": "SEO + A/B test yapar. \"Multi-site\" özelliği bu süreçte devreye girer.",
-                "outcome": "Aynı sayfanın iki varyantını yayınlar, hangisi daha çok dönüşüm sağlıyor görür."
-              }
-            ]
+            "info": "Tek tenant çok site, domain mapping"
           }
         },
         {
           "name": "Comments & UGC",
           "desc": "Moderation",
           "enrich": {
-            "info": "Moderation",
-            "detail": "**Comments & UGC** nedir?\n\nModeration.\n\n**Amaç:** Web sitesi/blog/sayfa içeriğinin editör tarafından kod yazmadan yönetildiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç içerik yönetim (CMS) bilmeyen biri için: bu özellik, içerik yönetim (CMS) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İçerik editörü",
-                "context": "\"Comments & UGC\" özelliğini çok-dilli içerik yayını sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Moderation pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Tasarımcı",
-                "context": "Yeni sayfa tasarlar. \"Comments & UGC\" özelliği bu süreçte devreye girer.",
-                "outcome": "Drag-drop builder ile bileşenleri yerleştirir, kod yazmaz."
-              },
-              {
-                "persona": "Pazarlama",
-                "context": "SEO + A/B test yapar. \"Comments & UGC\" özelliği bu süreçte devreye girer.",
-                "outcome": "Aynı sayfanın iki varyantını yayınlar, hangisi daha çok dönüşüm sağlıyor görür."
-              }
-            ]
+            "info": "Moderation"
           }
         }
       ]
@@ -364,12 +191,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "İçerik yönetim modülü: bloglar, makaleler, sayfalar — web sitelerinin metin tarafını yöneten sistem.",
+      "nicin": "Şirketin internet sitesindeki her metni geliştirici güncelleyemez. İçerik editörünün kendi başına güncelleyebileceği bir panel lazım.",
+      "nasil": "Editör panele girer → makale yazar → görsel ekler → 'yayınla' der → site otomatik güncellenir.",
+      "nerede": "Blog, kurumsal site, ürün katalog sayfaları.",
+      "ne_zaman": "Her yeni içerik yayını veya güncellemesi.",
+      "kim": "İçerik editörü yazar; pazarlama onaylar; ziyaretçi okur.",
+      "analoji": "Bir gazete tezgâhı: editör haber yazar, basıma verir, gazete sokağa düşer. Eskiden el yazısıyla, şimdi dijital."
+    }
   }
 }

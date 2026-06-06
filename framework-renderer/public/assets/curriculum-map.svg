@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" role="img" aria-labelledby="cm-title cm-desc">
+  <title id="cm-title">Müfredat Akış Haritası</title>
+  <desc id="cm-desc">10 ünitenin sırasını ve birbirine bağımlılığını gösteren akış şeması.</desc>
+  <style>
+    .node { fill: #fff; stroke: #cbd5e1; stroke-width: 1.5; }
+    .node-bg { fill: #eef2ff; stroke: #6366f1; stroke-width: 2; }
+    .label { font: 500 14px 'Inter', sans-serif; fill: #1f2937; }
+    .num { font: 700 12px 'Inter', sans-serif; fill: #6366f1; }
+    .arrow { stroke: #94a3b8; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    .arrow-strong { stroke: #6366f1; stroke-width: 2; fill: none; marker-end: url(#arrow-strong); }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8" />
+    </marker>
+    <marker id="arrow-strong" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1" />
+    </marker>
+  </defs>
+
+  <!-- Row 1: U01, U02, U03 -->
+  <g transform="translate(30, 30)">
+    <rect class="node-bg" width="140" height="60" rx="8" />
+    <text class="num" x="14" y="22">U01</text>
+    <text class="label" x="14" y="44">Yazılım nedir?</text>
+  </g>
+  <g transform="translate(220, 30)">
+    <rect class="node" width="140" height="60" rx="8" />
+    <text class="num" x="14" y="22">U02</text>
+    <text class="label" x="14" y="44">Veri ve Tipler</text>
+  </g>
+  <g transform="translate(410, 30)">
+    <rect class="node" width="140" height="60" rx="8" />
+    <text class="num" x="14" y="22">U03</text>
+    <text class="label" x="14" y="44">DocType ile Model</text>
+  </g>
+
+  <!-- Row 2: U04, U05 -->
+  <g transform="translate(220, 120)">
+    <rect class="node" width="140" height="60" rx="8" />
+    <text class="num" x="14" y="22">U04</text>
+    <text class="label" x="14" y="44">Veritabanı</text>
+  </g>
+  <g transform="translate(410, 120)">
+    <rect class="node" width="140" height="60" rx="8" />
+    <text class="num" x="14" y="22">U05</text>
+    <text class="label" x="14" y="44">API: REST / GraphQL</text>
+  </g>
+
+  <!-- Row 3: U06, U07, U08 -->
+  <g transform="translate(30, 210)">
+    <rect class="node" width="140" height="60" rx="8" />
+    <text class="num" x="14" y="22">U06</text>
+    <text class="label" x="14" y="44">Multi-tenancy</text>
+  </g>
+  <g transform="translate(220, 210)">
+    <rect class="node" width="140" height="60" rx="8" />
+    <text class="num" x="14" y="22">U07</text>
+    <text class="label" x="14" y="44">Yetkilendirme</text>
+  </g>
+  <g transform="translate(410, 210)">
+    <rect class="node" width="140" height="60" rx="8" />
+    <text class="num" x="14" y="22">U08</text>
+    <text class="label" x="14" y="44">Event Bus &amp; Outbox</text>
+  </g>
+
+  <!-- Row 4: U09, U10 -->
+  <g transform="translate(220, 285)">
+    <rect class="node" width="140" height="60" rx="8" />
+    <text class="num" x="14" y="22">U09</text>
+    <text class="label" x="14" y="44">Plugin Mimarisi</text>
+  </g>
+  <g transform="translate(610, 285)">
+    <rect class="node-bg" width="140" height="60" rx="8" />
+    <text class="num" x="14" y="22">U10</text>
+    <text class="label" x="14" y="44">Deploy &amp; Ops</text>
+  </g>
+
+  <!-- Arrows: U01 → U02 → U03 -->
+  <path class="arrow-strong" d="M 170 60 L 220 60" />
+  <path class="arrow-strong" d="M 360 60 L 410 60" />
+  <!-- U02 → U04 -->
+  <path class="arrow" d="M 290 90 L 290 120" />
+  <!-- U03 → U05 -->
+  <path class="arrow" d="M 480 90 L 480 120" />
+  <!-- U04 → U06 -->
+  <path class="arrow" d="M 290 180 Q 200 195 100 210" />
+  <!-- U04 → U07 -->
+  <path class="arrow" d="M 290 180 L 290 210" />
+  <!-- U05 → U08 -->
+  <path class="arrow" d="M 480 180 L 480 210" />
+  <!-- U06,U07,U08 → U09 -->
+  <path class="arrow" d="M 290 270 L 290 285" />
+  <path class="arrow" d="M 480 270 Q 380 280 295 285" />
+  <!-- U09 → U10 -->
+  <path class="arrow-strong" d="M 360 315 L 610 315" />
+</svg>

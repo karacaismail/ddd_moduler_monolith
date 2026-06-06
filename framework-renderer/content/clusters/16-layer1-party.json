@@ -40,125 +40,35 @@
           "label": "Real estate (#1)",
           "text": "Party = aynı kişi hem alıcı (buyer role), hem satıcı (seller role), hem danışman (agent role) olabilir. Üç ayrı tablo değil, tek Party + üç role.",
           "enrich": {
-            "info": "Party = aynı kişi hem alıcı (buyer role), hem satıcı (seller role), hem danışman (agent role) olabilir. Üç ayrı tablo değil, tek Party + üç ",
-            "detail": "**Real estate (#1)** nedir?\n\nParty = aynı kişi hem alıcı (buyer role), hem satıcı (seller role), hem danışman (agent role) olabilir. Üç ayrı tablo değil, tek Party + üç role.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Real estate (#1)\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Party = aynı kişi hem alıcı (buyer role), hem satıcı (seller role), hem danışman pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Real estate (#1)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Real estate (#1)\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Party = aynı kişi hem alıcı (buyer role), hem satıcı (seller role), hem danışman (agent role) olabilir. Üç ayrı tablo değil, tek Party + üç "
           }
         },
         {
           "label": "Hastane",
           "text": "Party = doktor, hemşire, hasta, refakatçi. Doktor aynı zamanda hasta olabilir. Tek Party.",
           "enrich": {
-            "info": "Party = doktor, hemşire, hasta, refakatçi. Doktor aynı zamanda hasta olabilir. Tek Party.",
-            "detail": "**Hastane** nedir?\n\nParty = doktor, hemşire, hasta, refakatçi. Doktor aynı zamanda hasta olabilir. Tek Party.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Hastane\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Party = doktor, hemşire, hasta, refakatçi. Doktor aynı zamanda hasta olabilir. T pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Hastane\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Hastane\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Party = doktor, hemşire, hasta, refakatçi. Doktor aynı zamanda hasta olabilir. Tek Party."
           }
         },
         {
           "label": "Üniversite",
           "text": "öğrenci mezun olunca aynı Party, role değişir (alumni). LinkedIn benzeri network kurabilirsin.",
           "enrich": {
-            "info": "öğrenci mezun olunca aynı Party, role değişir (alumni). LinkedIn benzeri network kurabilirsin.",
-            "detail": "**Üniversite** nedir?\n\nöğrenci mezun olunca aynı Party, role değişir (alumni). LinkedIn benzeri network kurabilirsin.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Üniversite\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici öğrenci mezun olunca aynı Party, role değişir (alumni). LinkedIn benzeri network pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Üniversite\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Üniversite\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "öğrenci mezun olunca aynı Party, role değişir (alumni). LinkedIn benzeri network kurabilirsin."
           }
         },
         {
           "label": "E-ticaret B2B (#2)",
           "text": "bir şirket hem alıcı hem satıcı olabilir (distributor pattern). Tek Organization, dual role.",
           "enrich": {
-            "info": "bir şirket hem alıcı hem satıcı olabilir (distributor pattern). Tek Organization, dual role.",
-            "detail": "**E-ticaret B2B (#2)** nedir?\n\nbir şirket hem alıcı hem satıcı olabilir (distributor pattern). Tek Organization, dual role.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"E-ticaret B2B (#2)\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici bir şirket hem alıcı hem satıcı olabilir (distributor pattern). Tek Organization pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"E-ticaret B2B (#2)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"E-ticaret B2B (#2)\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "bir şirket hem alıcı hem satıcı olabilir (distributor pattern). Tek Organization, dual role."
           }
         },
         {
           "label": "CRM",
           "text": "lead → contact → customer dönüşümü. Aynı Party, role evrimi. Yeni tablo değil.",
           "enrich": {
-            "info": "lead → contact → customer dönüşümü. Aynı Party, role evrimi. Yeni tablo değil.",
-            "detail": "**CRM** nedir?\n\nlead → contact → customer dönüşümü. Aynı Party, role evrimi. Yeni tablo değil.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"CRM\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici lead → contact → customer dönüşümü. Aynı Party, role evrimi. Yeni tablo değil. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"CRM\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"CRM\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "lead → contact → customer dönüşümü. Aynı Party, role evrimi. Yeni tablo değil."
           }
         }
       ]
@@ -167,11 +77,20 @@
       "type": "callout",
       "variant": "warning",
       "label": "Tuzak — \"Customer\" core'a koyma",
-      "body": "{{ref:s-social}} medyada \"Customer\" yok. {{ref:s-cms}} CMS'te yok. {{ref:s-lms}} LMS'te yok. Eğer Customer'ı core'a koyarsan bu 3 ürün için ölü kavram taşımış olursun. Generic kısım (Person/Org/Contact/Address) core, \"Customer\" rolü module'de."
+      "body": "{{ref:s-social}} medyada \"Customer\" yok. {{ref:s-cms}} CMS'te yok. {{ref:s-lms}} LMS'te yok. Eğer Customer'ı core'a koyarsan bu 3 ürün için ölü kavram taşımış olursun. Generic kısım (Person/Org/Contact/Address) core, \"Customer\" rolü module'de.",
+      "enrich": {
+        "lesson": {
+          "ne": "Satışa sunulan eşya veya hizmet.",
+          "nicin": "İşletmenin gelir kaynağı.",
+          "nasil": "Katalogda fotoğraf + fiyat + stok bilgisi.",
+          "kim": "Üretici/satıcı yönetir.",
+          "analoji": "Bakkalın rafındaki her eşya."
+        }
+      }
     }
   ],
   "enrich": {
-    "info": "Customer/Supplier/Employee yazma — Party yaz. Generic core, role module.",
+    "info": "Sistemdeki bütün 'taraf' kayıtları: müşteri, tedarikçi, çalışan, ortak — hepsi tek bir adres defterinde.",
     "detail": "Customer/Supplier/Employee yazma — Party yaz. Generic core, role module.",
     "terms": [
       {
@@ -181,12 +100,14 @@
         "why": "Aynı kişi hem müşteri hem tedarikçi olabilir; tek kayıt."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Sistemdeki bütün 'taraf' kayıtları: müşteri, tedarikçi, çalışan, ortak — hepsi tek bir adres defterinde toplanır.",
+      "nicin": "Aynı kişi hem müşteri hem tedarikçi olabilir. Her modül ayrı tablo tutarsa bilgi karışır, telefon güncellense bir yerde günceller, diğerinde eski kalır.",
+      "nasil": "Tek bir 'Party' tablosu vardır. Üzerine 'rol' bilgisi eklenir: bu satır hem müşteri hem tedarikçi. Tek adres, tek telefon, tek e-posta — değiştirince her yerde güncellenir.",
+      "nerede": "Tüm modüllerin (satış, satın alma, İK) kişi/kurum gösterdiği yer Party tablosuna bakar.",
+      "ne_zaman": "Yeni bir müşteri veya tedarikçi kaydı geldiğinde önce 'bu kişi sistemde var mı' kontrol edilir; varsa rol eklenir.",
+      "kim": "Sistem yöneticisi kayıt politikasını belirler; her modül kendi sorumluluğunu Party üstünde işler.",
+      "analoji": "Ailenin tek bir telefon rehberi: anne, baba, kardeş — hepsi aynı defterde. Her ihtiyaca ayrı defter tutsan, yeni telefonu birinde günceller diğerinde unutursun."
+    }
   }
 }

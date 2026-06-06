@@ -1,0 +1,99 @@
+{
+  "id": "sus-bc-policy",
+  "title": "Sözleşme kapısı — \"Don't break userspace\"",
+  "subtitle": "Linus Torvalds 1 numaralı kuralı: bir değişiklik kullanıcı programını kırıyorsa, hata **çekirdektedir**; patch geri alınır.",
+  "cluster": "sus",
+  "order": 91,
+  "icon": "ph-handshake",
+  "tags": [
+    "sustainability",
+    "contract",
+    "linux",
+    "policy"
+  ],
+  "enrich": {
+    "info": "Sözleşme verilen yüzeyi (API, şema, plugin arayüzü) hiçbir koşulda kırma; kırıcı patch'i CI reddeder.",
+    "lesson": {
+      "ne": "Sistem dışarıya verdiği sözü — API, veri formatı, plugin arayüzü — hiç ama hiç kırmaz. Eğer yeni bir değişiklik kırarsa, hata yeni değişiklikte olduğu kabul edilir ve geri alınır.",
+      "nicin": "Bir kez dışarıya söz verdiysen (bu API 10 yıl sonra da böyle çalışacak), bu sözün bozulması güveni yok eder. Dış geliştirici bir daha senin sistemini seçmez.",
+      "nasil": "Yazılı politika + makine: \"BC kapısı\" diye bir CI testi var; her PR sözleşme dosyasını kontrol eder. Eski testler geçmiyorsa PR bloke olur. Linus 30 yıldır aynı disiplini uyguluyor.",
+      "nerede": "Çekirdek API yüzeyi, DocType sözleşme dosyaları, plugin manifest formatı — her sözleşmeleştirilen yüzey.",
+      "ne_zaman": "İlk dış entegratör veya plugin yazıldığı an. O an sözleşme doğmuş demektir; artık geriye yol yok.",
+      "kim": "Mimar politikayı yazar; CI makinesi zorlatır; PR sahibi (geliştirici) uyar; dış entegratör 10 yıl sonra hâlâ çalışan sistem bulur.",
+      "analoji": "Bakkal Ahmet Amca'nın veresiye defteri: 1985'te yazdığı sayfa silinmez, üzeri çizilmez. Yeni alışveriş yeni satır. 40 yıl sonra Ahmet Amca'nın oğlu defteri açıp \"1985'te Salih Bey ne aldıydı\" sorusunu yanıtlayabilir. Sayfa silinseydi tarih kayıp olurdu."
+    },
+    "stories": [
+      {
+        "persona": "Nalbur Mustafa Bey, 1980'den beri aynı kasa",
+        "context": "Müşteri 1995'te aldığı 50'lik soba borusunu getiriyor, eşi lazım. Mustafa Bey raftaki torbaları açıyor — boyutlar aynı kalmış 30 yıldır.",
+        "outcome": "Üretici firma boyutu değiştirseydi (52'lik yapsaydı) 1995'te alan müşteri bir daha gelmezdi. Sözleşme = standart boyut. Yazılımda API yüzeyi tam böyle: bir kez vaat ettin, asla değiştirme."
+      },
+      {
+        "persona": "Eczacı Bilge Hanım, reçete numarası",
+        "context": "1990'da hastanenin verdiği reçete numarası 8 hane. Bilge Hanım her reçeteyi bilgisayara o numarayla işliyor. SGK 2025'te \"artık 10 hane olsun\" diye değişiklik istese eski 35 yılın kaydı kaybolur.",
+        "outcome": "Çözüm: 8 hane sözleşme, eski reçeteler hep 8 hane okunur; yeni reçeteler 10 hane ama kayıt sisteminde \"sürüm\" alanı var. Eski sözleşme yaşar, yeni sözleşme eklenir. Stripe yöntemi tam bu."
+      },
+      {
+        "persona": "Çiçekçi Selma Hanım, müşteri kayıtları",
+        "context": "20 yıllık müşterisi var: \"abla, geçen sene oğlumun mezuniyetine yolladığın buketin aynısını\" diyor. Selma Hanım 2005'te kullandığı kayıt formunda buket içeriğini buluyor.",
+        "outcome": "Kayıt formatı değişseydi — eskiden 5 alan, şimdi 8 alan — eskileri okuyamazdı. Format sözleşmesi: eski hep okunabilir; yeni alanlar eklenebilir ama eski silinmez. Eski kart 20 yıl sonra da açılır."
+      }
+    ],
+    "terms": [
+      {
+        "term": "BC (Backward Compatibility)",
+        "abbrev_tr": "Geriye Uyumluluk",
+        "meaning": "Yeni sürüm eski tüketicinin programını çalıştırmaya devam etmeli",
+        "why": "Sözleşmenin matematiksel adı"
+      },
+      {
+        "term": "Don't break userspace",
+        "abbrev_tr": "Kullanıcı alanını kırma",
+        "meaning": "Linus'un 1 numaralı kuralı: çekirdek değişikliği kullanıcı programını asla kırmaz",
+        "why": "30 yıllık Linux istikrarının formülü"
+      },
+      {
+        "term": "Revert kapısı",
+        "meaning": "Kırıcı patch tespit edilince otomatik geri alma",
+        "why": "İnsanın tartışmasına gerek kalmadan korunma"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Linus'tan alıntı",
+      "body": "*\"We do not break userspace. The kernel exists to serve userspace. If a change breaks a user-space program, the change is wrong — even if the kernel was technically buggy before.\"* — 30 yıllık Linux disiplini bu cümleyle özetlenir."
+    },
+    {
+      "type": "paragraph",
+      "text": "**Bu projeye nasıl uygulanır:** Kutsal sözleşme yüzeyi 3'tür — DocType şeması, plugin API'si, AI-aksiyon yüzeyi. Bu üçünden birini kıran PR CI'da otomatik reddedilir. Geri uyumlu değişiklik istiyorsan yeni sürüm tarihi açar, eski sürümü dönüşüm katmanıyla yaşatırsın (bkz. sus-versioning)."
+    },
+    {
+      "type": "kv-row",
+      "pairs": [
+        {
+          "key": "Politika dosyası",
+          "value": "framework/contracts/POLICY.md"
+        },
+        {
+          "key": "CI kapısı",
+          "value": ".github/workflows/contract-guard.yml"
+        },
+        {
+          "key": "Sözleşme snapshot",
+          "value": "framework/contracts/doctype_contract/*.json"
+        },
+        {
+          "key": "İlk eşik",
+          "value": "İlk dış plugin / entegratör doğduğunda devreye"
+        }
+      ]
+    }
+  ],
+  "related": [
+    "anti-patterns",
+    "philosophy"
+  ]
+}

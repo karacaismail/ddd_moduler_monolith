@@ -30,7 +30,16 @@
         "REST ve GraphQL'in temel farkını bir örnekle anlatabilirsin.",
         "Idempotent kavramını ve neden retry için kritik olduğunu söyleyebilirsin.",
         "Status code 200/201/400/401/403/404/409/422/500 anlamını biliyorsun."
-      ]
+      ],
+      "enrich": {
+        "lesson": {
+          "ne": "İki sistemin nasıl konuşacağını tanımlayan kurallar dizisi.",
+          "nicin": "Modern yazılım = çok parçanın haberleşmesi.",
+          "nasil": "Bir sistem istek atar, karşısındaki cevap döner.",
+          "kim": "Geliştirici çağırır.",
+          "analoji": "Telefon görüşmesinin kuralı."
+        }
+      }
     },
     {
       "type": "heading",
@@ -45,7 +54,16 @@
           "abbrev_of": "Application Programming Interface",
           "abbrev_tr": "Uygulama Programlama Arayüzü",
           "meaning": "İki yazılımın konuşma protokolü — istek/cevap sözleşmesi.",
-          "why": "Frontend ↔ backend, üçüncü taraflar bunun üzerinden gelir."
+          "why": "Frontend ↔ backend, üçüncü taraflar bunun üzerinden gelir.",
+          "enrich": {
+            "lesson": {
+              "ne": "İki sistemin nasıl konuşacağını tanımlayan kurallar dizisi.",
+              "nicin": "Modern yazılım = çok parçanın haberleşmesi.",
+              "nasil": "Bir sistem istek atar, karşısındaki cevap döner.",
+              "kim": "Geliştirici çağırır.",
+              "analoji": "Telefon görüşmesinin kuralı."
+            }
+          }
         },
         {
           "term": "HTTP",
@@ -59,20 +77,47 @@
           "abbrev_of": "Representational State Transfer",
           "abbrev_tr": "Temsili Durum Aktarımı",
           "meaning": "Kaynak (resource) merkezli API mimarisi. URL = kaynak, method = eylem.",
-          "why": "Basit, evrensel, cache-friendly."
+          "why": "Basit, evrensel, cache-friendly.",
+          "enrich": {
+            "lesson": {
+              "ne": "İnternet üzerinde sistemlerin konuşması için yaygın yöntem.",
+              "nicin": "Standart olduğu için her dilde anlaşılır.",
+              "nasil": "HTTP üzerinden GET/POST/PUT/DELETE.",
+              "kim": "Tüm geliştiriciler bilmek zorunda.",
+              "analoji": "Standart posta hizmeti."
+            }
+          }
         },
         {
           "term": "GraphQL",
           "abbrev_tr": "Graf sorgu dili",
           "meaning": "Tek endpoint, istemci hangi alanları istediğini söyler.",
-          "why": "Over-fetching/under-fetching problemini çözer; mobil için ideal."
+          "why": "Over-fetching/under-fetching problemini çözer; mobil için ideal.",
+          "enrich": {
+            "lesson": {
+              "ne": "API'lerin daha esnek çalışmasını sağlayan alternatif yöntem.",
+              "nicin": "REST'te aynı veri gelir; GraphQL'de istemci seçer.",
+              "nasil": "Tek endpoint; istemci sorguda alan seçer.",
+              "kim": "Modern frontend tercih eder.",
+              "analoji": "Tabağa fazlalık gelmiyor."
+            }
+          }
         },
         {
           "term": "JSON",
           "abbrev_of": "JavaScript Object Notation",
           "abbrev_tr": "JavaScript Nesne Gösterimi",
           "meaning": "Veri değişim formatı: `{\"key\": \"value\"}`.",
-          "why": "İnsan-okur, makine-parse; XML'in yerini aldı."
+          "why": "İnsan-okur, makine-parse; XML'in yerini aldı.",
+          "enrich": {
+            "lesson": {
+              "ne": "Veriyi metin olarak yazmak için format.",
+              "nicin": "Hem insan okur hem makine işler.",
+              "nasil": "Süslü parantezlerle anahtar-değer.",
+              "kim": "Her web geliştiricisi.",
+              "analoji": "Kimlik kartı bilgi tablosu."
+            }
+          }
         },
         {
           "term": "Endpoint",
@@ -121,7 +166,16 @@
           "term": "Rate limit",
           "abbrev_tr": "Hız sınırı",
           "meaning": "Saniye/dakika başına maks istek.",
-          "why": "Abuse engeller, fair-use korur."
+          "why": "Abuse engeller, fair-use korur.",
+          "enrich": {
+            "lesson": {
+              "ne": "Belirli sürede atılabilecek istek sayısının üst sınırı.",
+              "nicin": "Kötü niyetli aşırı yüklemeyi engellemek için.",
+              "nasil": "Saniyede 100 istek üzeri reddedilir.",
+              "kim": "Sistem otomatik uygular.",
+              "analoji": "Sinema gişesi bir dakikada 10 bilet kuralı."
+            }
+          }
         }
       ]
     },
@@ -134,7 +188,14 @@
       "type": "paragraph",
       "text": "REST'in mantığı çok basit: **URL bir kaynak, method bir eylem**. Aynı URL'e farklı method'lar farklı sonuç verir.",
       "enrich": {
-        "info": "URL = isim, method = fiil."
+        "info": "URL = isim, method = fiil.",
+        "lesson": {
+          "ne": "İnternet üzerinde sistemlerin konuşması için yaygın yöntem.",
+          "nicin": "Standart olduğu için her dilde anlaşılır.",
+          "nasil": "HTTP üzerinden GET/POST/PUT/DELETE.",
+          "kim": "Tüm geliştiriciler bilmek zorunda.",
+          "analoji": "Standart posta hizmeti."
+        }
       }
     },
     {
@@ -197,125 +258,35 @@
           "name": "200 OK",
           "desc": "İstek başarılı, cevap geliyor.",
           "enrich": {
-            "info": "GET için varsayılan başarı.",
-            "detail": "**200 OK** nedir?\n\nİstek başarılı, cevap geliyor.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"200 OK\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici İstek başarılı, cevap geliyor. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"200 OK\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"200 OK\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "GET için varsayılan başarı."
           }
         },
         {
           "name": "201 Created",
           "desc": "Kaynak oluşturuldu (POST sonrası). `Location` header'ında yeni URL.",
           "enrich": {
-            "info": "Kaynak oluşturuldu (POST sonrası). `Location` header'ında yeni URL.",
-            "detail": "**201 Created** nedir?\n\nKaynak oluşturuldu (POST sonrası). `Location` header'ında yeni URL.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"201 Created\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Kaynak oluşturuldu (POST sonrası). `Location` header'ında yeni URL. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"201 Created\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"201 Created\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Kaynak oluşturuldu (POST sonrası). `Location` header'ında yeni URL."
           }
         },
         {
           "name": "204 No Content",
           "desc": "Başarılı ama gövde yok (DELETE sonrası genelde).",
           "enrich": {
-            "info": "Başarılı ama gövde yok (DELETE sonrası genelde).",
-            "detail": "**204 No Content** nedir?\n\nBaşarılı ama gövde yok (DELETE sonrası genelde).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"204 No Content\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Başarılı ama gövde yok (DELETE sonrası genelde). pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"204 No Content\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"204 No Content\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Başarılı ama gövde yok (DELETE sonrası genelde)."
           }
         },
         {
           "name": "400 Bad Request",
           "desc": "İstemci hatası: payload yanlış, eksik alan.",
           "enrich": {
-            "info": "Frontend kullanıcıya 'düzelt' der.",
-            "detail": "**400 Bad Request** nedir?\n\nİstemci hatası: payload yanlış, eksik alan.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"400 Bad Request\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici İstemci hatası: payload yanlış, eksik alan. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"400 Bad Request\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"400 Bad Request\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Frontend kullanıcıya 'düzelt' der."
           }
         },
         {
           "name": "401 Unauthorized",
           "desc": "Giriş yapmamışsın. (İsim yanıltıcı: aslında 'authentication' yok.)",
           "enrich": {
-            "info": "Giriş yapmamışsın. (İsim yanıltıcı: aslında 'authentication' yok.)",
-            "detail": "**401 Unauthorized** nedir?\n\nGiriş yapmamışsın. (İsim yanıltıcı: aslında 'authentication' yok.).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"401 Unauthorized\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Giriş yapmamışsın. (İsim yanıltıcı: aslında 'authentication' yok.) pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"401 Unauthorized\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"401 Unauthorized\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Giriş yapmamışsın. (İsim yanıltıcı: aslında 'authentication' yok.)"
           }
         },
         {
@@ -323,30 +294,13 @@
           "desc": "Giriş yaptın ama yetki yok. (RBAC kontrol).",
           "enrich": {
             "info": "Giriş yaptın ama yetki yok. (RBAC kontrol).",
-            "detail": "**403 Forbidden** nedir?\n\nGiriş yaptın ama yetki yok. (RBAC kontrol).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
             "terms": [
               {
                 "term": "RBAC",
                 "abbrev_of": "Role-Based Access Control",
                 "meaning": "İzinler rollere atanır.",
-                "why": "Çoğu sistem için yeterli, basit."
-              }
-            ],
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"403 Forbidden\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Giriş yaptın ama yetki yok. (RBAC kontrol). pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"403 Forbidden\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"403 Forbidden\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
+                "why": "Çoğu sistem için yeterli, basit.",
+                "enrich": {}
               }
             ]
           }
@@ -355,150 +309,42 @@
           "name": "404 Not Found",
           "desc": "Kaynak yok.",
           "enrich": {
-            "info": "Kaynak yok.",
-            "detail": "**404 Not Found** nedir?\n\nKaynak yok.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"404 Not Found\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Kaynak yok. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"404 Not Found\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"404 Not Found\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Kaynak yok."
           }
         },
         {
           "name": "409 Conflict",
           "desc": "Çakışma: versiyon eski, başkası yazmış (optimistic concurrency).",
           "enrich": {
-            "info": "Frontend 'merge ekranı' açar.",
-            "detail": "**409 Conflict** nedir?\n\nÇakışma: versiyon eski, başkası yazmış (optimistic concurrency).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"409 Conflict\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Çakışma: versiyon eski, başkası yazmış (optimistic concurrency). pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"409 Conflict\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"409 Conflict\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Frontend 'merge ekranı' açar."
           }
         },
         {
           "name": "422 Unprocessable Entity",
           "desc": "Validation hatası — bir alan yanlış format.",
           "enrich": {
-            "info": "400'den daha spesifik; field-level error döner.",
-            "detail": "**422 Unprocessable Entity** nedir?\n\nValidation hatası — bir alan yanlış format.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"422 Unprocessable Entity\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Validation hatası — bir alan yanlış format. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"422 Unprocessable Entity\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"422 Unprocessable Entity\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "400'den daha spesifik; field-level error döner."
           }
         },
         {
           "name": "429 Too Many Requests",
           "desc": "Rate limit aşıldı; `Retry-After` header'ında ne zaman dönmen gerektiği.",
           "enrich": {
-            "info": "Rate limit aşıldı; `Retry-After` header'ında ne zaman dönmen gerektiği.",
-            "detail": "**429 Too Many Requests** nedir?\n\nRate limit aşıldı; `Retry-After` header'ında ne zaman dönmen gerektiği.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"429 Too Many Requests\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Rate limit aşıldı; `Retry-After` header'ında ne zaman dönmen gerektiği. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"429 Too Many Requests\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"429 Too Many Requests\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Rate limit aşıldı; `Retry-After` header'ında ne zaman dönmen gerektiği."
           }
         },
         {
           "name": "500 Internal Server Error",
           "desc": "Sunucu hatası. (Loglara bakman gerek; istemci bir şey yapamaz.)",
           "enrich": {
-            "info": "Sunucu hatası. (Loglara bakman gerek; istemci bir şey yapamaz.)",
-            "detail": "**500 Internal Server Error** nedir?\n\nSunucu hatası. (Loglara bakman gerek; istemci bir şey yapamaz.).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"500 Internal Server Error\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Sunucu hatası. (Loglara bakman gerek; istemci bir şey yapamaz.) pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"500 Internal Server Error\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"500 Internal Server Error\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Sunucu hatası. (Loglara bakman gerek; istemci bir şey yapamaz.)"
           }
         },
         {
           "name": "503 Service Unavailable",
           "desc": "Geçici düşüş; retry güvenli.",
           "enrich": {
-            "info": "Geçici düşüş; retry güvenli.",
-            "detail": "**503 Service Unavailable** nedir?\n\nGeçici düşüş; retry güvenli.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"503 Service Unavailable\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Geçici düşüş; retry güvenli. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"503 Service Unavailable\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"503 Service Unavailable\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Geçici düşüş; retry güvenli."
           }
         }
       ]
@@ -506,7 +352,16 @@
     {
       "type": "heading",
       "level": 4,
-      "text": "REST vs GraphQL — pratik fark"
+      "text": "REST vs GraphQL — pratik fark",
+      "enrich": {
+        "lesson": {
+          "ne": "İnternet üzerinde sistemlerin konuşması için yaygın yöntem.",
+          "nicin": "Standart olduğu için her dilde anlaşılır.",
+          "nasil": "HTTP üzerinden GET/POST/PUT/DELETE.",
+          "kim": "Tüm geliştiriciler bilmek zorunda.",
+          "analoji": "Standart posta hizmeti."
+        }
+      }
     },
     {
       "type": "grid",
@@ -519,33 +374,31 @@
           "tone": "neutral",
           "enrich": {
             "info": "Cache çok kolay (URL-bazlı). Basit.",
-            "detail": "**REST** nedir?\n\n**Çok endpoint, sabit response.** `/api/users/42` → tüm user alanları. Mobile için fazla veri çekersin (over-fetching).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
             "terms": [
               {
                 "term": "REST",
                 "abbrev_of": "Representational State Transfer",
                 "abbrev_tr": "Temsili Durum Aktarımı",
                 "meaning": "Kaynak-merkezli HTTP API mimarisi.",
-                "why": "Standart, cache-friendly."
+                "why": "Standart, cache-friendly.",
+                "enrich": {
+                  "lesson": {
+                    "ne": "İnternet üzerinde sistemlerin konuşması için yaygın yöntem.",
+                    "nicin": "Standart olduğu için her dilde anlaşılır.",
+                    "nasil": "HTTP üzerinden GET/POST/PUT/DELETE.",
+                    "kim": "Tüm geliştiriciler bilmek zorunda.",
+                    "analoji": "Standart posta hizmeti."
+                  }
+                }
               }
             ],
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"REST\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Çok endpoint, sabit response.** `/api/users/42` → tüm user alanları. Mobile iç pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"REST\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"REST\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "lesson": {
+              "ne": "İki sistemin nasıl konuşacağını tanımlayan kurallar dizisi.",
+              "nicin": "Modern yazılım = çok parçanın haberleşmesi.",
+              "nasil": "Bir sistem istek atar, karşısındaki cevap döner.",
+              "kim": "Geliştirici çağırır.",
+              "analoji": "Telefon görüşmesinin kuralı."
+            }
           }
         },
         {
@@ -555,32 +408,30 @@
           "tone": "good",
           "enrich": {
             "info": "Cache karmaşık; learning curve var. N+1 sorgu riski.",
-            "detail": "**GraphQL** nedir?\n\n**Tek endpoint, esnek response.** `query { user(id:42) { name, email } }` — sadece istediğini al. Mobile için ideal.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
             "terms": [
               {
                 "term": "GraphQL",
                 "abbrev_tr": "Graf sorgu dili",
                 "meaning": "Tek endpoint, istemci hangi alanları istediğini söyler.",
-                "why": "Mobile için over-fetching'i çözer."
+                "why": "Mobile için over-fetching'i çözer.",
+                "enrich": {
+                  "lesson": {
+                    "ne": "API'lerin daha esnek çalışmasını sağlayan alternatif yöntem.",
+                    "nicin": "REST'te aynı veri gelir; GraphQL'de istemci seçer.",
+                    "nasil": "Tek endpoint; istemci sorguda alan seçer.",
+                    "kim": "Modern frontend tercih eder.",
+                    "analoji": "Tabağa fazlalık gelmiyor."
+                  }
+                }
               }
             ],
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"GraphQL\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Tek endpoint, esnek response.** `query { user(id:42) { name, email } }` — sade pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"GraphQL\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"GraphQL\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "lesson": {
+              "ne": "API'lerin daha esnek çalışmasını sağlayan alternatif yöntem.",
+              "nicin": "REST'te aynı veri gelir; GraphQL'de istemci seçer.",
+              "nasil": "Tek endpoint; istemci sorguda alan seçer.",
+              "kim": "Modern frontend tercih eder.",
+              "analoji": "Tabağa fazlalık gelmiyor."
+            }
           }
         }
       ]
@@ -589,7 +440,16 @@
       "type": "callout",
       "variant": "tip",
       "label": "İkisi de var",
-      "body": "Bizim framework DocType tanımlandığında **hem REST hem GraphQL** otomatik üretir. Sen seçmiyorsun — kullanım pattern'ine göre frontend hangisini istiyorsa onu kullanır."
+      "body": "Bizim framework DocType tanımlandığında **hem REST hem GraphQL** otomatik üretir. Sen seçmiyorsun — kullanım pattern'ine göre frontend hangisini istiyorsa onu kullanır.",
+      "enrich": {
+        "lesson": {
+          "ne": "İnternet üzerinde sistemlerin konuşması için yaygın yöntem.",
+          "nicin": "Standart olduğu için her dilde anlaşılır.",
+          "nasil": "HTTP üzerinden GET/POST/PUT/DELETE.",
+          "kim": "Tüm geliştiriciler bilmek zorunda.",
+          "analoji": "Standart posta hizmeti."
+        }
+      }
     },
     {
       "type": "heading",
@@ -613,7 +473,8 @@
         },
         {
           "title": "Müşteri tek çekildi",
-          "body": "İki retry, tek transaction. Kart şirketinden olumlu cevap, kullanıcıdan tek tahsilat."
+          "body": "İki retry, tek transaction. Kart şirketinden olumlu cevap, kullanıcıdan tek tahsilat.",
+          "enrich": {}
         }
       ]
     },
@@ -638,7 +499,16 @@
           "label": "200/201/400/401/403/404/409/422/429/500 status code'larını cümle ile açıklayabilirim."
         },
         {
-          "label": "REST ile GraphQL'in temel farkını bir endpoint örneğiyle anlatabilirim."
+          "label": "REST ile GraphQL'in temel farkını bir endpoint örneğiyle anlatabilirim.",
+          "enrich": {
+            "lesson": {
+              "ne": "İnternet üzerinde sistemlerin konuşması için yaygın yöntem.",
+              "nicin": "Standart olduğu için her dilde anlaşılır.",
+              "nasil": "HTTP üzerinden GET/POST/PUT/DELETE.",
+              "kim": "Tüm geliştiriciler bilmek zorunda.",
+              "analoji": "Standart posta hizmeti."
+            }
+          }
         },
         {
           "label": "CORS'un neden var olduğunu (browser security) biliyorum."
@@ -680,12 +550,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Ünite 05 — API (uygulama programlama arayüzü): REST ve GraphQL. İki sistemin nasıl konuşturduğu.",
+      "nicin": "Modern yazılım = birçok parçanın konuşması. Konuşma kuralı = API.",
+      "nasil": "İstek-yanıt mantığı + HTTP yöntemleri + JSON formatı.",
+      "nerede": "Müfredatın 5. ünitesi — veritabanından sonra.",
+      "ne_zaman": "Mobil + web + dış servis entegrasyonu yapacaksanız.",
+      "kim": "Tüm geliştiriciler.",
+      "analoji": "Telefon konuşmasının kuralı: önce 'alo' der, sırayla konuşur, 'görüşürüz' der."
+    }
   }
 }

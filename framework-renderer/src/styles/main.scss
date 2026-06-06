@@ -135,6 +135,24 @@
   // Radius
   --radius: 4px;
   --radius-lg: 6px;
+
+  // ────────────────────────────────────────────────────────────────────
+  // NEUMORPHISM (SOFT UI) tokenleri — kart, buton, chip yüzeyleri
+  // Felsefe: sert border yerine çift yumuşak gölge ile kabartma hissi
+  // ────────────────────────────────────────────────────────────────────
+  --neu-bg: var(--bg-page);                          // ana yüzey (kart altı)
+  --neu-surface: var(--bg-page);                     // kart kendisi (bg ile aynı)
+  --neu-shadow-light: rgba(255, 255, 255, 0.9);      // sol-üst aydınlık
+  --neu-shadow-dark: rgba(166, 174, 192, 0.55);      // sağ-alt karanlık
+  --neu-distance: 8px;
+  --neu-blur: 18px;
+  --neu-distance-sm: 4px;
+  --neu-blur-sm: 9px;
+  --neu-distance-lg: 14px;
+  --neu-blur-lg: 28px;
+  --neu-radius: 18px;
+  --neu-radius-sm: 12px;
+  --neu-radius-pill: 999px;
 }
 
 * { box-sizing: border-box; }
@@ -4052,87 +4070,95 @@ body { min-width: 0; }
 //     kenarında ayraç + body soft zemin.
 // ============================================================================
 
-// Sayfa içeriği zemini — kart'tan recessed (içe gömük)
-.content { background: var(--bg-soft); }
+// ============================================================================
+// NEUMORPHISM (Soft UI) — sayfa + kart + body
+// Sayfa = aynı bg-page; kart üstüne çift yumuşak gölge ile yükselir.
+// Açıldığında body INSET (içe gömük) hissi verir.
+// ============================================================================
+.content { background: var(--neu-bg) !important; }
 
 .cluster {
   position: relative;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  background: var(--bg);                  // 1. Kart yüzeyi: en açık (beyaz)
-  margin-bottom: var(--space-4) !important; // Kartlar arası KOMPAKT nefes (önceden space-6 fazlaydı)
-  padding: 0 !important;                   // Padding header/body içine taşındı
-  overflow: hidden;                        // Top stripe yuvarlatma için
-  // Layer rengini ince sol kenar olarak tut
-  border-left: 4px solid var(--enrich-detail);
+  border: 0 !important;                              // ← sert border yok
+  border-radius: var(--neu-radius);
+  background: var(--neu-surface);
+  margin-bottom: calc(var(--space-5) + 4px) !important; // gölgelerin nefes alması için
+  padding: 0 !important;
+  overflow: hidden;
+  // ÇİFT YUMUŞAK GÖLGE — neumorphic kabartma
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.04),
-    0 6px 18px rgba(0, 0, 0, 0.05);
+    calc(-1 * var(--neu-distance)) calc(-1 * var(--neu-distance)) var(--neu-blur) var(--neu-shadow-light),
+    var(--neu-distance) var(--neu-distance) var(--neu-blur) var(--neu-shadow-dark);
   transition:
-    box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    border-color 200ms ease,
-    transform 200ms ease,
-    background 200ms ease;
+    box-shadow 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 200ms ease;
 
-  // Top stripe — layer rengi üst kenarda 5px şerit (kapalı durumda da görünür)
+  // Layer indicator — sol-üst köşede yumuşak parlayan nokta (kalın border yerine)
   &::before {
     content: "";
     position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 5px;
+    top: 16px; left: 16px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
     background: var(--enrich-detail);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--enrich-detail) 70%, transparent);
+    z-index: 2;
     opacity: 0.85;
-    z-index: 1;
   }
 
-  // -------- Header (kapalı veya açık her zaman görünür) --------
+  // -------- Header --------
   &__header {
     position: relative;
     cursor: pointer;
     user-select: none;
     padding: var(--space-4) var(--space-5);
-    padding-right: 4.5rem; // Toggle için yer
-    padding-top: calc(var(--space-4) + 5px); // Top stripe için extra
-    transition: background 180ms ease;
+    padding-right: 4.5rem;
+    padding-left: calc(var(--space-5) + 18px); // layer dot için yer
+    transition: opacity 180ms ease;
+    background: transparent !important; // hover'da bg değişmez (neumorphic kuralı)
   }
 
-  &__header:hover { background: var(--bg-soft); }
+  &__header:hover { opacity: 0.92; }
 
-  // -------- Toggle butonu (büyük, dairesel, net) --------
+  // -------- Toggle — neumorphic dairesel buton --------
   &__toggle {
     position: absolute;
-    top: calc(var(--space-3) + 5px);        // Top stripe + üst boşluk
+    top: 50%;
     right: var(--space-3);
+    transform: translateY(-50%);
     width: 2.75rem;
     height: 2.75rem;
     border-radius: 50%;
-    background: var(--bg-soft);
-    border: 2px solid var(--line);
+    background: var(--neu-surface);
+    border: 0 !important;
     color: var(--ink-2);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: all 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
     z-index: 3;
+    box-shadow:
+      calc(-1 * var(--neu-distance-sm)) calc(-1 * var(--neu-distance-sm)) var(--neu-blur-sm) var(--neu-shadow-light),
+      var(--neu-distance-sm) var(--neu-distance-sm) var(--neu-blur-sm) var(--neu-shadow-dark);
     i {
       font-size: 1.25rem;
       transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
     }
+    // Hover: hafifçe içe gömük (basılıyor hissi)
     &:hover {
-      background: var(--enrich-detail);
-      color: #fff;
-      border-color: var(--enrich-detail);
-      transform: scale(1.08);
-      box-shadow: 0 4px 14px color-mix(in srgb, var(--enrich-detail) 35%, transparent);
+      box-shadow:
+        inset 3px 3px 6px var(--neu-shadow-dark),
+        inset -3px -3px 6px var(--neu-shadow-light);
+      color: var(--enrich-detail);
     }
     &:focus-visible {
-      outline: 3px solid color-mix(in srgb, var(--enrich-detail) 50%, transparent);
-      outline-offset: 2px;
+      outline: 2px solid color-mix(in srgb, var(--enrich-detail) 60%, transparent);
+      outline-offset: 4px;
     }
   }
 
-  // -------- Body (açıldığında görünür alan) --------
+  // -------- Body --------
   &__body {
     overflow: hidden;
     transition:
@@ -4143,28 +4169,33 @@ body { min-width: 0; }
 
   // ============ AÇIK STATE ============
   &:not(.cluster--collapsed) {
-    border-color: var(--ink-4);            // Belirgin kenar
+    // Açıldığında kart daha güçlü kalkar, body INSET (içe gömük)
     box-shadow:
-      0 4px 10px rgba(0, 0, 0, 0.06),
-      0 16px 36px rgba(0, 0, 0, 0.08);     // Yüzer hissi
+      calc(-1 * var(--neu-distance-lg)) calc(-1 * var(--neu-distance-lg)) var(--neu-blur-lg) var(--neu-shadow-light),
+      var(--neu-distance-lg) var(--neu-distance-lg) var(--neu-blur-lg) var(--neu-shadow-dark);
 
     .cluster__toggle {
-      background: var(--enrich-detail);
-      color: #fff;
-      border-color: var(--enrich-detail);
+      // Toggle inset → kapatılmış hissi
+      box-shadow:
+        inset 3px 3px 6px var(--neu-shadow-dark),
+        inset -3px -3px 6px var(--neu-shadow-light);
+      color: var(--enrich-detail);
       i { transform: rotate(180deg); }
     }
 
-    .cluster__header {
-      border-bottom: 1px solid var(--line);
-    }
+    .cluster__header { border-bottom: 0; }
 
     .cluster__body {
       max-height: none;
       opacity: 1;
       padding: var(--space-5) var(--space-5) var(--space-6);
-      background: var(--bg-soft);          // Body recessed (kart içi çukur)
-      border-top: 1px solid var(--line-2); // Header ile body arası ince çizgi
+      background: var(--neu-surface);
+      // Body içe gömük neumorphic — kapak kalkmış kutu içi gibi
+      box-shadow:
+        inset 6px 6px 14px var(--neu-shadow-dark),
+        inset -6px -6px 14px var(--neu-shadow-light);
+      border-radius: 0 0 var(--neu-radius) var(--neu-radius);
+      margin: 0 var(--space-3) var(--space-3);
     }
 
     // Açık rozetı: header sağ üst köşede mini etiket
@@ -4205,19 +4236,17 @@ body { min-width: 0; }
       &:last-child { padding-bottom: 0 !important; }
     }
 
-    // Hover: kart yükselir, accent border, "tıklanır" hissi
+    // Hover: kart daha güçlü yükselir (neumorphic LIFT)
     &:hover {
-      border-color: var(--enrich-detail);
-      transform: translateY(-3px);
+      transform: translateY(-2px);
       box-shadow:
-        0 6px 14px rgba(0, 0, 0, 0.08),
-        0 18px 38px color-mix(in srgb, var(--enrich-detail) 22%, transparent);
+        calc(-1 * var(--neu-distance-lg)) calc(-1 * var(--neu-distance-lg)) var(--neu-blur-lg) var(--neu-shadow-light),
+        var(--neu-distance-lg) var(--neu-distance-lg) var(--neu-blur-lg) var(--neu-shadow-dark);
 
       .cluster__toggle {
-        background: var(--enrich-detail);
-        color: #fff;
-        border-color: var(--enrich-detail);
+        color: var(--enrich-detail);
       }
+      &::before { opacity: 1; box-shadow: 0 0 18px color-mix(in srgb, var(--enrich-detail) 90%, transparent); }
     }
 
     // Mikro hint: başlık altında "tıkla → aç" yazısı (kapalı durumda)
@@ -4245,42 +4274,30 @@ body { min-width: 0; }
 // CLUSTER — Dark mode redesign
 // ============================================================================
 :root[data-theme="dark"] {
-  .content { background: #0d0f12; }       // Sayfa: en koyu (recessed)
+  .content { background: var(--neu-bg) !important; }
 
   .cluster {
-    background: #1c1f24;                   // Kart: orta ton (elevated)
-    border-color: #2e3239;
-    box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.5),
-      0 6px 22px rgba(0, 0, 0, 0.35);
+    background: var(--neu-surface);
+    border: 0 !important;
+    // Token tabanlı çift gölge (dark token'ları otomatik kullanılır)
 
-    &__header:hover { background: #20242a; }
+    &__header:hover { background: transparent !important; opacity: 0.95; }
 
     &__toggle {
-      background: #20242a;
-      border-color: #3a3f47;
+      background: var(--neu-surface);
+      border: 0 !important;
       color: var(--ink-2);
     }
 
     &:not(.cluster--collapsed) {
-      border-color: #454b54;
-      box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.6),
-        0 18px 44px rgba(0, 0, 0, 0.45);
-
-      .cluster__header { border-bottom-color: #2e3239; }
+      // Açık: token tabanlı (dark token'ları otomatik)
+      .cluster__header { border-bottom: 0; }
       .cluster__body {
-        background: #15171b;                // Body: en koyu (kart içi çukur)
-        border-top-color: #2e3239;
+        background: var(--neu-surface);
+        border-top: 0;
       }
     }
-
-    &.cluster--collapsed:hover {
-      border-color: var(--enrich-detail);
-      box-shadow:
-        0 6px 16px rgba(0, 0, 0, 0.6),
-        0 20px 44px color-mix(in srgb, var(--enrich-detail) 28%, transparent);
-    }
+    // Dark mode'da hover token'ları zaten otomatik uygulanır.
   }
 }
 
@@ -4538,8 +4555,14 @@ input, select, textarea { max-width: 100%; }
   --bg: #15171a;
   --bg-soft: #1c1f23;
   --bg-softer: #20242a;
+  --bg-page: #181b1f;
   --line: #2a2e34;
   --line-2: #23272d;
+  // Neumorphism dark — kontrast ters çevrilir
+  --neu-bg: #181b1f;
+  --neu-surface: #181b1f;
+  --neu-shadow-light: rgba(255, 255, 255, 0.04);
+  --neu-shadow-dark: rgba(0, 0, 0, 0.65);
   --ink: #ebebed;
   --ink-2: #c2c5cb;
   --ink-3: #8a8f96;
@@ -5697,3 +5720,169 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 }
 // Seçili öğede kalıcı "→" oku da gizlenir (hover ipucu, seçilmemiş öğelerde durur)
 .is-detail-active::after { opacity: 0 !important; }
+
+// ============================================================================
+// NEUMORPHISM — SOFT UI override (chips, tags, badges, buttons)
+// Sert border'lar kaldırılır; çift yumuşak gölge ile yüzey hissi verilir.
+// En sonda olduğu için tüm önceki kuralları override eder.
+// ============================================================================
+
+// Pasif chip ailesi (tag + gran + state + diff + read + updated)
+.tag,
+.gran-chip,
+.state-chip,
+.diff-chip,
+.read-chip,
+.updated-chip,
+.cluster__badge {
+  background: var(--neu-surface) !important;
+  border: 0 !important;
+  border-radius: var(--neu-radius-pill) !important;
+  // Yumuşak inset — chip yüzeye gömük gibi (recessed pill)
+  box-shadow:
+    inset 2px 2px 4px var(--neu-shadow-dark),
+    inset -2px -2px 4px var(--neu-shadow-light) !important;
+  padding: 0.25rem 0.7rem !important;
+}
+
+// Aktif state'ler (selected/active filter chip vs.) — recessed (basılı buton)
+.chip--active,
+.toc__link--active,
+.is-detail-active {
+  box-shadow:
+    inset 3px 3px 6px var(--neu-shadow-dark),
+    inset -3px -3px 6px var(--neu-shadow-light) !important;
+  background: var(--neu-surface) !important;
+}
+
+// Filter bar — recessed kapsayıcı
+.filter-bar {
+  background: var(--neu-surface) !important;
+  border: 0 !important;
+  border-radius: var(--neu-radius) !important;
+  box-shadow:
+    inset 4px 4px 10px var(--neu-shadow-dark),
+    inset -4px -4px 10px var(--neu-shadow-light) !important;
+}
+
+// Filter chip (pill button)
+.chip {
+  background: var(--neu-surface) !important;
+  border: 0 !important;
+  border-radius: var(--neu-radius-pill) !important;
+  box-shadow:
+    -3px -3px 6px var(--neu-shadow-light),
+    3px 3px 6px var(--neu-shadow-dark) !important;
+  &:hover:not(.chip--active) {
+    box-shadow:
+      inset 2px 2px 4px var(--neu-shadow-dark),
+      inset -2px -2px 4px var(--neu-shadow-light) !important;
+  }
+}
+
+// Appbar action butonları
+.appbar__action {
+  background: var(--neu-surface) !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  box-shadow:
+    -3px -3px 6px var(--neu-shadow-light),
+    3px 3px 6px var(--neu-shadow-dark) !important;
+  transition: box-shadow 200ms ease !important;
+  &:hover {
+    box-shadow:
+      inset 2px 2px 4px var(--neu-shadow-dark),
+      inset -2px -2px 4px var(--neu-shadow-light) !important;
+  }
+}
+
+// Search box yuvarlatılmış soft kapsayıcı
+.search-box__inner {
+  background: var(--neu-surface) !important;
+  border: 0 !important;
+  border-radius: var(--neu-radius-pill) !important;
+  box-shadow:
+    inset 3px 3px 6px var(--neu-shadow-dark),
+    inset -3px -3px 6px var(--neu-shadow-light) !important;
+}
+
+// Hero kutusu — kabartmalı yüzey (sayfada yüzer)
+.hero {
+  background: var(--neu-surface);
+  border-radius: var(--neu-radius);
+  box-shadow:
+    calc(-1 * var(--neu-distance-sm)) calc(-1 * var(--neu-distance-sm)) var(--neu-blur-sm) var(--neu-shadow-light),
+    var(--neu-distance-sm) var(--neu-distance-sm) var(--neu-blur-sm) var(--neu-shadow-dark);
+  padding: var(--space-4) var(--space-5) !important;
+  border: 0 !important;
+}
+
+// Sidebar — recessed (çukur) yüzey, sayfanın gömük tarafı
+.sidebar {
+  background: var(--neu-bg) !important;
+  border-right: 0 !important;
+  box-shadow:
+    inset -6px 0 14px var(--neu-shadow-dark) !important;
+}
+
+// TOC linkleri pasifte düz, aktifte recessed pill
+.toc a {
+  border-radius: var(--neu-radius-sm) !important;
+  &:hover {
+    background: var(--neu-surface) !important;
+    box-shadow:
+      inset 2px 2px 4px var(--neu-shadow-dark),
+      inset -2px -2px 4px var(--neu-shadow-light) !important;
+  }
+}
+
+// Detail panel — sağ çukur (recessed)
+.detail-panel {
+  background: var(--neu-bg) !important;
+  border-left: 0 !important;
+  box-shadow:
+    inset 6px 0 14px var(--neu-shadow-dark) !important;
+}
+.dp__section {
+  background: var(--neu-surface) !important;
+  border: 0 !important;
+  border-radius: var(--neu-radius-sm) !important;
+  box-shadow:
+    -4px -4px 8px var(--neu-shadow-light),
+    4px 4px 8px var(--neu-shadow-dark) !important;
+  padding: var(--space-3) var(--space-4) !important;
+  margin-bottom: var(--space-3) !important;
+}
+
+// Popover yumuşak yüzey
+.pop {
+  background: var(--neu-surface) !important;
+  border: 0 !important;
+  border-radius: var(--neu-radius) !important;
+  box-shadow:
+    -8px -8px 18px var(--neu-shadow-light),
+    8px 8px 18px var(--neu-shadow-dark) !important;
+}
+
+// Bookmark/share/edit ikonu butonları (cluster__bookmark, sidebar__close)
+.cluster__bookmark,
+.sidebar__close {
+  background: var(--neu-surface) !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  box-shadow:
+    -3px -3px 6px var(--neu-shadow-light),
+    3px 3px 6px var(--neu-shadow-dark) !important;
+  &:hover {
+    box-shadow:
+      inset 2px 2px 4px var(--neu-shadow-dark),
+      inset -2px -2px 4px var(--neu-shadow-light) !important;
+  }
+}
+
+// Appbar (üst bar) sade tutalım — minimal shadow, neumorphic alt çizgi
+.appbar {
+  background: var(--neu-bg) !important;
+  border-bottom: 0 !important;
+  box-shadow: 0 6px 14px var(--neu-shadow-dark) !important;
+}

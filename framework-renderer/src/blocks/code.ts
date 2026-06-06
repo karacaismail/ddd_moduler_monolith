@@ -1,5 +1,6 @@
 import type { BlockRenderer } from '@/engine/registry';
 import { escapeHtml } from '@/engine/refs';
+import { highlight } from '@/engine/highlight';
 import { makeDetailKeyFromText } from '@/components/detail-panel';
 import { toast } from '@/components/toast';
 
@@ -39,7 +40,8 @@ export const codeRenderer: BlockRenderer<CodeBlock> = (block, ctx) => {
   const pre = document.createElement('pre');
   const code = document.createElement('code');
   code.className = `language-${lang}`;
-  code.innerHTML = escapeHtml(block.content);
+  // Highlight engine — bilinmeyen dil için escape edilmiş ham içerik döner
+  code.innerHTML = highlight(block.content, lang);
   pre.appendChild(code);
   body.appendChild(pre);
 

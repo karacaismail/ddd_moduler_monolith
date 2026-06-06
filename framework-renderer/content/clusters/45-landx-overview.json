@@ -14,7 +14,8 @@
   "blocks": [
     {
       "type": "paragraph",
-      "text": "**LandX**, AI agent'larını birinci sınıf vatandaş kabul eden meta-framework için modül kataloğudur. 33 modül, 6 katman, 146 capability, 232 operation, 1398 field içerir. Bu cluster grubu o kataloğu özet olarak entegre ediyor — detay her bir modül cluster'ında."
+      "text": "**LandX**, AI agent'larını birinci sınıf vatandaş kabul eden meta-framework için modül kataloğudur. 33 modül, 6 katman, 146 capability, 232 operation, 1398 field içerir. Bu cluster grubu o kataloğu özet olarak entegre ediyor — detay her bir modül cluster'ında.",
+      "enrich": {}
     },
     {
       "type": "heading",
@@ -103,7 +104,8 @@
           "tag": "L2",
           "name": "Agent Runtime",
           "desc": "MCP server, tool registry, vector store, memory, prompt lib, LLM obs. 11 modül — THE differentiator.",
-          "tone": "scale"
+          "tone": "scale",
+          "enrich": {}
         },
         {
           "tag": "L3",
@@ -183,7 +185,8 @@
     {
       "type": "heading",
       "level": 4,
-      "text": "Agent flag taksonomisi"
+      "text": "Agent flag taksonomisi",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -222,7 +225,8 @@
       "type": "callout",
       "variant": "tip",
       "label": "Bu framework ile ilişki",
-      "body": "LandX katalogu bu framework'ün **agent-native bakış açısından** alternatif organizasyonudur. Bizim kernel'imiz {{ref:k-schema}} → LandX'te K02 DocType Engine. Bizim {{ref:k-bus}} → K04. {{ref:k-tenancy}} → I01+I05. {{ref:s-ai}} stack → L2 (A01-A11) tamamı. Aynı problem alanı, farklı taksonomi — birbirini doğruluyor."
+      "body": "LandX katalogu bu framework'ün **agent-native bakış açısından** alternatif organizasyonudur. Bizim kernel'imiz {{ref:k-schema}} → LandX'te K02 DocType Engine. Bizim {{ref:k-bus}} → K04. {{ref:k-tenancy}} → I01+I05. {{ref:s-ai}} stack → L2 (A01-A11) tamamı. Aynı problem alanı, farklı taksonomi — birbirini doğruluyor.",
+      "enrich": {}
     },
     {
       "type": "ref-grid",
@@ -248,12 +252,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "LandX, sistemde yapay zekayı önce sıra olarak, sonra bir köşe olarak değil, sistemin omurgasına yerleştiren tasarım. Tüm 6 katmanın 'yapay zeka için' özel bir karakteri olur.",
+      "nicin": "Eski yazılım dünyası insan-merkezli tasarlanmıştı. Ajanlar (kendi başına karar veren dijital yardımcılar) eklendiğinde her şey aksıyor. LandX, ajan-merkezli düşünmenin haritasıdır.",
+      "nasil": "6 katmanın her birinde 'ajan ne yapar, ne ister, ne öğrenir' soruları yanıtlanır. Sonuç: ajanlar sistemde gezinirken kapı bekçileri (yetki, kimlik) onları tanır, hatırlar.",
+      "nerede": "Sistemin tasarım katmanı — kod yazılmadan önce alınan kararlar.",
+      "ne_zaman": "Yeni özellik tasarlanırken 'bunu bir ajan nasıl yapardı' sorusu sorulur.",
+      "kim": "Mimar haritayı çıkarır; tüm geliştiriciler bu pusulayla iş yapar; ajan geliştiricisi LandX'i hazır altyapı olarak alır.",
+      "analoji": "Bir oteli yeniden tasarlamak: resepsiyonda insan değil dijital görevliler de durabilsin diye kapı yükseklikleri, kart okuyucular, yön levhaları baştan o şekilde yapılır."
+    }
   }
 }

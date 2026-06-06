@@ -11,14 +11,83 @@ import { renderHero } from '@/components/hero';
 import { mountFilterBar } from '@/components/filter-bar';
 import { mountPopover } from '@/components/popover';
 import { mountDetailPanel, setRefResolver, setClusterLookup, closeDetail } from '@/components/detail-panel';
+import { mountReadingProgress } from '@/components/reading-progress';
+import { initTelemetry, initWebVitals } from '@/components/telemetry';
+import { getBookmarks } from '@/components/bookmarks';
+import { getCompareIds, mountCompareView } from '@/components/compare-mode';
 
 import '@/styles/main.scss';
 
 async function boot(): Promise<void> {
-  // 0. Global popover instance (sayfa düzeyinde tek)
+  // 0. Telemetry (hata yakalama + isteğe bağlı Sentry/PostHog)
+  initTelemetry();
+  // 0.0 Real User Monitoring — web-vitals dynamic import (opsiyonel paket)
+  void initWebVitals();
+
+  // 0.1 Global popover instance (sayfa düzeyinde tek)
   mountPopover();
   const detailPanelEl = document.getElementById('detail-panel');
   if (detailPanelEl) mountDetailPanel(detailPanelEl);
+
+  // Reading progress bar — appbar altında
+  mountReadingProgress(document.body);
+
+  // Bookmark sayacı + tıklayınca ilk yer imine git
+  const bmToggle = document.getElementById('bookmarks-toggle');
+  const bmCount = document.getElementById('bookmarks-count');
+  const refreshBookmarksBadge = (): void => {
+    const set = getBookmarks();
+    if (!bmCount) return;
+    if (set.size === 0) {
+      bmCount.setAttribute('hidden', '');
+      bmCount.textContent = '0';
+    } else {
+      bmCount.removeAttribute('hidden');
+      bmCount.textContent = String(set.size);
+    }
+  };
+  refreshBookmarksBadge();
+  window.addEventListener('fw:bookmarks-changed', refreshBookmarksBadge);
+  bmToggle?.addEventListener('click', async () => {
+    const set = Array.from(getBookmarks());
+    if (set.length === 0) {
+      const { toast } = await import('@/components/toast');
+      toast('Henüz yer imin yok. Bir cluster\'ın yıldız simgesine tıkla.', 'info');
+      return;
+    }
+    // İlk yer imine git
+    window.location.hash = '#' + set[0];
+  });
+
+  // PWA "yeni sürüm geldi" toast'u
+  window.addEventListener('fw:sw-update-ready', async (e) => {
+    const { toast } = await import('@/components/toast');
+    const newSw = (e as CustomEvent<ServiceWorker>).detail;
+    const t = toast(
+      'Yeni sürüm hazır — yenile',
+      'info',
+      0, // süresiz
+      () => newSw?.postMessage({ type: 'SKIP_WAITING' }),
+    );
+    void t;
+  });
+
+  // Sidebar desktop collapse toggle (sadece >=1024px)
+  const sidebarForCollapse = document.getElementById('sidebar');
+  if (sidebarForCollapse) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'sidebar__collapse';
+    btn.setAttribute('aria-label', 'Kenar çubuğunu daralt/genişlet');
+    btn.innerHTML = '<i class="ph ph-caret-left"></i>';
+    sidebarForCollapse.appendChild(btn);
+    const restored = localStorage.getItem('fw.sidebar-collapsed') === '1';
+    if (restored) document.body.classList.add('sidebar-collapsed');
+    btn.addEventListener('click', () => {
+      const collapsed = document.body.classList.toggle('sidebar-collapsed');
+      localStorage.setItem('fw.sidebar-collapsed', collapsed ? '1' : '0');
+    });
+  }
 
   // Appbar height + iOS visualViewport için dinamik CSS variables
   const appbarEl = document.getElementById('appbar');
@@ -87,6 +156,44 @@ async function boot(): Promise<void> {
   sidebarEl?.addEventListener('click', (e) => {
     if ((e.target as HTMLElement).closest('a') && isDrawer()) closeSidebar();
   });
+
+  // Mobile swipe-to-close: drawer açıkken sola sürükle → kapat
+  if (sidebarEl) {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchActive = false;
+    sidebarEl.addEventListener('touchstart', (e) => {
+      if (!sidebarEl.classList.contains('sidebar--open') || !isDrawer()) return;
+      const t = e.touches[0];
+      if (!t) return;
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+      touchActive = true;
+    }, { passive: true });
+    sidebarEl.addEventListener('touchmove', (e) => {
+      if (!touchActive) return;
+      const t = e.touches[0];
+      if (!t) return;
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+      // Dikey scroll'a izin ver — sadece belirgin yatay sola kayma
+      if (Math.abs(dy) > Math.abs(dx)) { touchActive = false; return; }
+      if (dx < -16) {
+        sidebarEl.style.transform = `translateX(${dx}px)`;
+      }
+    }, { passive: true });
+    sidebarEl.addEventListener('touchend', (e) => {
+      if (!touchActive) return;
+      touchActive = false;
+      const t = e.changedTouches[0];
+      if (!t) { sidebarEl.style.transform = ''; return; }
+      const dx = t.clientX - touchStartX;
+      sidebarEl.style.transform = '';
+      if (dx < -80) {
+        closeSidebar();
+      }
+    });
+  }
 
   // Dark mode toggle (localStorage persist)
   const darkToggle = document.getElementById('dark-toggle');
@@ -309,17 +416,27 @@ async function boot(): Promise<void> {
   const lazyRender = (el: LazyCluster): void => {
     if (typeof el.__renderBody === 'function') el.__renderBody();
   };
-  const applyFilter = (filter: { layer?: string; cluster?: string }): void => {
+  /**
+   * Filter uygula. `pushState` true ise back butonu ile geri gelebilir
+   * (kullanıcı tetikli). false ise sadece URL'i replace eder (initial / pop).
+   */
+  const applyFilter = (
+    filter: { layer?: string; cluster?: string },
+    opts: { pushState?: boolean } = {},
+  ): void => {
     const isFiltered = !!(filter.layer || filter.cluster);
     if (isFiltered) {
       renderer.renderFiltered(contentEl, filter);
     } else {
       renderer.renderAll(contentEl);
     }
-    updateQuery({
-      layer: filter.layer ?? null,
-      cluster: filter.cluster ?? null,
-    });
+    updateQuery(
+      {
+        layer: filter.layer ?? null,
+        cluster: filter.cluster ?? null,
+      },
+      opts.pushState ? 'push' : 'replace',
+    );
     // Re-setup scroll spy after re-render
     const tocEl = document.getElementById('toc');
     if (tocEl) setupScrollSpy(tocEl);
@@ -331,19 +448,46 @@ async function boot(): Promise<void> {
         el.querySelector('.cluster__header')?.setAttribute('aria-expanded', 'true');
       });
     }
+    // Filter-bar UI state'i de sync olsun (popstate sonrası)
+    if (filterBarEl) {
+      filterBarEl.querySelectorAll<HTMLElement>('.chip').forEach((chip) => {
+        const layer = chip.dataset.layer;
+        const cluster = chip.dataset.cluster;
+        const isActive =
+          (layer && layer === filter.layer) || (cluster && cluster === filter.cluster);
+        chip.classList.toggle('chip--active', !!isActive);
+      });
+    }
   };
+  // Filter state key — popstate'te tekrar tetiklemeyi önlemek için tutuluyor
+  let lastFilterKey = (initialRoute.filterLayer ?? '') + '|' + (initialRoute.filterCluster ?? '');
   if (filterBarEl) {
-    mountFilterBar(filterBarEl, manifest, applyFilter, {
+    // Filter bar'dan gelen değişiklik → pushState (back butonu ile geri gelebilsin)
+    mountFilterBar(
+      filterBarEl,
+      manifest,
+      (f) => {
+        lastFilterKey = (f.layer ?? '') + '|' + (f.cluster ?? '');
+        applyFilter(f, { pushState: true });
+      },
+      {
+        layer: initialRoute.filterLayer,
+        cluster: initialRoute.filterCluster,
+      },
+    );
+  }
+
+  // 9. Compare modu mu? (URL ?compare=a,b varsa)
+  const compareIds = getCompareIds();
+  if (compareIds.length > 0) {
+    mountCompareView(contentEl, loader, renderer);
+  } else {
+    // 9b. Normal ilk render
+    applyFilter({
       layer: initialRoute.filterLayer,
       cluster: initialRoute.filterCluster,
     });
   }
-
-  // 9. İlk render
-  applyFilter({
-    layer: initialRoute.filterLayer,
-    cluster: initialRoute.filterCluster,
-  });
 
   // 10. Hash scroll — initial hedef cluster'ı aç + scroll
   if (initialRoute.hash) {
@@ -407,6 +551,17 @@ async function boot(): Promise<void> {
 
   let lastHash = window.location.hash;
   onRouteChange((state) => {
+    // Filter state senkronizasyonu — back/forward butonu URL'i değiştirince
+    // applyFilter'ı tetikle (ama loop'a girmemek için key check)
+    const filterKey = (state.filterLayer ?? '') + '|' + (state.filterCluster ?? '');
+    if (filterKey !== lastFilterKey) {
+      lastFilterKey = filterKey;
+      applyFilter({
+        layer: state.filterLayer,
+        cluster: state.filterCluster,
+      });
+    }
+
     if (state.hash && state.hash !== lastHash) {
       closeDetail();
       lastHash = state.hash;

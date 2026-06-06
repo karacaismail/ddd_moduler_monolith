@@ -7,80 +7,553 @@
   "icon": "ph-graduation-cap",
   "granularity": "kaya",
   "state": "wip",
-  "tags": ["education", "curriculum", "onboarding"],
+  "tags": [
+    "education",
+    "curriculum",
+    "onboarding"
+  ],
   "enrich": {
     "info": "Sıfırdan mimar — 10 üniteli sıralı müfredat. Her ünite sonunda kontrol listesi.",
     "detail": "Hedef kitle: yazılım bilmeyen tasarımcı/PM/girişimci. Çıktı: bu projenin yazılım mimarı.\n\nMüfredat **anlatım odaklı**, sınav yok. Her ünite: ön-koşul → kavramlar (TR sözlüğü) → anlatım → adım-adım örnek → kontrol listesi → mini-proje önerisi → sonraki ünite linki.",
     "stories": [
-      { "persona": "UI tasarımcısı (geçiş yapan)", "context": "Photoshop'tan gelir, kod görmemiştir.", "outcome": "Ünite-01'den başlar; her ünite önceki ünitede konuştuğumuz kavramları kullanır. 10 ünite sonra DocType tasarlayıp plugin manifest yazabilir." }
-    ]
+      {
+        "persona": "Sürücü kursuna giden Ayşe Teyze (62)",
+        "context": "Ehliyet almayı geç bir yaşta düşündü; teorik ders sınıfında genç gençler. Hocaların terimleri ezbere değil günlük dilde anlatması lazım.",
+        "outcome": "Bu doküman da sürücü kursu gibi: terim önce, sonra anlatım, sonra örnek, sonra kontrol listesi. Hızlı geçmek yok; kendi tempon. 10 ünite, ~10 saat — Ayşe Teyze de bitirir."
+      },
+      {
+        "persona": "Yemek tarif kanalını izleyen amatör aşçı",
+        "context": "Babaanne yemeklerini öğrenmek için YouTube tarif videoları izliyor. Sunucu önce malzeme listesini gösteriyor, sonra adım adım pişiriyor; izleyici de aynı sırada uyguluyor.",
+        "outcome": "Bu eğitim materyali tam öyle: önce kavram sözlüğü (malzeme listesi), sonra anlatım, sonra el ile uygulama. Atlanmaz; sırayla pişer."
+      },
+      {
+        "persona": "Bisiklet sürmeye yeni başlayan çocuk",
+        "context": "Önce sabit duruşta denge, sonra pedal çevirme, sonra fren, sonra dönme. Her adım önceki adımın üstüne kurulur.",
+        "outcome": "Bu doküman da öyle: ünite 03'ten başlama, çünkü 01'de gördüğümüz X kavramını kullanır. Sırasıyla, küçük adımlarla."
+      }
+    ],
+    "lesson": {
+      "ne": "Bu doküman, hiç yazılım bilmeyen birini sıfırdan yazılım mimarı seviyesine taşımak için tasarlanmış 10 üniteli sıralı bir kurs.",
+      "nicin": "Yazılım mimarlığı kazanılan değil, oturarak öğrenilen bir yetidir. 60+ yaş için tasarlanmış, anlaşılır dil.",
+      "nasil": "Her ünite 30-90 dakika; toplam ~10 saat. Her ünitede: terim sözlüğü → anlatım → uygulama → kontrol listesi.",
+      "nerede": "Bu sayfadaki tablo — 10 ünite.",
+      "ne_zaman": "Şimdi. Her gün 30 dakika ayırarak 2 haftada bitirilir.",
+      "kim": "Sen — yaşın, mesleğin, geçmişin önemli değil.",
+      "analoji": "Sürücü kursu: sınavı geçmek için değil, gerçekten araba sürebilmek için."
+    }
   },
   "blocks": [
     {
       "type": "paragraph",
       "text": "**Bu döküman tek başına yazılım mimarı yetiştirir.** Sınav yok; her ünite bir konuyu anlatır, kavramların **Türkçe açılımlarını** verir, gerçek senaryolarla bağlar, sonunda *yapabildiğini* kontrol listesinden işaretlersin.",
-      "enrich": { "info": "Müfredat felsefesi: anlatım + bağlam + kontrol — sınav değil." }
-    },
-
-    { "type": "callout", "variant": "info", "label": "Nasıl okumalıyım?",
-      "body": "Sıralı git. Ünite 03'ten başlama; çünkü 03 öğrenmek için 01 ve 02'deki kavramları kullanıyoruz. Her cümlenin yanındaki **!** (kısa) ve **?** (detaylı) butonları teknik terim açılımlarını + gerçek hayat örneklerini gösterir.",
       "enrich": {
-        "detail": "**Pratik ipucu:** Bir kavramı ilk gördüğünde **?** ile derine in; sonraki ünitelerde aynı kavramı sadece tekrar görmek için **!** sana yeter. Beyin böyle daha hızlı oturtur."
+        "info": "Müfredat felsefesi: anlatım + bağlam + kontrol — sınav değil.",
+        "lesson": {
+          "ne": "Bu doküman, yazılım dünyasına hiç girmemiş bir insanı yazılım mimarı seviyesine taşımak için tasarlanmış sıralı bir derstir.",
+          "nicin": "Sınav-tabanlı eğitimde 'hatırlamak' önemlidir; bu dokümanda 'yapabilmek' önemlidir. Çünkü mimar olmak için ezberlemen değil, sorun çıkınca çözmen lazım.",
+          "nasil": "Her ünite 4 parçadan oluşur: önce kavramların Türkçe açılımı, sonra mantığın günlük dilde anlatımı, ardından küçük bir uygulama, sonunda kendi kendine yapacağın kontrol.",
+          "nerede": "Bu sayfanın altındaki 10 ünite tablosu — tıklayıp sırayla geçeceğin yer.",
+          "ne_zaman": "Şimdi. Yazılım mimarlığı kazanılan değil, oturarak öğrenilen bir yetidir.",
+          "kim": "Sen — yaşın, mesleğin, geçmişin önemli değil. Buradaki dil 60+ yaş için tasarlandı; yani anlaşılır.",
+          "analoji": "Sürücü kursu: sınavı geçmek için değil, gerçekten araba sürebilmek için kurulur. Bu doküman da öyle."
+        }
       }
     },
-
-    { "type": "heading", "level": 4, "text": "Müfredat — 10 ünite",
-      "enrich": { "info": "Her ünite 30-90 dakika; toplam ~10 saat." }
+    {
+      "type": "image",
+      "src": "/assets/curriculum-map.svg",
+      "alt": "10 üniteli müfredat haritası — ünitelerin birbirini nasıl beslediği şeması",
+      "caption": "Müfredatın akış şeması: her ünite önceki ünitenin terimlerini kullanır.",
+      "enrich": {
+        "info": "Müfredat akış şeması — ünitelerin sırasını ve bağımlılığını gösterir.",
+        "lesson": {
+          "ne": "10 ünitenin sırasını ve birbirine nasıl bağlandığını gösteren görsel harita.",
+          "nicin": "Metin sırasıyla okumaktansa şemadan bütünü kavramak hızlıdır.",
+          "nasil": "Oklar bağımlılığı gösterir: ünite 03 → ünite 02'yi gerektiriyor demek.",
+          "kim": "Öğrenci başlamadan önce bakar; eğitmen tanıtırken kullanır.",
+          "analoji": "Şehir metro haritası: hangi hattan binersen nereye varırsın."
+        }
+      }
     },
-
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Nasıl okumalıyım?",
+      "body": "Sıralı git. Ünite 03'ten başlama; çünkü 03 öğrenmek için 01 ve 02'deki kavramları kullanıyoruz. Her cümlenin yanındaki **!** (kısa) ve **?** (detaylı) butonları teknik terim açılımlarını + gerçek hayat örneklerini gösterir.",
+      "enrich": {
+        "detail": "**Pratik ipucu:** Bir kavramı ilk gördüğünde **?** ile derine in; sonraki ünitelerde aynı kavramı sadece tekrar görmek için **!** sana yeter. Beyin böyle daha hızlı oturtur.",
+        "lesson": {
+          "ne": "Doğru okuma sırası: 01'den 10'a doğru. Atlayarak gitme; her ünite bir öncekinin üzerine yapı kurar.",
+          "nicin": "03. ünitede '01'de gördüğümüz X' diye geçtiğinde, X'i bilmiyorsan duracaksın. Sıra ile gitmek hem hızlandırır hem gerilimi azaltır.",
+          "nasil": "Her cümlenin sonundaki sarı ! butonu kısa açıklama gösterir. Mavi ? butonu o terimin nereden geldiğini, neden böyle adlandırıldığını uzunca anlatır.",
+          "nerede": "Bu cümlenin sonundaki butonları dene → sağ tarafta pencere açılır.",
+          "ne_zaman": "Yeni bir kelime gördüğünde ! veya ?'e bas. Aynı kelimeyi 3-4 sayfa sonra tekrar görürsen artık ! yetecek.",
+          "kim": "Sen kendi öğrenme hızını ayarlarsın; ne zaman duracağına sen karar verirsin.",
+          "analoji": "Bir yabancı şehirde gezerken cebindeki cep rehberi: ihtiyaç olunca çıkarırsın, gerek olmayınca cebinde kalır."
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Müfredat — 10 ünite",
+      "enrich": {
+        "info": "Her ünite 30-90 dakika; toplam ~10 saat.",
+        "lesson": {
+          "ne": "10 üniteden oluşan bir müfredat: yazılımın temel kelimelerinden başlar, sonunda canlı sisteme deploy etmeye kadar gider.",
+          "nicin": "10 sayı, insan beyninin rahatça organize edebileceği bir hedef. 50 ünite olsa kimse başlamazdı; 3 ünite olsa eksik kalırdı.",
+          "nasil": "Aşağıdaki tabloda her satır bir ünitedir. Satıra tıklayınca sağda detayı görürsün; ünite başlığına tıkladığında o üniteye girersin.",
+          "nerede": "Aşağıda — tablo halinde.",
+          "ne_zaman": "Her gün bir ünite tempo iyi; 10 günde bitirirsin. Acelen yoksa 30 gün ayır, her ünitede oyalan.",
+          "kim": "Tek başına bitirebilirsin. Takıldığında bu sayfayı paylaşıp arkadaşına/torununa soru sorabilirsin.",
+          "analoji": "Yüzme kursu programı: kıyıda nefes alma, sonra şamandıra, sonra serbest stil. Sırayla, küçük adımlarla."
+        }
+      }
+    },
     {
       "type": "table",
       "filterable": true,
       "stateColumn": 3,
-      "headers": ["Ünite", "Konu", "Ne öğreneceksin", "Durum"],
+      "headers": [
+        "Ünite",
+        "Konu",
+        "Ne öğreneceksin",
+        "Durum"
+      ],
       "rows": [
-        ["01", "Yazılım nedir?", "Kod, derleyici, runtime, framework, monolit vs micro-services, neden meta-framework", { "text": "Hazır", "state": "ok" }],
-        ["02", "Veri ve Tipler", "Bit/byte, scalar/composite, primitive, validator, coercion, Decimal vs float, UTF-8", { "text": "Hazır", "state": "ok" }],
-        ["03", "DocType ile Model", "Tip değil tablo; metadata-driven model; field, naming series, hooks", { "text": "Hazır", "state": "ok" }],
-        ["04", "Veritabanı Temelleri", "PostgreSQL, kolon, indeks, foreign key, transaction, ACID, normalize/denormalize", { "text": "Hazır", "state": "ok" }],
-        ["05", "API: REST ve GraphQL", "İstek-cevap, HTTP method, REST vs GraphQL, JSON, status code, idempotent", { "text": "Hazır", "state": "ok" }],
-        ["06", "Multi-tenancy", "Bir kod çok müşteri; row-level vs schema vs cluster; tenant scope, sızıntı", { "text": "Planlandı", "state": "planned" }],
-        ["07", "Yetkilendirme & Güvenlik", "Identity, session, RBAC/ABAC, audit, KVKK, encryption at rest", { "text": "Planlandı", "state": "planned" }],
-        ["08", "Event Bus & Outbox", "Senkron vs asenkron, event-driven, transactional outbox, idempotency", { "text": "Planlandı", "state": "planned" }],
-        ["09", "Plugin Mimarisi", "Manifest, registry, hook, semver, marketplace, contract test", { "text": "Planlandı", "state": "planned" }],
-        ["10", "Deploy & Operations", "Git, CI/CD, GitHub Actions, Hetzner, observability, on-call", { "text": "Planlandı", "state": "planned" }]
+        [
+          "01",
+          {
+            "text": "Yazılım nedir?",
+            "enrich": {
+              "info": "Cihazların ne yapacağını söyleyen talimat ve veri bütünü.",
+              "lesson": {
+                "ne": "Yazılım, bilgisayar/telefon/tablet gibi elektronik cihazların donanımlarını çalıştıran ve onlara ne yapacaklarını söyleyen komutlar, talimatlar ve veriler bütünüdür. Donanımın aksine elle tutulamaz; cihazın 'beyin' görevini üstlenir.",
+                "nicin": "Donanım tek başına ne yapacağını bilmez. Yazılım olmasaydı bilgisayar açıldığında ekran kapalı, klavye sessiz kalırdı. Yazılım, donanıma her saniye 'şimdi şunu yap, sonra bunu yap' diyen yazılı düşüncedir.",
+                "nasil": "Yazılımcı, bir dile (Python, JavaScript, Türkçe gibi düşünün) yazılı talimatları yazar. Bilgisayar bu yazıyı kendi anlayacağı 1 ve 0'lara çevirir, sonra çalıştırır. Sonuç ekranda gördüğünüz şeydir.",
+                "nerede": "Bankamatik ekranındaki menü, akıllı saat üzerindeki adım sayar, otomobilinizin sensörleri, kombideki termostat — hepsi yazılımla çalışır. Görünmez ama her gün düzinelerce yazılım kullanırsınız.",
+                "ne_zaman": "Cihazı her açtığınızda yazılım çalışmaya başlar (telefonun açılma ekranı bir yazılımdır). Bir uygulamaya dokunduğunuzda o uygulamanın yazılımı çalışır. Tarayıcıda bir sayfa açtığınızda sayfa kodu bilgisayarınızda çalışır.",
+                "kim": "Yazılımı kullanan (siz, son kullanıcı), yazılımı yazan (geliştirici/programcı), yazılımın hatasız çalışıp çalışmadığını gözeten (operasyon ekibi) — üç ayrı rol vardır. Bu döküman sizi 'yazan' rolüne hazırlar.",
+                "frontend": {
+                  "yer": "Frontend, yazılımın kullanıcıya görünen yüzüdür: butonlar, formlar, listeler, renkler. Bir bankacılık uygulamasının 'Para Transferi' butonu frontend'dir.",
+                  "gereklilik": "Kullanıcı yazılımla konuşamaz; ona görsel bir araç vermek lazım. Frontend olmadan kullanıcı yazılımı kullanamaz.",
+                  "ornek": "WhatsApp'ı açtığınızda gördüğünüz yeşil ekran, kontak listesi, mesaj balonları — hepsi frontend. Telefonunuzun ekranıyla parmağınız arasındaki her şey."
+                },
+                "backend": {
+                  "yer": "Backend, yazılımın perde arkasıdır: veriyi saklar, hesaplar, kararlar verir, başka sistemlere haber gönderir. Kullanıcı bunu görmez ama her tıklama backend'i tetikler.",
+                  "gereklilik": "Frontend tek başına bir 'film afişi' gibidir; arkasında film olmadan boştur. Backend, filmi oynatan makineye benzer — gerçek iş orada olur.",
+                  "ornek": "WhatsApp'ta 'Gönder' tuşuna bastığınızda mesaj Türkiye'deki sunucuya gider, oradan Almanya'daki arkadaşınızın telefonuna ulaşır. Bu yolculuğun her adımı backend'de gerçekleşir."
+                },
+                "analoji": "Yazılım, bir restoranın işleyişine benzer. Müşterinin oturduğu salon = frontend (görünür, etkileşimli). Mutfak ve depo = backend (görünmez ama yemek orada pişer). Tabelaya yazılı menü = sözleşme/API. Garson = ikisi arasında haberi taşıyan istek-yanıt sistemi."
+              }
+            }
+          },
+          "Kod, derleyici, runtime, framework, monolit vs micro-services, neden meta-framework",
+          {
+            "text": "Hazır",
+            "state": "ok"
+          }
+        ],
+        [
+          "02",
+          {
+            "text": "Veri ve Tipler",
+            "enrich": {
+              "info": "Bilgisayarın 'sayı, yazı, tarih' gibi bilgi türlerini nasıl ayırt ettiği.",
+              "lesson": {
+                "ne": "Veri, bilgisayarda saklanan her parça bilgidir: adınız, doğum tarihiniz, ödeme tutarı. Tip ise bilgisayarın bu bilginin 'ne çeşit' olduğunu bilmesini sağlayan etikettir — yazı mı, sayı mı, tarih mi.",
+                "nicin": "Bilgisayar 'Ali' ile '50' arasındaki farkı kendiliğinden bilmez. Etiket olmasa '50+Ali' işlemini yapmaya çalışıp hata verir. Tip, bu hatayı baştan engeller.",
+                "nasil": "Yazılımcı, her bilginin yanına 'metin' / 'sayı' / 'tarih' gibi bir etiket koyar. Bilgisayar bu etikete göre uygun işlemi yapar: sayılarda toplama, metinlerde birleştirme.",
+                "nerede": "Form alanları (ad-soyad metin, yaş sayı, doğum tarih), Excel sütunları, banka ekstresindeki tutar/tarih sütunları — hepsi tipli verilerdir.",
+                "ne_zaman": "Bir form doldurduğunuzda her alan kendi tipini bekler; doğum tarihine 'merhaba' yazarsanız sistem reddeder. Bu reddetme, tip kontrolüdür.",
+                "kim": "Veri tipini geliştirici tanımlar, kullanıcı doğru tipte veri girer, sistem yanlış tipi engeller.",
+                "frontend": {
+                  "yer": "Form alanı türleri: text input, number input, date picker. Her biri farklı tip için tasarlanmıştır.",
+                  "gereklilik": "Yanlış tipte veri girmeyi en başta engellemek, sonradan veritabanında temizlik yapmaktan kolaydır.",
+                  "ornek": "'Doğum Tarihi' alanında klavye değil takvim açılır — tarih tipine özel arayüz."
+                },
+                "backend": {
+                  "yer": "Veritabanı sütunlarında her sütun bir tip taşır: VARCHAR (yazı), INTEGER (tam sayı), TIMESTAMP (tarih+saat).",
+                  "gereklilik": "Yanlış tipe izin verirsen bir gün 'fatura tutarı = elma' kaydı çıkar; raporlar bozulur.",
+                  "ornek": "PostgreSQL'de NUMERIC(10,2) tipi: en fazla 10 basamaklı, 2'si ondalık — para tutarı için ideal."
+                },
+                "analoji": "Veri tipi, postanedeki paket etiketine benzer: 'kırılır', 'soğuk zincir', 'değerli'. Etiket olmadan paket yanlış kamyona biner; etiketle hep doğru yere gider."
+              }
+            }
+          },
+          "Bit/byte, scalar/composite, primitive, validator, coercion, Decimal vs float, UTF-8",
+          {
+            "text": "Hazır",
+            "state": "ok"
+          }
+        ],
+        [
+          "03",
+          "DocType ile Model",
+          "Tip değil tablo; metadata-driven model; field, naming series, hooks",
+          {
+            "text": "Hazır",
+            "state": "ok"
+          }
+        ],
+        [
+          "04",
+          "Veritabanı Temelleri",
+          "PostgreSQL, kolon, indeks, foreign key, transaction, ACID, normalize/denormalize",
+          {
+            "text": "Hazır",
+            "state": "ok"
+          }
+        ],
+        [
+          "05",
+          "API: REST ve GraphQL",
+          "İstek-cevap, HTTP method, REST vs GraphQL, JSON, status code, idempotent",
+          {
+            "text": "Hazır",
+            "state": "ok"
+          }
+        ],
+        [
+          "06",
+          "Multi-tenancy",
+          "Bir kod çok müşteri; row-level vs schema vs cluster; tenant scope, sızıntı",
+          {
+            "text": "Planlandı",
+            "state": "planned"
+          }
+        ],
+        [
+          "07",
+          "Yetkilendirme & Güvenlik",
+          "Identity, session, RBAC/ABAC, audit, KVKK, encryption at rest",
+          {
+            "text": "Planlandı",
+            "state": "planned"
+          }
+        ],
+        [
+          "08",
+          "Event Bus & Outbox",
+          "Senkron vs asenkron, event-driven, transactional outbox, idempotency",
+          {
+            "text": "Planlandı",
+            "state": "planned"
+          }
+        ],
+        [
+          "09",
+          {
+            "text": "Plugin Mimarisi",
+            "enrich": {
+              "info": "Bir yazılımı ana koda dokunmadan yeni özelliklerle genişleten 'eklenti' sistemi.",
+              "lesson": {
+                "ne": "Plugin Mimarisi, ana yazılımı baştan yazmadan ona yeni yetenekler eklemenizi sağlayan tasarımdır. Tıpkı bir cep telefonuna yeni uygulama indirmek gibi: telefonun kendisi değişmez, ama yeni şeyler yapar.",
+                "nicin": "Her kullanıcının ihtiyacı farklıdır. Bir muhasebe sistemine 'kargo entegrasyonu', diğerine 'e-fatura' lazım. Plugin sayesinde ana sistemi karıştırmadan, sadece ihtiyacı olan parça eklenir.",
+                "nasil": "Plugin geliştiricisi, bir 'manifest' (tanıtım kartı) yazar: 'ben kimim, ne yapıyorum, neye bağlıyım'. Ana sistem bu kartı okur, plugin'i listesine ekler ve gerektiğinde çağırır.",
+                "nerede": "Tarayıcının 'eklentiler' menüsü, WordPress eklentileri, Photoshop fırçaları, akıllı telefondaki uygulamalar — hepsi plugin mantığıdır.",
+                "ne_zaman": "Yeni bir özellik eklemek istediğinizde plugin yazarsınız; eski özelliği kapatmak istediğinizde plugin'i kaldırırsınız. Ana yazılım çalışmaya devam eder.",
+                "kim": "Plugin'i yazan üçüncü taraf geliştirici; plugin'i kuran sistem yöneticisi; pluginlerin sonucunu kullanan son kullanıcı.",
+                "frontend": {
+                  "yer": "Plugin, kullanıcıya yeni bir menü, yeni bir form alanı veya yeni bir dashboard widget'ı olarak görünür.",
+                  "gereklilik": "Kullanıcı plugin'in eklediği özelliği keşfedebilmeli; gizli kalan eklenti işe yaramaz.",
+                  "ornek": "Bir e-ticaret sitesine 'havale ile öde' plugin'i kurulunca, ödeme sayfasında yeni bir 'Havale' seçeneği görünür."
+                },
+                "backend": {
+                  "yer": "Plugin, backend'de bir 'hook' (kanca) noktasına bağlanır: 'sipariş oluşturulurken beni çağır' der.",
+                  "gereklilik": "Ana yazılım her olası senaryoyu önceden bilemez; hook noktaları, plugin'lerin sisteme güvenli bağlanma yerleridir.",
+                  "ornek": "Sipariş kaydedildiğinde 'kargo plugin'i' devreye girer, kargoya otomatik gönderi açar."
+                },
+                "analoji": "Plugin, mutfak robotunun aksesuarlarına benzer: aynı motora doğrayıcı, blender veya hamur kancası takarsınız. Robot değişmez; iş değişir."
+              }
+            }
+          },
+          "Manifest, registry, hook, semver, marketplace, contract test",
+          {
+            "text": "Planlandı",
+            "state": "planned"
+          }
+        ],
+        [
+          "10",
+          {
+            "text": "Deploy & Operations",
+            "enrich": {
+              "info": "Yazılımı geliştirici bilgisayarından gerçek kullanıcının erişebileceği sunucuya taşıma ve orada sağlıklı çalışmasını sürdürme süreci.",
+              "lesson": {
+                "ne": "Deploy, geliştiricinin bilgisayarında çalışan kodun internetteki sunucuya kopyalanıp herkesin erişebileceği hale getirilmesidir. Operations ise yazılım orada çalışırken ona göz kulak olmak, hata çıkarsa müdahale etmek demektir.",
+                "nicin": "Yazılım sadece geliştiricinin laptop'ında çalışıyorsa kimseye fayda etmez. Sunucuya taşımak gerekir. Üstelik orada 7/24 ayakta kalması, çökerse hızla ayağa kalkması lazım — bu da operations işidir.",
+                "nasil": "Geliştirici kodunu GitHub gibi bir kod deposuna gönderir. Otomatik bir sistem (GitHub Actions) kodu alır, paketler, sunucuya yükler. Sunucuda yeni sürüm devreye girer, eskisi durur. Sürekli izleme araçları (Grafana, uptime kontrolü) sistemi gözler.",
+                "nerede": "Hetzner gibi sunucu kiralama firmaları, GitHub Actions otomasyon platformu, Sentry hata izleme servisi, PostHog kullanıcı analitiği — bunların hepsi 'deploy & operations' aletleridir.",
+                "ne_zaman": "Yeni özellik geliştirildiğinde deploy yapılır (çoğu ekipte günde birkaç kez). Çökme, yavaşlama veya hata yağmuru yaşanınca operations devreye girer ('on-call' nöbetçi geliştirici).",
+                "kim": "Geliştirici (kodu hazırlar), DevOps mühendisi (deploy boru hattını kurar), nöbetçi (gece gelen alarm üzerine müdahale eder), son kullanıcı (kesintisiz hizmet bekler).",
+                "frontend": {
+                  "yer": "Deploy'un kullanıcıya görünen yüzü: 'yeni sürüm yayında' bildirimi, sayfa yenileme uyarısı, bakım modu ekranı.",
+                  "gereklilik": "Kullanıcı hangi sürümü kullandığını ve sistemde kesinti varsa nedenini görebilmeli — şeffaflık güven yaratır.",
+                  "ornek": "Bir uygulamayı kullanırken üst köşede 'yeni güncelleme var, sayfayı yenile' bandı çıkar."
+                },
+                "backend": {
+                  "yer": "GitHub Actions pipeline'ı (kod test → paket → sunucuya itme), Docker konteynerleri, nginx ters proxy, log toplama altyapısı.",
+                  "gereklilik": "Manuel deploy hata kaynağıdır; otomatik pipeline her seferinde aynı adımları tekrarlar, insan unutkanlığını eler.",
+                  "ornek": "Geliştirici 'git push main' yazınca: 1) testler koşar, 2) Docker imajı kurulur, 3) Hetzner sunucuya kopyalanır, 4) eski konteyner duruyor yenisi başlıyor — 4 dakikada canlıda."
+                },
+                "analoji": "Deploy, bir restoran zincirinin yeni menü çıkarmasına benzer. Önce şefin mutfağında denenir, sonra tüm şubelere reçete gönderilir, hepsi aynı anda servise başlar. Operations ise şube yöneticilerinin 'yemek soğuk gelirse hemen değiştir, müşteri şikayet ederse hemen ara' nöbet düzenidir."
+              }
+            }
+          },
+          "Git, CI/CD, GitHub Actions, Hetzner, observability, on-call",
+          {
+            "text": "Planlandı",
+            "state": "planned"
+          }
+        ]
       ]
     },
-
-    { "type": "heading", "level": 4, "text": "Her ünitenin iç şablonu" },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Her ünitenin iç şablonu"
+    },
     {
       "type": "steps",
       "items": [
-        { "title": "Ön-koşul", "body": "Bu üniteden önce hangi ünite(ler) tamamlanmış olmalı — link verilir." },
-        { "title": "Bu ünitenin sonunda yapabileceklerin", "body": "Somut yetenekler listesi. 'Anladım' değil, *yapabilirim*." },
-        { "title": "Kavramlar (TR sözlük)", "body": "Bu ünitede geçen tüm İngilizce/jargon terimlerin **Türkçe karşılığı + açıklama + neden böyle**." },
-        { "title": "Anlatım", "body": "Konunun mantığı. Görsel örnek, analoji, projeden bağlama." },
-        { "title": "Adım-adım örnek", "body": "Konuyu projenin gerçek bir parçasına uygula. Kod ve config örnekleri." },
-        { "title": "Kontrol listesi", "body": "Üniteyi bitirdiğinde işaretle. Tarayıcı hatırlar; her dönüşünde bıraktığın yerden devam." },
-        { "title": "Mini-proje", "body": "Tek başına yapabileceğin küçük bir görev — kavramı oturtmak için." },
-        { "title": "Sonraki ünite", "body": "Tek tık ile devam." }
+        {
+          "title": "Ön-koşul",
+          "body": "Bu üniteden önce hangi ünite(ler) tamamlanmış olmalı — link verilir.",
+          "enrich": {
+            "lesson": {
+              "ne": "Ön-koşul, bir konuyu öğrenmeden önce bilmen gereken başka konulardır. Mesela 'kesirli sayılar' öğrenmeden önce 'toplama' bilmen gerekir.",
+              "nicin": "Yapı taşları sırasıyla konulur. Üst kat öğrenirsen alt katın eksikleri sallar; üst kat çöker. Eğitimde de aynı.",
+              "nasil": "Her ünitenin başında '01 ve 02'yi bitirmiş olmalısın' gibi bir cümle olur. Tıklayıp eksik üniteye dönersin.",
+              "nerede": "Üniversite ders kataloğunda 'ön gereklilik' satırı, ehliyet kursunda 'önce teorik sonra direksiyon' kuralı.",
+              "ne_zaman": "Yeni bir üniteye başlamadan önce kontrol edersin.",
+              "kim": "Öğrenen kişi (sen) ve eğitimi tasarlayan kişi (biz).",
+              "analoji": "Lego: 2. sırayı koymak için 1. sıranın oturmuş olması lazım."
+            }
+          }
+        },
+        {
+          "title": "Bu ünitenin sonunda yapabileceklerin",
+          "body": "Somut yetenekler listesi. 'Anladım' değil, *yapabilirim*.",
+          "enrich": {
+            "lesson": {
+              "ne": "Ünitenin başında 'bu üniteyi bitirince şunu, şunu, şunu yapabileceksin' diye somut bir liste vardır.",
+              "nicin": "'Anlamak' belirsiz bir histir. 'Yapmak' ölçülebilir bir kanıttır. Hedef anlamak değil, yapabilmek.",
+              "nasil": "Liste fiil ile başlar: 'Yeni bir veri tabanı tablosu oluşturabilirim', 'Bir formu kaydedebilirim'.",
+              "nerede": "Yemek tarifi sonundaki 'sonunda 4 kişilik bir pasta hazır olur' cümlesi gibi.",
+              "ne_zaman": "Ünite başında oku, ünite sonunda dön kendine sor: 'gerçekten yapabiliyor muyum?'",
+              "kim": "Öğrenen kendine soru sorar, eğitmen hedefi koymuş olur.",
+              "analoji": "Yüzme kursu: 'Bu hafta sonunda kulaç atabileceksin'. Anlamak yetmez, suya gireceksin."
+            }
+          }
+        },
+        {
+          "title": "Kavramlar (TR sözlük)",
+          "body": "Bu ünitede geçen tüm İngilizce/jargon terimlerin **Türkçe karşılığı + açıklama + neden böyle**.",
+          "enrich": {
+            "lesson": {
+              "ne": "Yazılımda çok İngilizce kelime vardır. Bu kısım, her kelimenin Türkçe karşılığını, anlamını ve neden öyle isim aldığını anlatır.",
+              "nicin": "Yabancı kelime öğrenmeyi 'sonra çözerim' diye geçersen ileride okuduğun her cümle sis perdesi olur.",
+              "nasil": "Her kavram için: İngilizce + Türkçe + 1-2 cümle açıklama + neden böyle adlandırıldı.",
+              "nerede": "Tıp kitaplarının ön sayfasındaki Latince-Türkçe terim listesi gibi.",
+              "ne_zaman": "Yeni kelime gördüğünde sözlüğe dön. Tekrar ettikçe akılda kalır.",
+              "kim": "Eğitmen sözlüğü hazırlar, öğrenen geri döner.",
+              "analoji": "Bir yabancı ülkeye seyahatte cep sözlüğü: bilmediğin tabelaya bakar, geçersin."
+            }
+          }
+        },
+        {
+          "title": "Anlatım",
+          "body": "Konunun mantığı. Görsel örnek, analoji, projeden bağlama.",
+          "enrich": {
+            "lesson": {
+              "ne": "Konunun ana fikrinin günlük dilde anlatıldığı bölüm. Burada teknik açıklama YOK; sadece mantık.",
+              "nicin": "Önce mantığı anlamadan kodu öğrenmek, alfabesini bilmeden roman yazmaya benzer.",
+              "nasil": "Konuyu bir hikaye gibi anlatırız: 'Diyelim bir banka var, müşteri para çekiyor, ne olur?'",
+              "nerede": "Belgesel film, NTV bilim programı, eğitici kitap girişi — hepsi 'önce mantık' yöntemiyle gider.",
+              "ne_zaman": "Her ünitede sözlükten sonra, kod örneğinden önce.",
+              "kim": "Eğitmen anlatır, öğrenen dinler ve kafasında resim oluşturur.",
+              "analoji": "Sürücü kursunda önce 'trafik nasıl akar, kurallar niye var' anlatılır, sonra direksiyona oturulur."
+            }
+          }
+        },
+        {
+          "title": "Adım-adım örnek",
+          "body": "Konuyu projenin gerçek bir parçasına uygula. Kod ve config örnekleri.",
+          "enrich": {
+            "lesson": {
+              "ne": "Öğrendiğin mantığı gerçek bir senaryoda, 1. adım → 2. adım → 3. adım şeklinde uygulamalı görmek.",
+              "nicin": "Soyut mantık ile parmakların klavyede çalışması arasında bir uçurum vardır. Adım adım örnek o uçurumu doldurur.",
+              "nasil": "Her adımda küçük bir parça: ne yazacağız, niye yazacağız, ne sonuç görmeliyiz.",
+              "nerede": "Yemek tarifi videoları, IKEA kurulum kılavuzları, fotoğraf çekim eğitimi.",
+              "ne_zaman": "Anlatımı okuduktan sonra. Asla atlama, çünkü bir sonraki adım buna dayanır.",
+              "kim": "Eğitmen yolu çizer, öğrenen yolu yürür.",
+              "analoji": "Origami: 'Şimdi sağ köşeyi sol köşeye katla, üçgen oluştu, çevir.' Her adım önceki üzerine."
+            }
+          }
+        },
+        {
+          "title": "Kontrol listesi",
+          "body": "Üniteyi bitirdiğinde işaretle. Tarayıcı hatırlar; her dönüşünde bıraktığın yerden devam.",
+          "enrich": {
+            "lesson": {
+              "ne": "Üniteyi bitirdikten sonra 'bunu yaptım mı' diye işaretlediğin kısa liste. Tarayıcı seçimlerini hatırlar.",
+              "nicin": "İnsan beyni 'bittim' demeden bir konuyu bırakamaz. Tikleme, beynin 'tamam, kapattım' demesidir.",
+              "nasil": "Liste maddesine tıklarsın, yanına yeşil tik gelir. Tarayıcıyı kapatıp dönsen tik kalır.",
+              "nerede": "Alışveriş listesi, yapılacaklar defteri, doktor reçete kontrolü.",
+              "ne_zaman": "Üniteyi bitirir bitirmez, geç kalmadan işaretle. Yarın yaparım dersen unutursun.",
+              "kim": "Sadece sen kendine işaretliyorsun, kimse görmüyor.",
+              "frontend": {
+                "yer": "Sağ üst köşede '5/7 tamamlandı' gibi sayaç görünür.",
+                "gereklilik": "Görsel ilerleme görmeden devam etme motivasyonu zayıflar.",
+                "ornek": "Telefonda Duolingo'daki günlük seri sayacı gibi."
+              },
+              "backend": {
+                "yer": "Tarayıcının localStorage'ı (yerel depo): hangi maddeleri tikledin orada saklı.",
+                "gereklilik": "Sunucuya gönderilmediği için kayıt sayısı sıfır maliyetli; hızlı.",
+                "ornek": "localStorage anahtarı 'fw.chk.edu.prereq'. JSON dizisi: [true, false, true, ...]."
+              },
+              "analoji": "Buzdolabına yapışkan not: 'aldım', 'aldım', 'almadım'. Görür görmez aklındaki gerginlik azalır."
+            }
+          }
+        },
+        {
+          "title": "Mini-proje",
+          "body": "Tek başına yapabileceğin küçük bir görev — kavramı oturtmak için.",
+          "enrich": {
+            "lesson": {
+              "ne": "Öğrendiklerini bağımsız olarak deneyeceğin, küçük ama tamamı senin yapacağın bir görev.",
+              "nicin": "Yardım almadan yapabilmek 'öğrendim' kanıtıdır. İzleyerek değil, yaparak öğrenirsin.",
+              "nasil": "30-60 dakikalık küçük bir hedef. Adımları yarı tarif edilir, gerisini sen düşünürsün.",
+              "nerede": "Sürücü kursunda 'kendi başına park yap', dil kursunda 'kendi başına yemek siparişi ver'.",
+              "ne_zaman": "Ünite bitince. Anlatımı okuyup geçmek değil, küçük bir şey yapmadan ünite bitmiş sayılmaz.",
+              "kim": "Sen — yalnız. Takılırsan o üniteyi yeniden gözden geçirirsin.",
+              "analoji": "Yemek tarifini izledikten sonra mutfağa girip baştan kendi başına yapmak."
+            }
+          }
+        },
+        {
+          "title": "Sonraki ünite",
+          "body": "Tek tık ile devam.",
+          "enrich": {
+            "lesson": {
+              "ne": "Bir ünite bitince diğerine geçmek için tek bir bağlantı/buton.",
+              "nicin": "'Şimdi nereye gideyim' sorusunu sormak motivasyon kaybettirir; yol hep önünde olmalı.",
+              "nasil": "Ünite sonunda 'Sonraki: 02 — Veri ve Tipler' bağlantısı görünür.",
+              "nerede": "Netflix'in 'sonraki bölüm 5 saniye sonra başlıyor' sayacı gibi.",
+              "ne_zaman": "Kontrol listesini doldurduğun anda.",
+              "kim": "Sen tıklarsın, sistem hatırlar bıraktığın yeri.",
+              "analoji": "Romanda bölüm sonu: 'Devam' butonu, kahvenin yanında bekler."
+            }
+          }
+        }
       ]
     },
-
-    { "type": "checklist", "title": "Müfredata başlamadan önce — hazırlık",
+    {
+      "type": "checklist",
+      "title": "Müfredata başlamadan önce — hazırlık",
       "storageKey": "edu.prereq",
       "items": [
-        { "label": "Mac veya Linux'ta bir terminal açabiliyorum.", "hint": "`Cmd+Space` → 'Terminal' / Ubuntu'da `Ctrl+Alt+T`." },
-        { "label": "Bir kod editörü kurdum (VS Code önerilir).", "hint": "[code.visualstudio.com](https://code.visualstudio.com)" },
-        { "label": "GitHub hesabım var.", "hint": "[github.com](https://github.com) — ücretsiz." },
-        { "label": "Node.js v22 kuruldu.", "hint": "`brew install node@22` veya [nodejs.org](https://nodejs.org)", "optional": true },
-        { "label": "PostgreSQL kuruldu (sonradan da yapılabilir).", "hint": "`brew install postgresql@16`", "optional": true }
+        {
+          "label": "Mac veya Linux'ta bir terminal açabiliyorum.",
+          "hint": "`Cmd+Space` → 'Terminal' / Ubuntu'da `Ctrl+Alt+T`.",
+          "enrich": {
+            "lesson": {
+              "ne": "Terminal, bilgisayara yazıyla komut verdiğin siyah pencere. Mouse yerine klavye ile çalışır.",
+              "nicin": "Yazılımcının ana aracı budur. Görsel düğmelerin arkasında ne olduğunu görmek ve hızlı işlem yapmak için.",
+              "nasil": "Mac'te `Cmd+Space` tuşları → 'Terminal' yaz → Enter. Siyah pencere açılır, satır başında `$` işareti bekler.",
+              "nerede": "Mac → Spotlight Search → Terminal. Ubuntu → klavye kısayolu `Ctrl+Alt+T`. Windows → 'cmd' veya 'PowerShell'.",
+              "ne_zaman": "İlk kez yazılımcı olacaksan: hemen şimdi. Sonraki ünitelerde tekrar tekrar açacaksın.",
+              "kim": "Sen — diğer kimseye gerek yok.",
+              "analoji": "Telefonun ayar menüsünün arkasında bir 'geliştirici menüsü' vardır; terminal o tarz bir yer ama bilgisayar için."
+            }
+          }
+        },
+        {
+          "label": "Bir kod editörü kurdum (VS Code önerilir).",
+          "hint": "[code.visualstudio.com](https://code.visualstudio.com)",
+          "enrich": {
+            "lesson": {
+              "ne": "Kod editörü, kod yazıp düzenleyeceğin akıllı bir not defteri. Microsoft'un ücretsiz 'VS Code' programı yaygın.",
+              "nicin": "Word'de kod yazsan da olur, ama hatalarını göstermez, satır numarası yok, renkler yok. Editör seni hızlandırır.",
+              "nasil": "Tarayıcıda code.visualstudio.com aç → işletim sistemine uygun olanı indir → kur, masaüstüne kısayol bırak.",
+              "nerede": "code.visualstudio.com adresinden. Microsoft hesabına gerek yok; ücretsiz indir.",
+              "ne_zaman": "Şimdi. İlk üniteden itibaren kullanacağız.",
+              "kim": "Sen — kurulum 5 dakika.",
+              "analoji": "Yemek yapmaya başlamadan önce mutfak bıçağı almak gibi. Olmadan da olur ama elin acır."
+            }
+          }
+        },
+        {
+          "label": "GitHub hesabım var.",
+          "hint": "[github.com](https://github.com) — ücretsiz.",
+          "enrich": {
+            "lesson": {
+              "ne": "GitHub, dünyanın en büyük yazılım kod deposu. Kendi kodunu ücretsiz saklayabileceğin, başkalarınınkini okuyabileceğin platform.",
+              "nicin": "Kodun bilgisayarına çakılı kalsın istemezsin. Bulutta saklanır → bilgisayar bozulsa bile kod kayıp olmaz. Ayrıca paylaşırsın, başkaları yardım eder.",
+              "nasil": "github.com adresinde 'Sign up' → e-posta + şifre + kullanıcı adı → e-posta doğrula → hesap hazır.",
+              "nerede": "github.com. Microsoft'a ait, ücretsiz, Türkçe arayüz seçeneği var.",
+              "ne_zaman": "Şimdi açmak en pratiği. İlk ünitelerde hesap gerekmiyor ama 09. ünitede mecbur olacaksın.",
+              "kim": "Sen. E-posta ile basit kayıt.",
+              "analoji": "Kütüphane kartı: hem kendi yazdığın kitabı bırakabilirsin hem başkalarınınkini okuyabilirsin."
+            }
+          }
+        },
+        {
+          "label": "Node.js v22 kuruldu.",
+          "hint": "`brew install node@22` veya [nodejs.org](https://nodejs.org)",
+          "optional": true,
+          "enrich": {
+            "lesson": {
+              "ne": "Node.js, modern web yazılımının çalışmasını sağlayan bir motor. Bilgisayarına kurarsın, kodları o çalıştırır.",
+              "nicin": "Birçok web aracı (bizim render programımız dahil) Node.js olmadan çalışmaz.",
+              "nasil": "Mac'te terminal aç → `brew install node@22` yaz → Enter. Veya nodejs.org'dan kurulum dosyası indir.",
+              "nerede": "nodejs.org → 'LTS' (uzun süre desteklenen) sürümü.",
+              "ne_zaman": "İlk kod örneklerini çalıştırmak için kurman lazım. Opsiyonel çünkü ilk 3 ünite sadece okunarak da öğrenilir.",
+              "kim": "Sen — terminal kullanarak.",
+              "analoji": "Çamaşır makinesini kurmak — kıyafetleri yıkamak için makine olmadan deterjan yetmez."
+            }
+          }
+        },
+        {
+          "label": "PostgreSQL kuruldu (sonradan da yapılabilir).",
+          "hint": "`brew install postgresql@16`",
+          "optional": true,
+          "enrich": {
+            "lesson": {
+              "ne": "PostgreSQL, verileri (kullanıcı adı, sipariş kaydı vs.) düzenli tutan ücretsiz bir veritabanı programıdır.",
+              "nicin": "Yazılımda 'kalıcı veri' lazım: form doldurulur, sistem kapansa bile bilgi kaybolmamalı. PostgreSQL bunu sağlar.",
+              "nasil": "Mac'te `brew install postgresql@16` veya postgresql.org'dan kurulum.",
+              "nerede": "Banka uygulamaları, e-ticaret siteleri, hastane kayıt sistemleri — hepsi arkada bir PostgreSQL benzeri programa veri yazar.",
+              "ne_zaman": "04. üniteye geldiğinde kurmuş ol. Şimdi kurman zorunlu değil.",
+              "kim": "Sen — opsiyonel adım.",
+              "analoji": "Geniş bir arşiv dolabı. Her klasör belli bir konuya ait, içinde sıralı kağıtlar."
+            }
+          }
+        }
       ]
     },
-
-    { "type": "callout", "variant": "tip", "label": "Tek cümle",
-      "body": "10 ünite, ~10 saat, hiç sınav, çok pratik. Bittiğinde bu projenin yazılım mimarısın."
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Tek cümle",
+      "body": "10 ünite, ~10 saat, hiç sınav, çok pratik. Bittiğinde bu projenin yazılım mimarısın.",
+      "enrich": {
+        "lesson": {
+          "ne": "Tüm müfredat tek cümleye sığar: 10 ünite ile yazılım mimarı olacaksın.",
+          "nicin": "Korkutucu kelime yığını yerine 'sığ kıyıdan gir, derinleşeceksin' duygusu için.",
+          "nasil": "Toplam 10 saat sürer. Her gün 30 dakika ayırsan iki haftada bitirirsin.",
+          "nerede": "Bu sayfanın altı; oradan başlayıp sırayla giderek tamamlarsın.",
+          "ne_zaman": "Şimdi. Daha sonra için bir 'doğru zaman' yoktur.",
+          "kim": "Sen — başkasına emanet edemezsin. Kimse yerinde öğrenemez.",
+          "analoji": "Yüzme öğrenmek: 10 ders sonunda bağımsız yüzersin. Korkulacak bir şey değil; sırayla gir."
+        }
+      }
     }
   ],
-  "related": ["edu-u01", "overview", "philosophy"]
+  "related": [
+    "edu-u01",
+    "overview",
+    "philosophy"
+  ]
 }

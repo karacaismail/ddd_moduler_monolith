@@ -21,9 +21,38 @@
       "text": "Shopify'ın \"majestic monolith\"i 2.8M+ satırlık tek Rails uygulaması; Black Friday'de saniyede 80K request'i tek deploy unit ile karşıladı. Bizim hedefimiz aynı: **tek deploy unit, çoklu bounded context, sıkı modül sınırı**. Mikroservise sadece zorlandığında (extraction trigger) geç."
     },
     {
+      "type": "image",
+      "src": "/assets/philosophy-compass.svg",
+      "alt": "Yedi ana prensip — projenin uyduğu kararlar pusulası",
+      "caption": "Yedi ana prensip: modüler monolit, metadata-driven, AI-first, polyglot, scale-kernel, Türkiye uyumu, açık gerilimler.",
+      "enrich": {
+        "info": "Projenin uyduğu 7 temel karar — yan yana özet.",
+        "lesson": {
+          "ne": "Projenin uyduğu 7 ana karar bir bakışta görülsün diye yan yana sıralanmış kartlar halinde gösterilir.",
+          "nicin": "Tasarım toplantısında 'pusulamız ne?' sorusu sorulduğunda hızlıca bakılacak görsel referans.",
+          "nasil": "Her kart bir prensip + tek cümle özet. Detay için cluster içindeki bölüme dön.",
+          "kim": "Mimar bu kararları yazar; ekip uygular.",
+          "analoji": "Aile değerleri panosu: salonun duvarında, herkes geçtikçe görür."
+        }
+      }
+    },
+    {
       "type": "list",
       "items": [
-        "**Refactor ucuz.** Bounded context sınırını yanlış çizdin? Tek PR'da değiştir. Mikroservis olsa Kafka schema migration + 2 servis deploy + downstream konsumer.",
+        {
+          "text": "**Refactor ucuz.** Bounded context sınırını yanlış çizdin? Tek PR'da değiştir. Mikroservis olsa Kafka schema migration + 2 servis deploy + downstream konsumer.",
+          "enrich": {
+            "lesson": {
+              "ne": "Bu yazılım yapısında, sınırları yanlış çizdiğinde düzeltmek kolaydır — tek parça halinde olduğu için tek bir değişiklikle düzelir.",
+              "nicin": "Tek parça yazılımda 'şu modülün sınırını yanlış çizdik' deyince düzeltmek bir gün. Çok parçalı yazılımda aynı düzeltme bir hafta sürer — çünkü her parça ayrı ayrı yamanır.",
+              "nasil": "Modül sınırını taşımak: kod tabanında ilgili klasör/dosya yer değiştirir, testler güncellenir, tek paket yeniden derlenir, bitti.",
+              "nerede": "Geliştirici tarafında; kullanıcı bunu fark etmez.",
+              "ne_zaman": "Modülün çok büyüdüğü veya iki modülün karıştığı fark edildiğinde.",
+              "kim": "Geliştirici karar verir, sistem yöneticisi yeni sürümü uygular.",
+              "analoji": "Bir evi yeniden düzenlemek gibi: oda işlevini değiştirebilirsin (yatak odası çalışma odası olur). Komşu daireyle ortak duvar yıkmaz, sıkıntı yok. Ayrı binalardaysa duvar yıkma izni alman ay sürer."
+            }
+          }
+        },
         "**Local development tek komut.** `uvicorn app:app` — her şey çalışır. Mikroservis olsa Docker Compose'da 12 servis.",
         "**Distributed transaction yok.** İki aggregate aynı process'te; saga in-process orchestration ile çok daha basit.",
         "**Observability ucuz.** Tek log stream, tek trace, tek metric source."
@@ -69,25 +98,16 @@
           "tone": "good",
           "body": "Vector store kernel-adjacent primitive (pgvector default).\nHer DocType save'inde otomatik embedding (opt-in projection).\nHybrid search (BM25 + vector RRF) Search domain'inde native.\nMCP server her bounded context'te otomatik expose.\nOtomatik kategorize/anomali/tahmin event bus üstüne projection.\nAgent orchestration kernel-adjacent (Pydantic AI tarzı type-safe).",
           "enrich": {
-            "info": "Vector store kernel-adjacent primitive (pgvector default).\nHer DocType save'inde otomatik embedding (opt-in projection).\nHybrid search (BM25",
-            "detail": "**AI-first BUDUR** nedir?\n\nVector store kernel-adjacent primitive (pgvector default).\nHer DocType save'inde otomatik embedding (opt-in projection).\nHybrid search (BM25 + vector RRF) Search domain'inde native.\nMCP server her bounded context'te otomatik expose.\nOtomatik kategorize/anomali/tahmin event bus üstüne projection.\nAgent orchestration kernel-adjacent (Pydantic AI tarzı type-safe).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"AI-first BUDUR\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Vector store kernel-adjacent primitive (pgvector default).\nHer DocType save'inde pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"AI-first BUDUR\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"AI-first BUDUR\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "AI'ı sonradan eklenen bir özellik değil, sistemin tasarım anından itibaren içinde olan bir altyapı olarak düşünmek.",
+            "lesson": {
+              "ne": "AI-first, yapay zeka özelliklerini en başından sistemin tasarımına dahil etmek demektir. Sonradan 'bir yere ChatGPT ekleyelim' değil; sistemin her parçası AI ile düşünebilsin diye baştan kurmak.",
+              "nicin": "Eğer AI sonradan tutkal gibi yapıştırılırsa kopar — her ürün ayrı şekilde bağlar, biri çalışır biri çalışmaz. Baştan içeride olursa tüm modüller aynı şekilde davranır.",
+              "nasil": "Sistemde 'her kayıt aslında bir vektörle de saklanır', 'her bağlam bir AI ajanıyla konuşabilir', 'her arama metin + vektör birlikte yapılır' kuralları konur.",
+              "nerede": "Müşterinin formu doldururken arka planda otomatik kategorize edilmesi, geçmiş kayıtlardan anomalilerin işaretlenmesi, akıllı arama önerileri — hepsi 'AI-first' yaklaşımının somut yüzü.",
+              "ne_zaman": "Yeni bir özellik tasarlanırken ilk soru: 'bu özelliği AI nasıl yardım edebilir?' Önceden değil, baştan.",
+              "kim": "Mimar, sistem omurgasına AI'ı yerleştirir; geliştirici hazır AI primitive'lerini çağırır; son kullanıcı sistemi 'akıllı' olarak deneyimler.",
+              "analoji": "Yeni bir araba tasarlarken motoru baştan elektrikli yapmak. Sonradan benzin arabaya elektrik motoru eklemek değil; başta elektrikli düşünmek."
+            }
           }
         },
         {
@@ -96,25 +116,16 @@
           "tone": "bad",
           "body": "Bir yere ChatGPT integration ekleyip slogan basmak.\nMüşteri destek bot'u eklemek (bu feature, mimari değil).\nHer ürüne aynı LLM prompt'u dayatmak.\nAI'ı bir module sanmak (gerçekte: primitives kernel-adjacent, applications module).",
           "enrich": {
-            "info": "Bir yere ChatGPT integration ekleyip slogan basmak.\nMüşteri destek bot'u eklemek (bu feature, mimari değil).\nHer ürüne aynı LLM prompt'u day",
-            "detail": "**AI-first BU DEĞİLDİR** nedir?\n\nBir yere ChatGPT integration ekleyip slogan basmak.\nMüşteri destek bot'u eklemek (bu feature, mimari değil).\nHer ürüne aynı LLM prompt'u dayatmak.\nAI'ı bir module sanmak (gerçekte: primitives kernel-adjacent, applications module).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"AI-first BU DEĞİLDİR\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Bir yere ChatGPT integration ekleyip slogan basmak.\nMüşteri destek bot'u eklemek pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"AI-first BU DEĞİLDİR\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"AI-first BU DEĞİLDİR\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "AI'ı sadece pazarlama için kullanmak veya tek bir köşeye sıkıştırmak AI-first değildir.",
+            "lesson": {
+              "ne": "Yanılgı: 'Ana sayfaya ChatGPT'li bir kutu koyduk, biz AI-first'üz' demek. Bu, sadece pazarlama dilidir; mimari değildir.",
+              "nicin": "Yapay zeka sadece pazarlama olunca ürün yarın çalışmaz hale gelir. Mimarinin parçası olmayan AI, ekstra yük olarak kalır; sistemle uyumlu çalışmaz.",
+              "nasil": "Yanılgılar şunlardır: 1) Tek bir yere chatbot koymak, 2) Her ürünü aynı zorlama AI cümleleriyle doldurmak, 3) AI'ı bir 'modül' sanmak — aslında her modüle dağıtılması gereken bir altyapıdır.",
+              "nerede": "Birçok ürün 'AI-powered' diye reklam yapar ama içine girince sadece bir köşede çalışan basit bir chatbot çıkar.",
+              "ne_zaman": "Bu yanılgıya en çok pazarlama baskısı altında düşülür: 'rakip yaptı, biz de hızlı koyalım' baskısı.",
+              "kim": "Müşteri 'AI-first' diye gelmiş bir ürün alır, ama gerçekte sadece bir tutkal-AI bulduğunu görür; güveni sarsılır.",
+              "analoji": "Bir restoranın menüsüne 'organik' yazıp aslında sadece bir-iki yemekte organik malzeme kullanmak. Müşteri 'sahte' der, geri dönmez."
+            }
           }
         }
       ]
@@ -150,7 +161,8 @@
     },
     {
       "type": "paragraph",
-      "text": "Sosyal medya turunda konuşulan fan-out tartışması bu prensibin somutu. Twitter'ın timeline'ı kernel'e gömülmez; kernel *fan-out worker primitive*i sağlar, {{ref:s-social}} module timeline politikasını yazar. 13 üründe feed yok; kernel onları taşımaz."
+      "text": "Sosyal medya turunda konuşulan fan-out tartışması bu prensibin somutu. Twitter'ın timeline'ı kernel'e gömülmez; kernel *fan-out worker primitive*i sağlar, {{ref:s-social}} module timeline politikasını yazar. 13 üründe feed yok; kernel onları taşımaz.",
+      "enrich": {}
     },
     {
       "type": "heading",
@@ -159,7 +171,16 @@
     },
     {
       "type": "paragraph",
-      "text": "Hetzner'de host edeceksin (Linux Debian, AMD EPYC). Müşterilerin TR'de. Yani e-Fatura, e-Defter, SGK, KVKK *add-on plugin değil, kernel-adjacent*. Aksi halde her ürünün muhasebe modülü tekerleği yeniden icat eder. Yaklaşım: **e-Belge Provider** ve **Tax Authority Adapter** Layer 1 in-tree olarak otur. Driver pattern — Foriba/Sovos, İzibiz, Uyumsoft, KolayBi', Logo plug edilebilir."
+      "text": "Hetzner'de host edeceksin (Linux Debian, AMD EPYC). Müşterilerin TR'de. Yani e-Fatura, e-Defter, SGK, KVKK *add-on plugin değil, kernel-adjacent*. Aksi halde her ürünün muhasebe modülü tekerleği yeniden icat eder. Yaklaşım: **e-Belge Provider** ve **Tax Authority Adapter** Layer 1 in-tree olarak otur. Driver pattern — Foriba/Sovos, İzibiz, Uyumsoft, KolayBi', Logo plug edilebilir.",
+      "enrich": {
+        "lesson": {
+          "ne": "Satılan ürün/hizmetin yasal belgesi.",
+          "nicin": "Vergi ve muhasebe için zorunlu.",
+          "nasil": "Sistem otomatik üretir, e-fatura ile GİB'e gider.",
+          "kim": "Muhasebe yönetir.",
+          "analoji": "Bakkaldan aldığın fiş — ama daha resmi."
+        }
+      }
     },
     {
       "type": "heading",
@@ -218,10 +239,16 @@
           "Modüler monolit + horizontal worker"
         ]
       ]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "⚙️ Felsefenin makinesı",
+      "body": "Yukarıda 7 ana ilke yazıldı — modüler monolit, metadata-driven, AI-first, polyglot, scale-primitive, Türkiye uyumu, açık gerilimler. Ama **ilke = yazı = sosyal söz**; sosyal söz çürür.\n\nİlkeyi yaşatan **makinedir**: CI sınır kapısı, BC sözleşme guard'ı, codemod döngüsü. Bu makineler {{ref:sus-overview}} grubunda işlenir. \"Modüler monolit\" ilkesinin kanıtlayıcısı {{ref:sus-boundaries}}; \"AI-first\" ilkesinin güvenlik katmanı {{ref:sus-actions}}."
     }
   ],
   "enrich": {
-    "info": "Felsefe ve ana prensipler",
+    "info": "Bu projenin uyduğu temel kurallar ve neden böyle kararlar verdiğimiz.",
     "detail": "Felsefe ve ana prensipler — bu cluster, projenin meta grubunda yer alır.",
     "terms": [
       {
@@ -231,11 +258,30 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
+    "lesson": {
+      "ne": "Bu projenin uyduğu temel kurallar ve neden böyle kararlar verdiğimiz. Birkaç madde değil; her gün bakılacak pusula.",
+      "nicin": "Yazılım kararlarında her sefer 'niye böyle yaptık' sorusunu cevaplayabilelim diye. Pusula olmazsa her kişi farklı yöne gider, sistem çorba olur.",
+      "nasil": "7 ilke vardır: tek parça yazılım (modüler monolit), kod yerine tanım kartı (metadata-driven), yapay zekayı baştan içeride tutmak, ihtiyaç olunca diğer dillere kapı açmak, ölçek araçlarını çekirdekte tutmak, Türkiye uyumunu birinci sınıf yapmak, gerilimleri açıkça yazmak.",
+      "nerede": "Her tasarım toplantısında bu pusula açılır, kararlar buna göre verilir.",
+      "ne_zaman": "Yeni özellik tasarlanırken, kod gözden geçirmede, yeni ekip üyesi eğitiminde.",
+      "kim": "Mimar pusulayı yazar, tüm geliştirici ekibi uygular, son kullanıcı tutarlılığı yaşar.",
+      "analoji": "Bir aile şirketinin değerler panosu: 'müşteri her şeyden önce gelir, kalite asla taviz vermez'. Duvardaki bu tabela, gözünün önündedir."
+    },
     "stories": [
       {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+        "persona": "Yeni evli çift, ev kurma süreci",
+        "context": "Yeni bir eve taşındılar. Mobilyaları neye göre alacaklarına karar verme aşamasındalar — bir kerede mi tam alsınlar yoksa zamanla mı genişlesin?",
+        "outcome": "Bu projenin felsefesi de aynı: modüler monolit. Önce çekirdek mobilya (yatak, sandalye, masa); sonra ihtiyaç çıkınca eklenir. Tek seferde her şeyi alıp boğulmak yerine, sade temel + ekleme kapasitesi."
+      },
+      {
+        "persona": "Birkaç şube açan kahveci",
+        "context": "Önce tek bir küçük dükkân, sonra ikinci şube, üçüncü şube... Her şubede aynı kalite kahve, aynı menü, ama farklı müşteri kitlesi.",
+        "outcome": "Sistemdeki 'modüler monolit' fikri buna benzer: tek mutfak (çekirdek altyapı), birden çok şube (15 ürün). Her şube farklı işliyor ama altta aynı kahve makineleri var."
+      },
+      {
+        "persona": "Vapur kaptanı, fırtınada manevra",
+        "context": "Vapur birden fazla yöne dönmek zorunda; her komutta motor, dümen, çapa farklı tepki vermeli. Önceden yazılı manevra defterine bakar.",
+        "outcome": "Bu proje de bir defter taşır — 7 ana prensip yazılı, her tartışmada açılır. 'Mikroservis kullanalım mı?' diye birisi sorduğunda kaptan deftere bakar: 'Hayır, modüler monolit. Çünkü şu nedenle.'"
       }
     ]
   }

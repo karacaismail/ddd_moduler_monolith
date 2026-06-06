@@ -12,6 +12,38 @@
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f172a'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h10' stroke='%2360a5fa' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E" />
+<link rel="manifest" href="./manifest.webmanifest" />
+<link rel="canonical" href="https://karacaismail.github.io/ddd_moduler_monolith/" />
+<!-- CSP — script ve style için CDN'leri (fonts.googleapis, unpkg, jsdelivr) izinli tutuyoruz -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self';" />
+<script>
+  // Service Worker kaydı — yalnızca prod build'inde
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').then((reg) => {
+        // Yeni sürüm bulununca toast göster
+        reg.addEventListener('updatefound', () => {
+          const newSw = reg.installing;
+          if (!newSw) return;
+          newSw.addEventListener('statechange', () => {
+            if (newSw.state === 'installed' && navigator.serviceWorker.controller) {
+              // Tarayıcıda eski sürüm hâlâ aktif, yeni hazır — bildirim göster
+              window.dispatchEvent(new CustomEvent('fw:sw-update-ready', { detail: newSw }));
+            }
+          });
+        });
+      }).catch((err) => console.warn('[sw] kayıt başarısız:', err));
+
+      // controllerchange → sayfayı yenile
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload();
+      });
+    });
+  }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap&subset=latin,latin-ext" rel="stylesheet">
@@ -34,6 +66,7 @@
 </script>
 </head>
 <body>
+<a class="skip-to-content" href="#content">İçeriğe atla</a>
 <header id="appbar" class="appbar">
   <button id="mobile-menu-toggle" class="appbar__menu" aria-label="Menüyü aç/kapat">
     <i class="ph ph-list"></i>
@@ -44,6 +77,10 @@
   </a>
   <div id="search-box" class="appbar__search search-box"></div>
   <div class="appbar__actions">
+    <button id="bookmarks-toggle" class="appbar__action" aria-label="Yer imlerim" title="Yer imlerim">
+      <i class="ph ph-star"></i>
+      <span id="bookmarks-count" class="appbar__badge" hidden>0</span>
+    </button>
     <button id="share-toggle" class="appbar__action" aria-label="Bağlantıyı paylaş" title="Bu sayfanın bağlantısını kopyala">
       <i class="ph ph-share-network"></i>
     </button>

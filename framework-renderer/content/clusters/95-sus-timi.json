@@ -1,0 +1,77 @@
+{
+  "id": "sus-timi",
+  "title": "DocType → TIMI stabil arayüz",
+  "subtitle": "IBM i (1988-) TIMI sayesinde 35+ yıl 25 farklı işlemci nesli üzerinde aynı uygulamayı çalıştırdı. Soyutlama = uzun-ömür.",
+  "cluster": "sus",
+  "order": 95,
+  "icon": "ph-cube-transparent",
+  "tags": [
+    "sustainability",
+    "ibm-i",
+    "abstraction",
+    "doctype"
+  ],
+  "enrich": {
+    "info": "Uygulama fiziksel substrata değil; stabil bir ara katmana (DocType) konuşur. Substrat değişse uygulama dokunulmaz.",
+    "lesson": {
+      "ne": "DocType, fiziksel veritabanından, REST formatından, depolama altyapısından bağımsız bir \"ara katman\" olarak tanımlanır. Uygulamalar DocType sözleşmesine yazar; altta PostgreSQL → başka DB → WASM olsa bile uygulama çalışmaya devam eder.",
+      "nicin": "50 yılda donanım/yazılım altyapısı 10 kez değişir. Eğer uygulama doğrudan PostgreSQL'e (veya doğrudan REST formatına) yazıyorsa her geçişte yeniden yazılır. Stabil ara katman = bir kez yaz, ömür boyu çalış.",
+      "nasil": "DocType tanımı (alanlar, validators, hook'lar) — fiziksel implementasyondan ayrılır. Altta substrat (Postgres) değişirse: yeni substrat için DocType uygulayıcısı yazılır, uygulamalar dokunulmaz.",
+      "nerede": "framework/kernel/schema/ — DocType sözleşme + substrat-bağımsız spec.",
+      "ne_zaman": "Mimar ilk DocType tanımını yazdığı andan itibaren — disiplin baştan kurulmazsa sonradan zor.",
+      "kim": "Mimar TIMI arayüzünü çizer; substrat ekibi PostgreSQL implementor yazar; uygulama geliştiricisi sadece DocType API'sini bilir; 30 yıl sonra başka substrat ekibi yeni implementor yazar — uygulamalar dokunulmaz.",
+      "analoji": "Telefon sistemi: 1960'larda mekanik santral, 1990'larda dijital santral, 2010'larda VoIP. Telefon konuşması (sözleşme) değişmedi: \"Alo, ben Ali\" hâlâ aynı çalışıyor. Substrat 3 kez değişti, kullanıcı dokunmadı."
+    },
+    "stories": [
+      {
+        "persona": "Bankamatik kart sistemi 1990-2025",
+        "context": "1990'larda manyetik şerit, 2000'lerde temaslı çip, 2015'ten sonra temassız NFC. Müşteri 35 yıl boyunca \"kartı tak, şifre gir\" akışını yaşıyor.",
+        "outcome": "Sözleşme: \"4 hane şifre + kart kimliği\". Substrat 3 nesil değişti; sözleşme değişmedi. Yazılım TIMI = aynı sözleşme, substrat evrilir."
+      },
+      {
+        "persona": "Müzik dinleyicisi Mustafa Bey, 50 yıllık plak koleksiyonu",
+        "context": "1965 plak, 1985 kaset, 2000 CD, 2020 dijital. Mustafa Bey aynı şarkıyı 50 yıldır dinliyor — \"melodi\" sözleşmesi sabit, fiziksel taşıyıcı 4 kez değişti.",
+        "outcome": "Plak dijital şarkıya yeniden masterlanır; sözleşme (melodi) korunur. DocType tam böyle: substrat ne olursa olsun anlam aynı kalır."
+      },
+      {
+        "persona": "Apartman aidat sistemi 1980-2025",
+        "context": "1980'lerde Hasan Bey defter tuttu; 1995'te Excel'e geçildi; 2010'da web sistemi; 2025'te mobil uygulama. \"Aidat = aylık ödenen tutar\" tanımı 45 yıl sabit kaldı.",
+        "outcome": "Defter→Excel→web→mobile geçişlerinde her seferinde \"aidat\" kavramı korundu. Sözleşme stabil, taşıyıcı evrildi. DocType bu disiplinin yazılım karşılığı."
+      }
+    ],
+    "terms": [
+      {
+        "term": "TIMI",
+        "abbrev_of": "Technology Independent Machine Interface",
+        "abbrev_tr": "Teknoloji-Bağımsız Makine Arayüzü",
+        "meaning": "IBM i'nin (AS/400) çekirdek soyutlaması — uygulama TIMI bytecode'a derlenir, donanım değişince yeniden çevrilir",
+        "why": "35+ yıl ömrün sırrı"
+      },
+      {
+        "term": "Substrat",
+        "meaning": "Altyapı: veritabanı, dil runtime'ı, donanım",
+        "why": "TIMI substrattan bağımsızdır"
+      },
+      {
+        "term": "Soyutlama",
+        "meaning": "Detayları gizleyip sadece kullanıcının ilgilendiği özelliği ortaya çıkarmak",
+        "why": "Uzun-ömrün matematiksel adı"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Soltis'in sözü",
+      "body": "*\"During its lifetime, the IBM i has now had something like 25 different processor technologies implemented, 25 different implementations – something that's almost impossible with other platforms.\"* — Dr. Frank Soltis, AS/400 baş mimarı (35. yıl)."
+    },
+    {
+      "type": "paragraph",
+      "text": "**Bu projeye uygulama:** DocType yalnızca metadata değil; **stabil sözleşme** olarak resmileştir. Versiyonlu, snapshot'lı, substrattan ayrılmış. Altta Postgres → başka DB → WASM olsa da DocType API değişmez."
+    }
+  ],
+  "related": [
+    "k-schema"
+  ]
+}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 280" role="img" aria-labelledby="sd-t sd-d">
+  <title id="sd-t">Durable Execution — DBOS checkpoint zinciri</title>
+  <desc id="sd-d">Her adım Postgres'e checkpoint'lenir; çöküş sonrası kaldığı yerden devam eder.</desc>
+  <style>
+    .lab { font: 600 13px 'Inter', sans-serif; fill: #1f2937; }
+    .head { font: 700 16px 'Inter', sans-serif; fill: #fff; }
+    .step { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+    .done { fill: #d1fae5; stroke: #10b981; stroke-width: 2; }
+    .crash { fill: #fee2e2; stroke: #dc2626; stroke-width: 2; stroke-dasharray: 5,3; }
+    .arr { stroke: #6b7280; stroke-width: 2; fill: none; marker-end: url(#ard); }
+  </style>
+  <defs>
+    <marker id="ard" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <text class="head" x="240" y="30" fill="#1f2937">Sipariş akışı (4 adım, 3. adımda çöküş)</text>
+
+  <rect class="done" x="40" y="80" width="130" height="60" rx="8"/>
+  <text class="lab" x="55" y="105">✓ 1. Stok kontrol</text>
+  <text class="lab" x="55" y="125" fill="#10b981">checkpoint yazıldı</text>
+
+  <rect class="done" x="200" y="80" width="130" height="60" rx="8"/>
+  <text class="lab" x="215" y="105">✓ 2. Ödeme al</text>
+  <text class="lab" x="215" y="125" fill="#10b981">checkpoint yazıldı</text>
+
+  <rect class="crash" x="360" y="80" width="130" height="60" rx="8"/>
+  <text class="lab" x="375" y="105">⚡ 3. Kargo (çöküş)</text>
+  <text class="lab" x="375" y="125" fill="#dc2626">checkpoint YOK</text>
+
+  <rect class="step" x="520" y="80" width="130" height="60" rx="8"/>
+  <text class="lab" x="535" y="105">4. Bildirim</text>
+  <text class="lab" x="535" y="125" fill="#6b7280">başlamadı</text>
+
+  <path class="arr" d="M 170 110 L 200 110"/>
+  <path class="arr" d="M 330 110 L 360 110"/>
+  <path class="arr" d="M 490 110 L 520 110"/>
+
+  <rect x="180" y="180" width="330" height="60" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="lab" x="200" y="205" fill="#92400e">Sunucu yeniden başladı</text>
+  <text class="lab" x="200" y="225" fill="#92400e">→ DBOS adım 3'ten devam eder (checkpoint'ten okur)</text>
+</svg>

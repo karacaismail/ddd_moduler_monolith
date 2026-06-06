@@ -73,12 +73,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Çok hızlı artan sayaçları (görüntülenme, beğeni, sipariş sayısı) bozulmadan tutan özel sayım sistemi.",
+      "nicin": "1000 kişi aynı anda 'beğen' butonuna basarsa normal sayaç birkaç tıklamayı kaybedebilir. Özel sayaç bu kaybı önler.",
+      "nasil": "Sayaç ana veritabanında durmaz; bellekte hızla çalışan ayrı bir sistemde tutulur. Belli aralıklarla ana veriye senkronize edilir.",
+      "nerede": "Sosyal modülün beğeni sayaçları, e-ticaret modülünün stok sayaçları.",
+      "ne_zaman": "Saniyede yüzlerce artış olabilecek her sayaçta.",
+      "kim": "Geliştirici sayaç tipini seçer; sistem geri kalanı yapar; son kullanıcı 'anında güncellenen' sayıları görür.",
+      "analoji": "Bir stadyumun turnike sayacı: her geçişi gerçek zamanlı sayar. Maç bitince ana defter tek seferde güncellenir."
+    }
   }
 }

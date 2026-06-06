@@ -7,72 +7,279 @@
   "icon": "ph-rocket",
   "granularity": "buyuk-tas",
   "state": "ok",
-  "tags": ["education", "u10", "deploy", "ops", "observability"],
-  "blocks": [
-    { "type": "lesson-header", "unit": "Ünite 10", "title": "Deploy & Operations — production hayatı", "level": "ileri", "duration_min": 70, "prereq": ["edu-u08"], "goals": [
-      "Git workflow + CI/CD'nin amaçlarını ve farkını anlatabilirsin.",
-      "Frontend (GitHub Pages) vs backend (Hetzner) deploy farkını biliyorsun.",
-      "Observability üçlüsünü (metrics/logs/traces) sayabilirsin.",
-      "Blue/Green ve Canary deploy stratejilerini ayırt edebilirsin.",
-      "On-call rotasyonunun mantığını söyleyebilirsin.",
-      "Runbook'un incident'ta rolünü açıklayabilirsin.",
-      "Post-mortem kültürünün neden 'blameless' olduğunu söyleyebilirsin."
-    ] },
-    { "type": "terms", "terms": [
-      { "term": "CI", "abbrev_of": "Continuous Integration", "meaning": "Her push'ta test/lint/build.", "why": "Bozuk kod main'e karışmasın." },
-      { "term": "CD", "abbrev_of": "Continuous Deployment", "meaning": "Geçen test otomatik canlıya.", "why": "Manuel deploy adımındaki hata yok." },
-      { "term": "Blue/Green", "abbrev_tr": "Mavi/Yeşil deploy", "meaning": "Eski sürüm 'mavi' çalışırken yeni 'yeşil' deploy; traffic switch.", "why": "Sıfır kesinti + anında rollback." },
-      { "term": "Canary", "abbrev_tr": "Kanarya yayın", "meaning": "Yeni sürümü önce %5 kullanıcıya yayıp metric'i izle.", "why": "Hata erken yakalanır, büyük etkiden korunur." },
-      { "term": "Feature flag", "abbrev_tr": "Özellik anahtarı", "meaning": "Bir özelliği kodda olduğu halde runtime'da aç/kapat.", "why": "Risk almadan deploy + dark launch." },
-      { "term": "Observability", "abbrev_tr": "Gözlemlenebilirlik", "meaning": "Sistem sağlığı için 3'lü: metrics, logs, traces.", "why": "Hata olunca 5 dakikada sebebini bul." },
-      { "term": "SLO", "abbrev_of": "Service Level Objective", "meaning": "Hedeflenen güvenilirlik (örn: %99.9 uptime).", "why": "'Yeterince iyi' tanımı." },
-      { "term": "Error budget", "abbrev_tr": "Hata bütçesi", "meaning": "SLO'nun izin verdiği toplam downtime.", "why": "Bittiyse yeni feature DEĞİL, stabilizasyon." },
-      { "term": "On-call", "abbrev_tr": "Nöbet", "meaning": "Belirli bir mühendisin alarm geldiğinde müdahale ettiği dönem.", "why": "Sistem 7/24; insan dönüşümlü." },
-      { "term": "Runbook", "abbrev_tr": "Çalıştırma rehberi", "meaning": "Belirli bir alarmda ne yapılır adım listesi.", "why": "Gece 03:00'te tasarımcı bile çözebilsin." },
-      { "term": "Post-mortem", "abbrev_tr": "İnceleme sonrası", "meaning": "Bir incident sonrası blameless analiz.", "why": "Aynı hata tekrar olmasın; öğrenme kültürü." },
-      { "term": "MTTR", "abbrev_of": "Mean Time To Recovery", "meaning": "Hatadan kurtarmanın ortalama süresi.", "why": "Reliability ölçütünün kilit metriği." }
-    ] },
-    { "type": "paragraph", "text": "Production canlı sistemdir; geri alınmayan etkiler vardır. **CI** her commit'i test eder, **CD** geçen testi canlıya çıkarır. Bozulursa observability ile sebep bulunur. On-call mühendis runbook'tan müdahale eder. Sonra blameless post-mortem yapılır." },
-    { "type": "steps", "title": "Bir incident'ın yaşam döngüsü", "items": [
-      { "title": "1. Alarm tetiklenir", "body": "Prometheus/Grafana threshold aşılır → PagerDuty/Slack on-call'a bildirir." },
-      { "title": "2. Acknowledge", "body": "On-call 5 dk içinde 'gördüm' der. Aksi halde escalation: 2. seviye uyandırılır." },
-      { "title": "3. Triage + runbook", "body": "Severity belirlenir (SEV-1/2/3). İlgili runbook açılır, adımlar uygulanır." },
-      { "title": "4. Mitigate", "body": "İlk hedef DURDUR (rollback, feature flag kapat, traffic shift). Sebep aramak SONRA." },
-      { "title": "5. Resolve", "body": "Sistem normal. İlk metric SLO içine döndü. Alarm clear." },
-      { "title": "6. Post-mortem", "body": "48 saat içinde yazılı analiz. 'Kim suçlu?' DEĞİL, 'Süreçte ne kırıldı?'. Action items + sahip + deadline." }
-    ] },
-    { "type": "feature-list", "items": [
-      { "name": "Metrics", "desc": "Sayılabilir veriler: RPS, latency, error rate, queue depth.", "enrich": { "info": "Prometheus + Grafana." } },
-      { "name": "Logs", "desc": "Zaman damgalı metin/JSON kayıtlar. Hata stack trace, request body.", "enrich": { "info": "Loki / Elasticsearch / Datadog." } },
-      { "name": "Traces", "desc": "Tek bir request'in tüm modüller arası yolculuğu (span'lar).", "enrich": { "info": "OpenTelemetry + Jaeger / Tempo." } },
-      { "name": "Alarms", "desc": "Threshold + duration → notification.", "enrich": { "info": "PagerDuty / Opsgenie." } },
-      { "name": "Dashboards", "desc": "Görsel özet: anomali hızlı görünür.", "enrich": { "info": "Grafana / Kibana." } }
-    ] },
-    { "type": "callout", "variant": "tip", "label": "Bizim deploy",
-      "body": "**Frontend:** Mac'te `yap` → GitHub Actions → Pages. **Backend:** Hetzner sunucu, ayrı pipeline (SSH/rsync veya Docker). Detay: {{ref:deploy-yap}}." },
-    { "type": "callout", "variant": "tip", "label": "Feature flag = risk yönetimi",
-      "body": "Yeni ödeme flow'unu deploy et ama flag KAPALI. Dark launch (kod çalışıyor, kullanıcı görmüyor) → metric izle → %1 canary → %10 → %50 → %100. Hata varsa flag KAPAT, deploy/rollback gerek YOK." },
-    { "type": "callout", "variant": "critical", "label": "Blameless post-mortem",
-      "body": "Hata yapan KIŞIYI sorgulamak yerine SİSTEMI sorgula. 'Niye Ali production'a yanlış config push etti?' yerine 'Niye sistem yanlış config'i kabul etti? Validation neden yoktu?'. Suçlama kültürü → hata gizlenir → tekrar olur. **Öğrenme kültürü → hata raporlanır → düzeltilir.**" },
-    { "type": "user-stories", "title": "Üç perspektiften ops",
-      "stories": [
-        { "persona": "On-call mühendis (gece 03:00)", "context": "PagerDuty uyandırır: 'DB connection pool exhausted'.", "outcome": "Runbook açar → 'connection_max sayısını artır + slow query'leri logla' → 10 dk içinde mitigate. Sabah post-mortem: 'Yeni rapor sayfası N+1 query yapıyor'." },
-        { "persona": "SRE / observability", "context": "Yeni servis canlıya alınıyor.", "outcome": "Önce metric/log/trace tanımları, sonra deploy. SLO 99.9% → error budget 43 dk/ay. Aşılırsa feature freeze." },
-        { "persona": "Ürün yöneticisi", "context": "Yeni özelliği istiyor ama error budget %85 tükenmiş.", "outcome": "Mühendislik 'no' der. Önce stabilizasyon. PM kabul etmek zorunda — kurum kuralı." }
-      ] },
-    { "type": "checklist", "title": "Kontrol listesi", "storageKey": "edu.u10", "items": [
-      { "label": "CI ile CD farkını söyleyebilirim." },
-      { "label": "Blue/Green ile Canary'nin farklı kullanım nedenlerini biliyorum." },
-      { "label": "Feature flag'in deploy-rollout ayrımı sağladığını anlatabilirim." },
-      { "label": "Observability'nin 3 ayağını sayabilirim." },
-      { "label": "SLO ve error budget arasındaki ilişkiyi söyleyebilirim." },
-      { "label": "On-call rotasyonunun amacını söyleyebilirim." },
-      { "label": "Bir alarm için runbook ne içerir, açıklayabilirim." },
-      { "label": "Incident yaşam döngüsünün 6 adımını sayabilirim." },
-      { "label": "Blameless post-mortem'ın 'sistem' odaklı olmasının nedenini söyleyebilirim." }
-    ] },
-    { "type": "callout", "variant": "tip", "label": "Tebrikler — müfredat sonu",
-      "body": "10 ünite bitti. Artık bu projenin mimarısın. Detaylı teknik için Layer-0 ve Layer-1 cluster'larına dal: {{ref:k-schema}}, {{ref:k-identity}}, {{ref:scale-outbox}}, {{ref:l1-workflow}}." }
+  "tags": [
+    "education",
+    "u10",
+    "deploy",
+    "ops",
+    "observability"
   ],
-  "related": ["edu-u08", "edu-u09", "deploy-yap", "cc-obs"]
+  "blocks": [
+    {
+      "type": "lesson-header",
+      "unit": "Ünite 10",
+      "title": "Deploy & Operations — production hayatı",
+      "level": "ileri",
+      "duration_min": 70,
+      "prereq": [
+        "edu-u08"
+      ],
+      "goals": [
+        "Git workflow + CI/CD'nin amaçlarını ve farkını anlatabilirsin.",
+        "Frontend (GitHub Pages) vs backend (Hetzner) deploy farkını biliyorsun.",
+        "Observability üçlüsünü (metrics/logs/traces) sayabilirsin.",
+        "Blue/Green ve Canary deploy stratejilerini ayırt edebilirsin.",
+        "On-call rotasyonunun mantığını söyleyebilirsin.",
+        "Runbook'un incident'ta rolünü açıklayabilirsin.",
+        "Post-mortem kültürünün neden 'blameless' olduğunu söyleyebilirsin."
+      ]
+    },
+    {
+      "type": "terms",
+      "terms": [
+        {
+          "term": "CI",
+          "abbrev_of": "Continuous Integration",
+          "meaning": "Her push'ta test/lint/build.",
+          "why": "Bozuk kod main'e karışmasın."
+        },
+        {
+          "term": "CD",
+          "abbrev_of": "Continuous Deployment",
+          "meaning": "Geçen test otomatik canlıya.",
+          "why": "Manuel deploy adımındaki hata yok."
+        },
+        {
+          "term": "Blue/Green",
+          "abbrev_tr": "Mavi/Yeşil deploy",
+          "meaning": "Eski sürüm 'mavi' çalışırken yeni 'yeşil' deploy; traffic switch.",
+          "why": "Sıfır kesinti + anında rollback."
+        },
+        {
+          "term": "Canary",
+          "abbrev_tr": "Kanarya yayın",
+          "meaning": "Yeni sürümü önce %5 kullanıcıya yayıp metric'i izle.",
+          "why": "Hata erken yakalanır, büyük etkiden korunur."
+        },
+        {
+          "term": "Feature flag",
+          "abbrev_tr": "Özellik anahtarı",
+          "meaning": "Bir özelliği kodda olduğu halde runtime'da aç/kapat.",
+          "why": "Risk almadan deploy + dark launch."
+        },
+        {
+          "term": "Observability",
+          "abbrev_tr": "Gözlemlenebilirlik",
+          "meaning": "Sistem sağlığı için 3'lü: metrics, logs, traces.",
+          "why": "Hata olunca 5 dakikada sebebini bul."
+        },
+        {
+          "term": "SLO",
+          "abbrev_of": "Service Level Objective",
+          "meaning": "Hedeflenen güvenilirlik (örn: %99.9 uptime).",
+          "why": "'Yeterince iyi' tanımı."
+        },
+        {
+          "term": "Error budget",
+          "abbrev_tr": "Hata bütçesi",
+          "meaning": "SLO'nun izin verdiği toplam downtime.",
+          "why": "Bittiyse yeni feature DEĞİL, stabilizasyon."
+        },
+        {
+          "term": "On-call",
+          "abbrev_tr": "Nöbet",
+          "meaning": "Belirli bir mühendisin alarm geldiğinde müdahale ettiği dönem.",
+          "why": "Sistem 7/24; insan dönüşümlü."
+        },
+        {
+          "term": "Runbook",
+          "abbrev_tr": "Çalıştırma rehberi",
+          "meaning": "Belirli bir alarmda ne yapılır adım listesi.",
+          "why": "Gece 03:00'te tasarımcı bile çözebilsin."
+        },
+        {
+          "term": "Post-mortem",
+          "abbrev_tr": "İnceleme sonrası",
+          "meaning": "Bir incident sonrası blameless analiz.",
+          "why": "Aynı hata tekrar olmasın; öğrenme kültürü."
+        },
+        {
+          "term": "MTTR",
+          "abbrev_of": "Mean Time To Recovery",
+          "meaning": "Hatadan kurtarmanın ortalama süresi.",
+          "why": "Reliability ölçütünün kilit metriği."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Production canlı sistemdir; geri alınmayan etkiler vardır. **CI** her commit'i test eder, **CD** geçen testi canlıya çıkarır. Bozulursa observability ile sebep bulunur. On-call mühendis runbook'tan müdahale eder. Sonra blameless post-mortem yapılır."
+    },
+    {
+      "type": "steps",
+      "title": "Bir incident'ın yaşam döngüsü",
+      "items": [
+        {
+          "title": "1. Alarm tetiklenir",
+          "body": "Prometheus/Grafana threshold aşılır → PagerDuty/Slack on-call'a bildirir."
+        },
+        {
+          "title": "2. Acknowledge",
+          "body": "On-call 5 dk içinde 'gördüm' der. Aksi halde escalation: 2. seviye uyandırılır."
+        },
+        {
+          "title": "3. Triage + runbook",
+          "body": "Severity belirlenir (SEV-1/2/3). İlgili runbook açılır, adımlar uygulanır."
+        },
+        {
+          "title": "4. Mitigate",
+          "body": "İlk hedef DURDUR (rollback, feature flag kapat, traffic shift). Sebep aramak SONRA."
+        },
+        {
+          "title": "5. Resolve",
+          "body": "Sistem normal. İlk metric SLO içine döndü. Alarm clear."
+        },
+        {
+          "title": "6. Post-mortem",
+          "body": "48 saat içinde yazılı analiz. 'Kim suçlu?' DEĞİL, 'Süreçte ne kırıldı?'. Action items + sahip + deadline."
+        }
+      ]
+    },
+    {
+      "type": "feature-list",
+      "items": [
+        {
+          "name": "Metrics",
+          "desc": "Sayılabilir veriler: RPS, latency, error rate, queue depth.",
+          "enrich": {
+            "info": "Prometheus + Grafana."
+          }
+        },
+        {
+          "name": "Logs",
+          "desc": "Zaman damgalı metin/JSON kayıtlar. Hata stack trace, request body.",
+          "enrich": {
+            "info": "Loki / Elasticsearch / Datadog."
+          }
+        },
+        {
+          "name": "Traces",
+          "desc": "Tek bir request'in tüm modüller arası yolculuğu (span'lar).",
+          "enrich": {
+            "info": "OpenTelemetry + Jaeger / Tempo."
+          }
+        },
+        {
+          "name": "Alarms",
+          "desc": "Threshold + duration → notification.",
+          "enrich": {
+            "info": "PagerDuty / Opsgenie."
+          }
+        },
+        {
+          "name": "Dashboards",
+          "desc": "Görsel özet: anomali hızlı görünür.",
+          "enrich": {
+            "info": "Grafana / Kibana."
+          }
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Bizim deploy",
+      "body": "**Frontend:** Mac'te `yap` → GitHub Actions → Pages. **Backend:** Hetzner sunucu, ayrı pipeline (SSH/rsync veya Docker). Detay: {{ref:deploy-yap}}."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Feature flag = risk yönetimi",
+      "body": "Yeni ödeme flow'unu deploy et ama flag KAPALI. Dark launch (kod çalışıyor, kullanıcı görmüyor) → metric izle → %1 canary → %10 → %50 → %100. Hata varsa flag KAPAT, deploy/rollback gerek YOK."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "Blameless post-mortem",
+      "body": "Hata yapan KIŞIYI sorgulamak yerine SİSTEMI sorgula. 'Niye Ali production'a yanlış config push etti?' yerine 'Niye sistem yanlış config'i kabul etti? Validation neden yoktu?'. Suçlama kültürü → hata gizlenir → tekrar olur. **Öğrenme kültürü → hata raporlanır → düzeltilir.**"
+    },
+    {
+      "type": "user-stories",
+      "title": "Üç perspektiften ops",
+      "stories": [
+        {
+          "persona": "On-call mühendis (gece 03:00)",
+          "context": "PagerDuty uyandırır: 'DB connection pool exhausted'.",
+          "outcome": "Runbook açar → 'connection_max sayısını artır + slow query'leri logla' → 10 dk içinde mitigate. Sabah post-mortem: 'Yeni rapor sayfası N+1 query yapıyor'."
+        },
+        {
+          "persona": "SRE / observability",
+          "context": "Yeni servis canlıya alınıyor.",
+          "outcome": "Önce metric/log/trace tanımları, sonra deploy. SLO 99.9% → error budget 43 dk/ay. Aşılırsa feature freeze."
+        },
+        {
+          "persona": "Ürün yöneticisi",
+          "context": "Yeni özelliği istiyor ama error budget %85 tükenmiş.",
+          "outcome": "Mühendislik 'no' der. Önce stabilizasyon. PM kabul etmek zorunda — kurum kuralı."
+        }
+      ]
+    },
+    {
+      "type": "checklist",
+      "title": "Kontrol listesi",
+      "storageKey": "edu.u10",
+      "items": [
+        {
+          "label": "CI ile CD farkını söyleyebilirim."
+        },
+        {
+          "label": "Blue/Green ile Canary'nin farklı kullanım nedenlerini biliyorum."
+        },
+        {
+          "label": "Feature flag'in deploy-rollout ayrımı sağladığını anlatabilirim."
+        },
+        {
+          "label": "Observability'nin 3 ayağını sayabilirim."
+        },
+        {
+          "label": "SLO ve error budget arasındaki ilişkiyi söyleyebilirim."
+        },
+        {
+          "label": "On-call rotasyonunun amacını söyleyebilirim."
+        },
+        {
+          "label": "Bir alarm için runbook ne içerir, açıklayabilirim."
+        },
+        {
+          "label": "Incident yaşam döngüsünün 6 adımını sayabilirim."
+        },
+        {
+          "label": "Blameless post-mortem'ın 'sistem' odaklı olmasının nedenini söyleyebilirim."
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Tebrikler — müfredat sonu",
+      "body": "10 ünite bitti. Artık bu projenin mimarısın. Detaylı teknik için Layer-0 ve Layer-1 cluster'larına dal: {{ref:k-schema}}, {{ref:k-identity}}, {{ref:scale-outbox}}, {{ref:l1-workflow}}."
+    }
+  ],
+  "related": [
+    "edu-u08",
+    "edu-u09",
+    "deploy-yap",
+    "cc-obs"
+  ],
+  "enrich": {
+    "lesson": {
+      "ne": "Ünite 10 — Deploy ve Operasyon. Yazılımı sunucuya taşıma ve sürekli çalıştırma.",
+      "nicin": "Geliştirici bilgisayarındaki kod kullanıcıya fayda etmez. Sunucuya taşımak gerekir.",
+      "nasil": "Git → GitHub Actions → Hetzner → izleme + nöbetçi.",
+      "nerede": "Müfredatın son ünitesi — bütün bilgiyi pratiğe döker.",
+      "ne_zaman": "Yazılım canlıya çıkmaya hazır olduğunda.",
+      "kim": "Geliştirici hazırlar; DevOps mühendisi pipeline'ı kurar.",
+      "analoji": "Restoran zincirinin yeni menüye geçişi: önce dene, sonra tüm şubelere aynı reçete."
+    }
+  }
 }

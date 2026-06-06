@@ -56,7 +56,16 @@
       "type": "callout",
       "variant": "warning",
       "label": "Anti-pattern — her module kendi SMTP'sini kursun",
-      "body": "Junior her modüle `smtplib.SMTP(\"smtp.gmail.com\", 587)` yazarsa: config dağınık, throttling yok, queue yok, retry yok, unsubscribe link inconsistent. **Notification core'a koymak = tek pipeline'dan geçer = compliance kolay.**"
+      "body": "Junior her modüle `smtplib.SMTP(\"smtp.gmail.com\", 587)` yazarsa: config dağınık, throttling yok, queue yok, retry yok, unsubscribe link inconsistent. **Notification core'a koymak = tek pipeline'dan geçer = compliance kolay.**",
+      "enrich": {
+        "lesson": {
+          "ne": "Sırayla yapılacak işleri bekleten kuyruk.",
+          "nicin": "Aynı anda 1000 iş gelirse hepsi birden çalışmasın diye.",
+          "nasil": "FIFO (önce gelen önce çıkar).",
+          "kim": "Sistem yönetir.",
+          "analoji": "Bankamatik sırası."
+        }
+      }
     },
     {
       "type": "callout",
@@ -75,7 +84,8 @@
     },
     {
       "type": "paragraph",
-      "text": "LandX **S05 — Notification Center** (Faz 3 · P1 · Application Squad) bu cluster ile birebir örtüşür ama ek olarak **agent ping** kanalını birinci sınıf yapar: agent'lar birbirine notification gönderebilir. *Email delivery rate >%98, in-app render p95 <500ms.*"
+      "text": "LandX **S05 — Notification Center** (Faz 3 · P1 · Application Squad) bu cluster ile birebir örtüşür ama ek olarak **agent ping** kanalını birinci sınıf yapar: agent'lar birbirine notification gönderebilir. *Email delivery rate >%98, in-app render p95 <500ms.*",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -106,12 +116,14 @@
         "why": "Yeni kanal eklemek kod değişikliği gerektirmesin."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Kullanıcılara bildirim göndermek için tek bir altyapı: e-posta, SMS, telefon bildirimi, sistem içi mesaj — hepsi aynı kapıdan geçer.",
+      "nicin": "Her modül kendi bildirim sistemini kursa, ayarlar dağılır. Bir kullanıcı 50 farklı yerden e-posta alır. Tek merkez = tek tercih ekranı.",
+      "nasil": "Modül 'şu kullanıcıya şunu duyur' der → bildirim modülü kullanıcının tercih ettiği kanaldan iletir.",
+      "nerede": "Telefondaki uygulama bildirimleri, sistem içi 'çan' ikonu, e-posta gelen kutusu.",
+      "ne_zaman": "Önemli bir olay olduğunda — sipariş alındı, ödeme alındı, izin onaylandı.",
+      "kim": "Geliştirici 'duyur' diyor; sistem doğru kanalı seçiyor; kullanıcı tek tercih ekranından hepsini ayarlıyor.",
+      "analoji": "Bir okuldaki anons memuru: öğretmenler 'şunu duyur' der, memur uygun şekilde (hoparlör, panodaki not, telefon) iletir."
+    }
   }
 }

@@ -49,9 +49,24 @@
         "context": "12 ay önce bir muhasebe hesabının değişiklik tarihçesini ister.",
         "outcome": "Audit log partition'ı (2025-06) çekilir; alan diff'leri JSON olarak gösterilir. Denetim kapanır."
       }
-    ]
+    ],
+    "lesson": {
+      "ne": "Sistemde kim, ne zaman, neyi değiştirdi sorularına cevap veren kayıt günlüğü. Yazılımın 'noter defteri'.",
+      "nicin": "İhtilaf çıktığında veya bir kazadan sonra geriye dönüp 'ne oldu' sorusunu cevaplayabilmemiz lazım. Audit olmazsa sorumlu bulunmaz, hata tekrarlar.",
+      "nasil": "Her veri değişikliği (oluştur, güncelle, sil) ayrı bir defter satırı yaratır: kim yaptı, ne zaman yaptı, eski ve yeni hâli neydi.",
+      "nerede": "Yönetici panelinde 'Hareketler' veya 'İşlem geçmişi' sekmesi. Her kayıt için 'kim ne yaptı' gösterilir.",
+      "ne_zaman": "Her veri değişikliğinde, kullanıcı tıklamaları, sistem işlemleri — sessizce kayda alınır.",
+      "kim": "Denetçi okur ama kendisi yazmaz; sistem otomatik yazar; son kullanıcı bunun farkında bile olmaz.",
+      "analoji": "Bir bankanın gişe işlem defteri: her havalede kim, kime, ne kadar, hangi saat — her şey kayıtlı. Hata olunca defteri açarsın."
+    }
   },
   "blocks": [
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "🏗️ Mimari karar: bitemporal vs klasik audit",
+      "body": "Bu cluster **klasik audit tablosu** yaklaşımını anlatır (yan tablo + değişiklik logu). Daha derin bir yaklaşım — **bitemporal ana tablo** — {{ref:sus-bitemporal}} cluster'ında işlenir.\n\n**Karar (hibrit):** Aşağıdaki DocType'lar için bitemporal **zorunludur** (bedava audit + time-travel + KVKK uyumu): HRMS bordro, GL (genel muhasebe), KVKK kişisel veri kayıtları, sözleşme/poliçe kayıtları, sağlık verisi. Geri kalan tipler için klasik audit yeterli.\n\n**Neden hibrit?** Bitemporal her tabloda zorunlu olursa disk ve yazma maliyeti büyür; klasik audit her yerde olursa \"o tarihte ne biliyorduk\" sorusu kolay cevap bulmaz. Doğru disiplin: gerçek kritiklik seviyesinde bitemporal."
+    },
     {
       "type": "paragraph",
       "text": "İki ayrı concept, ayrı tut:",
@@ -89,7 +104,14 @@
                 "context": "5 yıl önceki bir faturayı bulması gerekiyor.",
                 "outcome": "Audit log 2021-* partition'ı sorgulanır; ilk değişiklikten son haline kadar tam tarihçe çıkar."
               }
-            ]
+            ],
+            "lesson": {
+              "ne": "Kişisel Verileri Koruma Kanunu — Türkiye yasası, kişisel verilerin nasıl saklanacağını düzenler.",
+              "nicin": "İhlal halinde para cezası gelir; müşteri güveni kaybedilir.",
+              "nasil": "Veri toplarken izin alınır, talep gelirse 30 günde yanıt verilir.",
+              "kim": "Sistem sahibi sorumlu; veri sahibi son kullanıcı.",
+              "analoji": "Kuyumcunun yasal defter tutması."
+            }
           }
         },
         {
@@ -229,29 +251,13 @@
           "text": "Vergi denetiminde \"12 ay önce şu hesap kalemini kim değiştirdi\" sorusu. Audit log olmasa hapis.",
           "enrich": {
             "info": "Mali kanun: 10 yıl saklama, alan-bazlı diff zorunlu.",
-            "stories": [
-              {
-                "persona": "Compliance sorumlusu",
-                "context": "\"Muhasebe (#10)\" özelliğini denetim ve yasal saklama sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Vergi denetiminde \"12 ay önce şu hesap kalemini kim değiştirdi\" sorusu. Audit lo pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Vergi denetçisi",
-                "context": "12 ay önceki bir hesap kalemine bakar. \"Muhasebe (#10)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Audit log + partition: tarihsel alan diff'leri."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Bir issue'nun zaman çizgisini görür. \"Muhasebe (#10)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"Muhasebe (#10)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Soft-delete → bekleme → hard-delete + audit."
-              }
-            ],
-            "detail": "**Muhasebe (#10)** nedir?\n\nVergi denetiminde \"12 ay önce şu hesap kalemini kim değiştirdi\" sorusu. Audit log olmasa hapis.\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            "lesson": {
+              "ne": "Sistemin yasal/finansal kontrolünün dış denetçi tarafından incelenmesi.",
+              "nicin": "Yasalara uyumun kanıtlanması zorunlu.",
+              "nasil": "Denetçi sisteme bağlanır, audit kayıtlarını sorgular.",
+              "kim": "Bağımsız denetçi yapar.",
+              "analoji": "Restoran yıllık sağlık denetimi."
+            }
           }
         },
         {
@@ -266,29 +272,6 @@
                 "meaning": "Bir değişikliğin hangi tarihten itibaren geçerli olduğu.",
                 "why": "Geriye dönük zam: kayıt tarihi bugün, etki 1 Mayıs."
               }
-            ],
-            "detail": "**HRMS (#9)** nedir?\n\n\"Çalışan maaşı 2025-03 → 2025-04'te kim onayladı\". HR compliance.\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Compliance sorumlusu",
-                "context": "\"HRMS (#9)\" özelliğini denetim ve yasal saklama sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici \"Çalışan maaşı 2025-03 → 2025-04'te kim onayladı\". HR compliance. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Vergi denetçisi",
-                "context": "12 ay önceki bir hesap kalemine bakar. \"HRMS (#9)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Audit log + partition: tarihsel alan diff'leri."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Bir issue'nun zaman çizgisini görür. \"HRMS (#9)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"HRMS (#9)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Soft-delete → bekleme → hard-delete + audit."
-              }
             ]
           }
         },
@@ -296,60 +279,14 @@
           "label": "GitHub PR",
           "text": "\"Bu satırı 3 ay önce şu kişi şu commit'te ekledi\". Activity feed.",
           "enrich": {
-            "info": "Activity — UX odaklı; git blame muadili.",
-            "detail": "**GitHub PR** nedir?\n\n\"Bu satırı 3 ay önce şu kişi şu commit'te ekledi\". Activity feed.\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Compliance sorumlusu",
-                "context": "\"GitHub PR\" özelliğini denetim ve yasal saklama sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici \"Bu satırı 3 ay önce şu kişi şu commit'te ekledi\". Activity feed. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Vergi denetçisi",
-                "context": "12 ay önceki bir hesap kalemine bakar. \"GitHub PR\" özelliği bu süreçte devreye girer.",
-                "outcome": "Audit log + partition: tarihsel alan diff'leri."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Bir issue'nun zaman çizgisini görür. \"GitHub PR\" özelliği bu süreçte devreye girer.",
-                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"GitHub PR\" özelliği bu süreçte devreye girer.",
-                "outcome": "Soft-delete → bekleme → hard-delete + audit."
-              }
-            ]
+            "info": "Activity — UX odaklı; git blame muadili."
           }
         },
         {
           "label": "Drive (#7)",
           "text": "\"Bu dosyayı bu hafta kim açtı, indirdi, değiştirdi\". Hem audit hem activity.",
           "enrich": {
-            "info": "İki concept çakışır: indirme audit (data exfiltration), açma activity.",
-            "detail": "**Drive (#7)** nedir?\n\n\"Bu dosyayı bu hafta kim açtı, indirdi, değiştirdi\". Hem audit hem activity.\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Compliance sorumlusu",
-                "context": "\"Drive (#7)\" özelliğini denetim ve yasal saklama sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici \"Bu dosyayı bu hafta kim açtı, indirdi, değiştirdi\". Hem audit hem activity. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Vergi denetçisi",
-                "context": "12 ay önceki bir hesap kalemine bakar. \"Drive (#7)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Audit log + partition: tarihsel alan diff'leri."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Bir issue'nun zaman çizgisini görür. \"Drive (#7)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"Drive (#7)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Soft-delete → bekleme → hard-delete + audit."
-              }
-            ]
+            "info": "İki concept çakışır: indirme audit (data exfiltration), açma activity."
           }
         },
         {
@@ -363,29 +300,6 @@
                 "abbrev_tr": "Kimliğe bürünme",
                 "meaning": "Destek personeli, müşterinin oturumunu açar — destek için.",
                 "why": "Yetki çok; suistimal riski yüksek → mutlaka audit + müşteriye bildirim."
-              }
-            ],
-            "detail": "**SaaS support** nedir?\n\n\"Müşteri X'in hesabına dün admin Y giriş yaptı (impersonation)\". Audit.\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Compliance sorumlusu",
-                "context": "\"SaaS support\" özelliğini denetim ve yasal saklama sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici \"Müşteri X'in hesabına dün admin Y giriş yaptı (impersonation)\". Audit. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Vergi denetçisi",
-                "context": "12 ay önceki bir hesap kalemine bakar. \"SaaS support\" özelliği bu süreçte devreye girer.",
-                "outcome": "Audit log + partition: tarihsel alan diff'leri."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Bir issue'nun zaman çizgisini görür. \"SaaS support\" özelliği bu süreçte devreye girer.",
-                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"SaaS support\" özelliği bu süreçte devreye girer.",
-                "outcome": "Soft-delete → bekleme → hard-delete + audit."
               }
             ]
           }
@@ -430,24 +344,13 @@
                 "why": "Yasal kanıt — manipülasyon imkansız."
               }
             ],
-            "detail": "**Append-Only Log** nedir?\n\nImmutable, replay-safe, partition'lı (monthly).\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Vergi denetçisi",
-                "context": "12 ay önceki bir hesap kalemine bakar. \"Append-Only Log\" özelliği bu süreçte devreye girer.",
-                "outcome": "Audit log + partition: tarihsel alan diff'leri."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Bir issue'nun zaman çizgisini görür. \"Append-Only Log\" özelliği bu süreçte devreye girer.",
-                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"Append-Only Log\" özelliği bu süreçte devreye girer.",
-                "outcome": "Soft-delete → bekleme → hard-delete + audit."
-              }
-            ]
+            "lesson": {
+              "ne": "Sistemde olan biteni metin satırları halinde kayıt.",
+              "nicin": "Hata teşhisi ve geriye dönük analiz için.",
+              "nasil": "Her olay zaman damgalı kaydedilir.",
+              "kim": "Sistem yazar, geliştirici okur.",
+              "analoji": "Kaptanın seyir defteri."
+            }
           }
         },
         {
@@ -462,24 +365,8 @@
                 "persona": "Bug analisti",
                 "context": "Müşteri 'dün hesap kalemi yanlış göründü' diyor.",
                 "outcome": "Replay → o anki snapshot → screenshot ile farkı doğrular."
-              },
-              {
-                "persona": "Vergi denetçisi",
-                "context": "12 ay önceki bir hesap kalemine bakar. \"Event Replay\" özelliği bu süreçte devreye girer.",
-                "outcome": "Audit log + partition: tarihsel alan diff'leri."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Bir issue'nun zaman çizgisini görür. \"Event Replay\" özelliği bu süreçte devreye girer.",
-                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"Event Replay\" özelliği bu süreçte devreye girer.",
-                "outcome": "Soft-delete → bekleme → hard-delete + audit."
               }
-            ],
-            "detail": "**Event Replay** nedir?\n\nGeçmiş state yeniden inşa edilebilir (forensic).\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            ]
           }
         },
         {
@@ -496,24 +383,6 @@
                 "meaning": "Geçmiş eylemlerin kanıt amacıyla araştırılması.",
                 "why": "Compromise sonrası 'saldırgan ne yaptı' sorusunun cevabı."
               }
-            ],
-            "detail": "**Forensic Search** nedir?\n\n\"X kullanıcısı son 30 gün ne yaptı\" sorgusu.\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Vergi denetçisi",
-                "context": "12 ay önceki bir hesap kalemine bakar. \"Forensic Search\" özelliği bu süreçte devreye girer.",
-                "outcome": "Audit log + partition: tarihsel alan diff'leri."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Bir issue'nun zaman çizgisini görür. \"Forensic Search\" özelliği bu süreçte devreye girer.",
-                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"Forensic Search\" özelliği bu süreçte devreye girer.",
-                "outcome": "Soft-delete → bekleme → hard-delete + audit."
-              }
             ]
           }
         },
@@ -529,24 +398,8 @@
                 "persona": "KVKK sorumlusu",
                 "context": "Bir tablonun retention'ını 5'ten 7'ye yükseltmek istiyor.",
                 "outcome": "Admin panelden değer değişir; eski entry'ler ek 2 yıl daha tutulur, gelecek silmeler 7 yıla göre planlanır."
-              },
-              {
-                "persona": "Vergi denetçisi",
-                "context": "12 ay önceki bir hesap kalemine bakar. \"Retention Policy\" özelliği bu süreçte devreye girer.",
-                "outcome": "Audit log + partition: tarihsel alan diff'leri."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Bir issue'nun zaman çizgisini görür. \"Retention Policy\" özelliği bu süreçte devreye girer.",
-                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"Retention Policy\" özelliği bu süreçte devreye girer.",
-                "outcome": "Soft-delete → bekleme → hard-delete + audit."
               }
-            ],
-            "detail": "**Retention Policy** nedir?\n\nYasal süre (mali 10 yıl, KVKK varsayılan 5 yıl, configurable).\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            ]
           }
         },
         {
@@ -575,24 +428,8 @@
                 "persona": "AI Operations sorumlusu",
                 "context": "Bir agent yanlışlıkla 1000 müşteriyi silmeye çalışır.",
                 "outcome": "Audit channel'da blast_radius=HIGH algılanır → otomatik kilit + insan onayına düşülür."
-              },
-              {
-                "persona": "Vergi denetçisi",
-                "context": "12 ay önceki bir hesap kalemine bakar. \"Agent Audit Channel\" özelliği bu süreçte devreye girer.",
-                "outcome": "Audit log + partition: tarihsel alan diff'leri."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Bir issue'nun zaman çizgisini görür. \"Agent Audit Channel\" özelliği bu süreçte devreye girer.",
-                "outcome": "Activity feed: kim ne zaman ne yorum yaptı."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"Agent Audit Channel\" özelliği bu süreçte devreye girer.",
-                "outcome": "Soft-delete → bekleme → hard-delete + audit."
               }
-            ],
-            "detail": "**Agent Audit Channel** nedir?\n\nAgent eylemleri ayrı kanal + ek metadata (`run_id`, `tool_name`, `capability_scope_id`, `blast_radius`).\n\n**Amaç:** Her değişikliği (kim, ne, ne zaman) yasal ve ux amaçlı kaydeden modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç audit + activity bilmeyen biri için: bu özellik, audit + activity sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            ]
           }
         }
       ]

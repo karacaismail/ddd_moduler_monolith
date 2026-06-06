@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Lesson Editor — Framework Master</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Roboto+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafafa; --card: #fff; --line: #e6e6e6;
+    --ink: #111; --ink-2: #333; --ink-3: #666; --accent: #2563eb;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); font-size: 1rem; line-height: 1.55; }
+  header { padding: 1rem 1.5rem; background: var(--card); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  header h1 { margin: 0; font-size: 1.25rem; font-weight: 500; }
+  header .meta { color: var(--ink-3); font-size: 1rem; }
+  main { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
+  .layout { display: grid; grid-template-columns: 320px 1fr; gap: 1.5rem; }
+  @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } }
+  .sidebar { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 1rem; }
+  .sidebar h3 { margin: 0 0 0.75rem; font-size: 1rem; font-weight: 500; color: var(--ink-2); }
+  .sidebar input { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--line); border-radius: 6px; font: inherit; margin-bottom: 0.75rem; }
+  .cluster-list { list-style: none; padding: 0; margin: 0; max-height: 60vh; overflow-y: auto; }
+  .cluster-list li { padding: 0.5rem 0.75rem; cursor: pointer; border-radius: 4px; font-size: 1rem; }
+  .cluster-list li:hover { background: #f0f0f0; }
+  .cluster-list li.active { background: #e0ecff; color: var(--accent); font-weight: 500; }
+  .cluster-list .pct { float: right; color: var(--ink-3); font-size: 0.95rem; }
+  form { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 1.5rem; }
+  form label { display: block; margin-bottom: 1rem; }
+  form label > span { display: block; font-size: 1rem; font-weight: 500; color: var(--ink-2); margin-bottom: 0.25rem; }
+  form label > small { color: var(--ink-3); font-size: 0.95rem; display: block; margin-bottom: 0.4rem; }
+  form input, form textarea { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--line); border-radius: 6px; font: inherit; font-size: 1rem; }
+  form textarea { min-height: 4rem; resize: vertical; }
+  fieldset { border: 1px solid var(--line); border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1rem; }
+  fieldset legend { font-weight: 500; padding: 0 0.4rem; }
+  .actions { display: flex; gap: 0.75rem; margin-top: 1rem; }
+  button { padding: 0.6rem 1rem; border: 1px solid var(--line); background: var(--card); border-radius: 6px; cursor: pointer; font: inherit; font-size: 1rem; }
+  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  pre.output { background: #1f2329; color: #e2e2e2; padding: 1rem; border-radius: 6px; overflow-x: auto; font-family: 'Roboto Mono', monospace; font-size: 1rem; line-height: 1.5; max-height: 50vh; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--card); padding: 0.6rem 1rem; border-radius: 6px; opacity: 0; transition: opacity 200ms; pointer-events: none; }
+  .toast.show { opacity: 1; }
+  .hint { background: #fff8e1; border-left: 3px solid #f5b400; padding: 0.75rem 1rem; border-radius: 4px; margin-bottom: 1rem; font-size: 1rem; color: #6b5400; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Lesson Editor — 60+ pedagojik içerik</h1>
+  <div class="meta">JSON çıktıyı kopyalayıp ilgili cluster'a yapıştırın.</div>
+</header>
+<main>
+  <div class="layout">
+    <aside class="sidebar">
+      <h3>Cluster seç</h3>
+      <input type="search" id="filter" placeholder="cluster ara…" aria-label="Cluster filtre" />
+      <ul class="cluster-list" id="clusters"></ul>
+    </aside>
+    <section>
+      <div class="hint">
+        Her lesson 7 alandan oluşur. <strong>ne, nicin, nasil</strong> zorunlu;
+        diğerleri opsiyonel. Yasak kelimeler için
+        <code>docs/lesson-yazim-rehberi.md</code> kontrol edin.
+      </div>
+      <form id="lesson-form">
+        <fieldset>
+          <legend>5N1K — gerçek hayat dilinde</legend>
+          <label><span>Ne? (1-2 cümle)</span>
+            <small>Konunun ne olduğunu jargonsuz anlat.</small>
+            <textarea name="ne" required></textarea></label>
+          <label><span>Niçin? (gerekçe)</span>
+            <small>Niye var, olmazsa ne kaybederiz?</small>
+            <textarea name="nicin" required></textarea></label>
+          <label><span>Nasıl? (somut adımlar)</span>
+            <textarea name="nasil" required></textarea></label>
+          <label><span>Nerede?</span>
+            <textarea name="nerede"></textarea></label>
+          <label><span>Ne zaman?</span>
+            <textarea name="ne_zaman"></textarea></label>
+          <label><span>Kim?</span>
+            <textarea name="kim"></textarea></label>
+        </fieldset>
+        <fieldset>
+          <legend>Frontend tarafı</legend>
+          <label><span>Yer</span><textarea name="fe_yer"></textarea></label>
+          <label><span>Gereklilik</span><textarea name="fe_gereklilik"></textarea></label>
+          <label><span>Örnek</span><textarea name="fe_ornek"></textarea></label>
+        </fieldset>
+        <fieldset>
+          <legend>Backend tarafı</legend>
+          <label><span>Yer</span><textarea name="be_yer"></textarea></label>
+          <label><span>Gereklilik</span><textarea name="be_gereklilik"></textarea></label>
+          <label><span>Örnek</span><textarea name="be_ornek"></textarea></label>
+        </fieldset>
+        <fieldset>
+          <legend>Gündelik analoji</legend>
+          <label><span>Analoji (postane, restoran, ev aleti…)</span>
+            <textarea name="analoji"></textarea></label>
+        </fieldset>
+        <div class="actions">
+          <button type="submit" class="primary">JSON üret</button>
+          <button type="button" id="copy">Panoya kopyala</button>
+          <button type="reset">Temizle</button>
+        </div>
+      </form>
+      <h3 style="margin-top:1.5rem;">JSON çıktı</h3>
+      <pre class="output" id="output" aria-live="polite">"enrich": { "lesson": { ... } }</pre>
+    </section>
+  </div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  const CONTENT_BASE = '../../content/';
+  const clustersEl = document.getElementById('clusters');
+  const filterEl = document.getElementById('filter');
+  const form = document.getElementById('lesson-form');
+  const output = document.getElementById('output');
+  const toast = document.getElementById('toast');
+  let allClusters = [];
+  let selectedId = null;
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  async function loadClusters() {
+    const manifest = await fetch(CONTENT_BASE + 'manifest.json').then(r => r.json());
+    allClusters = manifest.clusters;
+    renderList(allClusters);
+  }
+
+  function renderList(list) {
+    clustersEl.innerHTML = '';
+    for (const c of list) {
+      const li = document.createElement('li');
+      li.textContent = c.id;
+      li.dataset.id = c.id;
+      if (c.id === selectedId) li.classList.add('active');
+      li.addEventListener('click', () => { selectedId = c.id; renderList(allClusters); });
+      clustersEl.appendChild(li);
+    }
+  }
+
+  filterEl.addEventListener('input', () => {
+    const q = filterEl.value.toLowerCase().trim();
+    renderList(allClusters.filter(c => c.id.includes(q) || c.title?.toLowerCase().includes(q)));
+  });
+
+  function buildLesson(fd) {
+    const get = (k) => fd.get(k)?.trim() || undefined;
+    const lesson = {
+      ne: get('ne'), nicin: get('nicin'), nasil: get('nasil'),
+      nerede: get('nerede'), ne_zaman: get('ne_zaman'), kim: get('kim'),
+      analoji: get('analoji'),
+    };
+    if (get('fe_yer') || get('fe_gereklilik') || get('fe_ornek')) {
+      lesson.frontend = { yer: get('fe_yer') ?? '', gereklilik: get('fe_gereklilik') ?? '', ornek: get('fe_ornek') ?? '' };
+    }
+    if (get('be_yer') || get('be_gereklilik') || get('be_ornek')) {
+      lesson.backend = { yer: get('be_yer') ?? '', gereklilik: get('be_gereklilik') ?? '', ornek: get('be_ornek') ?? '' };
+    }
+    // boş alanları çıkar
+    for (const k of Object.keys(lesson)) if (!lesson[k]) delete lesson[k];
+    return lesson;
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const lesson = buildLesson(fd);
+    const wrapped = { enrich: { lesson } };
+    output.textContent = JSON.stringify(wrapped, null, 2);
+    showToast('JSON üretildi');
+  });
+
+  document.getElementById('copy').addEventListener('click', () => {
+    navigator.clipboard.writeText(output.textContent).then(
+      () => showToast('Panoya kopyalandı'),
+      () => showToast('Kopyalanamadı'),
+    );
+  });
+
+  loadClusters().catch((e) => showToast('Manifest yüklenemedi: ' + e.message));
+</script>
+</body>
+</html>

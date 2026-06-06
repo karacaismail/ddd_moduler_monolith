@@ -18,7 +18,8 @@
   "blocks": [
     {
       "type": "paragraph",
-      "text": "L2 katmanı framework'ün **asıl farklılaşma noktası**. Diğer framework'lerde olmayan, AI agent runtime için doğal yerleşim. 11 modül, 232 operation'ın büyük kısmı burada."
+      "text": "L2 katmanı framework'ün **asıl farklılaşma noktası**. Diğer framework'lerde olmayan, AI agent runtime için doğal yerleşim. 11 modül, 232 operation'ın büyük kısmı burada.",
+      "enrich": {}
     },
     {
       "type": "heading",
@@ -28,7 +29,8 @@
     },
     {
       "type": "paragraph",
-      "text": "**Faz 1 · P0 · Agent Runtime Squad.** Model Context Protocol native server. Plugin'lerin tanımladığı tool'lar otomatik MCP endpoint olarak servis edilir. LLM agent'lar standart MCP transport (stdio/sse/streaming-http) ile bağlanabilir."
+      "text": "**Faz 1 · P0 · Agent Runtime Squad.** Model Context Protocol native server. Plugin'lerin tanımladığı tool'lar otomatik MCP endpoint olarak servis edilir. LLM agent'lar standart MCP transport (stdio/sse/streaming-http) ile bağlanabilir.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -51,7 +53,8 @@
     },
     {
       "type": "paragraph",
-      "text": "**Faz 1 · P0 · Agent Runtime Squad.** Plugin'lerin tanımladığı tool'ların merkezi kataloğu. Her tool: input/output schema, side-effect annotation, idempotency, blast radius, cost class, LLM-readable description."
+      "text": "**Faz 1 · P0 · Agent Runtime Squad.** Plugin'lerin tanımladığı tool'ların merkezi kataloğu. Her tool: input/output schema, side-effect annotation, idempotency, blast radius, cost class, LLM-readable description.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -74,11 +77,13 @@
       "type": "heading",
       "level": 4,
       "icon": "ph-shield-check",
-      "text": "A03 — Agent Identity & Capability Scopes"
+      "text": "A03 — Agent Identity & Capability Scopes",
+      "enrich": {}
     },
     {
       "type": "paragraph",
-      "text": "**Faz 1 · P0 · Agent Runtime Squad + Security Squad.** Agent kimliği, capability scope binding, session-bound limit, blast-radius kontrolü, ihlal tespiti. Her agent çağrısında etkin yetki = `user_perms ∩ agent_scope ∩ session_limits`."
+      "text": "**Faz 1 · P0 · Agent Runtime Squad + Security Squad.** Agent kimliği, capability scope binding, session-bound limit, blast-radius kontrolü, ihlal tespiti. Her agent çağrısında etkin yetki = `user_perms ∩ agent_scope ∩ session_limits`.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -97,11 +102,13 @@
       "type": "heading",
       "level": 4,
       "icon": "ph-brain",
-      "text": "A04 — Agent Memory Layer"
+      "text": "A04 — Agent Memory Layer",
+      "enrich": {}
     },
     {
       "type": "paragraph",
-      "text": "**Faz 2 · P0 · Agent Runtime Squad.** Short-term (conversation), long-term (semantic), episodic (geçmiş etkileşim), procedural (öğrenilmiş prosedür) memory katmanları. Hibrit retrieval: vector + SQL filter + temporal weighting."
+      "text": "**Faz 2 · P0 · Agent Runtime Squad.** Short-term (conversation), long-term (semantic), episodic (geçmiş etkileşim), procedural (öğrenilmiş prosedür) memory katmanları. Hibrit retrieval: vector + SQL filter + temporal weighting.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -120,11 +127,13 @@
       "type": "heading",
       "level": 4,
       "icon": "ph-vector-three",
-      "text": "A05 — Vector Store & Embedding Pipeline"
+      "text": "A05 — Vector Store & Embedding Pipeline",
+      "enrich": {}
     },
     {
       "type": "paragraph",
-      "text": "**Faz 2 · P0 · Agent Runtime + AI Squad.** pgvector tabanlı vector storage, embedding job runner, model versioning, hybrid search (vector + BM25 + filter), reranking."
+      "text": "**Faz 2 · P0 · Agent Runtime + AI Squad.** pgvector tabanlı vector storage, embedding job runner, model versioning, hybrid search (vector + BM25 + filter), reranking.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -147,11 +156,29 @@
       "type": "heading",
       "level": 4,
       "icon": "ph-text-aa",
-      "text": "A06 — Prompt Library & Versioning"
+      "text": "A06 — Prompt Library & Versioning",
+      "enrich": {
+        "lesson": {
+          "ne": "Yapay zekaya verilen talimat metni.",
+          "nicin": "İyi prompt = iyi cevap.",
+          "nasil": "Açık, somut, örnekli yazılır.",
+          "kim": "Kullanıcı/geliştirici yazar.",
+          "analoji": "Şefe yemek tarifini detaylı söylemek."
+        }
+      }
     },
     {
       "type": "paragraph",
-      "text": "**Faz 2 · P0 · AI Squad.** Prompt'ların kod gibi versiyonlanması, A/B test, eval suite, drift detection, rollout. Her prompt: input variables, output schema, eval cases, metrik bağlantısı."
+      "text": "**Faz 2 · P0 · AI Squad.** Prompt'ların kod gibi versiyonlanması, A/B test, eval suite, drift detection, rollout. Her prompt: input variables, output schema, eval cases, metrik bağlantısı.",
+      "enrich": {
+        "lesson": {
+          "ne": "Yapay zekaya verilen talimat metni.",
+          "nicin": "İyi prompt = iyi cevap.",
+          "nasil": "Açık, somut, örnekli yazılır.",
+          "kim": "Kullanıcı/geliştirici yazar.",
+          "analoji": "Şefe yemek tarifini detaylı söylemek."
+        }
+      }
     },
     {
       "type": "kv-row",
@@ -170,7 +197,16 @@
       "type": "heading",
       "level": 4,
       "icon": "ph-circuitry",
-      "text": "A07 — LLM Provider Abstraction"
+      "text": "A07 — LLM Provider Abstraction",
+      "enrich": {
+        "lesson": {
+          "ne": "Büyük Dil Modeli — metin üreten yapay zeka.",
+          "nicin": "Doğal dil sohbet ve içerik için.",
+          "nasil": "Soruyu alır, geniş veriden tahmin eder.",
+          "kim": "Geliştirici çağırır.",
+          "analoji": "Çok okumuş bir kütüphane görevlisi."
+        }
+      }
     },
     {
       "type": "paragraph",
@@ -193,11 +229,21 @@
       "type": "heading",
       "level": 4,
       "icon": "ph-chart-line",
-      "text": "A08 — LLM Observability & Cost Tracking"
+      "text": "A08 — LLM Observability & Cost Tracking",
+      "enrich": {
+        "lesson": {
+          "ne": "Büyük Dil Modeli — metin üreten yapay zeka.",
+          "nicin": "Doğal dil sohbet ve içerik için.",
+          "nasil": "Soruyu alır, geniş veriden tahmin eder.",
+          "kim": "Geliştirici çağırır.",
+          "analoji": "Çok okumuş bir kütüphane görevlisi."
+        }
+      }
     },
     {
       "type": "paragraph",
-      "text": "**Faz 2 · P0 · AI + Platform Ops.** Her LLM çağrısı: input/output, token count, latency, cost, trace, hallucination skoru. Langfuse-equivalent ama MCP-aware. Cost attribution: tenant/agent/feature."
+      "text": "**Faz 2 · P0 · AI + Platform Ops.** Her LLM çağrısı: input/output, token count, latency, cost, trace, hallucination skoru. Langfuse-equivalent ama MCP-aware. Cost attribution: tenant/agent/feature.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -216,11 +262,13 @@
       "type": "heading",
       "level": 4,
       "icon": "ph-graph",
-      "text": "A09 — Agent Orchestration & Workflow"
+      "text": "A09 — Agent Orchestration & Workflow",
+      "enrich": {}
     },
     {
       "type": "paragraph",
-      "text": "**Faz 3 · P0 · Agent Runtime + AI Squad.** Çok-adımlı agent görevleri için workflow engine. Plan-execute-reflect döngüsü, alt-agent çağrısı, paralel tool execution, checkpoint/resume, human-in-the-loop."
+      "text": "**Faz 3 · P0 · Agent Runtime + AI Squad.** Çok-adımlı agent görevleri için workflow engine. Plan-execute-reflect döngüsü, alt-agent çağrısı, paralel tool execution, checkpoint/resume, human-in-the-loop.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -243,7 +291,8 @@
     },
     {
       "type": "paragraph",
-      "text": "**Faz 2 · P1 · Agent Runtime.** LLM token stream, tool execution progress stream, agent step stream için unified SSE/WebSocket katmanı. Backpressure, reconnect, multiplex, fan-out destekli."
+      "text": "**Faz 2 · P1 · Agent Runtime.** LLM token stream, tool execution progress stream, agent step stream için unified SSE/WebSocket katmanı. Backpressure, reconnect, multiplex, fan-out destekli.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -262,11 +311,21 @@
       "type": "heading",
       "level": 4,
       "icon": "ph-chat-circle",
-      "text": "A11 — Conversation & Session Management"
+      "text": "A11 — Conversation & Session Management",
+      "enrich": {
+        "lesson": {
+          "ne": "Kullanıcının sisteme bağlı kaldığı süre.",
+          "nicin": "Giriş yapıp her tıklamada tekrar giriş yapmasın diye.",
+          "nasil": "Tarayıcıda kayıtlı kimlik bilgisi (cookie veya token).",
+          "kim": "Sistem yönetir.",
+          "analoji": "Otelin oda kartı — check-out'a kadar geçerli."
+        }
+      }
     },
     {
       "type": "paragraph",
-      "text": "**Faz 2 · P0 · Agent Runtime.** Konuşma geçmişi, session state, multi-turn context, message threading, branching (alternative replies), conversation forking. Agent↔human ve agent↔agent karışık konuşmaları destekler."
+      "text": "**Faz 2 · P0 · Agent Runtime.** Konuşma geçmişi, session state, multi-turn context, message threading, branching (alternative replies), conversation forking. Agent↔human ve agent↔agent karışık konuşmaları destekler.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -285,11 +344,22 @@
       "type": "callout",
       "variant": "tip",
       "label": "Bu framework'ü ayıran şey",
-      "body": "Diğer framework'ler (Frappe/Odoo/Drupal) tarihsel olarak human-first. L2 katmanı agent'ı first-class vatandaş yapar:\n\n- **A02 Tool Registry** her DocType action'ını otomatik MCP tool olarak expose eder.\n- **A03 Capability Scopes** agent'ı user'dan ayrı yetkilendirir (kesişim modeli).\n- **A04 Memory Layer** session-aware + tenant-isolated bellek.\n- **A05 Vector Store** her DocType save'inde otomatik embedding.\n- **A06 Prompt Library** prompt'u kod gibi versiyonlar.\n- **A07 Provider Abstraction** cost-optimal LLM routing.\n- **A08 LLM Observability** her çağrıyı cost + quality ile izler.\n- **A09 Orchestration** durable agent workflow (DBOS/Temporal pattern).\n\nBu sekiz parçanın hiçbiri WordPress/Drupal/Odoo'da yok. Sen var ediyorsun."
+      "body": "Diğer framework'ler (Frappe/Odoo/Drupal) tarihsel olarak human-first. L2 katmanı agent'ı first-class vatandaş yapar:\n\n- **A02 Tool Registry** her DocType action'ını otomatik MCP tool olarak expose eder.\n- **A03 Capability Scopes** agent'ı user'dan ayrı yetkilendirir (kesişim modeli).\n- **A04 Memory Layer** session-aware + tenant-isolated bellek.\n- **A05 Vector Store** her DocType save'inde otomatik embedding.\n- **A06 Prompt Library** prompt'u kod gibi versiyonlar.\n- **A07 Provider Abstraction** cost-optimal LLM routing.\n- **A08 LLM Observability** her çağrıyı cost + quality ile izler.\n- **A09 Orchestration** durable agent workflow (DBOS/Temporal pattern).\n\nBu sekiz parçanın hiçbiri WordPress/Drupal/Odoo'da yok. Sen var ediyorsun.",
+      "enrich": {
+        "lesson": {
+          "ne": "Yapay zeka ajanları (kendi başına karar alıp iş yapan dijital yardımcılar), bu sistemde özel bir konuk değil, ev sahibidir — sistem tasarım kararları onlara göre alınır.",
+          "nicin": "Eski yazılım dünyasında ajanlar 'sonradan eklenen oyuncak' gibiydi. Burada ise her modülün yanına bir ajan oturtulur — sistem tasarımı bu fikre göre kurulur.",
+          "nasil": "Her iş bağlamı için bir ajanın 'konuşma yapabileceği' bir arayüz tanımlanır. Ajan iş yaparken sistem öğrenir, biriktirir, hatırlar.",
+          "nerede": "11 alt modülde: ajan beyni, hafıza, prompt kütüphanesi, gözlem, koordinasyon.",
+          "ne_zaman": "Yeni bir özellik tasarlanırken: 'bir ajan bunu yapabilse nasıl olurdu?' sorusu mecburen sorulur.",
+          "kim": "Mimar bu zihniyeti kurar, geliştirici hazır ajan altyapısını kullanır, son kullanıcı 'sistem benim için hatırlıyor' diye sezer.",
+          "analoji": "Bir otelde yapay zeka ajanı şöyle: resepsiyoncu değil, müdür gibi davranır. Müşterinin geçmiş ziyaretlerini hatırlar, isteklerini bekler."
+        }
+      }
     }
   ],
   "enrich": {
-    "info": "A01–A11. MCP server, tool registry, vector store, memory, prompt lib, LLM obs, agent orchestration. 11 modül — framework'ün asıl ayırt edici",
+    "info": "Yapay zeka ajanlarının (kendi başına karar alan dijital yardımcılar) sistemde birinci sınıf vatandaş olduğu katman.",
     "detail": "A01–A11. MCP server, tool registry, vector store, memory, prompt lib, LLM obs, agent orchestration. 11 modül — framework'ün asıl ayırt edici noktası.",
     "terms": [
       {
@@ -299,12 +369,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "LandX yapay zeka katmanının 2. seviyesi — ajanların kendi başına karar verip iş yaptığı katman.",
+      "nicin": "Eski yazılım sadece insan kullanıcıyı düşünürdü. Ajanlar artık birinci sınıf vatandaş.",
+      "nasil": "11 modül: ajan beyni, hafıza, prompt kütüphanesi, gözlemleme, koordinasyon.",
+      "nerede": "Sistemin asıl ayırt edici özelliği — ajanlara özel altyapı.",
+      "ne_zaman": "Her ajan operasyonunda.",
+      "kim": "Ajan geliştiricisi yazar; sistem yöneticisi ayarlar.",
+      "analoji": "Bir robotun beyni: algı + hafıza + karar verme + iletişim — hepsi bir arada."
+    }
   }
 }

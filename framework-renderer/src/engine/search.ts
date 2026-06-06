@@ -18,7 +18,22 @@ interface IndexEntry {
   cluster: string;
   tags: string[];
   text: string;       // flattened searchable text
-  textLower: string;
+  textLower: string;  // tr-aware normalize edilmiş
+}
+
+/**
+ * Türkçe karakter normalize (i/İ + ş/ğ/ü/ö/ç) — toLowerCase('tr-TR') yetmez
+ * çünkü ş, ğ vb karakterler aramayı sonuçsuz bırakır.
+ */
+export function normalizeTr(s: string): string {
+  return s
+    .toLocaleLowerCase('tr-TR')
+    .replace(/[ıİiI]/g, 'i')
+    .replace(/[şŞ]/g, 's')
+    .replace(/[ğĞ]/g, 'g')
+    .replace(/[üÜ]/g, 'u')
+    .replace(/[öÖ]/g, 'o')
+    .replace(/[çÇ]/g, 'c');
 }
 
 export class SearchIndex {
@@ -34,7 +49,7 @@ export class SearchIndex {
       cluster: cluster.cluster,
       tags: cluster.tags ?? [],
       text,
-      textLower: text.toLowerCase(),
+      textLower: normalizeTr(text),
     });
   }
 
@@ -43,18 +58,19 @@ export class SearchIndex {
   }
 
   search(query: string, limit = 20): SearchHit[] {
-    const q = query.trim().toLowerCase();
+    const q = normalizeTr(query.trim());
     if (q.length < 2) return [];
     const tokens = q.split(/\s+/).filter(Boolean);
 
     const hits: SearchHit[] = [];
     for (const entry of this.entries) {
       let score = 0;
+      const titleNorm = normalizeTr(entry.title);
       // Title match — yüksek puan
-      if (entry.title.toLowerCase().includes(q)) score += 10;
+      if (titleNorm.includes(q)) score += 10;
       // Tag match
       for (const t of tokens) {
-        if (entry.tags.some((tag) => tag.toLowerCase().includes(t))) score += 5;
+        if (entry.tags.some((tag) => normalizeTr(tag).includes(t))) score += 5;
       }
       // Body match — token başına 1 puan
       for (const t of tokens) {
@@ -64,7 +80,7 @@ export class SearchIndex {
       hits.push({
         clusterId: entry.clusterId,
         title: entry.title,
-        snippet: makeSnippet(entry.text, q),
+        snippet: makeSnippet(entry.text, query),
         score,
       });
     }
@@ -120,6 +136,14 @@ function flattenBlocks(blocks: Block[]): string[] {
       case 'tree':
       case 'divider':
         break;
+      default: {
+        // Bilinmeyen block tipleri — yüzeysel metin alanlarını topla (forward-compat)
+        const anyBlock = block as Record<string, unknown>;
+        for (const key of ['title', 'subtitle', 'text', 'name', 'desc', 'label', 'body']) {
+          const v = anyBlock[key];
+          if (typeof v === 'string') out.push(v);
+        }
+      }
     }
   }
   return out;

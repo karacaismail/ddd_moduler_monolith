@@ -30,120 +30,28 @@
           "name": "Catalog",
           "desc": "Product, Variant, Bundle, Attribute, Category, Collection, Brand",
           "enrich": {
-            "info": "Product, Variant, Bundle, Attribute, Category, Collection, Brand",
-            "detail": "**Catalog** nedir?\n\nProduct, Variant, Bundle, Attribute, Category, Collection, Brand.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Catalog\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Product, Variant, Bundle, Attribute, Category, Collection, Brand pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Catalog\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Catalog\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Catalog\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "Product, Variant, Bundle, Attribute, Category, Collection, Brand"
           }
         },
         {
           "name": "Pricing",
           "desc": "PriceList, PriceTier (B2B kademeli), DiscountRule, ChannelPricing",
           "enrich": {
-            "info": "PriceList, PriceTier (B2B kademeli), DiscountRule, ChannelPricing",
-            "detail": "**Pricing** nedir?\n\nPriceList, PriceTier (B2B kademeli), DiscountRule, ChannelPricing.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Pricing\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici PriceList, PriceTier (B2B kademeli), DiscountRule, ChannelPricing pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Pricing\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Pricing\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Pricing\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "PriceList, PriceTier (B2B kademeli), DiscountRule, ChannelPricing"
           }
         },
         {
           "name": "Inventory",
           "desc": "Stock Item, Stock Movement (ledger), Reservation, Warehouse, Bin Location",
           "enrich": {
-            "info": "Stock Item, Stock Movement (ledger), Reservation, Warehouse, Bin Location",
-            "detail": "**Inventory** nedir?\n\nStock Item, Stock Movement (ledger), Reservation, Warehouse, Bin Location.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Inventory\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Stock Item, Stock Movement (ledger), Reservation, Warehouse, Bin Location pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Inventory\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Inventory\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Inventory\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "Stock Item, Stock Movement (ledger), Reservation, Warehouse, Bin Location"
           }
         },
         {
           "name": "Order",
           "desc": "SalesOrder, OrderLine, RFQ (B2B), Quotation",
           "enrich": {
-            "info": "SalesOrder, OrderLine, RFQ (B2B), Quotation",
-            "detail": "**Order** nedir?\n\nSalesOrder, OrderLine, RFQ (B2B), Quotation.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Order\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici SalesOrder, OrderLine, RFQ (B2B), Quotation pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Order\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Order\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Order\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "SalesOrder, OrderLine, RFQ (B2B), Quotation"
           }
         },
         {
@@ -151,419 +59,104 @@
           "desc": "Cart, CartLine, CheckoutSession (multi-seller split)",
           "enrich": {
             "info": "Cart, CartLine, CheckoutSession (multi-seller split)",
-            "detail": "**Cart** nedir?\n\nCart, CartLine, CheckoutSession (multi-seller split).\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Cart\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Cart, CartLine, CheckoutSession (multi-seller split) pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Cart\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Cart\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Cart\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "lesson": {
+              "ne": "Sepet: müşterinin alacağı ürünleri ödemeden önce biriktirdiği geçici liste.",
+              "nicin": "Müşteri tek seferde tek ürün almaz; topla, son anda öde.",
+              "nasil": "Her ürün eklemede sepet güncellenir; oturum açık değilse tarayıcıda saklanır.",
+              "kim": "Müşteri kullanır; sistem hatırlar.",
+              "analoji": "Marketteki alışveriş arabası: gezerken atarsın, kasada öderssin."
+            }
           }
         },
         {
           "name": "Payment",
           "desc": "PaymentMethod, Transaction, Refund, Capture, Authorization",
           "enrich": {
-            "info": "PaymentMethod, Transaction, Refund, Capture, Authorization",
-            "detail": "**Payment** nedir?\n\nPaymentMethod, Transaction, Refund, Capture, Authorization.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Payment\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici PaymentMethod, Transaction, Refund, Capture, Authorization pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Payment\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Payment\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Payment\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "PaymentMethod, Transaction, Refund, Capture, Authorization"
           }
         },
         {
           "name": "Shipping",
           "desc": "ShippingMethod, Zone, Rate, Label, Tracking",
           "enrich": {
-            "info": "ShippingMethod, Zone, Rate, Label, Tracking",
-            "detail": "**Shipping** nedir?\n\nShippingMethod, Zone, Rate, Label, Tracking.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Shipping\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici ShippingMethod, Zone, Rate, Label, Tracking pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Shipping\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Shipping\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Shipping\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "ShippingMethod, Zone, Rate, Label, Tracking"
           }
         },
         {
           "name": "Promotion",
           "desc": "Coupon, FlashSale, BOGO, StackRule",
           "enrich": {
-            "info": "Coupon, FlashSale, BOGO, StackRule",
-            "detail": "**Promotion** nedir?\n\nCoupon, FlashSale, BOGO, StackRule.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Promotion\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Coupon, FlashSale, BOGO, StackRule pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Promotion\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Promotion\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Promotion\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "Coupon, FlashSale, BOGO, StackRule"
           }
         },
         {
           "name": "Returns",
           "desc": "RMA, ReturnReason, Refund (escrow ile entegre)",
           "enrich": {
-            "info": "RMA, ReturnReason, Refund (escrow ile entegre)",
-            "detail": "**Returns** nedir?\n\nRMA, ReturnReason, Refund (escrow ile entegre).\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Returns\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici RMA, ReturnReason, Refund (escrow ile entegre) pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Returns\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Returns\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Returns\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "RMA, ReturnReason, Refund (escrow ile entegre)"
           }
         },
         {
           "name": "Tax",
           "desc": "TaxRule, TaxZone, TaxClass — KDV/VAT/Sales Tax",
           "enrich": {
-            "info": "TaxRule, TaxZone, TaxClass — KDV/VAT/Sales Tax",
-            "detail": "**Tax** nedir?\n\nTaxRule, TaxZone, TaxClass — KDV/VAT/Sales Tax.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Tax\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici TaxRule, TaxZone, TaxClass — KDV/VAT/Sales Tax pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Tax\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Tax\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Tax\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "TaxRule, TaxZone, TaxClass — KDV/VAT/Sales Tax"
           }
         },
         {
           "name": "Customer",
           "desc": "Per-store, segment, LTV, cohort",
           "enrich": {
-            "info": "Per-store, segment, LTV, cohort",
-            "detail": "**Customer** nedir?\n\nPer-store, segment, LTV, cohort.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Customer\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Per-store, segment, LTV, cohort pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Customer\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Customer\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Customer\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "Per-store, segment, LTV, cohort"
           }
         },
         {
           "name": "Wishlist + SavedItems",
           "desc": "Tüketici favori, kayıtlı arama",
           "enrich": {
-            "info": "Tüketici favori, kayıtlı arama",
-            "detail": "**Wishlist + SavedItems** nedir?\n\nTüketici favori, kayıtlı arama.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Wishlist + SavedItems\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Tüketici favori, kayıtlı arama pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Wishlist + SavedItems\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Wishlist + SavedItems\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Wishlist + SavedItems\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "Tüketici favori, kayıtlı arama"
           }
         },
         {
           "name": "Reviews + Ratings",
           "desc": "Yotpo/Judge.me muadili",
           "enrich": {
-            "info": "Yotpo/Judge.me muadili",
-            "detail": "**Reviews + Ratings** nedir?\n\nYotpo/Judge.me muadili.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Reviews + Ratings\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Yotpo/Judge.me muadili pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Reviews + Ratings\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Reviews + Ratings\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Reviews + Ratings\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "Yotpo/Judge.me muadili"
           }
         },
         {
           "name": "Loyalty",
           "desc": "Smile.io muadili — points ledger, tier",
           "enrich": {
-            "info": "Smile.io muadili — points ledger, tier",
-            "detail": "**Loyalty** nedir?\n\nSmile.io muadili — points ledger, tier.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Loyalty\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Smile.io muadili — points ledger, tier pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Loyalty\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Loyalty\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Loyalty\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "Smile.io muadili — points ledger, tier"
           }
         },
         {
           "name": "Subscription",
           "desc": "Recharge muadili — recurring billing, prorate, dunning",
           "enrich": {
-            "info": "Recharge muadili — recurring billing, prorate, dunning",
-            "detail": "**Subscription** nedir?\n\nRecharge muadili — recurring billing, prorate, dunning.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Subscription\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Recharge muadili — recurring billing, prorate, dunning pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Subscription\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Subscription\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Subscription\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "Recharge muadili — recurring billing, prorate, dunning"
           }
         },
         {
           "name": "Multi-channel",
           "desc": "Kanal sync (Trendyol, Hepsiburada, Amazon TR, Etsy)",
           "enrich": {
-            "info": "Kanal sync (Trendyol, Hepsiburada, Amazon TR, Etsy)",
-            "detail": "**Multi-channel** nedir?\n\nKanal sync (Trendyol, Hepsiburada, Amazon TR, Etsy).\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"Multi-channel\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Kanal sync (Trendyol, Hepsiburada, Amazon TR, Etsy) pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"Multi-channel\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"Multi-channel\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"Multi-channel\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "Kanal sync (Trendyol, Hepsiburada, Amazon TR, Etsy)"
           }
         },
         {
           "name": "POS",
           "desc": "Odoo POS muadili — offline-first, cash drawer, receipt printer",
           "enrich": {
-            "info": "Odoo POS muadili — offline-first, cash drawer, receipt printer",
-            "detail": "**POS** nedir?\n\nOdoo POS muadili — offline-first, cash drawer, receipt printer.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"POS\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Odoo POS muadili — offline-first, cash drawer, receipt printer pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"POS\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"POS\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"POS\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "Odoo POS muadili — offline-first, cash drawer, receipt printer"
           }
         },
         {
           "name": "B2B Portal",
           "desc": "Wholesale, net-30, RFQ flow",
           "enrich": {
-            "info": "Wholesale, net-30, RFQ flow",
-            "detail": "**B2B Portal** nedir?\n\nWholesale, net-30, RFQ flow.\n\n**Amaç:** Online satış yapan dükkanların ürün, sepet, sipariş, ödeme süreçlerini yönettiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç e-ticaret bilmeyen biri için: bu özellik, e-ticaret sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "E-ticaret operatörü",
-                "context": "\"B2B Portal\" özelliğini müşteri/sipariş yönetimi sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Wholesale, net-30, RFQ flow pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Mağaza sahibi (KOBİ)",
-                "context": "İlk online mağazasını kuran biri. \"B2B Portal\" özelliği bu süreçte devreye girer.",
-                "outcome": "Ürünleri ekler, kargoyu bağlar; ödeme entegrasyonu hazır gelir, kendisi kod yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Mağazaya özel bir kampanya modülü ekleyecek. \"B2B Portal\" özelliği bu süreçte devreye girer.",
-                "outcome": "Workflow ve event bus ile mevcut commerce akışına hook ile bağlanır, sipariş tamamlanınca tetiklenir."
-              },
-              {
-                "persona": "Müşteri",
-                "context": "Mobil uygulamadan ürün satın alır. \"B2B Portal\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla ödeme, sipariş takip, iade talebi — hepsi commerce primitive'leri üstünden."
-              }
-            ]
+            "info": "Wholesale, net-30, RFQ flow"
           }
         }
       ]
@@ -588,11 +181,29 @@
     {
       "type": "heading",
       "level": 4,
-      "text": "Cart split — multi-seller checkout"
+      "text": "Cart split — multi-seller checkout",
+      "enrich": {
+        "lesson": {
+          "ne": "Sepet: müşterinin alacağı ürünleri ödemeden önce biriktirdiği geçici liste.",
+          "nicin": "Müşteri tek seferde tek ürün almaz; topla, son anda öde.",
+          "nasil": "Her ürün eklemede sepet güncellenir; oturum açık değilse tarayıcıda saklanır.",
+          "kim": "Müşteri kullanır; sistem hatırlar.",
+          "analoji": "Marketteki alışveriş arabası: gezerken atarsın, kasada öderssin."
+        }
+      }
     },
     {
       "type": "paragraph",
-      "text": "AliExpress'te sepette farklı satıcılardan ürün olur → checkout'ta satıcı-bazlı alt-siparişlere bölünür. Bu split mantığı baştan kurulmazsa sonra her şey kırılır. Cart aggregate'i `lines[]` taşır; checkout sırasında `seller_id`'ye göre group + her group'a ayrı `SalesOrder` yarat."
+      "text": "AliExpress'te sepette farklı satıcılardan ürün olur → checkout'ta satıcı-bazlı alt-siparişlere bölünür. Bu split mantığı baştan kurulmazsa sonra her şey kırılır. Cart aggregate'i `lines[]` taşır; checkout sırasında `seller_id`'ye göre group + her group'a ayrı `SalesOrder` yarat.",
+      "enrich": {
+        "lesson": {
+          "ne": "Sepet: müşterinin alacağı ürünleri ödemeden önce biriktirdiği geçici liste.",
+          "nicin": "Müşteri tek seferde tek ürün almaz; topla, son anda öde.",
+          "nasil": "Her ürün eklemede sepet güncellenir; oturum açık değilse tarayıcıda saklanır.",
+          "kim": "Müşteri kullanır; sistem hatırlar.",
+          "analoji": "Marketteki alışveriş arabası: gezerken atarsın, kasada öderssin."
+        }
+      }
     }
   ],
   "enrich": {
@@ -606,12 +217,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "E-ticaret modülü: ürün katalog, sepet, ödeme, sipariş takip, kargo, iade — bir online mağazanın bütün parçaları bir arada.",
+      "nicin": "Türkiye'de e-ticaret sitesi açmak isteyen müşteri, sıfırdan yazılım yazmak yerine bu modülü açar, ürünlerini ekler, başlar.",
+      "nasil": "Müşteri ürün listesini açar → sepete ekler → ödeme bilgisi girer → sipariş onaylanır → kargo bilgisi gelir → ürün teslim alınır.",
+      "nerede": "Müşterinin görüştüğü tüm e-ticaret arayüzleri + arka plandaki sipariş/envanter yönetimi.",
+      "ne_zaman": "İşletmenin internet üzerinden satış yapmaya başladığı anda.",
+      "kim": "Tüccar ürünlerini ekler; müşteri alışveriş yapar; kargo firmaları teslimat yapar; muhasebe satışları kaydeder.",
+      "analoji": "Bir kırtasiyenin internet üzerinden satış başlatması: aynı mağazaya bir dijital kapı eklemek gibi. Vitrin, kasiyer, depo — hepsi dijitalde de var."
+    }
   }
 }

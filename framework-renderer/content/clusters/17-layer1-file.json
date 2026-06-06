@@ -57,7 +57,8 @@
     },
     {
       "type": "paragraph",
-      "text": "Temp uploads 24 saat, abandoned cart asset 7 gün, archive 90 gün sonra cold storage'a (Glacier/R2 archive). Object storage lifecycle policy ile veya scheduled worker ile."
+      "text": "Temp uploads 24 saat, abandoned cart asset 7 gün, archive 90 gün sonra cold storage'a (Glacier/R2 archive). Object storage lifecycle policy ile veya scheduled worker ile.",
+      "enrich": {}
     },
     {
       "type": "heading",
@@ -86,12 +87,14 @@
         "why": "Sunucu üstünden geçirmeden direkt S3'e yüklemek için."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Dosya yükleme, saklama ve gösterme altyapısı: belgeler, fotoğraflar, videolar — hepsi tek bir merkezi yerden yönetilir.",
+      "nicin": "Her modülün ayrı dosya sistemi olursa yedekleme, izin, sıkıştırma her yerde farklı çalışır. Tek merkez = tek standart.",
+      "nasil": "Kullanıcı dosya seçer → sistem doğrular (boyut, tür) → bulut deposuna yükler → kayıt veritabanına işlenir.",
+      "nerede": "Her formdaki 'dosya ekle' alanı, her ekran görüntüsü, her PDF.",
+      "ne_zaman": "Kullanıcı dosya yüklediği her an.",
+      "kim": "Son kullanıcı yükler; geliştirici hazır API'yi çağırır; sistem yöneticisi depo kotası ayarlar.",
+      "analoji": "Apartmanın ortak deposu: her dairenin eşyası burada saklanır, tek anahtar yönetimi, tek güvenlik."
+    }
   }
 }

@@ -1,0 +1,96 @@
+{
+  "id": "sus-actions",
+  "title": "Tipli kinetik aksiyon yüzeyi (AI için)",
+  "subtitle": "Palantir Ontology: AI ham tabloya değil; tipli, yetkili, audit'li \"action\"lara erişir. Güvenlik + denetlenebilirlik içkin.",
+  "cluster": "sus",
+  "order": 97,
+  "icon": "ph-lightning",
+  "tags": [
+    "sustainability",
+    "palantir",
+    "ai",
+    "actions",
+    "ontology"
+  ],
+  "enrich": {
+    "info": "AI ajan \"INSERT INTO ...\" yazmaz; tipli `approve_invoice(id, amount)` çağırır. Çağrı denetlenir, yetki kontrol edilir, audit'e gider.",
+    "lesson": {
+      "ne": "Sistem, AI'nın eyleyebileceği işlemleri tipli, kimliği doğrulanmış, sandbox'lı \"action\" olarak ilan eder: `publish_order(...)`, `approve_invoice(...)`. AI ham veritabanına dokunmaz; sadece bu eylemleri çağırır.",
+      "nicin": "AI'ya \"hadi serbest çalış\" demek kaza demektir. AI tipli eyleme erişirse: kuralları sistem zorlatır, audit otomatik tutulur, izinsiz girişim engellenir. Güvenlik + denetlenebilirlik içkin.",
+      "nasil": "Her action JSON-Schema imzalı (giriş ve çıkış tipleri belli), authz politikasıyla bağlı, side-effect'leri kayıt altında. AI ajan MCP (Model Context Protocol) üzerinden bu action'lara erişir.",
+      "nerede": "framework/kernel/actions/ — her action ayrı dosya, manifest'te listeli.",
+      "ne_zaman": "İlk AI ajanı sisteme bağlanmadan önce — sonra eklemek geç olur (güvenlik açığı).",
+      "kim": "Mimar action'ları tasarlar; geliştirici implement eder; AI ajan MCP üzerinden çağırır; denetçi audit'i okur.",
+      "analoji": "Bir restoranda garsona \"mutfağa gir, istediğini al\" demezsin. Garson sadece menüden sipariş alır; mutfak siparişe göre yemek hazırlar. Menü = action yüzeyi; mutfak = veri katmanı. AI = garson."
+    },
+    "stories": [
+      {
+        "persona": "Banka şubesi vezne çalışanı Selma Hanım",
+        "context": "Müşteri \"hesabıma 1000 TL yatır\" diyor. Selma Hanım veritabanına manuel kayıt yazmıyor; \"yatır(hesap, tutar)\" işlemini sistem üzerinden çalıştırıyor.",
+        "outcome": "İşlem yetki kontrolünden geçti, audit'e yazıldı, gün-sonu raporda göründü. Selma Hanım ham tabloya dokunmadı. AI action yüzeyi tam böyle: vezne ekranı disiplini."
+      },
+      {
+        "persona": "Hastane reçete sistemi, Dr. Mehmet Bey",
+        "context": "Doktor \"şu ilacı yaz\" diyemez veritabanına; reçete sistemi açar, doz girer, kaydet'e basar. Sistem alerji uyarısı verir, etkileşim kontrolü yapar, log atar.",
+        "outcome": "AI ajan da aynı: \"insert SQL\" yazmaz, `prescribe(patient, drug, dose)` çağırır. Sistem güvenlik denetimini yapar. Ham veri = doktor değil; sözleşmeli yüzey = reçete formu."
+      },
+      {
+        "persona": "Belediye nikah memuru Ayşe Hanım",
+        "context": "Memur \"evlilik\" kaydını ham deftere yazmaz; nikah formunu doldurur. Tarih, şahit, imzalar — hepsi formatı zorlatan formdan geçer.",
+        "outcome": "Form = action yüzeyi. AI bir gün bu formu doldursa bile formatı bozamaz; alanlar tipli, validation içkin. Action yüzeyi olmasaydı kayıt karışırdı."
+      }
+    ],
+    "terms": [
+      {
+        "term": "Action",
+        "abbrev_tr": "Eylem",
+        "meaning": "Sistemin dışarıya açtığı tipli, izinli, audit'li işlem (insert/update'ten farklı: amaç odaklı)",
+        "why": "AI/insan ortak yüzey"
+      },
+      {
+        "term": "MCP",
+        "abbrev_of": "Model Context Protocol",
+        "meaning": "AI modellerinin sistem araçlarına erişimini standartlaştıran protokol",
+        "why": "AI ajan entegrasyonunun standardı"
+      },
+      {
+        "term": "Ontology",
+        "abbrev_tr": "Varlık-bilim",
+        "meaning": "Sistemdeki nesnelerin + ilişkilerin + eylemlerin tipli tanımı (Palantir)",
+        "why": "AI'nın anlayıp eylediği katman"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Palantir tanımı",
+      "body": "Foundry Ontology: **semantik** öğeler (objeler, property'ler, link'ler) + **kinetik** öğeler (typed actions, functions, dinamik güvenlik). Hem insan hem AI'nın okuyup *eylediği* tek yüzey."
+    },
+    {
+      "type": "image",
+      "src": "/assets/sus-actions.svg",
+      "alt": "AI action yüzeyi — ajan ham SQL'e değil, tipli action katmanına erişir; validation + authz + audit içkin",
+      "caption": "AI ajan ham veri katmanına dokunamaz; sözleşmeli action yüzeyinden geçer.",
+      "enrich": {
+        "info": "Action katmanı + güvenlik sınırı",
+        "lesson": {
+          "ne": "AI'nın ulaşabildiği eylemler tipli, yetkili, audit'li olmalı.",
+          "nicin": "AI ham SQL atarsa governance açığı doğar; injection-benzeri riskler.",
+          "nasil": "JSON-Schema imzalı action'lar (publish_order, approve_invoice...); AI MCP'den çağırır.",
+          "kim": "Mimar action'ları tanımlar; AI ajan çağırır; sistem her çağrıyı doğrular.",
+          "analoji": "Restoran garson disiplini: garson mutfağa girmez, sipariş fişi verir. Mutfak yemeği hazırlar. Garson = AI, fiş = action."
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "text": "**Bu projeye uygulama:** DocType üstüne tipli action layer kurulur. `publish_order`, `approve_invoice`, `cancel_subscription` — her biri JSON-Schema imzalı, authz politikasıyla bağlı, audit'e otomatik gider. AI ajan MCP'den bu action'ları çağırır."
+    }
+  ],
+  "related": [
+    "s-ai",
+    "k-authz"
+  ]
+}

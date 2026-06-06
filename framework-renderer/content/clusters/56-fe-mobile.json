@@ -231,12 +231,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Mobil cihazlarda (telefon, tablet) çalışan uygulama versiyonları. Tarayıcıdan açılan PWA + yerel iOS/Android uygulaması.",
+      "nicin": "Müşterilerin %70'i mobilden bakar. Sadece masaüstü olursa potansiyel müşteri kaybedilir.",
+      "nasil": "Aynı kodun mobile uyumlu halini PWA olarak çıkarırız + Capacitor ile yerel uygulamalara sararız.",
+      "nerede": "App Store, Google Play, web üzerinde PWA.",
+      "ne_zaman": "Her ürün geliştirildikten sonra mobile uyumu da çıkarılır.",
+      "kim": "Frontend ekibi sorumlu; tasarımcı mobile özel ayarlar; son kullanıcı her cihazdan erişir.",
+      "analoji": "Bir restoranın hem masada hem paket servisinde aynı menüyü sunması: aynı malzeme, farklı paketleme."
+    }
   }
 }

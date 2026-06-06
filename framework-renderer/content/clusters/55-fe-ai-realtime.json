@@ -205,12 +205,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Yapay zeka arayüzlerinin canlı çalışmasını sağlayan altyapı.",
+      "nicin": "Yapay zeka cevabı yavaş gelirse kullanıcı bekleyemez.",
+      "nasil": "Akışlı yanıt: parça parça gönder, anlık göster.",
+      "nerede": "ChatGPT tarzı sohbet, kod tamamlama önerileri.",
+      "ne_zaman": "Yanıt 2 saniyeden uzun sürerse.",
+      "kim": "Geliştirici akışı kurar; tasarımcı 'yazıyor' göstergesi tasarlar.",
+      "analoji": "Radyo yayını: anlık akar, beklemek yorucu."
+    }
   }
 }

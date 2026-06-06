@@ -141,6 +141,12 @@
           "Modüler monolit, sonra extract"
         ]
       ]
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "🛑 Sürdürülebilirlik anti-pattern'leri (yeni eklendi)",
+      "body": "Aşağıdaki 3 tuzak küme 1'in mevcut anti-pattern listesine eklendi (kaynak: küme 2 sürdürülebilirlik araştırması):\n\n**1) Zorlanmayan modül sınırı (Shopify dersi).** \"Bu modüle dokunma\" diye yazılı kural koymak ama CI'da kontrol etmemek. 6 ay içinde sosyal anlaşma çürür, monolit çorba olur. Çözüm: {{ref:sus-boundaries}}.\n\n**2) Upgrade'i otomatikleştirmeden uzun-ömür (SAP fosilleşmesi).** \"Sürümümüzü sabit tutun, sonra düzeltiriz\" zihniyeti. Yıllar geçtikçe ekosistem dağılır, yeni özelleştirme imkansızlaşır, sistem fosilleşir. Çözüm: {{ref:sus-codemod}} (Drupal Rector + AI codemod).\n\n**3) Big-bang rewrite (Drupal 8 travması).** Eski sürümü tamamen at, yeniden yaz. Tüm plugin ekosistemi kırılır, ekosistem darmadağın olur. Drupal 8 geçişinde bu yapıldı; D9+ dersi: kademeli deprecation + codemod. Çözüm: {{ref:sus-bc-policy}} + {{ref:sus-versioning}}."
     }
   ],
   "enrich": {
@@ -154,12 +160,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Yazılımda yapılmaması gereken yaygın hatalar ve niye yapılmaması gerektiği. 'Sakın bunları yapma' rehberi.",
+      "nicin": "Yeni geliştirici cazip görünen yanlış yola sapabilir. Önceden listede görmek hata önler.",
+      "nasil": "Her anti-pattern için: ne, niye yanlış, ne yapmak lazım. Örnek bağlam ile.",
+      "nerede": "Geliştirici dokümanlarında 'Tuzaklar' sayfası.",
+      "ne_zaman": "Yeni gelen okur; karar tartışılırken danışılır.",
+      "kim": "Deneyimli geliştiriciler yazar; tüm ekip okur.",
+      "analoji": "Sürücü kursunda 'sık yapılan hatalar' bölümü: niye yapılmaması gerektiği gerekçeleriyle anlatılır."
+    }
   }
 }

@@ -7,7 +7,7 @@
  *   <li data-detail-key="…"> → otomatik tıklanır
  */
 
-import type { Term, UserStory, Enrichment } from '@/types/content';
+import type { Term, UserStory, Enrichment, Lesson } from '@/types/content';
 
 export interface FiveWH {
   ne?: string;        // What
@@ -31,6 +31,9 @@ export interface DetailPayload {
   terms?: Term[];
   stories?: UserStory[];
   refs?: string[];
+  /** 60+ pedagojik içerik — manuel yazılır, otomatik üretilmez. */
+  lesson?: Lesson;
+  /** Geri uyumluluk için — yeni kullanım `lesson` üzerinden. */
   fivewh?: FiveWH;
   frontend?: SideUsage;
   backend?: SideUsage;
@@ -73,6 +76,7 @@ export function makeDetailKey(
     terms: enrich?.terms,
     stories: enrich?.stories,
     refs: enrich?.refs,
+    lesson: enrich?.lesson,
   });
 }
 
@@ -110,35 +114,29 @@ export function makeDetailKeyFromText(
   if (clusterLookup) {
     const hit = clusterLookup(clean.slice(0, 80));
     if (hit) {
-      // O cluster'a yönlendiren mini-detail üret
+      // O cluster'a yönlendiren mini-detail — minimal, jenerik metin yok
       return registerDetail({
         contextLabel: ctx.contextLabel,
         title: hit.title,
-        summary: hit.subtitle || clean.slice(0, 140),
+        summary: hit.subtitle || clean.slice(0, 200),
         detail:
-          `**Bu konunun ana sayfası var.**\n\n${clean}\n\n` +
-          `**Önerilen:** Sol sidebar'dan **"${hit.title}"** cluster'ına geç; tüm terim, örnek ve adım orada detaylı.`,
+          `**Bu konunun ana sayfası var:** [${hit.title}](#${hit.id}).\n\n` +
+          `Detaylı açıklama, terim sözlüğü ve örnekler ana sayfasında.`,
         refs: [hit.id],
       });
     }
   }
 
+  // ARTIK template-content üretmiyoruz — kullanıcı düz metin tıkladığında
+  // sadece "metnin kendisi" + placeholder uyarısı görünür.
+  // Gerçek pedagojik içerik için JSON'da enrich.lesson alanı doldurulmalı.
+  void AUTO_PERSONAS; // legacy reference — kaldırılabilir
   const title = ctx.title || clean.slice(0, 60) + (clean.length > 60 ? '…' : '');
-  const detail =
-    `**Bu içerik nedir?**\n\n${clean}\n\n` +
-    `**Amaç:** Bu paragraf/blok, ${ctx.contextLabel ?? 'konunun'} bir parçası olarak yer alır ve okuyana belirli bir kararı/davranışı/kuralı aktarır.\n\n` +
-    `**Hiç bilmeyene açıklama:** Teknik kelimeleri çıkarttığımızda bu metin, sistemin nasıl davrandığını anlatan kısa bir kuraldır. Aşağıdaki üç kullanıcı perspektifi aynı kuralı farklı zaviyelerden tanır.`;
-  const stories = (AUTO_PERSONAS['default'] ?? []).map(([persona, context, outcome]) => ({
-    persona,
-    context,
-    outcome,
-  }));
   return registerDetail({
     contextLabel: ctx.contextLabel,
     title,
-    summary: clean.length > 140 ? clean.slice(0, 140) + '…' : clean,
-    detail,
-    stories,
+    summary: clean.length > 200 ? clean.slice(0, 200) + '…' : clean,
+    // detail yok → placeholderNotice render edilir, kullanıcı "yazılmamış" gerçeğini görür.
   });
 }
 
@@ -146,10 +144,31 @@ function htmlEscape(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c] ?? c));
 }
 
-function inlineMarkup(text: string): string {
+/**
+ * Inline markdown — etiketsiz (paragraf sarmaz, sadece string'i markup'a çevirir).
+ * 5N1K cell, frontend/backend value, term meaning gibi tek satırlık alanlar için.
+ * Destek: **bold**, *italic*, `code`, ~~strike~~, [link](url)
+ */
+function inlineMd(text: string): string {
   let out = htmlEscape(text);
   out = out.replace(/`([^`]+)`/g, (_, c: string) => `<code>${c}</code>`);
   out = out.replace(/\*\*([^*]+)\*\*/g, (_, b: string) => `<strong>${b}</strong>`);
+  // italic (tek *): bold'tan sonra, kaçırılmasın diye bold pattern olmayanı
+  out = out.replace(/(^|[\s(>])\*([^*\s][^*]*?)\*(?=[\s).,;:!?<]|$)/g,
+    (_m, lead: string, em: string) => `${lead}<em>${em}</em>`);
+  out = out.replace(/~~([^~]+)~~/g, (_, s: string) => `<del>${s}</del>`);
+  // basit external link
+  out = out.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,
+    (_, t: string, u: string) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`);
+  return out;
+}
+
+/**
+ * Block markdown — paragraf sarmalı, çift satır = yeni paragraf.
+ * detail, analoji gibi uzun metin alanları için.
+ */
+function inlineMarkup(text: string): string {
+  let out = inlineMd(text);
   out = out.replace(/\n\n+/g, '</p><p>');
   out = out.replace(/\n/g, '<br/>');
   return `<p>${out}</p>`;
@@ -162,12 +181,12 @@ function termsHtml(terms: Term[]): string {
       ${terms.map((t) => `
         <article class="dp__term">
           <div class="dp__term-head">
-            <strong>${htmlEscape(t.term)}</strong>
-            ${t.abbrev_of ? `<span class="dp__term-abbrev">= ${htmlEscape(t.abbrev_of)}</span>` : ''}
-            ${t.abbrev_tr ? `<span class="dp__term-tr">(${htmlEscape(t.abbrev_tr)})</span>` : ''}
+            <strong>${inlineMd(t.term)}</strong>
+            ${t.abbrev_of ? `<span class="dp__term-abbrev">= ${inlineMd(t.abbrev_of)}</span>` : ''}
+            ${t.abbrev_tr ? `<span class="dp__term-tr">(${inlineMd(t.abbrev_tr)})</span>` : ''}
           </div>
-          <div class="dp__term-meaning">${htmlEscape(t.meaning)}</div>
-          ${t.why ? `<div class="dp__term-why"><span>Neden:</span> ${htmlEscape(t.why)}</div>` : ''}
+          <div class="dp__term-meaning">${inlineMd(t.meaning)}</div>
+          ${t.why ? `<div class="dp__term-why"><span>Neden:</span> ${inlineMd(t.why)}</div>` : ''}
         </article>
       `).join('')}
     </div>
@@ -180,9 +199,9 @@ function storiesHtml(stories: UserStory[]): string {
     <div class="dp__stories">
       ${stories.map((s) => `
         <article class="dp__story">
-          <div class="dp__story-persona"><i class="ph ph-user-circle"></i> ${htmlEscape(s.persona)}</div>
-          <div class="dp__story-context"><span class="dp__story-tag">Bağlam</span>${htmlEscape(s.context)}</div>
-          <div class="dp__story-outcome"><span class="dp__story-tag dp__story-tag--out">Sonuç</span>${htmlEscape(s.outcome)}</div>
+          <div class="dp__story-persona"><i class="ph ph-user-circle"></i> ${inlineMd(s.persona)}</div>
+          <div class="dp__story-context"><span class="dp__story-tag">Bağlam</span>${inlineMd(s.context)}</div>
+          <div class="dp__story-outcome"><span class="dp__story-tag dp__story-tag--out">Sonuç</span>${inlineMd(s.outcome)}</div>
         </article>
       `).join('')}
     </div>
@@ -203,7 +222,7 @@ function fiveWhHtml(f: FiveWH): string {
     .map(([k, v, icon]) => `
       <div class="dp__5n1k-row">
         <div class="dp__5n1k-key"><i class="ph ${icon}"></i> ${k}</div>
-        <div class="dp__5n1k-val">${htmlEscape(v as string)}</div>
+        <div class="dp__5n1k-val">${inlineMd(v as string)}</div>
       </div>
     `).join('');
   if (!items) return '';
@@ -221,9 +240,9 @@ function sideUsageHtml(side: 'frontend' | 'backend', usage: SideUsage): string {
   return `<section class="dp__section">
     <h4><i class="ph-duotone ${icon}"></i> ${label}</h4>
     <div class="dp__side dp__side--${tone}">
-      <div class="dp__side-row"><span class="dp__side-label">Yeri:</span> ${htmlEscape(usage.yer)}</div>
-      <div class="dp__side-row"><span class="dp__side-label">Gereklilik:</span> ${htmlEscape(usage.gereklilik)}</div>
-      <div class="dp__side-row"><span class="dp__side-label">Örnek:</span> ${htmlEscape(usage.ornek)}</div>
+      <div class="dp__side-row"><span class="dp__side-label">Yeri:</span> ${inlineMd(usage.yer)}</div>
+      <div class="dp__side-row"><span class="dp__side-label">Gereklilik:</span> ${inlineMd(usage.gereklilik)}</div>
+      <div class="dp__side-row"><span class="dp__side-label">Örnek:</span> ${inlineMd(usage.ornek)}</div>
     </div>
   </section>`;
 }
@@ -245,99 +264,74 @@ function refsHtml(refs: string[]): string {
   </section>`;
 }
 
-// İçeriğe duyarlı 5N1K — item title'ı her cevaba enjekte eder.
-// Böylece "Bundle analiz" ile "Changelog" tıklayınca farklı cevaplar görürsün.
-function autoFiveWH(p: DetailPayload): FiveWH {
-  const title = p.title.trim();
-  const titleShort = title.length > 40 ? title.slice(0, 40) + '…' : title;
-  const summary = p.summary || title;
-  const ctx = p.contextLabel ?? 'bu cluster';
-  return {
-    ne: `**${title}** — ${summary}`,
-    nicin:
-      `"${titleShort}" çözümünün gerekçesi: aynı problemi farklı yerlerde yeniden çözmek yerine, ` +
-      `${ctx} bağlamında **tek-noktadan tutarlı** bir karar yayar. ` +
-      `Tutarsızlık ve kopya kod riskini ortadan kaldırır.`,
-    nasil:
-      `Framework "${titleShort}"'ı **primitive** olarak sunar: plugin/kullanıcı sıfırdan yazmaz, ` +
-      `hazır API'yi çağırır veya kuralı consume eder. Değişiklik tek noktadan yapılır, ` +
-      `tüm tüketiciler otomatik fayda görür.`,
-    nerede:
-      `**${ctx}** katmanında konumlanır. ` +
-      `"${titleShort}" frontend tarafında UI bileşeni / sayfa / form alanı; ` +
-      `backend tarafında DocType / hook / scale primitive seviyesinde yer alır.`,
-    ne_zaman:
-      `"${titleShort}" şu durumlarda devreye girer: kullanıcı eylemi (form submit, buton tıklaması), ` +
-      `scheduled job (cron/worker), event bus mesajı, veya başka bir modülden gelen ` +
-      `senkron/asenkron tetik. Olayın türü ${ctx} bağlamında belirlenir.`,
-    kim:
-      `"${titleShort}" ile ilgili roller: **Plugin geliştirici** bu primitive'i tanımlar/genişletir; ` +
-      `**Son kullanıcı** sonucunu UI/UX olarak deneyimler; **Operasyon / CISO** denetim ve gözlemlenebilirlik için izler.`,
+// ─── DÜRÜST PLACEHOLDER ──────────────────────────────────────────────────────
+// ESKİ autoFiveWH/Frontend/Backend "title değişiyor ama içerik aynı" üretiyordu.
+// Bu öğrenme deneyimini bozuyordu (60+ kullanıcı bunu kopya gibi okur).
+// Yeni davranış: lesson içeriği YOKSA "bu içerik henüz yazılmadı" işareti.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function lessonToFiveWH(l: Lesson | undefined): FiveWH | undefined {
+  if (!l) return undefined;
+  const out: FiveWH = {
+    ne: l.ne, nicin: l.nicin, nasil: l.nasil,
+    nerede: l.nerede, ne_zaman: l.ne_zaman, kim: l.kim,
   };
+  return Object.values(out).some(Boolean) ? out : undefined;
 }
-function autoFrontend(p: DetailPayload): SideUsage {
-  const title = p.title.trim();
-  const titleShort = title.length > 40 ? title.slice(0, 40) + '…' : title;
-  return {
-    yer:
-      `"${titleShort}" frontend katmanında somut bir bileşen olarak görünür: ` +
-      `${p.summary ? p.summary.slice(0, 80) : 'liste / form / dropdown / modal / dashboard widget'} bağlamında render edilir.`,
-    gereklilik:
-      `Kullanıcı "${titleShort}" özelliğini UI'da görmeden anlayamaz veya kullanamaz. ` +
-      `UX akışının net olması için frontend tarafının bu işlevi expose etmesi zorunludur.`,
-    ornek:
-      `Kullanıcı "${titleShort}" ile ilgili bir kaydı UI'da açar → ilgili formu/listeyi görür → ` +
-      `eylemi (kaydet, gönder, sil, filtrele) gerçekleştirir → anlık feedback alır.`,
-  };
-}
-function autoBackend(p: DetailPayload): SideUsage {
-  const title = p.title.trim();
-  const titleShort = title.length > 40 ? title.slice(0, 40) + '…' : title;
-  const ctx = p.contextLabel ?? 'ilgili katman';
-  return {
-    yer:
-      `"${titleShort}" backend katmanında DocType / handler / hook / scale primitive olarak yaşar. ` +
-      `${ctx} bağlamında Layer-0 (kernel) veya Layer-1 (in-tree) seviyesinde konumlanır.`,
-    gereklilik:
-      `Veri bütünlüğü, audit, yetkilendirme, ölçek garantileri SADECE backend'de uygulanabilir. ` +
-      `Frontend "${titleShort}"'ı yansıtır, ama kuralın kendisi backend'in sözleşmesidir.`,
-    ornek:
-      `API isteği "${titleShort}" için gelir → permission check + validation → ` +
-      `DB transaction + audit log → event bus'a yayın → bağlı modüller (notification, projection, downstream) tepki verir.`,
-  };
+
+function placeholderNotice(title: string): string {
+  return `
+    <section class="dp__section dp__placeholder">
+      <div class="dp__placeholder-row">
+        <i class="ph-duotone ph-warning-octagon"></i>
+        <div>
+          <strong>"${htmlEscape(title)}" için eğitim içeriği henüz hazırlanmadı.</strong>
+          <p>Bu konunun 60+ yaş ve yazılıma yeni başlayanlar için anlaşılır
+          açıklaması, frontend/backend taraf örnekleri ve gündelik analojisi
+          ilgili cluster JSON dosyasında <code>enrich.lesson</code> alanında
+          tanımlanmalı. Boş bırakılan kart, kasıtlı olarak template-içerikle
+          doldurulmamaktadır.</p>
+        </div>
+      </div>
+    </section>
+  `;
 }
 
 function render(payload: DetailPayload): string {
-  const hasRichContent =
-    !!payload.detail ||
+  const lesson = payload.lesson;
+  // 5N1K — lesson öncelikli, geri uyumluluk için payload.fivewh fallback
+  const fivewh = lessonToFiveWH(lesson) ?? payload.fivewh;
+  const frontend = lesson?.frontend ?? payload.frontend;
+  const backend = lesson?.backend ?? payload.backend;
+
+  const hasLesson =
+    !!(fivewh || frontend || backend || lesson?.analoji || payload.detail);
+  const hasAnyContent =
+    hasLesson ||
     (payload.terms && payload.terms.length > 0) ||
     (payload.stories && payload.stories.length > 0) ||
     (payload.refs && payload.refs.length > 0);
 
-  const fivewh = payload.fivewh ?? autoFiveWH(payload);
-  const frontend = payload.frontend ?? autoFrontend(payload);
-  const backend = payload.backend ?? autoBackend(payload);
-
   return `
     <button class="dp__close" aria-label="Detay panelini kapat"><i class="ph ph-x"></i></button>
     <div class="dp__head">
-      ${payload.contextLabel ? `<div class="dp__context">${htmlEscape(payload.contextLabel)}</div>` : ''}
-      <h3 class="dp__title">${htmlEscape(payload.title)}</h3>
-      ${payload.summary ? `<p class="dp__summary">${htmlEscape(payload.summary)}</p>` : ''}
+      ${payload.contextLabel ? `<div class="dp__context">${inlineMd(payload.contextLabel)}</div>` : ''}
+      <h3 class="dp__title">${inlineMd(payload.title)}</h3>
+      ${payload.summary ? `<p class="dp__summary">${inlineMd(payload.summary)}</p>` : ''}
     </div>
     ${payload.detail ? `<section class="dp__section dp__detail">${inlineMarkup(payload.detail)}</section>` : ''}
-    ${fiveWhHtml(fivewh)}
-    ${sideUsageHtml('frontend', frontend)}
-    ${sideUsageHtml('backend', backend)}
+    ${lesson?.analoji ? `
+      <section class="dp__section dp__analogy">
+        <h4><i class="ph-duotone ph-tree-evergreen"></i> Gündelik analoji</h4>
+        <p>${inlineMarkup(lesson.analoji)}</p>
+      </section>` : ''}
+    ${fivewh ? fiveWhHtml(fivewh) : ''}
+    ${frontend ? sideUsageHtml('frontend', frontend) : ''}
+    ${backend ? sideUsageHtml('backend', backend) : ''}
     ${payload.terms && payload.terms.length > 0 ? termsHtml(payload.terms) : ''}
     ${payload.stories && payload.stories.length > 0 ? storiesHtml(payload.stories) : ''}
     ${payload.refs && payload.refs.length > 0 ? refsHtml(payload.refs) : ''}
-    ${!hasRichContent ? `
-      <section class="dp__section dp__empty">
-        <i class="ph-duotone ph-lightbulb"></i>
-        <p>Bu kart için 5N1K analizi + Frontend/Backend yorumu hazırladık. Daha derinleşmek istiyorsan ilgili konuyu sol menüden seç.</p>
-      </section>
-    ` : ''}
+    ${!hasAnyContent ? placeholderNotice(payload.title) : ''}
   `;
 }
 

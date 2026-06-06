@@ -69,7 +69,8 @@
     },
     {
       "type": "paragraph",
-      "text": "Bir B2B SaaS müşterin (Acme Inc.) tüm çalışanlarını sadece Acme'nin Google Workspace ile login etsin istiyor. Acme admin'i, Acme tenant'ı için \"SSO Required: Google Workspace, domain: acme.com\" diye ayar yapar. Bundan sonra acme.com kullanıcısı normal şifre login yapamaz — Google'a redirect. Bu özellik kernel'de var, module yazmıyorsun."
+      "text": "Bir B2B SaaS müşterin (Acme Inc.) tüm çalışanlarını sadece Acme'nin Google Workspace ile login etsin istiyor. Acme admin'i, Acme tenant'ı için \"SSO Required: Google Workspace, domain: acme.com\" diye ayar yapar. Bundan sonra acme.com kullanıcısı normal şifre login yapamaz — Google'a redirect. Bu özellik kernel'de var, module yazmıyorsun.",
+      "enrich": {}
     },
     {
       "type": "heading",
@@ -78,13 +79,31 @@
     },
     {
       "type": "paragraph",
-      "text": "İleride banka/finans ürünleri için **e-Devlet kapısı OAuth** ve **m-imza (mobil imza)** identity entegrasyonu gerek. Bunlar adapter olarak Identity'nin altına. Çoğunlukla TÜRKKEP üstünden çalışır."
+      "text": "İleride banka/finans ürünleri için **e-Devlet kapısı OAuth** ve **m-imza (mobil imza)** identity entegrasyonu gerek. Bunlar adapter olarak Identity'nin altına. Çoğunlukla TÜRKKEP üstünden çalışır.",
+      "enrich": {
+        "lesson": {
+          "ne": "Başkasının kimliğini güvenle kullanmaya yarayan standart yöntem.",
+          "nicin": "Google ile gir, Facebook ile gir — parola paylaşmadan.",
+          "nasil": "Token (geçici geçiş kartı) alıp sisteme sunarsın.",
+          "kim": "Üçüncü taraflar entegre eder.",
+          "analoji": "Otele girerken kimlik göstermek yerine kart vermek."
+        }
+      }
     },
     {
       "type": "callout",
       "variant": "warning",
       "label": "Junior tuzağı — \"kendim yazarım\"",
-      "body": "Auth yazmak = bcrypt cost ayarı, timing-safe karşılaştırma, password reset token tek-kullanımlık, session fixation koruması, CSRF token, OAuth state parameter doğrulama, JWT secret rotation, brute force backoff, account lockout policy. 3 hafta yazılır, içinde 4 güvenlik açığı kalır. Core'da olmasının sebebi: **her ürün ihtiyaç duyar, yanlış yazılınca felaket**."
+      "body": "Auth yazmak = bcrypt cost ayarı, timing-safe karşılaştırma, password reset token tek-kullanımlık, session fixation koruması, CSRF token, OAuth state parameter doğrulama, JWT secret rotation, brute force backoff, account lockout policy. 3 hafta yazılır, içinde 4 güvenlik açığı kalır. Core'da olmasının sebebi: **her ürün ihtiyaç duyar, yanlış yazılınca felaket**.",
+      "enrich": {
+        "lesson": {
+          "ne": "Başkasının kimliğini güvenle kullanmaya yarayan standart yöntem.",
+          "nicin": "Google ile gir, Facebook ile gir — parola paylaşmadan.",
+          "nasil": "Token (geçici geçiş kartı) alıp sisteme sunarsın.",
+          "kim": "Üçüncü taraflar entegre eder.",
+          "analoji": "Otele girerken kimlik göstermek yerine kart vermek."
+        }
+      }
     },
     {
       "type": "divider"
@@ -97,11 +116,13 @@
     },
     {
       "type": "paragraph",
-      "text": "LandX **I02 — User & Identity Core** kritik bir disiplin getirir: bireysel, kurumsal, **agent**, system kullanıcı tek polymorphic identity modelinde, `principal_type` alanı ile ayrılır. Agent ≠ human. Her agent için ek alanlar: `agent_kind` (conversational/workflow/cron/embedded), `model_provider`, `default_model`, `system_prompt_id`, `on_behalf_of_user_id`, `capability_set_id`."
+      "text": "LandX **I02 — User & Identity Core** kritik bir disiplin getirir: bireysel, kurumsal, **agent**, system kullanıcı tek polymorphic identity modelinde, `principal_type` alanı ile ayrılır. Agent ≠ human. Her agent için ek alanlar: `agent_kind` (conversational/workflow/cron/embedded), `model_provider`, `default_model`, `system_prompt_id`, `on_behalf_of_user_id`, `capability_set_id`.",
+      "enrich": {}
     },
     {
       "type": "paragraph",
-      "text": "LandX **I03 — Authentication & Sessions** dört credential tipi tanımlar: Password, Passkey/WebAuthn, API Key, **Agent Token**. Agent token'ı human session'lardan farklı:"
+      "text": "LandX **I03 — Authentication & Sessions** dört credential tipi tanımlar: Password, Passkey/WebAuthn, API Key, **Agent Token**. Agent token'ı human session'lardan farklı:",
+      "enrich": {}
     },
     {
       "type": "list",
@@ -132,7 +153,7 @@
     }
   ],
   "enrich": {
-    "info": "Her request'in başında 'kim bu' sorusunu cevaplayan mekanizma. Login/signup'tan çok daha fazlası.",
+    "info": "'Sen kimsin?' sorusunu cevaplayan kapı bekçisi: giriş, çıkış, parola, oturum.",
     "detail": "Her request'in başında 'kim bu' sorusunu cevaplayan mekanizma. Login/signup'tan çok daha fazlası.",
     "terms": [
       {
@@ -145,7 +166,16 @@
         "term": "Session",
         "abbrev_tr": "Oturum",
         "meaning": "Bir kullanıcının kimlik kanıtlandıktan sonra süren etkileşim periyodu.",
-        "why": "Her istekte tekrar şifre sormamak için."
+        "why": "Her istekte tekrar şifre sormamak için.",
+        "enrich": {
+          "lesson": {
+            "ne": "Kullanıcının sisteme bağlı kaldığı süre.",
+            "nicin": "Giriş yapıp her tıklamada tekrar giriş yapmasın diye.",
+            "nasil": "Tarayıcıda kayıtlı kimlik bilgisi (cookie veya token).",
+            "kim": "Sistem yönetir.",
+            "analoji": "Otelin oda kartı — check-out'a kadar geçerli."
+          }
+        }
       },
       {
         "term": "2FA",
@@ -163,10 +193,39 @@
     ],
     "stories": [
       {
-        "persona": "SaaS son kullanıcı",
-        "context": "Yeni telefonundan giriş yaparken cihaz tanınmıyor.",
-        "outcome": "2FA TOTP kodu istenir; geçtiğinde session oluşur, sonraki istekler şifresiz gider."
+        "persona": "Site giriş güvenliği — apartman kartı sistemi",
+        "context": "8 katlı sitede her dairenin 2 kartı var. Sakin geç gelirse kart turnikeye okutulur, geçer. Komşu daireye girilemez (farklı kart).",
+        "outcome": "Yazılımda kimlik (Identity) tam bu mantık: e-posta + parola = senin 'kartın'. Sisteme giriş yaptın, kart geçerli sürece sayfalarda gezersin. Kart süresi bittiğinde tekrar giriş yapman gerekir."
+      },
+      {
+        "persona": "Banka müşterisi — internet bankacılığı oturum süresi",
+        "context": "Ev sahibesi Saliha Hanım banka uygulamasını açtı, 10 dakika dolaşmadı; uygulama 'oturum sonlandı, tekrar giriş yap' diyor.",
+        "outcome": "Yazılımda da aynı kural: belirli süre hareketsizlikten sonra sistem 'tekrar kim olduğunu söyle' diye sorar. Cüzdan açıkken telefon çalsa, bırakırsa para alınmasın diye."
+      },
+      {
+        "persona": "Kafe Wi-Fi parolası",
+        "context": "Kafede müşteri Wi-Fi'ye bağlanırken garson 'günün parolasını' söyler. Müşteri parolayı girer, kafenin internetinden faydalanır.",
+        "outcome": "Sistemde de 'sen kimsin' sorusu önce e-posta + parola ile yanıtlanır. Doğruysa içeri alınır. Yanlışsa 'bir daha dene'. Garson rolü = sistemin bekçisi."
       }
-    ]
+    ],
+    "lesson": {
+      "ne": "'Sen kimsin?' sorusunu cevaplayan kapı bekçisi: kullanıcı sisteme nasıl girer, parolasını nasıl korur, oturumu ne kadar açık kalır.",
+      "nicin": "Her sistemde 'kim ne yapıyor' bilinmeli. Bekçi olmazsa içeriye herkes girer, sorumluluk dağılır.",
+      "nasil": "Kullanıcı e-posta + parola girer → bekçi doğrular → bir oturum (geçici giriş kartı) verir. Bu kart her tıklamada sessizce kontrol edilir.",
+      "nerede": "Sisteme giriş ekranı, parola sıfırlama, 'beni hatırla' kutusu, çoklu cihazda otomatik giriş.",
+      "ne_zaman": "Sisteme her girdiğinizde, parola değiştirdiğinizde, bir aydan eski oturum tazelendiğinde.",
+      "kim": "Son kullanıcı giriş yapar; sistem yöneticisi kuralları belirler (parola karmaşıklığı, oturum süresi).",
+      "frontend": {
+        "yer": "Giriş ekranı, parola sıfırlama bağlantısı, e-posta doğrulama sayfası.",
+        "gereklilik": "Kullanıcı kendi başına sisteme girebilmeli; her seferinde bilgi işlemi aramamalı.",
+        "ornek": "İnternet bankacılığına girdiğinizde gelen ekran — aynı mantık."
+      },
+      "backend": {
+        "yer": "Parolaların güvenli saklandığı tablo (asla düz metin değil, hash olarak), oturum belirteçleri (token) deposu.",
+        "gereklilik": "Parola sızıntısı en büyük yazılım kazasıdır; arka taraf bunu önlemeyi en başa koyar.",
+        "ornek": "Parola 'şifrelenmiş' olarak (yani geri çevrilemez şekilde) saklanır. Sistem bile parolayı bilmez; sadece doğru olup olmadığını anlar."
+      },
+      "analoji": "Apartman girişindeki güvenlik: kartınızı turnikeye okutursunuz, geçersiniz. Kart geçmezse içeri giremezsiniz. Apartman yönetimi kartınızı kaybederseniz yenisini verir."
+    }
   }
 }

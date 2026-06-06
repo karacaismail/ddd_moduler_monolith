@@ -56,7 +56,8 @@
                 "name": "scale/",
                 "children": [
                   {
-                    "name": "projection.py"
+                    "name": "projection.py",
+                    "enrich": {}
                   },
                   {
                     "name": "counter.py"
@@ -91,7 +92,8 @@
                     "name": "notification/"
                   },
                   {
-                    "name": "audit/"
+                    "name": "audit/",
+                    "enrich": {}
                   },
                   {
                     "name": "search/",
@@ -101,7 +103,16 @@
                     "name": "calendar/"
                   },
                   {
-                    "name": "i18n/"
+                    "name": "i18n/",
+                    "enrich": {
+                      "lesson": {
+                        "ne": "Uluslararasılaştırma — yazılımın çoklu dilde çalışması.",
+                        "nicin": "Farklı pazarlara hizmet için.",
+                        "nasil": "Metinler kod yerine sözlük dosyalarında.",
+                        "kim": "Geliştirici yapı kurar, çevirmen doldurur.",
+                        "analoji": "Restoran menüsünün arka sayfasında İngilizce hali."
+                      }
+                    }
                   },
                   {
                     "name": "money/"
@@ -110,7 +121,8 @@
                     "name": "realtime/"
                   },
                   {
-                    "name": "webhook/"
+                    "name": "webhook/",
+                    "enrich": {}
                   },
                   {
                     "name": "api/",
@@ -220,12 +232,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Kod deposunun klasör yapısı: hangi dosya nereye konacak, hangi modül hangi klasörde. Düzenin haritası.",
+      "nicin": "100+ dosya rastgele klasörlerde olunca aramak ay sürer. Belirli kural ile her dosyanın yeri belli olur.",
+      "nasil": "Tablo: 'Bu tür dosya → şu klasör'. Yeni gelen geliştirici saniyede yerini bulur.",
+      "nerede": "Kod deposunun en üst seviyesinde README.",
+      "ne_zaman": "Proje başında karara bağlanır, sonra değişmez.",
+      "kim": "Mimar kuralı koyar; tüm geliştiriciler uyar.",
+      "analoji": "Bir kütüphanedeki Dewey sınıflama sistemi: 5XX bilim, 8XX edebiyat — kitap yerini saniyede bulursun."
+    }
   }
 }

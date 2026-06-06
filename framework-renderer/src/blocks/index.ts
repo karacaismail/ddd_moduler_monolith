@@ -19,6 +19,9 @@ import { termsRenderer } from './terms';
 import { checklistRenderer } from './checklist';
 import { stepsRenderer } from './steps';
 import { lessonHeaderRenderer } from './lesson-header';
+import { mermaidRenderer } from './mermaid';
+import { imageRenderer } from './image';
+import { videoRenderer } from './video';
 
 /**
  * Tüm built-in block renderer'larını registry'e kayıt eder.
@@ -45,5 +48,8 @@ export function registerAllBlocks(registry: BlockRegistry): BlockRegistry {
     .register('terms', termsRenderer)
     .register('checklist', checklistRenderer)
     .register('steps', stepsRenderer)
-    .register('lesson-header', lessonHeaderRenderer);
+    .register('lesson-header', lessonHeaderRenderer)
+    .register('mermaid', mermaidRenderer)
+    .register('image', imageRenderer)
+    .register('video', videoRenderer);
 }

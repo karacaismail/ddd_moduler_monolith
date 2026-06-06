@@ -17,17 +17,20 @@
   "blocks": [
     {
       "type": "paragraph",
-      "text": "L1: kimlik, kiracılık, agent capability scopes. **Önemli kavram**: agent kullanıcı adına çalışırken etkin yetki = `user_perms ∩ agent_scope ∩ session_limits`. Bu intersection model framework'ün güvenlik temeli."
+      "text": "L1: kimlik, kiracılık, agent capability scopes. **Önemli kavram**: agent kullanıcı adına çalışırken etkin yetki = `user_perms ∩ agent_scope ∩ session_limits`. Bu intersection model framework'ün güvenlik temeli.",
+      "enrich": {}
     },
     {
       "type": "heading",
       "level": 4,
       "icon": "ph-buildings",
-      "text": "I01 — Tenant Lifecycle Management"
+      "text": "I01 — Tenant Lifecycle Management",
+      "enrich": {}
     },
     {
       "type": "paragraph",
-      "text": "**Faz 1 · P0 · Identity Squad.** Tenant provisioning, suspend, archive, kota yönetimi. Multi-tenant SaaS'in en alt katmanı."
+      "text": "**Faz 1 · P0 · Identity Squad.** Tenant provisioning, suspend, archive, kota yönetimi. Multi-tenant SaaS'in en alt katmanı.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -54,7 +57,8 @@
     },
     {
       "type": "paragraph",
-      "text": "**Faz 1 · P0 · Identity Squad.** Bireysel, kurumsal, **agent**, system kullanıcı — hepsi tek polymorphic identity modelinde. `principal_type` ayrımı zorunlu (agent ≠ human)."
+      "text": "**Faz 1 · P0 · Identity Squad.** Bireysel, kurumsal, **agent**, system kullanıcı — hepsi tek polymorphic identity modelinde. `principal_type` ayrımı zorunlu (agent ≠ human).",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -81,7 +85,16 @@
     },
     {
       "type": "paragraph",
-      "text": "**Faz 1 · P0 · Identity Squad.** Password, OAuth, OIDC, magic link, passkey, API key, **agent token** — tek auth katmanı. Agent token'ları human session'lardan ayrı muhasebe edilir (kısa TTL, max_tool_calls)."
+      "text": "**Faz 1 · P0 · Identity Squad.** Password, OAuth, OIDC, magic link, passkey, API key, **agent token** — tek auth katmanı. Agent token'ları human session'lardan ayrı muhasebe edilir (kısa TTL, max_tool_calls).",
+      "enrich": {
+        "lesson": {
+          "ne": "Başkasının kimliğini güvenle kullanmaya yarayan standart yöntem.",
+          "nicin": "Google ile gir, Facebook ile gir — parola paylaşmadan.",
+          "nasil": "Token (geçici geçiş kartı) alıp sisteme sunarsın.",
+          "kim": "Üçüncü taraflar entegre eder.",
+          "analoji": "Otele girerken kimlik göstermek yerine kart vermek."
+        }
+      }
     },
     {
       "type": "kv-row",
@@ -108,7 +121,8 @@
     },
     {
       "type": "paragraph",
-      "text": "**Faz 1 · P0 · Identity Squad.** RBAC + ABAC + agent capability scopes. Agent kullanıcı adına çalışırken `user_perms ∩ agent_scope` kesişimi geçerli."
+      "text": "**Faz 1 · P0 · Identity Squad.** RBAC + ABAC + agent capability scopes. Agent kullanıcı adına çalışırken `user_perms ∩ agent_scope` kesişimi geçerli.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -135,11 +149,13 @@
       "type": "heading",
       "level": 4,
       "icon": "ph-shield-warning",
-      "text": "I05 — Multi-Tenant Isolation"
+      "text": "I05 — Multi-Tenant Isolation",
+      "enrich": {}
     },
     {
       "type": "paragraph",
-      "text": "**Faz 2 · P0 · Identity Squad + Security Squad.** Schema-per-tenant izolasyon, query interception, cross-tenant erişim tespiti, tenant context propagation. Agent çağrıları tenant context'i kaybetmeden alt servislere taşınmalı."
+      "text": "**Faz 2 · P0 · Identity Squad + Security Squad.** Schema-per-tenant izolasyon, query interception, cross-tenant erişim tespiti, tenant context propagation. Agent çağrıları tenant context'i kaybetmeden alt servislere taşınmalı.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -158,7 +174,8 @@
       "type": "callout",
       "variant": "tip",
       "label": "Agent ≠ Human disiplini",
-      "body": "LandX'in en güçlü fikirlerinden biri: agent ve human kullanıcılar **aynı Principal modelinde** ama farklı `principal_type` ile. Agent'ın yetkisi her zaman üç kümeyi keser: (a) kim adına çalışıyor → user'ın izinleri, (b) hangi capability pack atanmış → agent scope, (c) session limit. Bu kesişim sıfırsa tool çağrılamaz. Privilege escalation matematiksel olarak imkansız."
+      "body": "LandX'in en güçlü fikirlerinden biri: agent ve human kullanıcılar **aynı Principal modelinde** ama farklı `principal_type` ile. Agent'ın yetkisi her zaman üç kümeyi keser: (a) kim adına çalışıyor → user'ın izinleri, (b) hangi capability pack atanmış → agent scope, (c) session limit. Bu kesişim sıfırsa tool çağrılamaz. Privilege escalation matematiksel olarak imkansız.",
+      "enrich": {}
     }
   ],
   "enrich": {
@@ -172,12 +189,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "LandX yapay zeka katmanının 1. seviyesi: 'kim, ne yapabilir' soruları.",
+      "nicin": "Ajanın yetkisi belli olmazsa rastgele iş yapar.",
+      "nasil": "Kimlik, oturum, yetki, kiracılık modülleri.",
+      "nerede": "Her ajan eyleminin önündeki kapı bekçisi.",
+      "ne_zaman": "Her ajan çalışmaya başlamadan önce.",
+      "kim": "Güvenlik mühendisi politika koyar; sistem uygular.",
+      "analoji": "Devlet dairesindeki personel kartı: nereye girebilir, hangi belgeyi imzalayabilir — kartta yazılı."
+    }
   }
 }

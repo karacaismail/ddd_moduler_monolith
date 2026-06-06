@@ -1,0 +1,83 @@
+{
+  "id": "sus-declarative",
+  "title": "Declarative resource'tan türetme",
+  "subtitle": "Ash Framework (Elixir): tek resource tanımından DB+API+authz+state machine türetilir. \"Model your domain, derive the rest.\"",
+  "cluster": "sus",
+  "order": 98,
+  "icon": "ph-magic-wand",
+  "tags": [
+    "sustainability",
+    "ash",
+    "edgedb",
+    "convex",
+    "declarative",
+    "dx"
+  ],
+  "enrich": {
+    "info": "Geliştirici amacı yazar (\"bu DocType şu alanları taşır\"); sistem geri kalanı (tablo, API, form, doğrulama) otomatik üretir.",
+    "lesson": {
+      "ne": "Tek bir declarative (bildirici) kaynaktan — DocType'tan — sistemin geri kalanı otomatik türetilir: veritabanı tablosu, REST API, GraphQL schema, authz kuralları, state machine, arka plan işleri, admin formu.",
+      "nicin": "Aynı bilgi 7 yerde tekrarlanırsa (DB sütunu + API tanımı + form alanı + validation kuralı + permission + test + dokümantasyon) ilk hata zincirin tamamını bozar. Tek kaynaktan türetme = sıfır kopya, sıfır sürüklenme.",
+      "nasil": "DocType deklaratif olarak yazılır (alanlar, tipler, ilişkiler, izinler). Üst katmanlar bu tanımı okuyup kendi parçalarını üretir. Geliştirici DB migration yazmaz; sistem üretir. API tanımı yazmaz; sistem türetir.",
+      "nerede": "framework/kernel/schema/ — DocType tanımı tek doğruluk; üst katmanlar buradan üretir.",
+      "ne_zaman": "Her yeni iş kavramı eklendiğinde — \"yeni alan\" demek tek satır eklemek demek.",
+      "kim": "Mimar DocType yazar; sistem geri kalanı üretir; geliştirici sadece özel iş mantığını ekler.",
+      "analoji": "Bir terzi: müşterinin ölçü kâğıdı (declarative) elinde — boy, kol, bel. Bu tek kâğıttan kalıp çıkar, kumaş kes, dik, paketle. Aynı bilgiyi 7 kez yazsa yanlış kesim olur. Ölçü kâğıdı tek doğruluk; geri kalanı türev."
+    },
+    "stories": [
+      {
+        "persona": "Pastacı Selma Hanım, pasta sipariş kartı",
+        "context": "Müşteri telefon ediyor: \"oğlumun 5. yaş günü, 6 kişilik, çikolatalı, üstünde araba figürü\". Selma Hanım tek sipariş kartına yazar.",
+        "outcome": "Tek karttan: alışveriş listesi (un, kakao, figür), pişirme programı, paketleme planı, fatura, teslim notu. Aynı bilgi 6 ayrı belge — hepsi sipariş kartından türev. Müşteri \"figürü değiştir\" derse Selma Hanım sadece kartı düzeltir; alt-belgeler yeniden basılır."
+      },
+      {
+        "persona": "Otel resepsiyonu rezervasyon formu",
+        "context": "Misafir \"3 gece, çift kişilik, deniz manzaralı\" diyor. Tek form: ödeme tahsilat planı, oda hazırlama emri, kahvaltı sayımı, check-out notu.",
+        "outcome": "Form tek doğruluk; departmanlar buradan kendi işini türetir. Misafir \"4 gece olsun\" derse form güncellenir; tüm departmanların kayıtları yeniden hesaplanır. DocType'tan türetme aynı."
+      },
+      {
+        "persona": "Diyetisyen Pınar Hanım, hasta beslenme planı",
+        "context": "Hastanın profili — yaş, kilo, alerji, hedef — tek formda. Bu formdan günlük menü, alışveriş listesi, takip tablosu, sonraki randevu önerisi türetilir.",
+        "outcome": "Profil değişirse (\"alerji listesine zeytin eklendi\") tüm türev belgeler otomatik güncellenir. Tek kaynak + sıfır kopya."
+      }
+    ],
+    "terms": [
+      {
+        "term": "Declarative",
+        "abbrev_tr": "Bildirici",
+        "meaning": "\"Nasıl\" değil, \"ne\" tarif etmek (Sonucu söyle; yolu sistem bulsun)",
+        "why": "Az kod, çok türetme"
+      },
+      {
+        "term": "Ash",
+        "meaning": "Elixir framework: \"Model your domain, derive the rest\" felsefesinin olgun referansı",
+        "why": "Bu vizyonun mevcut kanıtı"
+      },
+      {
+        "term": "EdgeDB/Gel",
+        "meaning": "Postgres üstünde declarative SDL; migration'ı DB üretir",
+        "why": "Schema → migration otomasyonu"
+      },
+      {
+        "term": "Convex",
+        "meaning": "TypeScript-first reaktif backend; uçtan uca tipli (AI codegen için ideal)",
+        "why": "DX zirvesi"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Ash mottosu",
+      "body": "*\"Model your domain, derive the rest.\"* — Resource tek doğruluk; DB şeması, REST+GraphQL, authz policy, state machine, background job hep buradan türetilir."
+    },
+    {
+      "type": "paragraph",
+      "text": "**DocType'ın olması gereken hâli:** Ash gibi \"resource → her şey türetilir\" disiplinine yükselt + EdgeDB gibi \"DB-üretimli, introspectable migration\" + Convex gibi TS-first AI-codegen. Üçü birleşince AI bile sistemin tamamını okuyup yüksek doğrulukla kod üretebilir."
+    }
+  ],
+  "related": [
+    "k-schema"
+  ]
+}

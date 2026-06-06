@@ -341,7 +341,16 @@
     {
       "type": "heading",
       "level": 4,
-      "text": "2.11 i18n & format"
+      "text": "2.11 i18n & format",
+      "enrich": {
+        "lesson": {
+          "ne": "Uluslararasılaştırma — yazılımın çoklu dilde çalışması.",
+          "nicin": "Farklı pazarlara hizmet için.",
+          "nasil": "Metinler kod yerine sözlük dosyalarında.",
+          "kim": "Geliştirici yapı kurar, çevirmen doldurur.",
+          "analoji": "Restoran menüsünün arka sayfasında İngilizce hali."
+        }
+      }
     },
     {
       "type": "table",
@@ -396,12 +405,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Tüm ürünlerin paylaştığı temel arayüz parçaları: butonlar, formlar, tablolar, menüler. Bir kez yazılır, 15 üründe kullanılır.",
+      "nicin": "Her ürünün kendi butonu olsaydı ölçü farklı, renk farklı, davranış farklı olur — kullanıcı kafası karışırdı. Ortak parçalar tutarlılık verir.",
+      "nasil": "Tasarımcı tasarlar, geliştirici parçaları kodlar, paylaşılan klasöre koyar. Her ürün ister.",
+      "nerede": "Paylaşılan klasördeki 'core-ui' kütüphanesi.",
+      "ne_zaman": "Tüm ürünlerin yapımında — her form, her tablo, her buton bu kütüphaneden gelir.",
+      "kim": "Tasarım sistemi mimarı yönetir; tüm ürün ekipleri kullanır.",
+      "analoji": "IKEA mobilyalarındaki standart vidalar ve menteşeler: hangi mobilyaya bakarsan bak aynı vidalar kullanılır. Standart = kalite + hız."
+    }
   }
 }

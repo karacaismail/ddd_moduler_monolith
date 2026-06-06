@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 300" role="img" aria-labelledby="sa-t sa-d">
+  <title id="sa-t">AI Action Yüzeyi — tipli, yetkili, audit'li</title>
+  <desc id="sa-d">AI ajan ham tabloya değil; sözleşmeli action katmanına erişir.</desc>
+  <style>
+    .lab { font: 600 13px 'Inter', sans-serif; fill: #1f2937; }
+    .head { font: 700 16px 'Inter', sans-serif; fill: #fff; }
+    .small { font: 400 12px 'Inter', sans-serif; fill: #6b7280; }
+    .arr { stroke: #10b981; stroke-width: 2.5; fill: none; marker-end: url(#ara); }
+    .arr-bad { stroke: #dc2626; stroke-width: 2; fill: none; stroke-dasharray: 6,3; marker-end: url(#arabad); }
+  </style>
+  <defs>
+    <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#10b981"/>
+    </marker>
+    <marker id="arabad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <rect x="30" y="120" width="140" height="60" rx="8" fill="#6366f1"/>
+  <text class="head" x="60" y="148">AI Ajan</text>
+  <text class="lab" x="60" y="170" fill="#c7d2fe">MCP üzerinden</text>
+
+  <rect x="220" y="100" width="200" height="100" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text class="head" x="245" y="128" fill="#92400e">Action Yüzeyi</text>
+  <text class="lab" x="240" y="150">📋 approve_invoice(...)</text>
+  <text class="lab" x="240" y="170">📋 publish_order(...)</text>
+  <text class="lab" x="240" y="190">📋 cancel_subscription(...)</text>
+
+  <rect x="470" y="100" width="200" height="100" rx="10" fill="#dbeafe" stroke="#2563eb"/>
+  <text class="head" x="495" y="128" fill="#1e40af">Veri Katmanı</text>
+  <text class="lab" x="490" y="150">🗄 invoices, orders</text>
+  <text class="lab" x="490" y="170">🔒 authz + audit</text>
+  <text class="lab" x="490" y="190">⚙ validation + side-effect</text>
+
+  <path class="arr" d="M 170 150 L 220 150"/>
+  <path class="arr" d="M 420 150 L 470 150"/>
+
+  <path class="arr-bad" d="M 100 100 Q 280 30 580 80"/>
+  <text class="small" x="240" y="55" fill="#dc2626">❌ ham SQL erişimi yasak</text>
+</svg>

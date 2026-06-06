@@ -1,0 +1,93 @@
+{
+  "id": "sus-boundaries",
+  "title": "Makine-zorlamalı modül sınırı (CI kapısı)",
+  "subtitle": "Shopify Packwerk: 2.8M satırlık monolit modüler kalmasını CI'da PR reddiyle sağlıyor.",
+  "cluster": "sus",
+  "order": 93,
+  "icon": "ph-traffic-signal",
+  "tags": [
+    "sustainability",
+    "ci",
+    "shopify",
+    "boundaries"
+  ],
+  "enrich": {
+    "info": "Sınırı insan değil makine zorlamalı; aksi halde \"sosyal sözleşme\" çürür.",
+    "lesson": {
+      "ne": "Modüler monolit, modüller arası sınırın PR birleştirme öncesi otomatik kontrol edilmesiyle modüler kalır. Sınırı ihlal eden kod birleştirilmez.",
+      "nicin": "Sosyal anlaşma (\"şu modüle dokunma\") zamanla çürür: yeni gelen geliştirici bilmez, baskıda kısayol bulur. Tek koruma: makine.",
+      "nasil": "Python tarafında `import-linter` (forbidden/independence/layers contract), TypeScript tarafında `@typescript-eslint` özel kural. CI'da `lint-imports` koşar; ihlal varsa exit code 1 → PR bloke.",
+      "nerede": ".github/workflows/boundaries.yml + .importlinter dosyası kök dizinde.",
+      "ne_zaman": "İlk Layer 2 modülü yazılmadan önce — sonra eklemek geç olur (refactor maliyeti).",
+      "kim": "Mimar contract'ı yazar; CI uygular; her geliştirici uyar; yeni gelen 1 dakikada öğrenir (sınırı CI hatırlatır).",
+      "analoji": "Stadyumdaki turnike sistemi: bilet yanlış kombineyse turnike geçmez. Görevliye \"izin verir misin\" diye yalvarsan bile makine açmaz. Modül sınırı turnike."
+    },
+    "stories": [
+      {
+        "persona": "Marangoz Murat Bey, atölye düzeni",
+        "context": "Atölyenin bir köşesinde \"keskin alet rafı\" var — sadece eldivenli giriş. 30 yıllık usta Hasan görünmez bariyer koymadıkça stajyerler defalarca girer.",
+        "outcome": "Murat Bey fiziksel turnike kuruyor: eldiven sensörü algılamazsa raf kilitli. Stajyer girmek isteyince makine engelliyor. \"Söz veriyorum dikkatli olacağım\" deyince usta tartışıyor; makine tartışmıyor. Modül sınırı = fiziksel turnike."
+      },
+      {
+        "persona": "Hastane temizlik şefi Cemil Bey",
+        "context": "Yoğun bakım koridoruna girmeden önce el dezenfekte zorunlu. Eskiden \"hatırlayın\" denerek tabela asılıyordu; 6 ayda alışkanlık dağıldı.",
+        "outcome": "Otomatik dispenser tabelaya kondu: el konmadan kapı açılmıyor. Tartışma yok, hatırlatma yok. CI sınır kapısı tam aynı: tartışma değil, otomatik engel."
+      },
+      {
+        "persona": "Restoran şefi Ayhan Bey, malzeme deposu",
+        "context": "Et bölümü ayrı dolapta, balık ayrı, sebze ayrı. Yeni stajyer karıştırırsa cross-contamination olur. Sözle anlatıldığı gün unutuyor.",
+        "outcome": "Her dolabın kart okuyucusu var: et kartı sadece et dolabını açar, balık kartı sadece balık. Stajyer yanlış dolaba girmek istese kart geçmez. Modülün API sınırı = kart okuyucu."
+      }
+    ],
+    "terms": [
+      {
+        "term": "import-linter",
+        "meaning": "Python paketlerinin birbirine import etmesini contract'a göre kontrol eden CI aracı",
+        "why": "Packwerk muadili"
+      },
+      {
+        "term": "Packwerk",
+        "meaning": "Shopify'ın Ruby/Rails monolit'inde modül sınırı zorlatan statik analiz aracı",
+        "why": "Asıl pattern'in kaynağı"
+      },
+      {
+        "term": "Contract",
+        "abbrev_tr": "Sözleşme",
+        "meaning": "İzin verilen/yasak bağımlılıkların yazılı tanımı",
+        "why": "İnsan unutabilir; yazı unutmaz"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Shopify deneyimi",
+      "body": "*\"We have 48 packages with 30 boundary enforcements within those packages\"* — Shopify Engineering. 2.8M satırlık Rails monolit 12+ yıldır modüler kalmasının tek sebebi: makine."
+    },
+    {
+      "type": "image",
+      "src": "/assets/sus-boundaries.svg",
+      "alt": "CI sınır kapısı — Modül A public API'sini kullanabilir; internal'a dokunan PR makine tarafından bloke",
+      "caption": "Yeşil ok = public API erişimi geçer; kırmızı kesik ok = internal erişim — CI tarafından reddedilir.",
+      "enrich": {
+        "info": "import-linter CI kapısı görsel",
+        "lesson": {
+          "ne": "Sınır insan değil makine tarafından zorlatılmalı.",
+          "nicin": "Sosyal anlaşma çürür; CI hatırlatması her PR'da otomatik koşar.",
+          "nasil": "import-linter contract'ı tanımlanır; lint-imports CI'da koşar; ihlal varsa fail.",
+          "kim": "Mimar contract'ı yazar; CI sistemı uygular; geliştirici uyar.",
+          "analoji": "Stadyumdaki turnike: bilet yanlışsa makine geçirmez; görevliye yalvarmak işe yaramaz."
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "text": "**Bu projede:** `import-linter` ile kernel < scale < core < modules katman zinciri zorlatılır. Modüller birbirinin internal'ına dokunamaz (privacy contract). PR ihlali olursa CI fail; birleştirilemez. Doküman bunu zaten anıyor — somutlaştırılması yapılacak iş."
+    }
+  ],
+  "related": [
+    "philosophy",
+    "anti-patterns"
+  ]
+}

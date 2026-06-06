@@ -21,275 +21,77 @@
           "name": "Lead",
           "desc": "Capture, qualify, score",
           "enrich": {
-            "info": "Capture, qualify, score",
-            "detail": "**Lead** nedir?\n\nCapture, qualify, score.\n\n**Amaç:** Müşteri davranışını izleyip kampanya, e-mail, segmentasyon ile satışı artıran modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç pazarlama / CRM bilmeyen biri için: bu özellik, pazarlama / CRM sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Pazarlama uzmanı",
-                "context": "\"Lead\" özelliğini kampanya ve müşteri segmentasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Capture, qualify, score pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Satış ekibi",
-                "context": "Lead skorunu izler. \"Lead\" özelliği bu süreçte devreye girer.",
-                "outcome": "Sıcak lead'lere öncelik verir; sistem otomatik hatırlatma yapar."
-              },
-              {
-                "persona": "Yönetici",
-                "context": "Müşteri kazanma maliyeti raporlar. \"Lead\" özelliği bu süreçte devreye girer.",
-                "outcome": "CAC + LTV grafikleri otomatik — kararlar veriye dayalı."
-              }
-            ]
+            "info": "Capture, qualify, score"
           }
         },
         {
           "name": "Pipeline",
           "desc": "Opportunity, stage, forecast",
           "enrich": {
-            "info": "Opportunity, stage, forecast",
-            "detail": "**Pipeline** nedir?\n\nOpportunity, stage, forecast.\n\n**Amaç:** Müşteri davranışını izleyip kampanya, e-mail, segmentasyon ile satışı artıran modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç pazarlama / CRM bilmeyen biri için: bu özellik, pazarlama / CRM sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Pazarlama uzmanı",
-                "context": "\"Pipeline\" özelliğini kampanya ve müşteri segmentasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Opportunity, stage, forecast pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Satış ekibi",
-                "context": "Lead skorunu izler. \"Pipeline\" özelliği bu süreçte devreye girer.",
-                "outcome": "Sıcak lead'lere öncelik verir; sistem otomatik hatırlatma yapar."
-              },
-              {
-                "persona": "Yönetici",
-                "context": "Müşteri kazanma maliyeti raporlar. \"Pipeline\" özelliği bu süreçte devreye girer.",
-                "outcome": "CAC + LTV grafikleri otomatik — kararlar veriye dayalı."
-              }
-            ]
+            "info": "Opportunity, stage, forecast"
           }
         },
         {
           "name": "Email Marketing",
           "desc": "Campaign, template, segment, A/B",
           "enrich": {
-            "info": "Campaign, template, segment, A/B",
-            "detail": "**Email Marketing** nedir?\n\nCampaign, template, segment, A/B.\n\n**Amaç:** Müşteri davranışını izleyip kampanya, e-mail, segmentasyon ile satışı artıran modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç pazarlama / CRM bilmeyen biri için: bu özellik, pazarlama / CRM sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Pazarlama uzmanı",
-                "context": "\"Email Marketing\" özelliğini kampanya ve müşteri segmentasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Campaign, template, segment, A/B pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Satış ekibi",
-                "context": "Lead skorunu izler. \"Email Marketing\" özelliği bu süreçte devreye girer.",
-                "outcome": "Sıcak lead'lere öncelik verir; sistem otomatik hatırlatma yapar."
-              },
-              {
-                "persona": "Yönetici",
-                "context": "Müşteri kazanma maliyeti raporlar. \"Email Marketing\" özelliği bu süreçte devreye girer.",
-                "outcome": "CAC + LTV grafikleri otomatik — kararlar veriye dayalı."
-              }
-            ]
+            "info": "Campaign, template, segment, A/B"
           }
         },
         {
           "name": "Marketing Automation",
           "desc": "Workflow, drip campaign, trigger",
           "enrich": {
-            "info": "Workflow, drip campaign, trigger",
-            "detail": "**Marketing Automation** nedir?\n\nWorkflow, drip campaign, trigger.\n\n**Amaç:** Müşteri davranışını izleyip kampanya, e-mail, segmentasyon ile satışı artıran modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç pazarlama / CRM bilmeyen biri için: bu özellik, pazarlama / CRM sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Pazarlama uzmanı",
-                "context": "\"Marketing Automation\" özelliğini kampanya ve müşteri segmentasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Workflow, drip campaign, trigger pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Satış ekibi",
-                "context": "Lead skorunu izler. \"Marketing Automation\" özelliği bu süreçte devreye girer.",
-                "outcome": "Sıcak lead'lere öncelik verir; sistem otomatik hatırlatma yapar."
-              },
-              {
-                "persona": "Yönetici",
-                "context": "Müşteri kazanma maliyeti raporlar. \"Marketing Automation\" özelliği bu süreçte devreye girer.",
-                "outcome": "CAC + LTV grafikleri otomatik — kararlar veriye dayalı."
-              }
-            ]
+            "info": "Workflow, drip campaign, trigger"
           }
         },
         {
           "name": "SMS Marketing",
           "desc": "Bulk SMS, ETK opt-in (IYS)",
           "enrich": {
-            "info": "Bulk SMS, ETK opt-in (IYS)",
-            "detail": "**SMS Marketing** nedir?\n\nBulk SMS, ETK opt-in (IYS).\n\n**Amaç:** Müşteri davranışını izleyip kampanya, e-mail, segmentasyon ile satışı artıran modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç pazarlama / CRM bilmeyen biri için: bu özellik, pazarlama / CRM sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Pazarlama uzmanı",
-                "context": "\"SMS Marketing\" özelliğini kampanya ve müşteri segmentasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Bulk SMS, ETK opt-in (IYS) pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Satış ekibi",
-                "context": "Lead skorunu izler. \"SMS Marketing\" özelliği bu süreçte devreye girer.",
-                "outcome": "Sıcak lead'lere öncelik verir; sistem otomatik hatırlatma yapar."
-              },
-              {
-                "persona": "Yönetici",
-                "context": "Müşteri kazanma maliyeti raporlar. \"SMS Marketing\" özelliği bu süreçte devreye girer.",
-                "outcome": "CAC + LTV grafikleri otomatik — kararlar veriye dayalı."
-              }
-            ]
+            "info": "Bulk SMS, ETK opt-in (IYS)"
           }
         },
         {
           "name": "Event Management",
           "desc": "Webinar, conference, ticket",
           "enrich": {
-            "info": "Webinar, conference, ticket",
-            "detail": "**Event Management** nedir?\n\nWebinar, conference, ticket.\n\n**Amaç:** Müşteri davranışını izleyip kampanya, e-mail, segmentasyon ile satışı artıran modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç pazarlama / CRM bilmeyen biri için: bu özellik, pazarlama / CRM sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Pazarlama uzmanı",
-                "context": "\"Event Management\" özelliğini kampanya ve müşteri segmentasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Webinar, conference, ticket pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Satış ekibi",
-                "context": "Lead skorunu izler. \"Event Management\" özelliği bu süreçte devreye girer.",
-                "outcome": "Sıcak lead'lere öncelik verir; sistem otomatik hatırlatma yapar."
-              },
-              {
-                "persona": "Yönetici",
-                "context": "Müşteri kazanma maliyeti raporlar. \"Event Management\" özelliği bu süreçte devreye girer.",
-                "outcome": "CAC + LTV grafikleri otomatik — kararlar veriye dayalı."
-              }
-            ]
+            "info": "Webinar, conference, ticket"
           }
         },
         {
           "name": "Survey / NPS",
           "desc": "Anket, feedback",
           "enrich": {
-            "info": "Anket, feedback",
-            "detail": "**Survey / NPS** nedir?\n\nAnket, feedback.\n\n**Amaç:** Müşteri davranışını izleyip kampanya, e-mail, segmentasyon ile satışı artıran modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç pazarlama / CRM bilmeyen biri için: bu özellik, pazarlama / CRM sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Pazarlama uzmanı",
-                "context": "\"Survey / NPS\" özelliğini kampanya ve müşteri segmentasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Anket, feedback pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Satış ekibi",
-                "context": "Lead skorunu izler. \"Survey / NPS\" özelliği bu süreçte devreye girer.",
-                "outcome": "Sıcak lead'lere öncelik verir; sistem otomatik hatırlatma yapar."
-              },
-              {
-                "persona": "Yönetici",
-                "context": "Müşteri kazanma maliyeti raporlar. \"Survey / NPS\" özelliği bu süreçte devreye girer.",
-                "outcome": "CAC + LTV grafikleri otomatik — kararlar veriye dayalı."
-              }
-            ]
+            "info": "Anket, feedback"
           }
         },
         {
           "name": "Customer Segment",
           "desc": "RFM, cohort, LTV, churn risk",
           "enrich": {
-            "info": "RFM, cohort, LTV, churn risk",
-            "detail": "**Customer Segment** nedir?\n\nRFM, cohort, LTV, churn risk.\n\n**Amaç:** Müşteri davranışını izleyip kampanya, e-mail, segmentasyon ile satışı artıran modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç pazarlama / CRM bilmeyen biri için: bu özellik, pazarlama / CRM sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Pazarlama uzmanı",
-                "context": "\"Customer Segment\" özelliğini kampanya ve müşteri segmentasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici RFM, cohort, LTV, churn risk pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Satış ekibi",
-                "context": "Lead skorunu izler. \"Customer Segment\" özelliği bu süreçte devreye girer.",
-                "outcome": "Sıcak lead'lere öncelik verir; sistem otomatik hatırlatma yapar."
-              },
-              {
-                "persona": "Yönetici",
-                "context": "Müşteri kazanma maliyeti raporlar. \"Customer Segment\" özelliği bu süreçte devreye girer.",
-                "outcome": "CAC + LTV grafikleri otomatik — kararlar veriye dayalı."
-              }
-            ]
+            "info": "RFM, cohort, LTV, churn risk"
           }
         },
         {
           "name": "Affiliate",
           "desc": "Link, commission, attribution",
           "enrich": {
-            "info": "Link, commission, attribution",
-            "detail": "**Affiliate** nedir?\n\nLink, commission, attribution.\n\n**Amaç:** Müşteri davranışını izleyip kampanya, e-mail, segmentasyon ile satışı artıran modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç pazarlama / CRM bilmeyen biri için: bu özellik, pazarlama / CRM sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Pazarlama uzmanı",
-                "context": "\"Affiliate\" özelliğini kampanya ve müşteri segmentasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Link, commission, attribution pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Satış ekibi",
-                "context": "Lead skorunu izler. \"Affiliate\" özelliği bu süreçte devreye girer.",
-                "outcome": "Sıcak lead'lere öncelik verir; sistem otomatik hatırlatma yapar."
-              },
-              {
-                "persona": "Yönetici",
-                "context": "Müşteri kazanma maliyeti raporlar. \"Affiliate\" özelliği bu süreçte devreye girer.",
-                "outcome": "CAC + LTV grafikleri otomatik — kararlar veriye dayalı."
-              }
-            ]
+            "info": "Link, commission, attribution"
           }
         },
         {
           "name": "Loyalty",
           "desc": "Smile.io muadili",
           "enrich": {
-            "info": "Smile.io muadili",
-            "detail": "**Loyalty** nedir?\n\nSmile.io muadili.\n\n**Amaç:** Müşteri davranışını izleyip kampanya, e-mail, segmentasyon ile satışı artıran modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç pazarlama / CRM bilmeyen biri için: bu özellik, pazarlama / CRM sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Pazarlama uzmanı",
-                "context": "\"Loyalty\" özelliğini kampanya ve müşteri segmentasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Smile.io muadili pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Satış ekibi",
-                "context": "Lead skorunu izler. \"Loyalty\" özelliği bu süreçte devreye girer.",
-                "outcome": "Sıcak lead'lere öncelik verir; sistem otomatik hatırlatma yapar."
-              },
-              {
-                "persona": "Yönetici",
-                "context": "Müşteri kazanma maliyeti raporlar. \"Loyalty\" özelliği bu süreçte devreye girer.",
-                "outcome": "CAC + LTV grafikleri otomatik — kararlar veriye dayalı."
-              }
-            ]
+            "info": "Smile.io muadili"
           }
         },
         {
           "name": "Live Chat",
           "desc": "Tidio/Intercom muadili",
           "enrich": {
-            "info": "Tidio/Intercom muadili",
-            "detail": "**Live Chat** nedir?\n\nTidio/Intercom muadili.\n\n**Amaç:** Müşteri davranışını izleyip kampanya, e-mail, segmentasyon ile satışı artıran modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç pazarlama / CRM bilmeyen biri için: bu özellik, pazarlama / CRM sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Pazarlama uzmanı",
-                "context": "\"Live Chat\" özelliğini kampanya ve müşteri segmentasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Tidio/Intercom muadili pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Satış ekibi",
-                "context": "Lead skorunu izler. \"Live Chat\" özelliği bu süreçte devreye girer.",
-                "outcome": "Sıcak lead'lere öncelik verir; sistem otomatik hatırlatma yapar."
-              },
-              {
-                "persona": "Yönetici",
-                "context": "Müşteri kazanma maliyeti raporlar. \"Live Chat\" özelliği bu süreçte devreye girer.",
-                "outcome": "CAC + LTV grafikleri otomatik — kararlar veriye dayalı."
-              }
-            ]
+            "info": "Tidio/Intercom muadili"
           }
         }
       ]
@@ -306,12 +108,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Pazarlama modülü: müşteri segmentasyonu, e-posta kampanyaları, indirim kuponları, hedefleme kuralları.",
+      "nicin": "Geneli aynı mesaj kayar — hedeflenmiş mesaj satar. Hangi müşteriye hangi teklif gönderileceği bu modülde kararlaşır.",
+      "nasil": "Kampanya tasarlanır → hedef kitle seçilir → otomatik gönderim planlanır → açılma/tıklama oranı ölçülür.",
+      "nerede": "E-posta, SMS, telefon bildirimi, web içi banner.",
+      "ne_zaman": "Yeni kampanya, sezon değişimi, özel günler.",
+      "kim": "Pazarlama uzmanı tasarlar; sistem hedefler; müşteri kişiselleşmiş teklif görür.",
+      "analoji": "Bir mağazanın özel müşterilerine elden gönderdiği davetiyeler: herkese değil, ilgilenenlere — daha yüksek dönüş."
+    }
   }
 }

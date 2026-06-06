@@ -42,7 +42,16 @@
         "term": "GitHub Actions",
         "abbrev_tr": "GitHub Eylemleri",
         "meaning": "Repo içine yazılan YAML workflow'larla CI/CD.",
-        "why": "Ayrı CI sunucusu kurmadan, repo'da yaşar."
+        "why": "Ayrı CI sunucusu kurmadan, repo'da yaşar.",
+        "enrich": {
+          "lesson": {
+            "ne": "GitHub'ın otomatik iş akışı sistemi.",
+            "nicin": "Manuel deploy hata kaynağı.",
+            "nasil": "Yaml dosyasında tarifler.",
+            "kim": "DevOps mühendisi.",
+            "analoji": "Fabrika bant."
+          }
+        }
       },
       {
         "term": "Workflow",
@@ -63,7 +72,16 @@
         "context": "Cowork kod ürettikten sonra terminale döner.",
         "outcome": "`yap` der; commit + push + Pages deploy otomatik akar. Tarayıcıya `https://kullanıcı.github.io/repo/` ile bakar."
       }
-    ]
+    ],
+    "lesson": {
+      "ne": "Yazılımı geliştiricinin bilgisayarından sunucuya taşıma adım adım rehberi.",
+      "nicin": "Geliştirici bilgisayarında kalan kod kimseye fayda etmez.",
+      "nasil": "Git'e gönder → GitHub Actions test eder → sunucuya iter → eski sürüm kapanır, yeni açılır.",
+      "nerede": "Hetzner sunucu + GitHub Actions.",
+      "ne_zaman": "Her yeni özellik tamamlandığında.",
+      "kim": "Geliştirici kodu hazırlar; DevOps pipeline'ı kurar.",
+      "analoji": "Restoranın yeni menüsü: önce mutfakta dene, sonra şubeler aynı reçeteye geçer."
+    }
   },
   "blocks": [
     {
@@ -97,24 +115,7 @@
             "state": "ok",
             "granularity": "kucuk-tas",
             "info": "Tek shell fonksiyonu — commit + push + ilk kez repo open.",
-            "detail": "Mesaj yazmazsan otomatik tarihli mesaj atar. Çıktı: `✓ Commit → ✓ Push → Actions`.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"yap (shell function)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"yap (shell function)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"yap (shell function)\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "detail": "Mesaj yazmazsan otomatik tarihli mesaj atar. Çıktı: `✓ Commit → ✓ Push → Actions`."
           }
         },
         {
@@ -132,24 +133,13 @@
                 "why": "ubuntu-latest bizim varsayılan — frontend için yeterli."
               }
             ],
-            "detail": "**GitHub Actions** nedir?\n\nRepo içindeki `.github/workflows/`. Testleri ve deploy'u GitHub çalıştırır.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"GitHub Actions\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"GitHub Actions\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"GitHub Actions\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "lesson": {
+              "ne": "GitHub'ın otomatik iş akışı sistemi.",
+              "nicin": "Manuel deploy hata kaynağı.",
+              "nasil": "Yaml dosyasında tarifler.",
+              "kim": "DevOps mühendisi.",
+              "analoji": "Fabrika bant."
+            }
           }
         },
         {
@@ -159,24 +149,7 @@
             "state": "ok",
             "granularity": "kum",
             "info": "Frontend için zorunlu workflow.",
-            "detail": "`working-directory: web` ile monorepo desteği. `VITE_BASE` env ile alt-dizin base path.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"deploy-pages.yml\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"deploy-pages.yml\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"deploy-pages.yml\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "detail": "`working-directory: web` ile monorepo desteği. `VITE_BASE` env ile alt-dizin base path."
           }
         },
         {
@@ -185,25 +158,7 @@
           "enrich": {
             "state": "ok",
             "granularity": "kum",
-            "info": "Test geçidi — bozuk kod main'e gitmesin.",
-            "detail": "**ci.yml (opsiyonel)** nedir?\n\nlint + typecheck + test + build. PR ve main push'ta.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"ci.yml (opsiyonel)\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici lint + typecheck + test + build. PR ve main push'ta. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"ci.yml (opsiyonel)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"ci.yml (opsiyonel)\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Test geçidi — bozuk kod main'e gitmesin."
           }
         }
       ]
@@ -297,24 +252,8 @@
                 "persona": "Cowork + Mac terminal",
                 "context": "Cowork sandbox'tan git komutu denenir, sonra Mac'ten 'yap'.",
                 "outcome": "İndex.lock kalır; tek satırla silinir."
-              },
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \".git/index.lock File exists\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \".git/index.lock File exists\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \".git/index.lock File exists\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
-            ],
-            "detail": "**.git/index.lock File exists** nedir?\n\nYarıda kalmış git işleminden kilit. `rm -f .git/index.lock && yap \"...\"`.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            ]
           }
         },
         {
@@ -322,25 +261,7 @@
           "desc": "Pages açılmamış. `gh api -X POST repos/<user>/<repo>/pages -f build_type=workflow && gh workflow run deploy-pages.yml`",
           "enrich": {
             "state": "ok",
-            "info": "İlk Pages açma kişisel token ister; sonra Actions devralır.",
-            "detail": "**Site 404 — Pages site here yok** nedir?\n\nPages açılmamış. `gh api -X POST repos/<user>/<repo>/pages -f build_type=workflow && gh workflow run deploy-pages.yml`.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Site 404 — Pages site here yok\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Pages açılmamış. `gh api -X POST repos/<user>/<repo>/pages -f build_type=workflo pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Site 404 — Pages site here yok\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Site 404 — Pages site here yok\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "İlk Pages açma kişisel token ister; sonra Actions devralır."
           }
         },
         {
@@ -348,25 +269,7 @@
           "desc": "Workflow token'ı Pages'i ilk kez açamaz. Yukarıdaki `gh api` komutuyla bir kez aç.",
           "enrich": {
             "state": "ok",
-            "info": "GitHub güvenlik kısıtı — workflow ilk Pages açma izni yok.",
-            "detail": "**Resource not accessible by integration** nedir?\n\nWorkflow token'ı Pages'i ilk kez açamaz. Yukarıdaki `gh api` komutuyla bir kez aç.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Resource not accessible by integration\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Workflow token'ı Pages'i ilk kez açamaz. Yukarıdaki `gh api` komutuyla bir kez a pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Resource not accessible by integration\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Resource not accessible by integration\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "GitHub güvenlik kısıtı — workflow ilk Pages açma izni yok."
           }
         },
         {
@@ -374,25 +277,7 @@
           "desc": "Free'de Pages sadece public. `gh repo edit <r> --visibility public --accept-visibility-change-consequences`",
           "enrich": {
             "state": "ok",
-            "info": "Pro/Team'e geçerse private + Pages mümkün; Free'de public şart.",
-            "detail": "**Free plan + private repo → Pages yok** nedir?\n\nFree'de Pages sadece public. `gh repo edit <r> --visibility public --accept-visibility-change-consequences`.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Free plan + private repo → Pages yok\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Free'de Pages sadece public. `gh repo edit <r> --visibility public --accept-visi pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Free plan + private repo → Pages yok\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Free plan + private repo → Pages yok\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Pro/Team'e geçerse private + Pages mümkün; Free'de public şart."
           }
         },
         {
@@ -400,25 +285,7 @@
           "desc": "Çok satırlı fonksiyonu terminale yapıştırma. Dosyadan source et.",
           "enrich": {
             "state": "ok",
-            "info": "Apostrof/çok-satır yapıştırma cmdand quote> sorununa yol açar.",
-            "detail": "**Heredoc/quote bozulması** nedir?\n\nÇok satırlı fonksiyonu terminale yapıştırma. Dosyadan source et.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Heredoc/quote bozulması\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Çok satırlı fonksiyonu terminale yapıştırma. Dosyadan source et. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Heredoc/quote bozulması\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Heredoc/quote bozulması\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Apostrof/çok-satır yapıştırma cmdand quote> sorununa yol açar."
           }
         }
       ]
@@ -441,7 +308,14 @@
       "body": "**Free plan**: yayında olan repo public olmalı. Geliştirmede public, sonra Pro + private. **Cowork sandbox** `git push` yapamaz; push her zaman Mac'teki `yap` ile. **Backend** (Hetzner/Debian) için `ci.yml` testleri yeterli; deploy ayrı bir workflow (SSH/rsync veya Docker) gerektirir — ihtiyaç olunca kurulur.",
       "enrich": {
         "info": "3 bilinçli sınır: Pages free=public, push sadece Mac'ten, backend deploy ayrı.",
-        "detail": "**Hetzner backend deploy** için önerilen pattern: `.github/workflows/deploy-backend.yml` → docker build + docker push (registry'ye) + SSH'tan `docker compose pull && up`."
+        "detail": "**Hetzner backend deploy** için önerilen pattern: `.github/workflows/deploy-backend.yml` → docker build + docker push (registry'ye) + SSH'tan `docker compose pull && up`.",
+        "lesson": {
+          "ne": "Almanya merkezli ucuz sunucu kiralama firması.",
+          "nicin": "AWS pahalı; Hetzner uygun.",
+          "nasil": "Web panelinden sunucu seçilir.",
+          "kim": "Sistem yöneticisi.",
+          "analoji": "Bina kiralama."
+        }
       }
     },
     {

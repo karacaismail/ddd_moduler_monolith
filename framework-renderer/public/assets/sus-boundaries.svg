@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320" role="img" aria-labelledby="sb2-t sb2-d">
+  <title id="sb2-t">CI Sınır Kapısı — import-linter</title>
+  <desc id="sb2-d">Modül A'nın modül B'nin internal'ına dokunan PR'ı CI reddeder.</desc>
+  <style>
+    .lab { font: 600 13px 'Inter', sans-serif; fill: #1f2937; }
+    .head { font: 700 16px 'Inter', sans-serif; fill: #fff; }
+    .ok { fill: #d1fae5; stroke: #10b981; stroke-width: 2; }
+    .bad { fill: #fee2e2; stroke: #dc2626; stroke-width: 2; }
+    .arr-ok { stroke: #10b981; stroke-width: 2; fill: none; marker-end: url(#arok); }
+    .arr-bad { stroke: #dc2626; stroke-width: 2; fill: none; stroke-dasharray: 5,3; marker-end: url(#arbad); }
+  </style>
+  <defs>
+    <marker id="arok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#10b981"/>
+    </marker>
+    <marker id="arbad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <text class="head" x="270" y="30" fill="#1f2937">Modül A → Modül B erişimi</text>
+
+  <rect x="30" y="80" width="180" height="80" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text class="head" x="80" y="108" fill="#1e40af">Modül A</text>
+  <text class="lab" x="50" y="135">commerce/orders/</text>
+
+  <rect x="490" y="80" width="180" height="80" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text class="head" x="540" y="108" fill="#1e40af">Modül B</text>
+  <text class="lab" x="505" y="135">hrms/payroll/_private</text>
+
+  <path class="arr-ok" d="M 210 110 L 490 110"/>
+  <text class="lab" x="270" y="100" fill="#10b981">✓ public API</text>
+
+  <path class="arr-bad" d="M 210 140 L 490 140"/>
+  <text class="lab" x="265" y="155" fill="#dc2626">✗ internal'a dokunma</text>
+
+  <rect x="180" y="210" width="340" height="80" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text class="head" x="240" y="238" fill="#92400e">CI: lint-imports</text>
+  <text class="lab" x="200" y="262">İhlal tespit → PR bloke</text>
+  <text class="lab" x="200" y="280">İnsanın hatırlamasına gerek yok — makine her PR'da kontrol</text>
+</svg>

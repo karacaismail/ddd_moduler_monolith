@@ -117,6 +117,44 @@ export const UserStorySchema = z.object({
   outcome: z.string(),
 });
 
+/**
+ * Lesson — 60+ yaş, yazılım geliştirmeye yeni başlayanlar için
+ * pedagojik içerik. Otomasyonla üretilmez, manuel yazılır.
+ * Yoksa render engine "bu içerik henüz yazılmadı" placeholder gösterir.
+ */
+export const LessonSchema = z.object({
+  /** 1-2 cümle: "X nedir?" sorusuna 60+ yaşa anlaşılır cevap. Jargon yok. */
+  ne: z.string().optional(),
+  /** Niçin bu konu önemli; gerçek hayattan eş değer. */
+  nicin: z.string().optional(),
+  /** Nasıl çalışır — adım adım, somut, beklenen sonuç. */
+  nasil: z.string().optional(),
+  /** Hangi bağlamda/yerde karşımıza çıkar — örnekli. */
+  nerede: z.string().optional(),
+  /** Hangi durumda devreye girer — somut tetik. */
+  ne_zaman: z.string().optional(),
+  /** Hangi roller etkilenir — kullanıcı, geliştirici, operasyon. */
+  kim: z.string().optional(),
+  /** Frontend tarafı — kullanıcıya görünen yüz; gerçek örnek. */
+  frontend: z
+    .object({
+      yer: z.string(),
+      gereklilik: z.string(),
+      ornek: z.string(),
+    })
+    .optional(),
+  /** Backend tarafı — perde arkası; gerçek örnek. */
+  backend: z
+    .object({
+      yer: z.string(),
+      gereklilik: z.string(),
+      ornek: z.string(),
+    })
+    .optional(),
+  /** 60+ analoji: gündelik hayattan benzer durum. */
+  analoji: z.string().optional(),
+});
+
 export const EnrichmentSchema = z.object({
   info: z.string().optional(),
   detail: z.string().optional(),
@@ -126,11 +164,14 @@ export const EnrichmentSchema = z.object({
   granularity: GranularitySchema.optional(),
   sp: z.number().int().nonnegative().optional(),
   refs: z.array(z.string()).optional(),
+  /** 60+ pedagojik içerik — auto-template yerine manuel yazılmış. */
+  lesson: LessonSchema.optional(),
 });
 
 export type Enrichment = z.infer<typeof EnrichmentSchema>;
 export type Term = z.infer<typeof TermSchema>;
 export type UserStory = z.infer<typeof UserStorySchema>;
+export type Lesson = z.infer<typeof LessonSchema>;
 
 // ============================================================================
 // Block tipleri
@@ -354,6 +395,36 @@ export const LessonHeaderBlockSchema = z.object({
   goals: z.array(z.string()).optional(),       // bu ünitede öğrenecekleri
 });
 
+// ────────────────────────────────────────────────────────────────────────────
+// Media + Diagram block tipleri — image, video, mermaid
+// ────────────────────────────────────────────────────────────────────────────
+export const MermaidBlockSchema = z.object({
+  type: z.literal('mermaid'),
+  title: z.string().optional(),
+  content: z.string(),
+  enrich: EnrichmentSchema.optional(),
+});
+
+export const ImageBlockSchema = z.object({
+  type: z.literal('image'),
+  src: z.string(),
+  alt: z.string(), // 60+ + a11y: zorunlu
+  caption: z.string().optional(),
+  width: z.number().int().positive().optional(),
+  height: z.number().int().positive().optional(),
+  enrich: EnrichmentSchema.optional(),
+});
+
+export const VideoBlockSchema = z.object({
+  type: z.literal('video'),
+  src: z.string(),
+  poster: z.string().optional(),
+  caption: z.string().optional(),
+  captionsSrc: z.string().optional(),
+  captionsLang: z.string().optional(),
+  enrich: EnrichmentSchema.optional(),
+});
+
 export const BlockSchema = z.discriminatedUnion('type', [
   ParagraphBlockSchema,
   HeadingBlockSchema,
@@ -375,6 +446,9 @@ export const BlockSchema = z.discriminatedUnion('type', [
   ChecklistBlockSchema,
   StepsBlockSchema,
   LessonHeaderBlockSchema,
+  MermaidBlockSchema,
+  ImageBlockSchema,
+  VideoBlockSchema,
 ]);
 
 export type Block = z.infer<typeof BlockSchema>;
@@ -395,6 +469,20 @@ export const ClusterLayerSchema = z.enum([
 ]);
 export type ClusterLayer = z.infer<typeof ClusterLayerSchema>;
 
+export const DifficultySchema = z.enum(['baslangic', 'orta', 'ileri']);
+export type Difficulty = z.infer<typeof DifficultySchema>;
+
+export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
+  baslangic: 'Başlangıç',
+  orta: 'Orta',
+  ileri: 'İleri',
+};
+export const DIFFICULTY_ICON: Record<Difficulty, string> = {
+  baslangic: 'ph-seedling',
+  orta: 'ph-tree',
+  ileri: 'ph-mountains',
+};
+
 export const ClusterSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/, 'id must be kebab-case'),
   title: z.string(),
@@ -407,6 +495,12 @@ export const ClusterSchema = z.object({
   tags: z.array(z.string()).optional(),
   granularity: GranularitySchema.optional(),
   state: StateSchema.optional(),
+  /** Zorluk seviyesi — beginner/intermediate/advanced (60+ için Türkçe etiket). */
+  difficulty: DifficultySchema.optional(),
+  /** Son güncelleme tarihi (ISO 8601). Yazar manuel girer; CI git log'dan da basabilir. */
+  lastUpdated: z.string().regex(/^\d{4}-\d{2}-\d{2}/).optional(),
+  /** Tahmini okuma süresi dakika; verilmezse render anında kelime sayısından hesaplanır. */
+  estReadMin: z.number().int().positive().optional(),
   enrich: EnrichmentSchema.optional(),
   blocks: z.array(BlockSchema),
   related: z.array(z.string()).optional(),

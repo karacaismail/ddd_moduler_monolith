@@ -14,7 +14,8 @@
   "blocks": [
     {
       "type": "paragraph",
-      "text": "**Statü:** Kilitli karar (2026-05-14). **Hedef:** Tek codebase ile PWA + iOS + Android, hibrit (operatör + son kullanıcı), AI-first, KYC/KYB native, offline-capable, multi-tenant SaaS. **Vibecoding referansı:** Bu doküman tek doğruluk kaynağıdır."
+      "text": "**Statü:** Kilitli karar (2026-05-14). **Hedef:** Tek codebase ile PWA + iOS + Android, hibrit (operatör + son kullanıcı), AI-first, KYC/KYB native, offline-capable, multi-tenant SaaS. **Vibecoding referansı:** Bu doküman tek doğruluk kaynağıdır.",
+      "enrich": {}
     },
     {
       "type": "heading",
@@ -110,7 +111,8 @@
       "type": "callout",
       "variant": "tip",
       "label": "Karar disiplini",
-      "body": "Bu 15 satır kilitli — değiştirilmez. CLAUDE.md, Cursor rules ve AI agent prompt'ları buradan üretilir. Tek bir kararı değiştirmek için ADR (Architecture Decision Record) yazılır."
+      "body": "Bu 15 satır kilitli — değiştirilmez. CLAUDE.md, Cursor rules ve AI agent prompt'ları buradan üretilir. Tek bir kararı değiştirmek için ADR (Architecture Decision Record) yazılır.",
+      "enrich": {}
     },
     {
       "type": "ref-grid",
@@ -137,12 +139,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Frontend tasarımının baştan kilitlenen kararları.",
+      "nicin": "Her geliştirici farklı seçerse proje çorba olur.",
+      "nasil": "Tablo: X seçildi, Y yasak. Niye?",
+      "nerede": "Geliştirici dokümanlarında ilk sayfa.",
+      "ne_zaman": "Yeni geliştirici okur; karar tartışmasında danışılır.",
+      "kim": "CTO ve baş geliştirici kilitler.",
+      "analoji": "Yemek tarifinin malzeme listesi: değiştirmek serbest değil."
+    }
   }
 }

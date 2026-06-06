@@ -1,0 +1,84 @@
+{
+  "id": "sus-codemod",
+  "title": "Otomatik upgrade — kendini-yükselten döngü",
+  "subtitle": "Drupal Rector + AI: her deprecation bir codemod kuralı olur; AI eski kodu yeniden yazar. \"Migration aracı = AI\".",
+  "cluster": "sus",
+  "order": 94,
+  "icon": "ph-arrows-clockwise",
+  "tags": [
+    "sustainability",
+    "codemod",
+    "drupal",
+    "rector",
+    "ai"
+  ],
+  "enrich": {
+    "info": "Eski kod elle taşınmaz — AI okur, codemod yazar, otomatik dönüştürür.",
+    "lesson": {
+      "ne": "Sistem büyüyüp eski API'leri \"deprecated\" (kullanımdan kaldırılan) ilan ettiğinde, her deprecated için bir codemod (kod-dönüştürücü) yazılır. AI bu codemod'u otomatik uygular; tüketici kodu yeni API'ye geçer.",
+      "nicin": "50 yıl boyunca kullanıcılardan \"manuel upgrade yap\" istemek mümkün değil. Drupal majör sürümlerinde Rector resmî desteği olunca contrib eklenti uyumu %67'den %98'e çıktı.",
+      "nasil": "Her deprecation duyurusu beraberinde bir codemod kuralı getirir (Python'da LibCST tabanlı AST dönüşümü). AI bu kuralı tüketici reposunda koşar; eski kod yeni API'ye dönüşür. BC modu açıkken iki API aynı anda çalışır.",
+      "nerede": "/codemods/ klasöründe her kural ayrı dosya. CI'da `codemod-check.yml` her deprecation için codemod var mı kontrol eder.",
+      "ne_zaman": "Her API değişikliği duyurusunda — eski API kullanımdan kaldırılırken yenisi açıklanır + dönüşüm kuralı yayınlanır.",
+      "kim": "Mimar API'yi değiştirir + codemod yazar; AI ajan tüketici kodunda koşar; tüketici PR'ı alıp birleştirir.",
+      "analoji": "Posta dağıtımcısı tarih değiştirmesi: 2024'te 5 hane posta kodu \"yeterli değil\" deniyor, 7 haneye geçiliyor. PTT eski adres defterlerini tarayan otomatik sistem kuruyor: 5 hanelileri 7 haneye çeviriyor, otomatik. Vatandaş elle güncellemek zorunda kalmıyor."
+    },
+    "stories": [
+      {
+        "persona": "Banka müşterisi Ayşe Hanım, IBAN geçişi",
+        "context": "2009'da banka hesap numarası 12 hane. 2010'da IBAN sistemi geldi (26 hane TR'de). Ayşe Hanım'ın tüm otomatik ödemeleri (elektrik, su, telefon) eski numaraya bağlıydı.",
+        "outcome": "Banka arka planda eski-yeni çevirim tablosu hazırladı; eski numarayla gelen talep IBAN'a otomatik çevrildi. Müşteri hiçbir şey yapmadı — geçiş hissedilmedi. Yazılım codemod tam buna benzer: arka planda otomatik dönüşüm."
+      },
+      {
+        "persona": "Tapu memuru Engin Bey, TKGM dijital geçişi",
+        "context": "1990'lardan beri tüm tapu kayıtları kağıt + el yazısı. 2010'da TAKBİS dijital sistemi geldi. 30 yıllık kağıt arşiv tek tek yazılarak girilseydi 20 yıl sürerdi.",
+        "outcome": "Otomatik OCR + ad-eşleştirme + adres standardizasyonu 3 yıl içinde tüm arşivi taradı. Kağıttan dijitale codemod. Yazılım sürüm geçişi de aynı: AI otomatik dönüştürür."
+      },
+      {
+        "persona": "Sigortacı Gülay Hanım, KKB skor formatı",
+        "context": "2015'te KKB skoru 0-100 aralığında verilirdi. 2020'de 0-1900 sistemine geçildi. Eski poliçelerde \"min 70\" yazıyor; yeni sistemde 70 saçma rakam.",
+        "outcome": "Otomatik dönüşüm formülü: eski_skor × 19 = yeni_skor. Tüm sözleşmelerde otomatik güncelleme yapıldı. Gülay Hanım elle dönüştürmek zorunda kalmadı. Codemod tek satır kuralla milyonlarca kayıt çevirir."
+      }
+    ],
+    "terms": [
+      {
+        "term": "Codemod",
+        "meaning": "Kaynak kodu otomatik yeniden yazan kural (AST üzerinde çalışır)",
+        "why": "Manuel taşıma 50 yıl ölçeklenmez"
+      },
+      {
+        "term": "AST",
+        "abbrev_of": "Abstract Syntax Tree",
+        "abbrev_tr": "Soyut Sözdizimi Ağacı",
+        "meaning": "Kodun ağaç biçiminde temsili — codemod bu ağacı dönüştürür",
+        "why": "Metin yerine yapı üstünde çalışmak güvenli"
+      },
+      {
+        "term": "Rector",
+        "meaning": "Drupal'ın PHP codemod aracı; her deprecation için kural var",
+        "why": "Olgun referans"
+      },
+      {
+        "term": "LibCST",
+        "meaning": "Instagram'ın açtığı Python concrete syntax tree kütüphanesi",
+        "why": "Python codemod yazımı için standart"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "AI bükümü",
+      "body": "Drupal'da codemod'u **insan** yazar. Bizde AI yazıp uygular: deprecation notlarını okur, LibCST kuralı üretir, tüketici reposunda koşar, PR açar. **Kendini-yükselten upgrade döngüsü.**"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Disiplin:** her deprecation = bir codemod. CI'da `codemod-check.yml` yeni deprecation'ı görür ve karşılığında codemod dosyası yoksa PR'ı bloke eder. Bu disiplin sayesinde Drupal contrib eklenti uyum oranı %98'e çıktı."
+    }
+  ],
+  "related": [
+    "build-sequence",
+    "deploy-yap"
+  ]
+}

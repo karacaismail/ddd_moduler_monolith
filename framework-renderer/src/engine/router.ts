@@ -43,11 +43,31 @@ export function onRouteChange(handler: (state: RouteState) => void): () => void 
   };
 }
 
-export function updateQuery(params: Partial<Record<string, string | null>>): void {
+/**
+ * Query params güncelle.
+ * @param params - null/undefined ise param silinir
+ * @param mode - 'replace' (default, history'ye yazmaz) | 'push' (back butonu ile geri gelebilir)
+ *
+ * Filter state'i için `push` öneririz: kullanıcı filter uyguladıktan sonra
+ * back butonuna basınca filter'sız sayfaya dönsün.
+ */
+export function updateQuery(
+  params: Partial<Record<string, string | null>>,
+  mode: 'replace' | 'push' = 'replace',
+): void {
   const url = new URL(window.location.href);
   for (const [k, v] of Object.entries(params)) {
-    if (v === null || v === undefined) url.searchParams.delete(k);
+    if (v === null || v === undefined || v === '') url.searchParams.delete(k);
     else url.searchParams.set(k, v);
   }
-  window.history.replaceState({}, '', url.toString());
+  if (mode === 'push') {
+    window.history.pushState({}, '', url.toString());
+  } else {
+    window.history.replaceState({}, '', url.toString());
+  }
+}
+
+/** Mevcut route bir filter içeriyor mu? */
+export function hasActiveFilter(state: RouteState = parseRoute()): boolean {
+  return !!(state.filterLayer || state.filterCluster || state.search);
 }

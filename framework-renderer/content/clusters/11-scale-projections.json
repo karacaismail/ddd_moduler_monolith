@@ -34,12 +34,22 @@
     },
     {
       "type": "paragraph",
-      "text": "10M sipariş, 1M müşteri olunca her dashboard request'inde aynı query. Yavaş. Cache'liyorsun, stale."
+      "text": "10M sipariş, 1M müşteri olunca her dashboard request'inde aynı query. Yavaş. Cache'liyorsun, stale.",
+      "enrich": {
+        "lesson": {
+          "ne": "Sık kullanılan verinin yakın bir yerde tutulması.",
+          "nicin": "Her seferinde uzaktan çekmek yavaşlar.",
+          "nasil": "Bellekte yedek; süresi dolunca yenilenir.",
+          "kim": "Sistem otomatik.",
+          "analoji": "Tezgâh üstündeki ekmek — depodan her seferinde almak yerine."
+        }
+      }
     },
     {
       "type": "heading",
       "level": 4,
-      "text": "Projection ile"
+      "text": "Projection ile",
+      "enrich": {}
     },
     {
       "type": "code",
@@ -53,7 +63,8 @@
     {
       "type": "heading",
       "level": 4,
-      "text": "DocType'a projection metadata"
+      "text": "DocType'a projection metadata",
+      "enrich": {}
     },
     {
       "type": "code",
@@ -62,7 +73,8 @@
     },
     {
       "type": "paragraph",
-      "text": "Framework bunu görür, otomatik subscriber kurar. Projection rebuild komutu: `framework rebuild-projection CustomerStats` — event store'dan baştan replay eder (durable workflow ile, kesintide kaldığı yerden)."
+      "text": "Framework bunu görür, otomatik subscriber kurar. Projection rebuild komutu: `framework rebuild-projection CustomerStats` — event store'dan baştan replay eder (durable workflow ile, kesintide kaldığı yerden).",
+      "enrich": {}
     },
     {
       "type": "heading",
@@ -85,90 +97,21 @@
           "label": "Twitter timeline",
           "text": "PostCreated event'inden materialize edilmiş per-user timeline. Okuma anında JOIN yok.",
           "enrich": {
-            "info": "PostCreated event'inden materialize edilmiş per-user timeline. Okuma anında JOIN yok.",
-            "detail": "**Twitter timeline** nedir?\n\nPostCreated event'inden materialize edilmiş per-user timeline. Okuma anında JOIN yok.\n\n**Amaç:** Yüksek-okuma dashboard'lar için ana tablodan türetilmiş hazır okuma tabloları. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç CQRS projections bilmeyen biri için: bu özellik, CQRS projections sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Performans mühendisi",
-                "context": "\"Twitter timeline\" özelliğini okuma odaklı query optimizasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici PostCreated event'inden materialize edilmiş per-user timeline. Okuma anında JOIN pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Frontend mühendisi",
-                "context": "Karmaşık dashboard'a veri çeker. \"Twitter timeline\" özelliği bu süreçte devreye girer.",
-                "outcome": "JOIN cehennemi yerine projection'dan tek sorgu."
-              },
-              {
-                "persona": "DB yöneticisi",
-                "context": "Yavaş sorguyu optimize eder. \"Twitter timeline\" özelliği bu süreçte devreye girer.",
-                "outcome": "Projection oluşturur, ana tablo yazma performansı korunur."
-              },
-              {
-                "persona": "Ürün yöneticisi",
-                "context": "Yeni metrik ister. \"Twitter timeline\" özelliği bu süreçte devreye girer.",
-                "outcome": "Yeni projection eklenir, eski okumalar etkilenmez."
-              }
-            ]
+            "info": "PostCreated event'inden materialize edilmiş per-user timeline. Okuma anında JOIN yok."
           }
         },
         {
           "label": "YouTube view count",
           "text": "yazma: `view++`, okuma: cached projection.",
           "enrich": {
-            "info": "yazma: `view++`, okuma: cached projection.",
-            "detail": "**YouTube view count** nedir?\n\nyazma: `view++`, okuma: cached projection.\n\n**Amaç:** Yüksek-okuma dashboard'lar için ana tablodan türetilmiş hazır okuma tabloları. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç CQRS projections bilmeyen biri için: bu özellik, CQRS projections sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Performans mühendisi",
-                "context": "\"YouTube view count\" özelliğini okuma odaklı query optimizasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici yazma: `view++`, okuma: cached projection. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Frontend mühendisi",
-                "context": "Karmaşık dashboard'a veri çeker. \"YouTube view count\" özelliği bu süreçte devreye girer.",
-                "outcome": "JOIN cehennemi yerine projection'dan tek sorgu."
-              },
-              {
-                "persona": "DB yöneticisi",
-                "context": "Yavaş sorguyu optimize eder. \"YouTube view count\" özelliği bu süreçte devreye girer.",
-                "outcome": "Projection oluşturur, ana tablo yazma performansı korunur."
-              },
-              {
-                "persona": "Ürün yöneticisi",
-                "context": "Yeni metrik ister. \"YouTube view count\" özelliği bu süreçte devreye girer.",
-                "outcome": "Yeni projection eklenir, eski okumalar etkilenmez."
-              }
-            ]
+            "info": "yazma: `view++`, okuma: cached projection."
           }
         },
         {
           "label": "Stripe dashboard",
           "text": "\"this month revenue\" — her ödeme event'i projection update'i.",
           "enrich": {
-            "info": "\"this month revenue\" — her ödeme event'i projection update'i.",
-            "detail": "**Stripe dashboard** nedir?\n\n\"this month revenue\" — her ödeme event'i projection update'i.\n\n**Amaç:** Yüksek-okuma dashboard'lar için ana tablodan türetilmiş hazır okuma tabloları. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç CQRS projections bilmeyen biri için: bu özellik, CQRS projections sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Performans mühendisi",
-                "context": "\"Stripe dashboard\" özelliğini okuma odaklı query optimizasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici \"this month revenue\" — her ödeme event'i projection update'i. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Frontend mühendisi",
-                "context": "Karmaşık dashboard'a veri çeker. \"Stripe dashboard\" özelliği bu süreçte devreye girer.",
-                "outcome": "JOIN cehennemi yerine projection'dan tek sorgu."
-              },
-              {
-                "persona": "DB yöneticisi",
-                "context": "Yavaş sorguyu optimize eder. \"Stripe dashboard\" özelliği bu süreçte devreye girer.",
-                "outcome": "Projection oluşturur, ana tablo yazma performansı korunur."
-              },
-              {
-                "persona": "Ürün yöneticisi",
-                "context": "Yeni metrik ister. \"Stripe dashboard\" özelliği bu süreçte devreye girer.",
-                "outcome": "Yeni projection eklenir, eski okumalar etkilenmez."
-              }
-            ]
+            "info": "\"this month revenue\" — her ödeme event'i projection update'i."
           }
         },
         {
@@ -176,29 +119,6 @@
           "text": "bütün fan-out işi projection.",
           "enrich": {
             "info": "bütün fan-out işi projection.",
-            "detail": "**Sosyal medya feed (#14)** nedir?\n\nbütün fan-out işi projection.\n\n**Amaç:** Yüksek-okuma dashboard'lar için ana tablodan türetilmiş hazır okuma tabloları. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç CQRS projections bilmeyen biri için: bu özellik, CQRS projections sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Performans mühendisi",
-                "context": "\"Sosyal medya feed (#14)\" özelliğini okuma odaklı query optimizasyonu sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici bütün fan-out işi projection. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Frontend mühendisi",
-                "context": "Karmaşık dashboard'a veri çeker. \"Sosyal medya feed (#14)\" özelliği bu süreçte devreye girer.",
-                "outcome": "JOIN cehennemi yerine projection'dan tek sorgu."
-              },
-              {
-                "persona": "DB yöneticisi",
-                "context": "Yavaş sorguyu optimize eder. \"Sosyal medya feed (#14)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Projection oluşturur, ana tablo yazma performansı korunur."
-              },
-              {
-                "persona": "Ürün yöneticisi",
-                "context": "Yeni metrik ister. \"Sosyal medya feed (#14)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Yeni projection eklenir, eski okumalar etkilenmez."
-              }
-            ],
             "terms": [
               {
                 "term": "Fan-out",
@@ -213,7 +133,7 @@
     }
   ],
   "enrich": {
-    "info": "Yazma normalize, okuma denormalize. Event-driven senkron.",
+    "info": "Hızlı listeleme ve rapor için, ana veri yanında önceden hesaplanmış kopya tablolar.",
     "detail": "Yazma normalize, okuma denormalize. Event-driven senkron.",
     "terms": [
       {
@@ -227,15 +147,18 @@
         "term": "Projection",
         "abbrev_tr": "İzdüşüm",
         "meaning": "Event'lerden türetilen okuma tablosu.",
-        "why": "JOIN cehenneminden kurtulma."
+        "why": "JOIN cehenneminden kurtulma.",
+        "enrich": {}
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Hızlı listeleme ve rapor için, ana veri yanında önceden hesaplanmış kopya tablolar. 'Sorulduğunda yetişmeyelim, önceden hazırlayalım' fikri.",
+      "nicin": "Karmaşık raporlar her seferinde hesaplansa sistem yavaşlar. Önceden hazırlanmış özet tabloları olursa sayfa milisaniyede açılır.",
+      "nasil": "Ana veri değiştiğinde sistem ilgili özet tablosunu da kendiliğinden günceller. Kullanıcı sayfayı açtığında doğrudan özet tablosundan okur, ana tabloyu hiç sıkmaz.",
+      "nerede": "Liste sayfaları, dashboard'lar, yıllık raporlar — hepsi projection tablosundan beslenir.",
+      "ne_zaman": "Karmaşık sorgu, çok sayıda ilişkili tablo, ağır toplam hesabı söz konusu olduğunda.",
+      "kim": "Geliştirici projection kurallarını yazar; sistem otomatik günceller; son kullanıcı hızı görür.",
+      "analoji": "Bir kafenin günlük 'en çok satan 10 ürün' panosu: her sipariş geldiğinde pano güncellenir. Müşteri sorduğunda kafe sahibi her seferinde defterleri karıştırmaz; tabelaya bakar."
+    }
   }
 }

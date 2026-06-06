@@ -16,15 +16,49 @@
   "granularity": "kaya",
   "state": "critical",
   "enrich": {
-    "info": "Framework'ün omurgası. Şema kodda değil — metadata'da. Frappe pattern.",
+    "info": "Sistemin omurgası: yeni veri tipleri (Müşteri, Fatura, vb.) kod yazılmadan, tanım kartı doldurularak eklenir.",
     "detail": "Bir DocType tanımladığın anda DB tablosu, REST endpoint, GraphQL tipi, admin form, audit logger, search indexer otomatik üretilir. Migration yok, deploy yok.",
     "terms": [
-      { "term": "DocType", "abbrev_of": "Document Type", "abbrev_tr": "Belge tipi", "meaning": "Metadata-driven varlık tanımı.", "why": "Tek kaynak: DB + UI + API + audit hepsi bundan türer." },
-      { "term": "Metadata-driven", "abbrev_tr": "Üst-veri güdümlü", "meaning": "Sistemin davranışı kod yerine veri (config) ile belirlenir.", "why": "Plugin geliştiricisi DB ve API'yi kod yazmadan üretir." }
+      {
+        "term": "DocType",
+        "abbrev_of": "Document Type",
+        "abbrev_tr": "Belge tipi",
+        "meaning": "Metadata-driven varlık tanımı.",
+        "why": "Tek kaynak: DB + UI + API + audit hepsi bundan türer."
+      },
+      {
+        "term": "Metadata-driven",
+        "abbrev_tr": "Üst-veri güdümlü",
+        "meaning": "Sistemin davranışı kod yerine veri (config) ile belirlenir.",
+        "why": "Plugin geliştiricisi DB ve API'yi kod yazmadan üretir."
+      }
     ],
     "stories": [
-      { "persona": "SaaS müşterisi (admin)", "context": "'Servis Talebi' adında yeni bir DocType oluşturur.", "outcome": "Anında: DB tablosu, admin formu, REST/GraphQL endpoint, audit log, search index — kod 0 satır." }
-    ]
+      {
+        "persona": "Veteriner Aslı Hanım",
+        "context": "Klinikte hayvan kayıtları tutuyor. Hasta defterinde her hayvan için ad, ırk, sahibi, son aşı gibi alanlar var. Şimdi 'köpek pansiyonu' hizmeti de eklemek istiyor — yeni alanlar lazım: 'kaç günlük rezervasyon', 'beslenme notları', 'fobi/alerji'.",
+        "outcome": "DocType yöntemiyle yönetici paneline girer → 'Pansiyon Konaklaması' adlı yeni kart oluşturur → alanları yazar → kaydet. Sistem otomatik üretir: ekran, tablo, kayıt listesi. Programcı çağırmaya gerek yok."
+      },
+      {
+        "persona": "Okul sekreteri Fatma Hanım",
+        "context": "Velilerden gelen 'devamsızlık formu', 'beslenme talep formu', 'gezi izin formu' her dönem farklı şeyler. Müdür her seferinde matbaaya yeni form bastırıyor.",
+        "outcome": "Okulun sistemine DocType'lar tanımlanır: her form bir kart şablonu. Yeni form ihtiyacı çıkınca sekreter kendisi 'Yardım Kampanyası Formu' diye yeni kart açar. Velinin telefonundan dolduruluyor; matbaa masrafı bitti."
+      },
+      {
+        "persona": "Site yöneticisi Hüseyin Bey",
+        "context": "60 daireli sitede 'şikayet bildirimi', 'tamir talebi', 'rezervasyon (otopark/sosyal alan)' ayrı ayrı dosyalanır. Hangisi hangi klasörde sorusu kafa karıştırır.",
+        "outcome": "Sistemde her tip için ayrı DocType: Şikayet, Tamir, Rezervasyon. Kullanıcı kendi telefonundan açar; yönetici tek panelde hepsini görür, hangi sırada hangi iş — bellidir."
+      }
+    ],
+    "lesson": {
+      "ne": "Sistemin omurgası: yeni bir veri tipi (Müşteri, Fatura, Sipariş) tanımlamak için kod yazmak yerine bir 'tanım kartı' (DocType) doldurulur. Sistem bu karta bakar, gerisini kendi halleder.",
+      "nicin": "Her özel müşteri ihtiyacı için programcı çağırmak yavaş ve pahalı. Tanım kartı yöntemi sayesinde yönetici 'Yeni bir Şikayet kaydı tipi istiyorum' deyince yarım saatte hazır olur.",
+      "nasil": "Yönetici panelinde 'Yeni DocType' butonuna basar → alan isimlerini (konu, açıklama, öncelik) yazar → kaydeder. Sistem bunun için veritabanı tablosu, form ekranı, arama, log kaydı — hepsini kendiliğinden üretir.",
+      "nerede": "Yönetici panelinde 'Veri tipleri' menüsünde. Her tip için sonsuz kayıt eklenebilir.",
+      "ne_zaman": "Yeni bir işlem türü iş süreçlerine girince. Örnek: muhasebe modülünüze 'Avans Talebi' diye yeni bir kavram eklemek istediğinizde.",
+      "kim": "Sistem yöneticisi tanımlar; geliştirici devreye girmek zorunda kalmaz; son kullanıcı yeni tipi bir form olarak görür.",
+      "analoji": "Bir mağaza zincirinin merkez ofisinin tüm şubelere yolladığı 'yeni ürün kartı': isim, fiyat, kategori, fotoğraf alanları belli. Tüm şubeler bu karta göre raf düzenler, satış yapar."
+    }
   },
   "blocks": [
     {
@@ -33,8 +67,16 @@
       "enrich": {
         "info": "Eşdeğerler: Frappe DocType, Odoo Model, Salesforce Object, Strapi Content-Type.",
         "terms": [
-          { "term": "Frappe", "meaning": "Python+JS metadata-driven framework. ERPNext'in altyapısı.", "why": "DocType paterni ilk kanıtlayan açık kaynak." },
-          { "term": "Strapi", "meaning": "Node.js headless CMS. Content-Type metadata-driven.", "why": "Content-Type yaklaşımı bizim DocType'ımıza eşdeğer." }
+          {
+            "term": "Frappe",
+            "meaning": "Python+JS metadata-driven framework. ERPNext'in altyapısı.",
+            "why": "DocType paterni ilk kanıtlayan açık kaynak."
+          },
+          {
+            "term": "Strapi",
+            "meaning": "Node.js headless CMS. Content-Type metadata-driven.",
+            "why": "Content-Type yaklaşımı bizim DocType'ımıza eşdeğer."
+          }
         ]
       }
     },
@@ -42,6 +84,22 @@
       "type": "heading",
       "level": 4,
       "text": "Domain modeli"
+    },
+    {
+      "type": "image",
+      "src": "/assets/k-schema-doctype.svg",
+      "alt": "DocType tanım kartından 5 otomatik çıktı: tablo, API, form, audit, hook",
+      "caption": "Tek bir DocType tanımı 5 farklı çıktıyı kendiliğinden üretir.",
+      "enrich": {
+        "info": "DocType tanım kartı + otomatik üretilen 5 çıktı.",
+        "lesson": {
+          "ne": "Bir DocType tanımladığında sistemin neleri otomatik ürettiğini gösteren akış şeması.",
+          "nicin": "'Kart doldurma' yönteminin gücünü görmek, kod yazmak yerine tanım yazmanın hızını kavramak için.",
+          "nasil": "Sol tarafta tek tanım kartı, sağ tarafta beş otomatik çıktı: tablo, API, form, audit, hook.",
+          "kim": "Yönetici görür ve kullanmaya karar verir; geliştirici altyapıyı kurar.",
+          "analoji": "Bir matbaaya tek bir tasarım vermek, ondan kartvizit + afiş + zarf + bayrak + etiket basılması gibi."
+        }
+      }
     },
     {
       "type": "paragraph",
@@ -228,7 +286,8 @@
     },
     {
       "type": "paragraph",
-      "text": "Restoran A \"Türk mutfağı\" kategorisinde **is_vegan** alanı istiyor. Sen koda dokunmuyorsun. Admin paneli → DocType: MenuItem → Custom Field ekle: `is_vegan` (Check). Tenant-spesifik `custom_field` satırı eklenir. Sonraki form render'da alan görünür, API payload'da görünür, audit log değişikliği yakalar. *Migration yok, deploy yok*."
+      "text": "Restoran A \"Türk mutfağı\" kategorisinde **is_vegan** alanı istiyor. Sen koda dokunmuyorsun. Admin paneli → DocType: MenuItem → Custom Field ekle: `is_vegan` (Check). Tenant-spesifik `custom_field` satırı eklenir. Sonraki form render'da alan görünür, API payload'da görünür, audit log değişikliği yakalar. *Migration yok, deploy yok*.",
+      "enrich": {}
     },
     {
       "type": "heading",
@@ -237,7 +296,16 @@
     },
     {
       "type": "paragraph",
-      "text": "Bazı kayıtlar \"draft → submitted → cancelled\" mantığında yaşar (fatura, sipariş, journal entry). Frappe'de `is_submittable: 1` diyince DocType'a `docstatus` alanı eklenir (0=draft, 1=submitted, 2=cancelled). Submit edildikten sonra belli alanlar değiştirilemez (financial integrity). Sadece `on_update_after_submit` hook'unda belirli alanlar açıkça izinli."
+      "text": "Bazı kayıtlar \"draft → submitted → cancelled\" mantığında yaşar (fatura, sipariş, journal entry). Frappe'de `is_submittable: 1` diyince DocType'a `docstatus` alanı eklenir (0=draft, 1=submitted, 2=cancelled). Submit edildikten sonra belli alanlar değiştirilemez (financial integrity). Sadece `on_update_after_submit` hook'unda belirli alanlar açıkça izinli.",
+      "enrich": {
+        "lesson": {
+          "ne": "Müşterinin satın aldığı ürün ve hizmet kaydı.",
+          "nicin": "Her satışın takip edilmesi için.",
+          "nasil": "Sepet → ödeme → sipariş kodu.",
+          "kim": "Müşteri açar; sistem işler.",
+          "analoji": "Restoranda garsona söylenen sipariş fişi."
+        }
+      }
     },
     {
       "type": "heading",
@@ -266,7 +334,13 @@
         "info": "JSON-her-şey = WP postmeta — WHERE/ORDER/JOIN ölür.",
         "detail": "JSONB güzel, ama **birincil** veri için değil — ek (extension) için. Birincil alanlar fiziksel kolon olmalı: B-tree index, foreign key constraint, type safety.",
         "terms": [
-          { "term": "EAV", "abbrev_of": "Entity-Attribute-Value", "abbrev_tr": "Varlık-Nitelik-Değer", "meaning": "Bir tabloda (entity_id, attr_name, value) satırları tutarak şema-less davranma.", "why": "Kolay başlar, sorgu ve performans cehennemine döner. WP postmeta bunun klasik tuzağı." }
+          {
+            "term": "EAV",
+            "abbrev_of": "Entity-Attribute-Value",
+            "abbrev_tr": "Varlık-Nitelik-Değer",
+            "meaning": "Bir tabloda (entity_id, attr_name, value) satırları tutarak şema-less davranma.",
+            "why": "Kolay başlar, sorgu ve performans cehennemine döner. WP postmeta bunun klasik tuzağı."
+          }
         ]
       }
     },
@@ -287,7 +361,8 @@
     },
     {
       "type": "paragraph",
-      "text": "LandX kataloğunda K02 — *DocType Engine (Schema Runtime)*: deklaratif DocType tanımı → runtime'da DB tablosu, REST endpoint, validation, admin UI **ve MCP tool spec'i** otomatik üretilir. Bu cluster'daki schema engine + LandX K02 birebir aynı fikrin iki tarafı; ek olarak LandX **agent-aware** kısmı vurgular: her DocType'ın MCP tool olarak otomatik expose edilmesi."
+      "text": "LandX kataloğunda K02 — *DocType Engine (Schema Runtime)*: deklaratif DocType tanımı → runtime'da DB tablosu, REST endpoint, validation, admin UI **ve MCP tool spec'i** otomatik üretilir. Bu cluster'daki schema engine + LandX K02 birebir aynı fikrin iki tarafı; ek olarak LandX **agent-aware** kısmı vurgular: her DocType'ın MCP tool olarak otomatik expose edilmesi.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -322,6 +397,12 @@
           "value": "`ai_generated`, `breaking_changes` (AI), `compatibility_score` (AI, 0-100), `data_loss_assessment` (AI + audit)"
         }
       ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "🎯 Hedef seviye: TIMI stabil arayüz",
+      "body": "Bu cluster DocType'ın **mevcut metadata-driven** seviyesini anlatır: kod yazmadan tablo + form + API. **Hedef seviye** ise farklıdır — DocType'ın **stabil, substrat-bağımsız, versiyonlu sözleşme arayüzü** olması: altta PostgreSQL → başka DB → WASM olsa bile DocType API'si değişmesin.\n\nIBM i (1988-) TIMI sayesinde 35 yıl boyunca 25 farklı işlemci nesli üzerinde aynı uygulamayı çalıştırdı. Aynı disiplini DocType'a uygulamak için bkz. {{ref:sus-timi}}.\n\n**Bugün → yarın geçişi:** sürüm snapshot'ları (`doctype_contract/*.json`), substrat-bağımsızlık, geriye-uyumluluk testleri eklenmeli."
     }
   ]
 }

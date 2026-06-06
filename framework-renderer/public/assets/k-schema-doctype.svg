@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320" role="img" aria-labelledby="ks-t ks-d">
+  <title id="ks-t">DocType — Tek Tanım, Beş Otomatik Çıktı</title>
+  <desc id="ks-d">Bir DocType tanımı veritabanı, API, form, denetim ve arama çıktılarını otomatik üretir.</desc>
+  <style>
+    .lab { font: 600 14px 'Inter', sans-serif; fill: #1f2937; }
+    .head { font: 700 16px 'Inter', sans-serif; fill: #fff; }
+    .arr { stroke: #6366f1; stroke-width: 2; fill: none; marker-end: url(#ar); }
+  </style>
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/>
+    </marker>
+  </defs>
+  <rect x="30" y="120" width="180" height="80" rx="10" fill="#6366f1" />
+  <text class="head" x="64" y="150">DocType tanım kartı</text>
+  <text class="lab" x="50" y="172" fill="#fff">Müşteri Şikayeti</text>
+  <text class="lab" x="50" y="190" fill="#fff">konu · açıklama · öncelik</text>
+
+  <rect x="450" y="20"  width="220" height="50" rx="6" fill="#eef2ff" stroke="#6366f1" />
+  <text class="lab" x="470" y="50">📦 PostgreSQL tablosu</text>
+  <rect x="450" y="80"  width="220" height="50" rx="6" fill="#eef2ff" stroke="#6366f1" />
+  <text class="lab" x="470" y="110">🌐 REST + GraphQL API</text>
+  <rect x="450" y="140" width="220" height="50" rx="6" fill="#eef2ff" stroke="#6366f1" />
+  <text class="lab" x="470" y="170">📝 Admin form + liste</text>
+  <rect x="450" y="200" width="220" height="50" rx="6" fill="#eef2ff" stroke="#6366f1" />
+  <text class="lab" x="470" y="230">📚 Audit log + Search index</text>
+  <rect x="450" y="260" width="220" height="50" rx="6" fill="#eef2ff" stroke="#6366f1" />
+  <text class="lab" x="470" y="290">🔌 Hook noktaları</text>
+
+  <path class="arr" d="M 210 145 L 450 45" />
+  <path class="arr" d="M 210 155 L 450 105" />
+  <path class="arr" d="M 210 165 L 450 165" />
+  <path class="arr" d="M 210 175 L 450 225" />
+  <path class="arr" d="M 210 185 L 450 285" />
+</svg>

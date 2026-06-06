@@ -145,25 +145,7 @@
           "body": "Sen çağırırsın. Örn: `dayjs.format(date)` — tarihi formatlamak için fonksiyon.",
           "tone": "neutral",
           "enrich": {
-            "info": "Sen çağırırsın. Örn: `dayjs.format(date)` — tarihi formatlamak için fonksiyon.",
-            "detail": "**Library** nedir?\n\nSen çağırırsın. Örn: `dayjs.format(date)` — tarihi formatlamak için fonksiyon.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Library\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Sen çağırırsın. Örn: `dayjs.format(date)` — tarihi formatlamak için fonksiyon. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Library\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Library\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Sen çağırırsın. Örn: `dayjs.format(date)` — tarihi formatlamak için fonksiyon."
           }
         },
         {
@@ -172,25 +154,7 @@
           "body": "Framework seni çağırır. Örn: Django senin `view()` fonksiyonunu HTTP isteği gelince çağırır.",
           "tone": "neutral",
           "enrich": {
-            "info": "Framework seni çağırır. Örn: Django senin `view()` fonksiyonunu HTTP isteği gelince çağırır.",
-            "detail": "**Framework** nedir?\n\nFramework seni çağırır. Örn: Django senin `view()` fonksiyonunu HTTP isteği gelince çağırır.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Framework\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Framework seni çağırır. Örn: Django senin `view()` fonksiyonunu HTTP isteği geli pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Framework\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Framework\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Framework seni çağırır. Örn: Django senin `view()` fonksiyonunu HTTP isteği gelince çağırır."
           }
         },
         {
@@ -200,24 +164,13 @@
           "tone": "good",
           "enrich": {
             "info": "Sen DocType tanımlarsın → framework DB+API+UI üretir. Kod yazmadan ürün doğar.",
-            "detail": "**Meta-framework** nedir?\n\nSen DocType tanımlarsın → framework DB+API+UI üretir. Kod yazmadan ürün doğar.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Meta-framework\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Sen DocType tanımlarsın → framework DB+API+UI üretir. Kod yazmadan ürün doğar. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Meta-framework\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Meta-framework\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "lesson": {
+              "ne": "Satışa sunulan eşya veya hizmet.",
+              "nicin": "İşletmenin gelir kaynağı.",
+              "nasil": "Katalogda fotoğraf + fiyat + stok bilgisi.",
+              "kim": "Üretici/satıcı yönetir.",
+              "analoji": "Bakkalın rafındaki her eşya."
+            }
           }
         }
       ]
@@ -289,11 +242,13 @@
         },
         {
           "title": "Framework devralır",
-          "body": "Anında: DB'de `tabMusteriSikayeti` tablosu, REST endpoint (`/api/resource/MusteriSikayeti`), admin formu, audit log, search index oluşur."
+          "body": "Anında: DB'de `tabMusteriSikayeti` tablosu, REST endpoint (`/api/resource/MusteriSikayeti`), admin formu, audit log, search index oluşur.",
+          "enrich": {}
         },
         {
           "title": "Kullanıcı kayıt girer",
-          "body": "Form doldurur → REST POST → DB INSERT → audit log → event bus 'yeni şikayet' yayını → bildirim worker maile düşer."
+          "body": "Form doldurur → REST POST → DB INSERT → audit log → event bus 'yeni şikayet' yayını → bildirim worker maile düşer.",
+          "enrich": {}
         },
         {
           "title": "Plugin tepki verir",
@@ -317,14 +272,24 @@
           "label": "Library ve framework farkını 'kim kimi çağırır' üzerinden açıklayabilirim."
         },
         {
-          "label": "Meta-framework'ün neden 15 ürün hedefimizle örtüştüğünü söyleyebilirim."
+          "label": "Meta-framework'ün neden 15 ürün hedefimizle örtüştüğünü söyleyebilirim.",
+          "enrich": {
+            "lesson": {
+              "ne": "Satışa sunulan eşya veya hizmet.",
+              "nicin": "İşletmenin gelir kaynağı.",
+              "nasil": "Katalogda fotoğraf + fiyat + stok bilgisi.",
+              "kim": "Üretici/satıcı yönetir.",
+              "analoji": "Bakkalın rafındaki her eşya."
+            }
+          }
         },
         {
           "label": "Modüler monolitin neden tercihimiz olduğunu 1-2 cümleyle özetleyebilirim."
         },
         {
           "label": "Bir DocType tanımı yapıldığında framework'ün ne ürettiğini sıralayabilirim (DB tablo, REST, form, audit, …).",
-          "hint": "5 çıktıyı sayman yeterli."
+          "hint": "5 çıktıyı sayman yeterli.",
+          "enrich": {}
         }
       ]
     },
@@ -344,7 +309,8 @@
       "type": "callout",
       "variant": "info",
       "label": "Sonraki ünite",
-      "body": "{{ref:edu-u02}} — Veri ve Tipler. Bilgisayarın bir 'Müşteri Şikayeti'ni hangi sayılar/harfler ile sakladığını öğreneceğiz."
+      "body": "{{ref:edu-u02}} — Veri ve Tipler. Bilgisayarın bir 'Müşteri Şikayeti'ni hangi sayılar/harfler ile sakladığını öğreneceğiz.",
+      "enrich": {}
     }
   ],
   "related": [
@@ -363,12 +329,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Ünite 01 — Yazılım nedir? Kod, derleyici, çalışma zamanı, kütüphane, çerçeve, monolit, mikroservis kavramları.",
+      "nicin": "Bu temel kavramları bilmeden ileriki üniteler havada kalır.",
+      "nasil": "Her terim Türkçe karşılığıyla, gerçek hayat örnekleriyle açıklanır.",
+      "nerede": "Müfredatın ilk ünitesi — atlanamaz.",
+      "ne_zaman": "Sıfırdan başlayan herkes ilk burayı okur.",
+      "kim": "Sen — yazılıma yeni başlayan.",
+      "analoji": "Yabancı bir dilin alfabesini öğrenmek: alfabe olmadan kelime, kelime olmadan cümle olmaz."
+    }
   }
 }

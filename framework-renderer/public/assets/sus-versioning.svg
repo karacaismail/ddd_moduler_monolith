@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320" role="img" aria-labelledby="sv-t sv-d">
+  <title id="sv-t">Stripe Tarih-Tabanlı Versiyonlama</title>
+  <desc id="sv-d">Çekirdek son sürümü üretir; response transform katmanı yanıtı eski sürüme çevirir.</desc>
+  <style>
+    .lab { font: 600 14px 'Inter', sans-serif; fill: #1f2937; }
+    .head { font: 700 16px 'Inter', sans-serif; fill: #fff; }
+    .arr { stroke: #6366f1; stroke-width: 2; fill: none; marker-end: url(#arv); }
+  </style>
+  <defs>
+    <marker id="arv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/>
+    </marker>
+  </defs>
+  <rect x="30" y="120" width="180" height="70" rx="10" fill="#0f766e"/>
+  <text class="head" x="55" y="148">Çekirdek</text>
+  <text class="lab" x="55" y="170" fill="#a7f3d0">tek sürüm</text>
+  <text class="lab" x="55" y="186" fill="#a7f3d0">2026-06-01</text>
+
+  <rect x="280" y="40" width="180" height="60" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="lab" x="295" y="62" fill="#92400e">↩ 2024-03-15</text>
+  <text class="lab" x="295" y="82" fill="#92400e">eski → yeni dönüştür</text>
+
+  <rect x="280" y="125" width="180" height="60" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="lab" x="295" y="147" fill="#92400e">↩ 2025-08-22</text>
+  <text class="lab" x="295" y="167" fill="#92400e">eski → yeni dönüştür</text>
+
+  <rect x="280" y="210" width="180" height="60" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="lab" x="295" y="232" fill="#92400e">↩ 2026-02-10</text>
+  <text class="lab" x="295" y="252" fill="#92400e">eski → yeni dönüştür</text>
+
+  <rect x="510" y="40" width="160" height="60" rx="8" fill="#dbeafe" stroke="#2563eb"/>
+  <text class="lab" x="525" y="62">Müşteri A</text>
+  <text class="lab" x="525" y="82" fill="#6b7280">pin: 2024-03-15</text>
+
+  <rect x="510" y="125" width="160" height="60" rx="8" fill="#dbeafe" stroke="#2563eb"/>
+  <text class="lab" x="525" y="147">Müşteri B</text>
+  <text class="lab" x="525" y="167" fill="#6b7280">pin: 2025-08-22</text>
+
+  <rect x="510" y="210" width="160" height="60" rx="8" fill="#dbeafe" stroke="#2563eb"/>
+  <text class="lab" x="525" y="232">Müşteri C</text>
+  <text class="lab" x="525" y="252" fill="#6b7280">pin: 2026-02-10</text>
+
+  <path class="arr" d="M 210 145 L 280 70"/>
+  <path class="arr" d="M 210 155 L 280 155"/>
+  <path class="arr" d="M 210 165 L 280 240"/>
+  <path class="arr" d="M 460 70 L 510 70"/>
+  <path class="arr" d="M 460 155 L 510 155"/>
+  <path class="arr" d="M 460 240 L 510 240"/>
+</svg>

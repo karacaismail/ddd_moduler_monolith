@@ -18,22 +18,37 @@ function ensureContainer(): HTMLElement {
 
 export type ToastVariant = 'info' | 'success' | 'error';
 
-export function toast(message: string, variant: ToastVariant = 'info', durationMs = 2500): void {
+export function toast(
+  message: string,
+  variant: ToastVariant = 'info',
+  durationMs = 2500,
+  onClick?: () => void,
+): HTMLElement {
   const wrap = ensureContainer();
-  const el = document.createElement('div');
-  el.className = `toast toast--${variant}`;
+  const el = document.createElement(onClick ? 'button' : 'div');
+  el.className = `toast toast--${variant}` + (onClick ? ' toast--clickable' : '');
+  if (onClick) {
+    (el as HTMLButtonElement).type = 'button';
+    el.addEventListener('click', () => {
+      onClick();
+      el.classList.remove('is-visible');
+      setTimeout(() => el.remove(), 300);
+    });
+  }
   const icon =
     variant === 'success' ? 'ph-check-circle' :
     variant === 'error' ? 'ph-warning-circle' :
     'ph-info';
   el.innerHTML = `<i class="ph ${icon}"></i><span>${escape(message)}</span>`;
   wrap.appendChild(el);
-  // animate in
   requestAnimationFrame(() => el.classList.add('is-visible'));
-  setTimeout(() => {
-    el.classList.remove('is-visible');
-    setTimeout(() => el.remove(), 300);
-  }, durationMs);
+  if (durationMs > 0) {
+    setTimeout(() => {
+      el.classList.remove('is-visible');
+      setTimeout(() => el.remove(), 300);
+    }, durationMs);
+  }
+  return el;
 }
 
 function escape(s: string): string {

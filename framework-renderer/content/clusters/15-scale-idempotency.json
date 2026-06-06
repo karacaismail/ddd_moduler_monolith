@@ -16,7 +16,8 @@
   "blocks": [
     {
       "type": "paragraph",
-      "text": "Aynı isteğin iki kez gönderilmesi sonucu değiştirmemeli. Webhook delivery, payment processing, third-party API retry. Stripe API'sinde standart pattern: client `Idempotency-Key` header'ı gönderir."
+      "text": "Aynı isteğin iki kez gönderilmesi sonucu değiştirmemeli. Webhook delivery, payment processing, third-party API retry. Stripe API'sinde standart pattern: client `Idempotency-Key` header'ı gönderir.",
+      "enrich": {}
     },
     {
       "type": "code",
@@ -33,7 +34,8 @@
       "type": "callout",
       "variant": "tip",
       "label": "Job idempotency",
-      "body": "Worker job'larında da aynı pattern: her job `idempotency_key` taşır. Handler başlangıcında \"bu key işlendi mi\" check. Network retry, worker restart, queue replay senaryolarında kritik."
+      "body": "Worker job'larında da aynı pattern: her job `idempotency_key` taşır. Handler başlangıcında \"bu key işlendi mi\" check. Network retry, worker restart, queue replay senaryolarında kritik.",
+      "enrich": {}
     }
   ],
   "enrich": {
@@ -53,12 +55,14 @@
         "why": "Kart çekme gibi yan-etkili işlemlerde şart."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Aynı işlemin yanlışlıkla 2 kez gönderilmesi durumunda 2 kez yapılmasını önleyen koruma. 'Bir kere yetti' kuralı.",
+      "nicin": "Mobilde 'Gönder' tuşuna iki kere basarsanız, iki kez para çekilmesin diye. Internet kesintisinde yeniden denemelerde tekrar olmasın diye.",
+      "nasil": "Her istek bir benzersiz numara taşır. Sistem 'bu numarayı işledim' diye not eder. İkinci kez gelince yine cevap verir ama işlemi tekrar yapmaz.",
+      "nerede": "Ödeme alma, sipariş oluşturma, kayıt kaydetme — her kritik yazma işleminde.",
+      "ne_zaman": "Her POST/PUT isteğinde.",
+      "kim": "Geliştirici benzersiz numara üretir; sistem hatırlar; son kullanıcı 'çift işlem' kazasından korunur.",
+      "analoji": "Bir kasiyer 'bu siparişi aldım' diye fişe damga vurur. Müşteri yanlışlıkla aynı fişi tekrar verirse kasiyer 'bu işlendi' der, para almaz."
+    }
   }
 }

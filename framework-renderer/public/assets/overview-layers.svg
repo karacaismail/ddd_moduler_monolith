@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" role="img" aria-labelledby="ovl-t ovl-d">
+  <title id="ovl-t">6 Katmanlı Mimari Haritası</title>
+  <desc id="ovl-d">Atom, kernel, scale, in-tree, stack ve rock katmanlarının yığın gösterimi.</desc>
+  <style>
+    .lab { font: 600 16px 'Inter', sans-serif; fill: #fff; }
+    .sub { font: 400 12px 'Inter', sans-serif; fill: rgba(255,255,255,0.85); }
+  </style>
+  <rect x="50" y="20"  width="600" height="50" rx="6" fill="#6366f1" />
+  <text class="lab" x="70" y="50">KAYA — Kullanıma hazır 15 ürün</text>
+  <text class="sub" x="70" y="64">HRMS, Commerce, Accounting, PMS, LMS, CMS …</text>
+
+  <rect x="60" y="78"  width="580" height="50" rx="6" fill="#7c3aed" />
+  <text class="lab" x="80" y="108">BÜYÜK TAŞ — Stack modülleri (her ürünün mantığı)</text>
+
+  <rect x="70" y="136" width="560" height="50" rx="6" fill="#8b5cf6" />
+  <text class="lab" x="90" y="166">ORTA TAŞ — In-tree shared (party, file, workflow, search…)</text>
+
+  <rect x="80" y="194" width="540" height="50" rx="6" fill="#a78bfa" />
+  <text class="lab" x="100" y="224">SCALE — Outbox, projections, workers, saga</text>
+
+  <rect x="90" y="252" width="520" height="50" rx="6" fill="#c4b5fd" />
+  <text class="lab" x="110" y="282" fill="#1f2937">KÜÇÜK TAŞ — Kernel (6 modül): schema, identity, authz…</text>
+
+  <rect x="100" y="310" width="500" height="50" rx="6" fill="#ede9fe" />
+  <text class="lab" x="120" y="340" fill="#4c1d95">KUM TANESİ — Atomik tipler (Money, Date, Phone…)</text>
+</svg>

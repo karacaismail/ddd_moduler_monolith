@@ -179,25 +179,7 @@
           "body": "**Int**, **String**, **Bool**, **DateTime**. DB'de tek kolon, frontend'de tek input.\nÖrnek: `is_active: bool`, `count: int`.",
           "tone": "neutral",
           "enrich": {
-            "info": "Tek değer; başka bir veriye gömülü değil.",
-            "detail": "**Scalar (tekil)** nedir?\n\n**Int**, **String**, **Bool**, **DateTime**. DB'de tek kolon, frontend'de tek input.\nÖrnek: `is_active: bool`, `count: int`.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Scalar (tekil)\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Int**, **String**, **Bool**, **DateTime**. DB'de tek kolon, frontend'de tek in pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Scalar (tekil)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Scalar (tekil)\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Tek değer; başka bir veriye gömülü değil."
           }
         },
         {
@@ -213,24 +195,6 @@
                 "abbrev_tr": "İş alanı",
                 "meaning": "Yazılımın hizmet ettiği iş kavramı (muhasebe, HRMS …).",
                 "why": "Composite tipler domain kavramlarını korur — Decimal+currency 'para'dır."
-              }
-            ],
-            "detail": "**Composite (birleşik)** nedir?\n\n**Money** = (Decimal, currency). **Address** = (country, city, street, postal). **Phone** = (E.164 string + ülke kodu).\nDB'de 2+ kolon ama domain için tek kavram.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Composite (birleşik)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Composite (birleşik)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Composite (birleşik)\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
             ]
           }
@@ -298,7 +262,14 @@
             "context": "Yazı başlığı 'İş İlanı: Şoför Aranıyor'.",
             "outcome": "Slug otomatik `is-ilani-sofor-araniyor`; URL'ler tutarlı."
           }
-        ]
+        ],
+        "lesson": {
+          "ne": "Sık kullanılan verinin yakın bir yerde tutulması.",
+          "nicin": "Her seferinde uzaktan çekmek yavaşlar.",
+          "nasil": "Bellekte yedek; süresi dolunca yenilenir.",
+          "kim": "Sistem otomatik.",
+          "analoji": "Tezgâh üstündeki ekmek — depodan her seferinde almak yerine."
+        }
       }
     },
     {
@@ -362,12 +333,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Ünite 02 — Veri ve Tipler. Bit, byte, sayı, metin, tarih gibi temel veri türleri.",
+      "nicin": "Bilgisayar 'Ali' ile '50'yi nasıl ayırt eder? Tip kavramı bunu çözer.",
+      "nasil": "Her tip için: ne işe yarar, ne zaman kullanılır, hata durumları.",
+      "nerede": "Müfredatın 2. ünitesi — 01'i bitirdikten sonra.",
+      "ne_zaman": "Form alanları, veritabanı sütunları öğrenmeden önce.",
+      "kim": "Geliştirici olmak isteyen herkes bu temeli bilmeli.",
+      "analoji": "Postaneden gelen paketlerin etiketi: 'kırılır', 'soğuk zincir' — etiket olmadan yanlış kamyona biner."
+    }
   }
 }

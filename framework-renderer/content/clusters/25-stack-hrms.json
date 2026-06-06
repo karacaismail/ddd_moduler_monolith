@@ -30,25 +30,7 @@
           "name": "Employee Master",
           "desc": "Özlük, istihdam yaşam döngüsü, rehire",
           "enrich": {
-            "info": "Özlük, istihdam yaşam döngüsü, rehire",
-            "detail": "**Employee Master** nedir?\n\nÖzlük, istihdam yaşam döngüsü, rehire.\n\n**Amaç:** Bir şirketin çalışan kaydını, izin/bordro/işe alımını dijital tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç İK / personel yönetimi bilmeyen biri için: bu özellik, İK / personel yönetimi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İK uzmanı",
-                "context": "\"Employee Master\" özelliğini çalışan yaşam döngüsü sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Özlük, istihdam yaşam döngüsü, rehire pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Çalışan",
-                "context": "Self-service portaldan izin talebinde bulunur. \"Employee Master\" özelliği bu süreçte devreye girer.",
-                "outcome": "Telefonundan izin ister; manager bildirim alır, onaylar; bordro otomatik düzeltilir."
-              },
-              {
-                "persona": "Patron",
-                "context": "Maliyet analizi yapar. \"Employee Master\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bordro raporları + departman maliyetleri — tek dashboard."
-              }
-            ]
+            "info": "Özlük, istihdam yaşam döngüsü, rehire"
           }
         },
         {
@@ -56,125 +38,35 @@
           "desc": "Maaş, pozisyon, org. Bitemporal (geçerlilik + kayıt zamanı)",
           "critical": true,
           "enrich": {
-            "info": "Maaş, pozisyon, org. Bitemporal (geçerlilik + kayıt zamanı)",
-            "detail": "**Effective-Dated Records** nedir?\n\nMaaş, pozisyon, org. Bitemporal (geçerlilik + kayıt zamanı).\n\n**Amaç:** Bir şirketin çalışan kaydını, izin/bordro/işe alımını dijital tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç İK / personel yönetimi bilmeyen biri için: bu özellik, İK / personel yönetimi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İK uzmanı",
-                "context": "\"Effective-Dated Records\" özelliğini çalışan yaşam döngüsü sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Maaş, pozisyon, org. Bitemporal (geçerlilik + kayıt zamanı) pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Çalışan",
-                "context": "Self-service portaldan izin talebinde bulunur. \"Effective-Dated Records\" özelliği bu süreçte devreye girer.",
-                "outcome": "Telefonundan izin ister; manager bildirim alır, onaylar; bordro otomatik düzeltilir."
-              },
-              {
-                "persona": "Patron",
-                "context": "Maliyet analizi yapar. \"Effective-Dated Records\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bordro raporları + departman maliyetleri — tek dashboard."
-              }
-            ]
+            "info": "Maaş, pozisyon, org. Bitemporal (geçerlilik + kayıt zamanı)"
           }
         },
         {
           "name": "Recruitment / ATS",
           "desc": "Req, Pipeline, Interview, Offer",
           "enrich": {
-            "info": "Req, Pipeline, Interview, Offer",
-            "detail": "**Recruitment / ATS** nedir?\n\nReq, Pipeline, Interview, Offer.\n\n**Amaç:** Bir şirketin çalışan kaydını, izin/bordro/işe alımını dijital tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç İK / personel yönetimi bilmeyen biri için: bu özellik, İK / personel yönetimi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İK uzmanı",
-                "context": "\"Recruitment / ATS\" özelliğini çalışan yaşam döngüsü sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Req, Pipeline, Interview, Offer pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Çalışan",
-                "context": "Self-service portaldan izin talebinde bulunur. \"Recruitment / ATS\" özelliği bu süreçte devreye girer.",
-                "outcome": "Telefonundan izin ister; manager bildirim alır, onaylar; bordro otomatik düzeltilir."
-              },
-              {
-                "persona": "Patron",
-                "context": "Maliyet analizi yapar. \"Recruitment / ATS\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bordro raporları + departman maliyetleri — tek dashboard."
-              }
-            ]
+            "info": "Req, Pipeline, Interview, Offer"
           }
         },
         {
           "name": "Onboarding / Offboarding",
           "desc": "Checklist, IT provisioning",
           "enrich": {
-            "info": "Checklist, IT provisioning",
-            "detail": "**Onboarding / Offboarding** nedir?\n\nChecklist, IT provisioning.\n\n**Amaç:** Bir şirketin çalışan kaydını, izin/bordro/işe alımını dijital tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç İK / personel yönetimi bilmeyen biri için: bu özellik, İK / personel yönetimi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İK uzmanı",
-                "context": "\"Onboarding / Offboarding\" özelliğini çalışan yaşam döngüsü sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Checklist, IT provisioning pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Çalışan",
-                "context": "Self-service portaldan izin talebinde bulunur. \"Onboarding / Offboarding\" özelliği bu süreçte devreye girer.",
-                "outcome": "Telefonundan izin ister; manager bildirim alır, onaylar; bordro otomatik düzeltilir."
-              },
-              {
-                "persona": "Patron",
-                "context": "Maliyet analizi yapar. \"Onboarding / Offboarding\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bordro raporları + departman maliyetleri — tek dashboard."
-              }
-            ]
+            "info": "Checklist, IT provisioning"
           }
         },
         {
           "name": "Time & Attendance",
           "desc": "Shift, clock-in/out, OT, geofence",
           "enrich": {
-            "info": "Shift, clock-in/out, OT, geofence",
-            "detail": "**Time & Attendance** nedir?\n\nShift, clock-in/out, OT, geofence.\n\n**Amaç:** Bir şirketin çalışan kaydını, izin/bordro/işe alımını dijital tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç İK / personel yönetimi bilmeyen biri için: bu özellik, İK / personel yönetimi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İK uzmanı",
-                "context": "\"Time & Attendance\" özelliğini çalışan yaşam döngüsü sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Shift, clock-in/out, OT, geofence pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Çalışan",
-                "context": "Self-service portaldan izin talebinde bulunur. \"Time & Attendance\" özelliği bu süreçte devreye girer.",
-                "outcome": "Telefonundan izin ister; manager bildirim alır, onaylar; bordro otomatik düzeltilir."
-              },
-              {
-                "persona": "Patron",
-                "context": "Maliyet analizi yapar. \"Time & Attendance\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bordro raporları + departman maliyetleri — tek dashboard."
-              }
-            ]
+            "info": "Shift, clock-in/out, OT, geofence"
           }
         },
         {
           "name": "Leave",
           "desc": "Yıllık/mazeret/hastalık, accrual, kıdeme göre",
           "enrich": {
-            "info": "Yıllık/mazeret/hastalık, accrual, kıdeme göre",
-            "detail": "**Leave** nedir?\n\nYıllık/mazeret/hastalık, accrual, kıdeme göre.\n\n**Amaç:** Bir şirketin çalışan kaydını, izin/bordro/işe alımını dijital tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç İK / personel yönetimi bilmeyen biri için: bu özellik, İK / personel yönetimi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İK uzmanı",
-                "context": "\"Leave\" özelliğini çalışan yaşam döngüsü sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Yıllık/mazeret/hastalık, accrual, kıdeme göre pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Çalışan",
-                "context": "Self-service portaldan izin talebinde bulunur. \"Leave\" özelliği bu süreçte devreye girer.",
-                "outcome": "Telefonundan izin ister; manager bildirim alır, onaylar; bordro otomatik düzeltilir."
-              },
-              {
-                "persona": "Patron",
-                "context": "Maliyet analizi yapar. \"Leave\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bordro raporları + departman maliyetleri — tek dashboard."
-              }
-            ]
+            "info": "Yıllık/mazeret/hastalık, accrual, kıdeme göre"
           }
         },
         {
@@ -182,100 +74,28 @@
           "desc": "Element-based, retro, off-cycle, payslip",
           "critical": true,
           "enrich": {
-            "info": "Element-based, retro, off-cycle, payslip",
-            "detail": "**Payroll** nedir?\n\nElement-based, retro, off-cycle, payslip.\n\n**Amaç:** Bir şirketin çalışan kaydını, izin/bordro/işe alımını dijital tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç İK / personel yönetimi bilmeyen biri için: bu özellik, İK / personel yönetimi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İK uzmanı",
-                "context": "\"Payroll\" özelliğini çalışan yaşam döngüsü sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Element-based, retro, off-cycle, payslip pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Çalışan",
-                "context": "Self-service portaldan izin talebinde bulunur. \"Payroll\" özelliği bu süreçte devreye girer.",
-                "outcome": "Telefonundan izin ister; manager bildirim alır, onaylar; bordro otomatik düzeltilir."
-              },
-              {
-                "persona": "Patron",
-                "context": "Maliyet analizi yapar. \"Payroll\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bordro raporları + departman maliyetleri — tek dashboard."
-              }
-            ]
+            "info": "Element-based, retro, off-cycle, payslip"
           }
         },
         {
           "name": "Compensation",
           "desc": "Pay grade, band, merit, bonus",
           "enrich": {
-            "info": "Pay grade, band, merit, bonus",
-            "detail": "**Compensation** nedir?\n\nPay grade, band, merit, bonus.\n\n**Amaç:** Bir şirketin çalışan kaydını, izin/bordro/işe alımını dijital tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç İK / personel yönetimi bilmeyen biri için: bu özellik, İK / personel yönetimi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İK uzmanı",
-                "context": "\"Compensation\" özelliğini çalışan yaşam döngüsü sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Pay grade, band, merit, bonus pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Çalışan",
-                "context": "Self-service portaldan izin talebinde bulunur. \"Compensation\" özelliği bu süreçte devreye girer.",
-                "outcome": "Telefonundan izin ister; manager bildirim alır, onaylar; bordro otomatik düzeltilir."
-              },
-              {
-                "persona": "Patron",
-                "context": "Maliyet analizi yapar. \"Compensation\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bordro raporları + departman maliyetleri — tek dashboard."
-              }
-            ]
+            "info": "Pay grade, band, merit, bonus"
           }
         },
         {
           "name": "Performance",
           "desc": "OKR, 360°, rating, calibration, PIP",
           "enrich": {
-            "info": "OKR, 360°, rating, calibration, PIP",
-            "detail": "**Performance** nedir?\n\nOKR, 360°, rating, calibration, PIP.\n\n**Amaç:** Bir şirketin çalışan kaydını, izin/bordro/işe alımını dijital tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç İK / personel yönetimi bilmeyen biri için: bu özellik, İK / personel yönetimi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İK uzmanı",
-                "context": "\"Performance\" özelliğini çalışan yaşam döngüsü sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici OKR, 360°, rating, calibration, PIP pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Çalışan",
-                "context": "Self-service portaldan izin talebinde bulunur. \"Performance\" özelliği bu süreçte devreye girer.",
-                "outcome": "Telefonundan izin ister; manager bildirim alır, onaylar; bordro otomatik düzeltilir."
-              },
-              {
-                "persona": "Patron",
-                "context": "Maliyet analizi yapar. \"Performance\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bordro raporları + departman maliyetleri — tek dashboard."
-              }
-            ]
+            "info": "OKR, 360°, rating, calibration, PIP"
           }
         },
         {
           "name": "Talent / Succession",
           "desc": "9-box, HiPo, kariyer yolu",
           "enrich": {
-            "info": "9-box, HiPo, kariyer yolu",
-            "detail": "**Talent / Succession** nedir?\n\n9-box, HiPo, kariyer yolu.\n\n**Amaç:** Bir şirketin çalışan kaydını, izin/bordro/işe alımını dijital tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç İK / personel yönetimi bilmeyen biri için: bu özellik, İK / personel yönetimi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İK uzmanı",
-                "context": "\"Talent / Succession\" özelliğini çalışan yaşam döngüsü sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici 9-box, HiPo, kariyer yolu pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Çalışan",
-                "context": "Self-service portaldan izin talebinde bulunur. \"Talent / Succession\" özelliği bu süreçte devreye girer.",
-                "outcome": "Telefonundan izin ister; manager bildirim alır, onaylar; bordro otomatik düzeltilir."
-              },
-              {
-                "persona": "Patron",
-                "context": "Maliyet analizi yapar. \"Talent / Succession\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bordro raporları + departman maliyetleri — tek dashboard."
-              }
-            ]
+            "info": "9-box, HiPo, kariyer yolu"
           }
         },
         {
@@ -283,75 +103,21 @@
           "desc": "SGK e-Bildirge, MUHSGK, kıdem/ihbar, asgari ücret, BES",
           "critical": true,
           "enrich": {
-            "info": "SGK e-Bildirge, MUHSGK, kıdem/ihbar, asgari ücret, BES",
-            "detail": "**Statutory (TR)** nedir?\n\nSGK e-Bildirge, MUHSGK, kıdem/ihbar, asgari ücret, BES.\n\n**Amaç:** Bir şirketin çalışan kaydını, izin/bordro/işe alımını dijital tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç İK / personel yönetimi bilmeyen biri için: bu özellik, İK / personel yönetimi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İK uzmanı",
-                "context": "\"Statutory (TR)\" özelliğini çalışan yaşam döngüsü sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici SGK e-Bildirge, MUHSGK, kıdem/ihbar, asgari ücret, BES pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Çalışan",
-                "context": "Self-service portaldan izin talebinde bulunur. \"Statutory (TR)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Telefonundan izin ister; manager bildirim alır, onaylar; bordro otomatik düzeltilir."
-              },
-              {
-                "persona": "Patron",
-                "context": "Maliyet analizi yapar. \"Statutory (TR)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bordro raporları + departman maliyetleri — tek dashboard."
-              }
-            ]
+            "info": "SGK e-Bildirge, MUHSGK, kıdem/ihbar, asgari ücret, BES"
           }
         },
         {
           "name": "Expense Claim",
           "desc": "Masraf, fiş OCR, onay",
           "enrich": {
-            "info": "Masraf, fiş OCR, onay",
-            "detail": "**Expense Claim** nedir?\n\nMasraf, fiş OCR, onay.\n\n**Amaç:** Bir şirketin çalışan kaydını, izin/bordro/işe alımını dijital tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç İK / personel yönetimi bilmeyen biri için: bu özellik, İK / personel yönetimi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İK uzmanı",
-                "context": "\"Expense Claim\" özelliğini çalışan yaşam döngüsü sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Masraf, fiş OCR, onay pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Çalışan",
-                "context": "Self-service portaldan izin talebinde bulunur. \"Expense Claim\" özelliği bu süreçte devreye girer.",
-                "outcome": "Telefonundan izin ister; manager bildirim alır, onaylar; bordro otomatik düzeltilir."
-              },
-              {
-                "persona": "Patron",
-                "context": "Maliyet analizi yapar. \"Expense Claim\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bordro raporları + departman maliyetleri — tek dashboard."
-              }
-            ]
+            "info": "Masraf, fiş OCR, onay"
           }
         },
         {
           "name": "HR Document",
           "desc": "Sözleşme, e-imza, belge süre takibi",
           "enrich": {
-            "info": "Sözleşme, e-imza, belge süre takibi",
-            "detail": "**HR Document** nedir?\n\nSözleşme, e-imza, belge süre takibi.\n\n**Amaç:** Bir şirketin çalışan kaydını, izin/bordro/işe alımını dijital tutan modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç İK / personel yönetimi bilmeyen biri için: bu özellik, İK / personel yönetimi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İK uzmanı",
-                "context": "\"HR Document\" özelliğini çalışan yaşam döngüsü sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Sözleşme, e-imza, belge süre takibi pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Çalışan",
-                "context": "Self-service portaldan izin talebinde bulunur. \"HR Document\" özelliği bu süreçte devreye girer.",
-                "outcome": "Telefonundan izin ister; manager bildirim alır, onaylar; bordro otomatik düzeltilir."
-              },
-              {
-                "persona": "Patron",
-                "context": "Maliyet analizi yapar. \"HR Document\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bordro raporları + departman maliyetleri — tek dashboard."
-              }
-            ]
+            "info": "Sözleşme, e-imza, belge süre takibi"
           }
         }
       ]
@@ -360,7 +126,16 @@
       "type": "callout",
       "variant": "tr",
       "label": "Türkiye Payroll formülü",
-      "body": "Bordro motoru en az şu elementleri hesaplamalı:\n\n- Brüt maaş\n- SGK işçi (**%14**)\n- SGK işveren (**%20.75** veya **%15.5** 5510/teşvikli)\n- İşsizlik işçi (**%1**)\n- İşsizlik işveren (**%2**)\n- Gelir vergisi (dilimli tarife: %15, %20, %27, %35, %40)\n- Damga vergisi (**%0.00759**)\n- AGİ **kaldırıldı** (2022)\n- Asgari ücret istisnası: 2024 itibariyle asgari ücret kadar gelir vergisi muafiyeti\n\nSonuç: net.\n\nSGK e-Bildirge: **APHB + MUHSGK** 2020'den birleşik beyanname olarak GİB üzerinden. SGK işveren bildirgesi (**İAB — işten ayrılış**) ayrı portal."
+      "body": "Bordro motoru en az şu elementleri hesaplamalı:\n\n- Brüt maaş\n- SGK işçi (**%14**)\n- SGK işveren (**%20.75** veya **%15.5** 5510/teşvikli)\n- İşsizlik işçi (**%1**)\n- İşsizlik işveren (**%2**)\n- Gelir vergisi (dilimli tarife: %15, %20, %27, %35, %40)\n- Damga vergisi (**%0.00759**)\n- AGİ **kaldırıldı** (2022)\n- Asgari ücret istisnası: 2024 itibariyle asgari ücret kadar gelir vergisi muafiyeti\n\nSonuç: net.\n\nSGK e-Bildirge: **APHB + MUHSGK** 2020'den birleşik beyanname olarak GİB üzerinden. SGK işveren bildirgesi (**İAB — işten ayrılış**) ayrı portal.",
+      "enrich": {
+        "lesson": {
+          "ne": "Sosyal Güvenlik Kurumu: çalışanların sigorta primlerini toplayan devlet kurumu.",
+          "nicin": "Çalışan istihdamı yasal yükümlülük getirir; bildirilmek zorunda.",
+          "nasil": "Aylık SGK bildirgeleri otomatik üretilir, e-bildirge ile gönderilir.",
+          "kim": "İK görevlisi; SGK denetler.",
+          "analoji": "Her çalışan için aylık devlet kaydı tutulması."
+        }
+      }
     },
     {
       "type": "heading",
@@ -395,12 +170,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "İnsan kaynakları modülü: personel kayıtları, izin, bordro, performans, eğitim, terfi — çalışanlarla ilgili tüm yönetim tek yerden.",
+      "nicin": "Personel sayısı arttıkça Excel'de takip yetmez. Yasal yükümlülükler (SGK bildirgesi, KVKK) tek sistemde tutulmalı.",
+      "nasil": "Personel sisteme kaydedilir → izin talebi açar → yöneticisi onaylar → bordro otomatik hesaplanır → SGK bildirimi otomatik gönderilir.",
+      "nerede": "Her şirketin İK departmanının yönettiği veriler — kayıtlar, talepler, raporlar.",
+      "ne_zaman": "Yeni personel girişi, izin talebi, ay sonu bordro, yıl sonu performans değerlendirmesi.",
+      "kim": "İK uzmanı kayıtları tutar; yönetici onaylar; çalışan kendi bilgisini görür; SGK e-bildirim üzerinden okur.",
+      "analoji": "Bir okulun öğrenci işleri: tüm öğrencilerin kayıt, devam, not, başarı durumu tek defterde. Veliler, öğretmenler, müdür hepsi farklı pencereden bakar."
+    }
   }
 }

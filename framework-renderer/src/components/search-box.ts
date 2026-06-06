@@ -1,8 +1,39 @@
 import type { SearchIndex, SearchHit } from '@/engine/search';
 
 /**
- * Search box bileşeni — input + results dropdown.
+ * Search box bileşeni — input + results dropdown + recent queries.
+ *
+ * Recent queries:
+ *   - Son 10 arama localStorage'da tutulur.
+ *   - Input boş + focus durumunda "Son aramaların" başlığıyla görünür.
+ *   - Tıklama yeniden arama tetikler.
  */
+
+const RECENT_KEY = 'fw.search.recent';
+const RECENT_MAX = 10;
+
+function loadRecent(): string[] {
+  try {
+    const raw = localStorage.getItem(RECENT_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw) as string[];
+    return Array.isArray(arr) ? arr.slice(0, RECENT_MAX) : [];
+  } catch {
+    return [];
+  }
+}
+function saveRecent(q: string): void {
+  const cur = loadRecent().filter((x) => x !== q);
+  cur.unshift(q);
+  try {
+    localStorage.setItem(RECENT_KEY, JSON.stringify(cur.slice(0, RECENT_MAX)));
+  } catch {
+    /* ignore */
+  }
+}
+function clearRecent(): void {
+  try { localStorage.removeItem(RECENT_KEY); } catch { /* ignore */ }
+}
 
 export function mountSearchBox(target: HTMLElement, index: SearchIndex): void {
   target.innerHTML = `
@@ -18,11 +49,47 @@ export function mountSearchBox(target: HTMLElement, index: SearchIndex): void {
   const input = target.querySelector<HTMLInputElement>('.search-box__input')!;
   const results = target.querySelector<HTMLDivElement>('.search-box__results')!;
 
+  const showRecent = (): void => {
+    const recent = loadRecent();
+    if (recent.length === 0) {
+      results.hidden = true;
+      return;
+    }
+    results.innerHTML = `
+      <div class="search-box__recent">
+        <div class="search-box__recent-head">
+          <span><i class="ph ph-clock-counter-clockwise"></i> Son aramaların</span>
+          <button type="button" class="search-box__recent-clear">Temizle</button>
+        </div>
+        ${recent.map((q) =>
+          `<button type="button" class="search-box__recent-item" data-q="${escapeHtml(q)}">${escapeHtml(q)}</button>`
+        ).join('')}
+      </div>
+    `;
+    results.hidden = false;
+    results.querySelector<HTMLButtonElement>('.search-box__recent-clear')?.addEventListener('click', () => {
+      clearRecent();
+      results.hidden = true;
+    });
+    results.querySelectorAll<HTMLButtonElement>('.search-box__recent-item').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const q = btn.dataset.q ?? '';
+        input.value = q;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.focus();
+      });
+    });
+  };
+
   let debounce: number | undefined;
   input.addEventListener('input', () => {
     if (debounce) window.clearTimeout(debounce);
     debounce = window.setTimeout(() => {
       const q = input.value.trim();
+      if (q.length === 0) {
+        showRecent();
+        return;
+      }
       if (q.length < 2) {
         results.hidden = true;
         results.innerHTML = '';
@@ -30,6 +97,7 @@ export function mountSearchBox(target: HTMLElement, index: SearchIndex): void {
       }
       const hits = index.search(q);
       renderResults(results, hits, q);
+      if (hits.length > 0) saveRecent(q);
     }, 120);
   });
 
@@ -77,7 +145,11 @@ export function mountSearchBox(target: HTMLElement, index: SearchIndex): void {
     if (!target.contains(e.target as Node)) results.hidden = true;
   });
   input.addEventListener('focus', () => {
-    if (results.children.length > 0) results.hidden = false;
+    if (input.value.trim().length === 0) {
+      showRecent();
+    } else if (results.children.length > 0) {
+      results.hidden = false;
+    }
   });
 }
 

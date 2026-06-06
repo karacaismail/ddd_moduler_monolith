@@ -25,75 +25,21 @@
           "name": "O01 — Observability & SLO Monitoring",
           "desc": "**Faz 3 · P0 · Platform Ops Squad.** Logs, metrics, traces — unified observability. SLO definition, error budget, alerting, on-call routing. AI anomaly detection. *KPI:* MTTR <30dk, SLO breach precision >%95, alerts/incident <5. Bizim eşdeğer: {{ref:cc-obs}}.",
           "enrich": {
-            "info": "**Faz 3 · P0 · Platform Ops Squad.** Logs, metrics, traces — unified observability. SLO definition, error budget, alerting, on-call routing.",
-            "detail": "**O01 — Observability & SLO Monitoring** nedir?\n\n**Faz 3 · P0 · Platform Ops Squad.** Logs, metrics, traces — unified observability. SLO definition, error budget, alerting, on-call routing. AI anomaly detection. *KPI:* MTTR <30dk, SLO breach precision >%95, alerts/incident <5. Bizim eşdeğer: {{ref:cc-obs}}.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"O01 — Observability & SLO Monitoring\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 3 · P0 · Platform Ops Squad.** Logs, metrics, traces — unified observabili pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"O01 — Observability & SLO Monitoring\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"O01 — Observability & SLO Monitoring\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "**Faz 3 · P0 · Platform Ops Squad.** Logs, metrics, traces — unified observability. SLO definition, error budget, alerting, on-call routing."
           }
         },
         {
           "name": "O02 — Plugin Marketplace",
           "desc": "**Faz 4 · P1 · Marketplace Squad.** 3. parti plugin keşif, kurulum, lisans, ödeme, sürüm yönetimi. Plugin developer dashboard, billing, revenue share, rating/review. *KPI:* Plugin install conversion >%5, refund rate <%2. Bizim eşdeğer: {{ref:dx-marketplace}}.",
           "enrich": {
-            "info": "**Faz 4 · P1 · Marketplace Squad.** 3. parti plugin keşif, kurulum, lisans, ödeme, sürüm yönetimi. Plugin developer dashboard, billing, reve",
-            "detail": "**O02 — Plugin Marketplace** nedir?\n\n**Faz 4 · P1 · Marketplace Squad.** 3. parti plugin keşif, kurulum, lisans, ödeme, sürüm yönetimi. Plugin developer dashboard, billing, revenue share, rating/review. *KPI:* Plugin install conversion >%5, refund rate <%2. Bizim eşdeğer: {{ref:dx-marketplace}}.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"O02 — Plugin Marketplace\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 4 · P1 · Marketplace Squad.** 3. parti plugin keşif, kurulum, lisans, ödem pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"O02 — Plugin Marketplace\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"O02 — Plugin Marketplace\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "**Faz 4 · P1 · Marketplace Squad.** 3. parti plugin keşif, kurulum, lisans, ödeme, sürüm yönetimi. Plugin developer dashboard, billing, reve"
           }
         },
         {
           "name": "O03 — Plugin Security Review & Sandbox Certification",
           "desc": "**Faz 4 · P0 · Security + Marketplace.** 3. parti plugin'lerin güvenlik denetimi, sandbox uygunluk testleri, imzalı bundle, supply-chain doğrulama. Marketplace'in **kara kutusu** — buradan geçmeyen plugin yayına çıkmaz.",
           "enrich": {
-            "info": "**Faz 4 · P0 · Security + Marketplace.** 3. parti plugin'lerin güvenlik denetimi, sandbox uygunluk testleri, imzalı bundle, supply-chain doğ",
-            "detail": "**O03 — Plugin Security Review & Sandbox Certification** nedir?\n\n**Faz 4 · P0 · Security + Marketplace.** 3. parti plugin'lerin güvenlik denetimi, sandbox uygunluk testleri, imzalı bundle, supply-chain doğrulama. Marketplace'in **kara kutusu** — buradan geçmeyen plugin yayına çıkmaz.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"O03 — Plugin Security Review & Sandbox Certification\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 4 · P0 · Security + Marketplace.** 3. parti plugin'lerin güvenlik denetimi pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"O03 — Plugin Security Review & Sandbox Certification\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"O03 — Plugin Security Review & Sandbox Certification\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "**Faz 4 · P0 · Security + Marketplace.** 3. parti plugin'lerin güvenlik denetimi, sandbox uygunluk testleri, imzalı bundle, supply-chain doğ"
           }
         }
       ]
@@ -102,7 +48,8 @@
       "type": "callout",
       "variant": "tip",
       "label": "Marketplace flywheel",
-      "body": "O01 → güvenilirlik (uptime + SLO), O02 → keşif (developer + tenant arz/talep), O03 → güvenlik (untrusted plugin sandboxing). Üçü birlikte Shopify App Store + VS Code Marketplace + Apple App Store sağlam üçgenini kurar. Hiçbiri tek başına yetmez — observability olmayan marketplace güvensiz, security review olmayan marketplace zehirli."
+      "body": "O01 → güvenilirlik (uptime + SLO), O02 → keşif (developer + tenant arz/talep), O03 → güvenlik (untrusted plugin sandboxing). Üçü birlikte Shopify App Store + VS Code Marketplace + Apple App Store sağlam üçgenini kurar. Hiçbiri tek başına yetmez — observability olmayan marketplace güvensiz, security review olmayan marketplace zehirli.",
+      "enrich": {}
     }
   ],
   "enrich": {
@@ -116,12 +63,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "LandX'in 5. katmanı — canlıdaki ajanları izleme ve sorun çıkınca müdahale etme.",
+      "nicin": "Canlıdaki ajan bir gün yavaşlar; erken fark etmek gerekir.",
+      "nasil": "3 modül — gözlemleme, eklenti pazarı.",
+      "nerede": "Operasyon panelinde.",
+      "ne_zaman": "7/24.",
+      "kim": "Nöbetçi operatör izler.",
+      "analoji": "Santralin kontrol odası: ibreler izlenir, sapma olunca alarm."
+    }
   }
 }

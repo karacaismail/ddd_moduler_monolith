@@ -196,7 +196,16 @@
       "type": "callout",
       "variant": "info",
       "label": "PostHog self-host kaynak",
-      "body": "Hetzner **CX42 veya AX41** (8 vCPU / 16GB RAM), ayrı sunucu önerilir. Session replay açıkken disk tüketimi yüksek; S3-uyumlu object storage (Hetzner Object Storage) ile blob offload. Retention 90 gün."
+      "body": "Hetzner **CX42 veya AX41** (8 vCPU / 16GB RAM), ayrı sunucu önerilir. Session replay açıkken disk tüketimi yüksek; S3-uyumlu object storage (Hetzner Object Storage) ile blob offload. Retention 90 gün.",
+      "enrich": {
+        "lesson": {
+          "ne": "Kullanıcının sisteme bağlı kaldığı süre.",
+          "nicin": "Giriş yapıp her tıklamada tekrar giriş yapmasın diye.",
+          "nasil": "Tarayıcıda kayıtlı kimlik bilgisi (cookie veya token).",
+          "kim": "Sistem yönetir.",
+          "analoji": "Otelin oda kartı — check-out'a kadar geçerli."
+        }
+      }
     },
     {
       "type": "heading",
@@ -300,12 +309,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Frontend kodunun otomatik test edildiği araçlar.",
+      "nicin": "Manuel test imkansız; otomatik test hata yakalar.",
+      "nasil": "Her kod değişikliğinde test koşar; geçmezse yayına çıkmaz.",
+      "nerede": "GitHub Actions üzerinde otomatik.",
+      "ne_zaman": "Her pull request açıldığında.",
+      "kim": "Geliştirici yazar; CI koşturur.",
+      "analoji": "Üretim bandında kalite kontrolü."
+    }
   }
 }

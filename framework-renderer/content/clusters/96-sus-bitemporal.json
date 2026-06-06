@@ -1,0 +1,101 @@
+{
+  "id": "sus-bitemporal",
+  "title": "Bitemporal immutable kayıt — tek doğruluk",
+  "subtitle": "XTDB: \"valid_time + system_time\" otomatik; audit/time-travel/KVKK bedava. Postgres-wire uyumlu.",
+  "cluster": "sus",
+  "order": 96,
+  "icon": "ph-clock-counter-clockwise",
+  "tags": [
+    "sustainability",
+    "bitemporal",
+    "xtdb",
+    "audit",
+    "time-travel"
+  ],
+  "enrich": {
+    "info": "Her veri kaydında iki zaman tutulur: gerçekte olduğu an + sisteme yazıldığı an. \"Ne biliyorduk, ne zaman?\" sorusu otomatik cevap bulur.",
+    "lesson": {
+      "ne": "Sistemdeki her veri silinmez veya üzerine yazılmaz; her değişiklik yeni satır olarak \"valid_time\" (gerçek olayın anı) + \"system_time\" (sisteme girdiği an) ile birlikte yazılır.",
+      "nicin": "Muhasebede \"o ay neye dayanarak hesapladık\" sorusu sözleşmesel zorunluluk. KVKK'da \"o tarihte hangi kişisel veri vardı\" denetim sorusu. AI eğitiminde \"o anda model neyi biliyordu\" güveni. Üç ihtiyaç tek mekanizma ile çözülür.",
+      "nasil": "Her tablo bitemporal (default-on). Update veya delete arka planda yeni satır olarak yazılır; eski satır kalır. SQL'de zaman-yolculuğu sorgusu: `SELECT * FROM x AS OF '2024-06-15'`.",
+      "nerede": "framework/kernel/schema/temporal.py + Postgres'te valid_time/system_time kolonları.",
+      "ne_zaman": "Her DocType'ın `is_temporal: true` ile işaretlenmesi yeterli — geri kalan altyapı otomatik.",
+      "kim": "Geliştirici DocType'ta işaretler; sistem otomatik tutar; denetçi geçmişe sorar; AI ajan eğitim için tarih dilimi alır.",
+      "analoji": "Resmî evlilik cüzdanı: 1985'te evlendi, 1995'te boşandı, 1998'de tekrar evlendi. Belge 3 satır taşır; ilk satır silinmez. \"1990'da medeni durum neydi\" sorusu sorulunca \"evli\" cevabını doğrudan verir. Yazılım bitemporal kayıt = evlilik cüzdanı."
+    },
+    "stories": [
+      {
+        "persona": "Tapu memuru Engin Bey, sicil kayıtları",
+        "context": "1958'de babasının üzerine alınan arsa, 1985'te kardeşler arasında paylaşıldı, 1998'de satıldı. Yeni mal sahibi 2024'te ipoteğe gitti.",
+        "outcome": "Sicil her geçişi yeni satır olarak tuttu; eskileri silmedi. \"2020'de bu arsa kimindi\" sorusu anında cevaplanıyor. Bitemporal kayıt = tapu sicili."
+      },
+      {
+        "persona": "Maaş muhasebecisi Pınar Hanım",
+        "context": "Çalışan Şubat'ta zamlandı (geriye dönük Ocak'tan). Mart'ta vergi kontrolü geliyor: \"Şubat ay-sonu bordro tutarı neydi\" sorusu.",
+        "outcome": "Bitemporal kayıt: Şubat ay-sonu sistem ne biliyorduysa onu çıkar. Geriye dönük zam ayrı kayıt — vergi tarihçesi bozulmaz. Yeniden hesap değil, zaman penceresi okuma."
+      },
+      {
+        "persona": "Sağlık ocağı kayıt görevlisi Mehmet Bey",
+        "context": "Hasta 5 yıl önce \"diyabet yok\" kaydedildi, 2 yıl önce tip-2 başladı. Şimdi \"5 yıl önceki kaydı görelim\" diyor doktor.",
+        "outcome": "Üzerine yazsaydık eski kayıt giderdi. Bitemporal kayıt: her değişiklik yeni satır + tarih. Doktor 5 yıl öncesine bakıp tedavi sürecini izliyor. Tarihçe bedava."
+      }
+    ],
+    "terms": [
+      {
+        "term": "Bitemporal",
+        "abbrev_tr": "Çift-zamanlı",
+        "meaning": "Hem \"gerçek olay zamanı\" hem \"sisteme yazılma zamanı\" birlikte tutulur",
+        "why": "Gerçek hayatta olay ile kayıt arasında gecikme olabilir"
+      },
+      {
+        "term": "valid_time",
+        "abbrev_tr": "Geçerlilik zamanı",
+        "meaning": "Olayın gerçek hayatta gerçekleştiği an",
+        "why": "Geriye dönük kayıt için"
+      },
+      {
+        "term": "system_time",
+        "abbrev_tr": "Sistem zamanı",
+        "meaning": "Kayıt sisteme girdiği an",
+        "why": "\"Ne zaman biliyorduk\" için"
+      },
+      {
+        "term": "Time-travel SQL",
+        "meaning": "`AS OF` cümlesi ile geçmiş bir andaki veri görüntüsünü sorgulamak",
+        "why": "Audit + KVKK + AI eğitim için tek satır"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "XTDB'den",
+      "body": "*\"XTDB tracks both 'system time' and 'valid time' automatically, building on the core ideas in SQL:2011 — no triggers, no history tables, no hacks. All tables are bitemporal tables.\"*"
+    },
+    {
+      "type": "image",
+      "src": "/assets/sus-bitemporal.svg",
+      "alt": "Bitemporal kayıt — valid_time (gerçek zaman) + system_time (sisteme yazılma zamanı) zaman ekseninde gösterilir",
+      "caption": "Aynı gerçek zaman için (valid=2024-01-31), sisteme farklı tarihlerde yazılan 3 satır var; silme/üzerine yazma yok.",
+      "enrich": {
+        "info": "Bitemporal valid + system time ekseninde gösterim",
+        "lesson": {
+          "ne": "İki ekseni olan kayıt: olay zamanı + sistem zamanı.",
+          "nicin": "Geriye dönük düzeltmeyi (Mart'ta Ocak ay-sonunu zammak) doğru kaydetmek için.",
+          "nasil": "Her güncelleme yeni satır; eski satır silinmez. SQL AS OF '<tarih>' ile zaman penceresi.",
+          "kim": "DocType 'is_temporal: true' işaretle; sistem otomatik tutar.",
+          "analoji": "Tapu sicili: her el değiştirme yeni satır, eski satır silinmez; 1985'te kimindi sorusu her zaman yanıt bulur."
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "text": "**Postgres-native:** XTDB'nin tüm felsefesi PostgreSQL kolonlarıyla taklit edilebilir (valid_from, valid_to, system_from, system_to). Audit tablosu, trigger, tarihçe kopyası — hepsi gereksiz. DocType `is_temporal: true` işaretlenince altyapı otomatik."
+    }
+  ],
+  "related": [
+    "l1-audit",
+    "k-schema"
+  ]
+}

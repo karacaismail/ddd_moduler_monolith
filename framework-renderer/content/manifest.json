@@ -3,83 +3,652 @@
   "name": "Framework Master — AI-first DDD Modüler Monolith",
   "generated_at": "2026-06-05",
   "groups": [
-    { "id": "meta",     "label": "Genel",                    "order": 0, "icon": "ph-list-checks", "description": "Bu dökümanın tamamı bir eğitim materyalidir — yazılım bilmeyen biri buradan başlayıp proje mimarı olabilir." },
-    { "id": "atomic",   "label": "Kum Tanesi — Atomik",       "order": 1, "icon": "ph-circle-half" },
-    { "id": "layer0",   "label": "Layer 0 — Kernel",          "order": 2, "icon": "ph-cube" },
-    { "id": "scale",    "label": "Scale Primitives",          "order": 3, "icon": "ph-trend-up" },
-    { "id": "layer1",   "label": "Layer 1 — In-tree",         "order": 4, "icon": "ph-stack" },
-    { "id": "stack",    "label": "Layer 2 — First-party",     "order": 5, "icon": "ph-package" },
-    { "id": "crosscut", "label": "Çapraz-kesen",              "order": 6, "icon": "ph-arrows-out" },
-    { "id": "dx",       "label": "Plugin DX",                 "order": 7, "icon": "ph-code" },
-    { "id": "services", "label": "Services — Dış",            "order": 8, "icon": "ph-cloud" },
-    { "id": "build",    "label": "Build & Anti-pattern",      "order": 9, "icon": "ph-flag-banner" },
-    { "id": "frontend", "label": "Frontend Tech-Stack",        "order": 10, "icon": "ph-device-mobile" }
+    {
+      "id": "meta",
+      "label": "Genel",
+      "order": 0,
+      "icon": "ph-list-checks",
+      "description": "Bu dökümanın tamamı bir eğitim materyalidir — yazılım bilmeyen biri buradan başlayıp proje mimarı olabilir."
+    },
+    {
+      "id": "atomic",
+      "label": "Kum Tanesi — Atomik",
+      "order": 1,
+      "icon": "ph-circle-half"
+    },
+    {
+      "id": "layer0",
+      "label": "Layer 0 — Kernel",
+      "order": 2,
+      "icon": "ph-cube"
+    },
+    {
+      "id": "scale",
+      "label": "Scale Primitives",
+      "order": 3,
+      "icon": "ph-trend-up"
+    },
+    {
+      "id": "layer1",
+      "label": "Layer 1 — In-tree",
+      "order": 4,
+      "icon": "ph-stack"
+    },
+    {
+      "id": "stack",
+      "label": "Layer 2 — First-party",
+      "order": 5,
+      "icon": "ph-package"
+    },
+    {
+      "id": "crosscut",
+      "label": "Çapraz-kesen",
+      "order": 6,
+      "icon": "ph-arrows-out"
+    },
+    {
+      "id": "dx",
+      "label": "Plugin DX",
+      "order": 7,
+      "icon": "ph-code"
+    },
+    {
+      "id": "services",
+      "label": "Services — Dış",
+      "order": 8,
+      "icon": "ph-cloud"
+    },
+    {
+      "id": "build",
+      "label": "Build & Anti-pattern",
+      "order": 9,
+      "icon": "ph-flag-banner"
+    },
+    {
+      "id": "frontend",
+      "label": "Frontend Tech-Stack",
+      "order": 10,
+      "icon": "ph-device-mobile"
+    },
+    {
+      "id": "sus",
+      "label": "Sürdürülebilirlik — 50 yıl yaşam",
+      "order": 11,
+      "icon": "ph-infinity",
+      "description": "Olgun mimariyi onlarca yıl yaşatan mekanizmalar — Linux/Stripe/Drupal/Shopify/PostgreSQL/IBM-i derslerinin proje'ye kalıtımı."
+    }
   ],
   "clusters": [
-    { "file": "clusters/00-overview.json",          "id": "overview",          "title": "Yönetici özeti",                     "cluster": "meta",     "order": 0 },
-    { "file": "clusters/70-edu-overview.json",      "id": "edu-overview",      "title": "Eğitim yaklaşımı — bu döküman nasıl okunur",  "cluster": "meta",  "order": 3 },
-    { "file": "clusters/71-edu-u01-yazilim.json",   "id": "edu-u01",           "title": "Yazılım nedir? — temel zihinsel model",       "cluster": "meta",  "order": 4 },
-    { "file": "clusters/72-edu-u02-veri-tip.json",  "id": "edu-u02",           "title": "Veri ve Tipler — atomik öncesi temel",        "cluster": "atomic","order": 1 },
-    { "file": "clusters/74-edu-u04-veritabani.json","id": "edu-u04",           "title": "Veritabanı Temelleri — DocType'tan önce",     "cluster": "layer0","order": 1 },
-    { "file": "clusters/73-edu-u03-doctype.json",   "id": "edu-u03",           "title": "DocType ile Model — anlatımsal giriş",        "cluster": "layer0","order": 2 },
-    { "file": "clusters/75-edu-u05-api.json",       "id": "edu-u05",           "title": "API: REST ve GraphQL — pratik anlatım",       "cluster": "layer1","order": 1 },
-    { "file": "clusters/76-edu-u06-tenancy.json",   "id": "edu-u06",           "title": "Multi-tenancy — bir kod, çok müşteri",         "cluster": "layer0","order": 3 },
-    { "file": "clusters/77-edu-u07-security.json",  "id": "edu-u07",           "title": "Yetkilendirme & Güvenlik",                      "cluster": "layer0","order": 4 },
-    { "file": "clusters/78-edu-u08-eventbus.json",  "id": "edu-u08",           "title": "Event Bus & Outbox",                            "cluster": "scale", "order": 0 },
-    { "file": "clusters/79-edu-u09-plugin.json",    "id": "edu-u09",           "title": "Plugin Mimarisi — eğitim anlatım",              "cluster": "layer0","order": 5 },
-    { "file": "clusters/80-edu-u10-deploy.json",    "id": "edu-u10",           "title": "Deploy & Operations — eğitim anlatım",          "cluster": "build", "order": 46 },
-    { "file": "clusters/01-philosophy.json",        "id": "philosophy",        "title": "Felsefe ve ana prensipler",          "cluster": "meta",     "order": 1 },
-    { "file": "clusters/02-board-rebuilt.json",     "id": "board",             "title": "Tahta — yeniden yapılandırılmış",    "cluster": "meta",     "order": 2 },
-    { "file": "clusters/03-atomic-types.json",      "id": "atomic-types",      "title": "Atomik tipler — Kum Tanesi",          "cluster": "atomic",   "order": 3, "layer": "atomic" },
-    { "file": "clusters/04-kernel-schema.json",     "id": "k-schema",          "title": "Schema / Metadata Engine (DocType)", "cluster": "layer0",   "order": 4, "layer": "kernel" },
-    { "file": "clusters/05-kernel-identity.json",   "id": "k-identity",        "title": "Identity",                            "cluster": "layer0",   "order": 5, "layer": "kernel" },
-    { "file": "clusters/06-kernel-authz.json",      "id": "k-authz",           "title": "Authorization",                       "cluster": "layer0",   "order": 6, "layer": "kernel" },
-    { "file": "clusters/07-kernel-tenancy.json",    "id": "k-tenancy",         "title": "Tenancy",                             "cluster": "layer0",   "order": 7, "layer": "kernel" },
-    { "file": "clusters/08-kernel-bus.json",        "id": "k-bus",             "title": "Event Bus + Polyglot Runtime",        "cluster": "layer0",   "order": 8, "layer": "kernel" },
-    { "file": "clusters/09-kernel-plugin.json",     "id": "k-plugin",          "title": "Plugin Registry + Manifest",          "cluster": "layer0",   "order": 9, "layer": "kernel" },
-    { "file": "clusters/10-scale-outbox.json",      "id": "scale-outbox",      "title": "Transactional Outbox",                "cluster": "scale",    "order": 10, "layer": "scale" },
-    { "file": "clusters/11-scale-projections.json", "id": "scale-projections", "title": "CQRS Projections (Read Models)",      "cluster": "scale",    "order": 11, "layer": "scale" },
-    { "file": "clusters/12-scale-counter.json",     "id": "scale-counter",     "title": "Hot Counter",                         "cluster": "scale",    "order": 12, "layer": "scale" },
-    { "file": "clusters/13-scale-workers.json",     "id": "scale-workers",     "title": "Workers + Scheduler",                 "cluster": "scale",    "order": 13, "layer": "scale" },
-    { "file": "clusters/14-scale-saga.json",        "id": "scale-saga",        "title": "Saga + Compensation",                 "cluster": "scale",    "order": 14, "layer": "scale" },
-    { "file": "clusters/15-scale-idempotency.json", "id": "scale-idempotency", "title": "Idempotency Keys",                    "cluster": "scale",    "order": 15, "layer": "scale" },
-    { "file": "clusters/16-layer1-party.json",      "id": "l1-party",          "title": "Party / Contact",                     "cluster": "layer1",   "order": 16, "layer": "l1" },
-    { "file": "clusters/17-layer1-file.json",       "id": "l1-file",           "title": "File & Storage",                       "cluster": "layer1",   "order": 17, "layer": "l1" },
-    { "file": "clusters/18-layer1-workflow.json",   "id": "l1-workflow",       "title": "Workflow + ECA",                       "cluster": "layer1",   "order": 18, "layer": "l1" },
-    { "file": "clusters/19-layer1-notification.json","id": "l1-notification",  "title": "Notification",                         "cluster": "layer1",   "order": 19, "layer": "l1" },
-    { "file": "clusters/20-layer1-audit.json",      "id": "l1-audit",          "title": "Audit + Activity",                    "cluster": "layer1",   "order": 20, "layer": "l1" },
-    { "file": "clusters/21-layer1-search.json",     "id": "l1-search",         "title": "Search (Hybrid: BM25 + Vector)",      "cluster": "layer1",   "order": 21, "layer": "l1" },
-    { "file": "clusters/22-layer1-misc.json",       "id": "l1-misc",           "title": "i18n, Money, Realtime, Webhook, API", "cluster": "layer1",   "order": 22, "layer": "l1" },
-    { "file": "clusters/23-stack-commerce.json",    "id": "s-commerce",        "title": "Commerce Stack",                      "cluster": "stack",    "order": 23, "layer": "l2" },
-    { "file": "clusters/24-stack-accounting.json",  "id": "s-accounting",      "title": "Accounting + Finans Stack (TR)",      "cluster": "stack",    "order": 24, "layer": "l2" },
-    { "file": "clusters/25-stack-hrms.json",        "id": "s-hrms",            "title": "HRMS Stack (TR)",                     "cluster": "stack",    "order": 25, "layer": "l2" },
-    { "file": "clusters/26-stack-pms.json",         "id": "s-pms",             "title": "PMS Stack",                           "cluster": "stack",    "order": 26, "layer": "l2" },
-    { "file": "clusters/27-stack-lms.json",         "id": "s-lms",             "title": "LMS Stack",                           "cluster": "stack",    "order": 27, "layer": "l2" },
-    { "file": "clusters/28-stack-cms.json",         "id": "s-cms",             "title": "CMS Stack",                           "cluster": "stack",    "order": 28, "layer": "l2" },
-    { "file": "clusters/29-stack-social.json",      "id": "s-social",          "title": "Social Stack",                        "cluster": "stack",    "order": 29, "layer": "l2" },
-    { "file": "clusters/30-stack-mrp.json",         "id": "s-mrp",             "title": "MRP / Manufacturing Stack",           "cluster": "stack",    "order": 30, "layer": "l2" },
-    { "file": "clusters/31-stack-ai.json",          "id": "s-ai",              "title": "AI Stack",                            "cluster": "stack",    "order": 31, "layer": "l2" },
-    { "file": "clusters/32-stack-marketing.json",   "id": "s-marketing",       "title": "Marketing + CRM Stack",               "cluster": "stack",    "order": 32, "layer": "l2" },
-    { "file": "clusters/33-stack-helpdesk.json",    "id": "s-helpdesk",        "title": "Helpdesk + Knowledge Stack",          "cluster": "stack",    "order": 33, "layer": "l2" },
-    { "file": "clusters/34-stack-drive.json",       "id": "s-drive",           "title": "Drive + Collaboration Stack",         "cluster": "stack",    "order": 34, "layer": "l2" },
-    { "file": "clusters/35-crosscut-tr.json",       "id": "cc-tr",             "title": "Türkiye Uyum Birinci Sınıf",           "cluster": "crosscut", "order": 35 },
-    { "file": "clusters/36-crosscut-security.json", "id": "cc-security",       "title": "Security Model",                       "cluster": "crosscut", "order": 36 },
-    { "file": "clusters/37-crosscut-observability.json", "id": "cc-obs",       "title": "Observability + Performance + DR",     "cluster": "crosscut", "order": 37 },
-    { "file": "clusters/38-dx-cli.json",            "id": "dx-cli",            "title": "Plugin CLI + Scaffolding",            "cluster": "dx",       "order": 38 },
-    { "file": "clusters/39-dx-marketplace.json",    "id": "dx-marketplace",    "title": "Marketplace + Versioning",            "cluster": "dx",       "order": 39 },
-    { "file": "clusters/40-services.json",          "id": "services",          "title": "Services — Dış Sağlayıcılar",          "cluster": "services", "order": 40 },
-    { "file": "clusters/41-file-layout.json",       "id": "file-layout",       "title": "Dosya / Dizin Yapısı",                "cluster": "build",    "order": 41 },
-    { "file": "clusters/42-product-mapping.json",   "id": "product-mapping",   "title": "15 Ürün → Stack Mapping",             "cluster": "build",    "order": 42 },
-    { "file": "clusters/43-build-sequence.json",    "id": "build-sequence",    "title": "Build Sırası — 5 Stage",              "cluster": "build",    "order": 43 },
-    { "file": "clusters/44-anti-patterns.json",     "id": "anti-patterns",     "title": "Anti-pattern Özeti",                  "cluster": "build",    "order": 44 },
-    { "file": "clusters/60-deploy-yap.json",        "id": "deploy-yap",        "title": "Deploy — yap otomasyonu",             "cluster": "build",    "order": 45 },
-    { "file": "clusters/52-fe-locked-decisions.json", "id": "fe-locked",       "title": "Frontend — Kilitli Kararlar",            "cluster": "frontend", "order": 52 },
-    { "file": "clusters/53-fe-monorepo.json",         "id": "fe-monorepo",     "title": "Frontend — Monorepo İskeleti",           "cluster": "frontend", "order": 53 },
-    { "file": "clusters/54-fe-core-ui.json",          "id": "fe-core-ui",      "title": "Frontend — Çekirdek + UI + State",       "cluster": "frontend", "order": 54 },
-    { "file": "clusters/55-fe-ai-realtime.json",      "id": "fe-ai-rt",        "title": "Frontend — AI + Realtime + Offline",     "cluster": "frontend", "order": 55 },
-    { "file": "clusters/56-fe-mobile.json",           "id": "fe-mobile",       "title": "Frontend — Capacitor Mobile + KYC/KYB",  "cluster": "frontend", "order": 56 },
-    { "file": "clusters/57-fe-test-tooling.json",     "id": "fe-tooling",      "title": "Frontend — Test + Tooling + Observability", "cluster": "frontend", "order": 57 },
-    { "file": "clusters/58-fe-deploy-ota.json",       "id": "fe-deploy",       "title": "Frontend — Deploy + OTA + Store Rollout", "cluster": "frontend", "order": 58 },
-    { "file": "clusters/59-fe-anti-stack.json",       "id": "fe-anti",         "title": "Frontend — Anti-Stack + Çelişki Kararları", "cluster": "frontend", "order": 59 }
+    {
+      "file": "clusters/00-overview.json",
+      "id": "overview",
+      "title": "Yönetici özeti",
+      "cluster": "meta",
+      "order": 0
+    },
+    {
+      "file": "clusters/70-edu-overview.json",
+      "id": "edu-overview",
+      "title": "Eğitim yaklaşımı — bu döküman nasıl okunur",
+      "cluster": "meta",
+      "order": 3
+    },
+    {
+      "file": "clusters/71-edu-u01-yazilim.json",
+      "id": "edu-u01",
+      "title": "Yazılım nedir? — temel zihinsel model",
+      "cluster": "meta",
+      "order": 4
+    },
+    {
+      "file": "clusters/72-edu-u02-veri-tip.json",
+      "id": "edu-u02",
+      "title": "Veri ve Tipler — atomik öncesi temel",
+      "cluster": "atomic",
+      "order": 1
+    },
+    {
+      "file": "clusters/74-edu-u04-veritabani.json",
+      "id": "edu-u04",
+      "title": "Veritabanı Temelleri — DocType'tan önce",
+      "cluster": "layer0",
+      "order": 1
+    },
+    {
+      "file": "clusters/73-edu-u03-doctype.json",
+      "id": "edu-u03",
+      "title": "DocType ile Model — anlatımsal giriş",
+      "cluster": "layer0",
+      "order": 2
+    },
+    {
+      "file": "clusters/75-edu-u05-api.json",
+      "id": "edu-u05",
+      "title": "API: REST ve GraphQL — pratik anlatım",
+      "cluster": "layer1",
+      "order": 1
+    },
+    {
+      "file": "clusters/76-edu-u06-tenancy.json",
+      "id": "edu-u06",
+      "title": "Multi-tenancy — bir kod, çok müşteri",
+      "cluster": "layer0",
+      "order": 3
+    },
+    {
+      "file": "clusters/77-edu-u07-security.json",
+      "id": "edu-u07",
+      "title": "Yetkilendirme & Güvenlik",
+      "cluster": "layer0",
+      "order": 4
+    },
+    {
+      "file": "clusters/78-edu-u08-eventbus.json",
+      "id": "edu-u08",
+      "title": "Event Bus & Outbox",
+      "cluster": "scale",
+      "order": 0
+    },
+    {
+      "file": "clusters/79-edu-u09-plugin.json",
+      "id": "edu-u09",
+      "title": "Plugin Mimarisi — eğitim anlatım",
+      "cluster": "layer0",
+      "order": 5
+    },
+    {
+      "file": "clusters/80-edu-u10-deploy.json",
+      "id": "edu-u10",
+      "title": "Deploy & Operations — eğitim anlatım",
+      "cluster": "build",
+      "order": 46
+    },
+    {
+      "file": "clusters/01-philosophy.json",
+      "id": "philosophy",
+      "title": "Felsefe ve ana prensipler",
+      "cluster": "meta",
+      "order": 1
+    },
+    {
+      "file": "clusters/02-board-rebuilt.json",
+      "id": "board",
+      "title": "Tahta — yeniden yapılandırılmış",
+      "cluster": "meta",
+      "order": 2
+    },
+    {
+      "file": "clusters/03-atomic-types.json",
+      "id": "atomic-types",
+      "title": "Atomik tipler — Kum Tanesi",
+      "cluster": "atomic",
+      "order": 3,
+      "layer": "atomic"
+    },
+    {
+      "file": "clusters/04-kernel-schema.json",
+      "id": "k-schema",
+      "title": "Schema / Metadata Engine (DocType)",
+      "cluster": "layer0",
+      "order": 4,
+      "layer": "kernel"
+    },
+    {
+      "file": "clusters/05-kernel-identity.json",
+      "id": "k-identity",
+      "title": "Identity",
+      "cluster": "layer0",
+      "order": 5,
+      "layer": "kernel"
+    },
+    {
+      "file": "clusters/06-kernel-authz.json",
+      "id": "k-authz",
+      "title": "Authorization",
+      "cluster": "layer0",
+      "order": 6,
+      "layer": "kernel"
+    },
+    {
+      "file": "clusters/07-kernel-tenancy.json",
+      "id": "k-tenancy",
+      "title": "Tenancy",
+      "cluster": "layer0",
+      "order": 7,
+      "layer": "kernel"
+    },
+    {
+      "file": "clusters/08-kernel-bus.json",
+      "id": "k-bus",
+      "title": "Event Bus + Polyglot Runtime",
+      "cluster": "layer0",
+      "order": 8,
+      "layer": "kernel"
+    },
+    {
+      "file": "clusters/09-kernel-plugin.json",
+      "id": "k-plugin",
+      "title": "Plugin Registry + Manifest",
+      "cluster": "layer0",
+      "order": 9,
+      "layer": "kernel"
+    },
+    {
+      "file": "clusters/10-scale-outbox.json",
+      "id": "scale-outbox",
+      "title": "Transactional Outbox",
+      "cluster": "scale",
+      "order": 10,
+      "layer": "scale"
+    },
+    {
+      "file": "clusters/11-scale-projections.json",
+      "id": "scale-projections",
+      "title": "CQRS Projections (Read Models)",
+      "cluster": "scale",
+      "order": 11,
+      "layer": "scale"
+    },
+    {
+      "file": "clusters/12-scale-counter.json",
+      "id": "scale-counter",
+      "title": "Hot Counter",
+      "cluster": "scale",
+      "order": 12,
+      "layer": "scale"
+    },
+    {
+      "file": "clusters/13-scale-workers.json",
+      "id": "scale-workers",
+      "title": "Workers + Scheduler",
+      "cluster": "scale",
+      "order": 13,
+      "layer": "scale"
+    },
+    {
+      "file": "clusters/14-scale-saga.json",
+      "id": "scale-saga",
+      "title": "Saga + Compensation",
+      "cluster": "scale",
+      "order": 14,
+      "layer": "scale"
+    },
+    {
+      "file": "clusters/15-scale-idempotency.json",
+      "id": "scale-idempotency",
+      "title": "Idempotency Keys",
+      "cluster": "scale",
+      "order": 15,
+      "layer": "scale"
+    },
+    {
+      "file": "clusters/16-layer1-party.json",
+      "id": "l1-party",
+      "title": "Party / Contact",
+      "cluster": "layer1",
+      "order": 16,
+      "layer": "l1"
+    },
+    {
+      "file": "clusters/17-layer1-file.json",
+      "id": "l1-file",
+      "title": "File & Storage",
+      "cluster": "layer1",
+      "order": 17,
+      "layer": "l1"
+    },
+    {
+      "file": "clusters/18-layer1-workflow.json",
+      "id": "l1-workflow",
+      "title": "Workflow + ECA",
+      "cluster": "layer1",
+      "order": 18,
+      "layer": "l1"
+    },
+    {
+      "file": "clusters/19-layer1-notification.json",
+      "id": "l1-notification",
+      "title": "Notification",
+      "cluster": "layer1",
+      "order": 19,
+      "layer": "l1"
+    },
+    {
+      "file": "clusters/20-layer1-audit.json",
+      "id": "l1-audit",
+      "title": "Audit + Activity",
+      "cluster": "layer1",
+      "order": 20,
+      "layer": "l1"
+    },
+    {
+      "file": "clusters/21-layer1-search.json",
+      "id": "l1-search",
+      "title": "Search (Hybrid: BM25 + Vector)",
+      "cluster": "layer1",
+      "order": 21,
+      "layer": "l1"
+    },
+    {
+      "file": "clusters/22-layer1-misc.json",
+      "id": "l1-misc",
+      "title": "i18n, Money, Realtime, Webhook, API",
+      "cluster": "layer1",
+      "order": 22,
+      "layer": "l1"
+    },
+    {
+      "file": "clusters/23-stack-commerce.json",
+      "id": "s-commerce",
+      "title": "Commerce Stack",
+      "cluster": "stack",
+      "order": 23,
+      "layer": "l2"
+    },
+    {
+      "file": "clusters/24-stack-accounting.json",
+      "id": "s-accounting",
+      "title": "Accounting + Finans Stack (TR)",
+      "cluster": "stack",
+      "order": 24,
+      "layer": "l2"
+    },
+    {
+      "file": "clusters/25-stack-hrms.json",
+      "id": "s-hrms",
+      "title": "HRMS Stack (TR)",
+      "cluster": "stack",
+      "order": 25,
+      "layer": "l2"
+    },
+    {
+      "file": "clusters/26-stack-pms.json",
+      "id": "s-pms",
+      "title": "PMS Stack",
+      "cluster": "stack",
+      "order": 26,
+      "layer": "l2"
+    },
+    {
+      "file": "clusters/27-stack-lms.json",
+      "id": "s-lms",
+      "title": "LMS Stack",
+      "cluster": "stack",
+      "order": 27,
+      "layer": "l2"
+    },
+    {
+      "file": "clusters/28-stack-cms.json",
+      "id": "s-cms",
+      "title": "CMS Stack",
+      "cluster": "stack",
+      "order": 28,
+      "layer": "l2"
+    },
+    {
+      "file": "clusters/29-stack-social.json",
+      "id": "s-social",
+      "title": "Social Stack",
+      "cluster": "stack",
+      "order": 29,
+      "layer": "l2"
+    },
+    {
+      "file": "clusters/30-stack-mrp.json",
+      "id": "s-mrp",
+      "title": "MRP / Manufacturing Stack",
+      "cluster": "stack",
+      "order": 30,
+      "layer": "l2"
+    },
+    {
+      "file": "clusters/31-stack-ai.json",
+      "id": "s-ai",
+      "title": "AI Stack",
+      "cluster": "stack",
+      "order": 31,
+      "layer": "l2"
+    },
+    {
+      "file": "clusters/32-stack-marketing.json",
+      "id": "s-marketing",
+      "title": "Marketing + CRM Stack",
+      "cluster": "stack",
+      "order": 32,
+      "layer": "l2"
+    },
+    {
+      "file": "clusters/33-stack-helpdesk.json",
+      "id": "s-helpdesk",
+      "title": "Helpdesk + Knowledge Stack",
+      "cluster": "stack",
+      "order": 33,
+      "layer": "l2"
+    },
+    {
+      "file": "clusters/34-stack-drive.json",
+      "id": "s-drive",
+      "title": "Drive + Collaboration Stack",
+      "cluster": "stack",
+      "order": 34,
+      "layer": "l2"
+    },
+    {
+      "file": "clusters/35-crosscut-tr.json",
+      "id": "cc-tr",
+      "title": "Türkiye Uyum Birinci Sınıf",
+      "cluster": "crosscut",
+      "order": 35
+    },
+    {
+      "file": "clusters/36-crosscut-security.json",
+      "id": "cc-security",
+      "title": "Security Model",
+      "cluster": "crosscut",
+      "order": 36
+    },
+    {
+      "file": "clusters/37-crosscut-observability.json",
+      "id": "cc-obs",
+      "title": "Observability + Performance + DR",
+      "cluster": "crosscut",
+      "order": 37
+    },
+    {
+      "file": "clusters/38-dx-cli.json",
+      "id": "dx-cli",
+      "title": "Plugin CLI + Scaffolding",
+      "cluster": "dx",
+      "order": 38
+    },
+    {
+      "file": "clusters/39-dx-marketplace.json",
+      "id": "dx-marketplace",
+      "title": "Marketplace + Versioning",
+      "cluster": "dx",
+      "order": 39
+    },
+    {
+      "file": "clusters/40-services.json",
+      "id": "services",
+      "title": "Services — Dış Sağlayıcılar",
+      "cluster": "services",
+      "order": 40
+    },
+    {
+      "file": "clusters/41-file-layout.json",
+      "id": "file-layout",
+      "title": "Dosya / Dizin Yapısı",
+      "cluster": "build",
+      "order": 41
+    },
+    {
+      "file": "clusters/42-product-mapping.json",
+      "id": "product-mapping",
+      "title": "15 Ürün → Stack Mapping",
+      "cluster": "build",
+      "order": 42
+    },
+    {
+      "file": "clusters/43-build-sequence.json",
+      "id": "build-sequence",
+      "title": "Build Sırası — 5 Stage",
+      "cluster": "build",
+      "order": 43
+    },
+    {
+      "file": "clusters/44-anti-patterns.json",
+      "id": "anti-patterns",
+      "title": "Anti-pattern Özeti",
+      "cluster": "build",
+      "order": 44
+    },
+    {
+      "file": "clusters/60-deploy-yap.json",
+      "id": "deploy-yap",
+      "title": "Deploy — yap otomasyonu",
+      "cluster": "build",
+      "order": 45
+    },
+    {
+      "file": "clusters/52-fe-locked-decisions.json",
+      "id": "fe-locked",
+      "title": "Frontend — Kilitli Kararlar",
+      "cluster": "frontend",
+      "order": 52
+    },
+    {
+      "file": "clusters/53-fe-monorepo.json",
+      "id": "fe-monorepo",
+      "title": "Frontend — Monorepo İskeleti",
+      "cluster": "frontend",
+      "order": 53
+    },
+    {
+      "file": "clusters/54-fe-core-ui.json",
+      "id": "fe-core-ui",
+      "title": "Frontend — Çekirdek + UI + State",
+      "cluster": "frontend",
+      "order": 54
+    },
+    {
+      "file": "clusters/55-fe-ai-realtime.json",
+      "id": "fe-ai-rt",
+      "title": "Frontend — AI + Realtime + Offline",
+      "cluster": "frontend",
+      "order": 55
+    },
+    {
+      "file": "clusters/56-fe-mobile.json",
+      "id": "fe-mobile",
+      "title": "Frontend — Capacitor Mobile + KYC/KYB",
+      "cluster": "frontend",
+      "order": 56
+    },
+    {
+      "file": "clusters/57-fe-test-tooling.json",
+      "id": "fe-tooling",
+      "title": "Frontend — Test + Tooling + Observability",
+      "cluster": "frontend",
+      "order": 57
+    },
+    {
+      "file": "clusters/58-fe-deploy-ota.json",
+      "id": "fe-deploy",
+      "title": "Frontend — Deploy + OTA + Store Rollout",
+      "cluster": "frontend",
+      "order": 58
+    },
+    {
+      "file": "clusters/59-fe-anti-stack.json",
+      "id": "fe-anti",
+      "title": "Frontend — Anti-Stack + Çelişki Kararları",
+      "cluster": "frontend",
+      "order": 59
+    },
+    {
+      "file": "clusters/90-sus-overview.json",
+      "id": "sus-overview",
+      "title": "Sürdürülebilirlik haritası — neden mekanizma?",
+      "cluster": "sus",
+      "order": 90
+    },
+    {
+      "file": "clusters/91-sus-bc-policy.json",
+      "id": "sus-bc-policy",
+      "title": "Sözleşme kapısı — \"Don't break userspace\"",
+      "cluster": "sus",
+      "order": 91
+    },
+    {
+      "file": "clusters/92-sus-versioning.json",
+      "id": "sus-versioning",
+      "title": "Tarih-tabanlı versiyonlama + dönüşüm katmanı",
+      "cluster": "sus",
+      "order": 92
+    },
+    {
+      "file": "clusters/93-sus-boundaries.json",
+      "id": "sus-boundaries",
+      "title": "Makine-zorlamalı modül sınırı (CI kapısı)",
+      "cluster": "sus",
+      "order": 93
+    },
+    {
+      "file": "clusters/94-sus-codemod.json",
+      "id": "sus-codemod",
+      "title": "Otomatik upgrade — kendini-yükselten döngü",
+      "cluster": "sus",
+      "order": 94
+    },
+    {
+      "file": "clusters/95-sus-timi.json",
+      "id": "sus-timi",
+      "title": "DocType → TIMI stabil arayüz",
+      "cluster": "sus",
+      "order": 95
+    },
+    {
+      "file": "clusters/96-sus-bitemporal.json",
+      "id": "sus-bitemporal",
+      "title": "Bitemporal immutable kayıt — tek doğruluk",
+      "cluster": "sus",
+      "order": 96
+    },
+    {
+      "file": "clusters/97-sus-actions.json",
+      "id": "sus-actions",
+      "title": "Tipli kinetik aksiyon yüzeyi (AI için)",
+      "cluster": "sus",
+      "order": 97
+    },
+    {
+      "file": "clusters/98-sus-declarative.json",
+      "id": "sus-declarative",
+      "title": "Declarative resource'tan türetme",
+      "cluster": "sus",
+      "order": 98
+    },
+    {
+      "file": "clusters/99-sus-durable.json",
+      "id": "sus-durable",
+      "title": "Postgres-native durable execution",
+      "cluster": "sus",
+      "order": 99
+    },
+    {
+      "file": "clusters/100-sus-metadata.json",
+      "id": "sus-metadata",
+      "title": "Her-şey-metadata (introspectable kayıt)",
+      "cluster": "sus",
+      "order": 100
+    },
+    {
+      "file": "clusters/101-sus-conformance.json",
+      "id": "sus-conformance",
+      "title": "Test-önce sözleşme koşumu",
+      "cluster": "sus",
+      "order": 101
+    }
   ]
 }

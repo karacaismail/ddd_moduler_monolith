@@ -103,7 +103,8 @@
     },
     {
       "type": "paragraph",
-      "text": "**Faz 1 · P0 · Kernel Squad.** Plugin'lerin birbirini bilmeden davranış genişletmesi için hook (sync) ve event (async) sistemi. Drupal hook'larının async + agent-aware eşdeğeri."
+      "text": "**Faz 1 · P0 · Kernel Squad.** Plugin'lerin birbirini bilmeden davranış genişletmesi için hook (sync) ve event (async) sistemi. Drupal hook'larının async + agent-aware eşdeğeri.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -130,7 +131,8 @@
     },
     {
       "type": "paragraph",
-      "text": "**Faz 2 · P1 · Kernel Squad.** Dependency injection container, hierarchical configuration (global → tenant → user), feature flags, secret resolution."
+      "text": "**Faz 2 · P1 · Kernel Squad.** Dependency injection container, hierarchical configuration (global → tenant → user), feature flags, secret resolution.",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -163,12 +165,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "LandX yapay zeka altyapısının 0. katmanı (kernel). Yapay zeka kararlarının dayandığı en derin kurallar burada.",
+      "nicin": "Üst katmanlar 'şu kararı al' derken bu katmanın belirlediği temel kurallara uyar.",
+      "nasil": "5 modül — eklenti çatısı, şema, veri tipi, olay yayını, eklenti listesi.",
+      "nerede": "Sistemin en derininde — değiştirilmez.",
+      "ne_zaman": "Sistem başlangıcında kurulur, sonra sabit.",
+      "kim": "Çekirdek mimarı tasarlar.",
+      "analoji": "Apartmanın temeli: değiştirilmez ama her şey üstüne dayanır."
+    }
   }
 }

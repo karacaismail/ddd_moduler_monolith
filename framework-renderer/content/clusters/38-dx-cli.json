@@ -58,12 +58,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Geliştirici komut satırı aracı: 'yeni modül oluştur', 'test koş', 'deploy et' gibi sık komutları tek kelime ile yapan yardımcı.",
+      "nicin": "Geliştirici aynı işi 50 kere yapacak. Her seferinde 10 adımlık komut yazmak yorucu. CLI tek satıra indirir.",
+      "nasil": "`fw new module hrms` gibi tek komut → sistem tüm klasör + dosyaları üretir.",
+      "nerede": "Geliştirici terminalinde — günlük araç.",
+      "ne_zaman": "Geliştirici sık tekrarlanan iş yaparken.",
+      "kim": "Geliştirici kullanır; DevOps yazar.",
+      "analoji": "Mutfak robotunun hazır ayarları: 'hamur hazırla' tuşuna basarsın, robot tüm adımları kendi yapar."
+    }
   }
 }

@@ -16,7 +16,16 @@
   "blocks": [
     {
       "type": "paragraph",
-      "text": "Async job queue. Outbox relay, projection rebuild, fan-out, scheduled task, webhook delivery — hepsi burada."
+      "text": "Async job queue. Outbox relay, projection rebuild, fan-out, scheduled task, webhook delivery — hepsi burada.",
+      "enrich": {
+        "lesson": {
+          "ne": "Sırayla yapılacak işleri bekleten kuyruk.",
+          "nicin": "Aynı anda 1000 iş gelirse hepsi birden çalışmasın diye.",
+          "nasil": "FIFO (önce gelen önce çıkar).",
+          "kim": "Sistem yönetir.",
+          "analoji": "Bankamatik sırası."
+        }
+      }
     },
     {
       "type": "heading",
@@ -53,7 +62,8 @@
     },
     {
       "type": "paragraph",
-      "text": "Job iki kez çalışsa bile sonuç aynı olmalı (network retry, worker restart). Pattern: her job `idempotency_key` taşır, handler \"bu key işlendi mi\" check'ler. {{ref:scale-idempotency}}."
+      "text": "Job iki kez çalışsa bile sonuç aynı olmalı (network retry, worker restart). Pattern: her job `idempotency_key` taşır, handler \"bu key işlendi mi\" check'ler. {{ref:scale-idempotency}}.",
+      "enrich": {}
     },
     {
       "type": "heading",
@@ -68,7 +78,8 @@
     {
       "type": "heading",
       "level": 4,
-      "text": "Worker pool sizing"
+      "text": "Worker pool sizing",
+      "enrich": {}
     },
     {
       "type": "kv-row",
@@ -103,12 +114,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Arka planda iş gören 'çalışanlar' — kullanıcı görmeden ağır işleri sırayla yapan dijital görevliler.",
+      "nicin": "Ağır işi kullanıcının ekranında yapamayız; kullanıcı bekletilemez. Arka çalışana yollar, sonucu hazır olunca haber verirsin.",
+      "nasil": "Bir iş kuyruğa atılır → çalışan sırası gelince alır, yapar, sonucu kaydeder → ana sistem 'bitti' bildirimi alır.",
+      "nerede": "Excel raporu üretimi, toplu e-posta gönderimi, fotoğraf optimizasyonu — hepsi çalışan tarafında.",
+      "ne_zaman": "İşlem 1 saniyeden uzun sürüyorsa kuyruğa atılır.",
+      "kim": "Geliştirici 'çalışana ver' der; çalışan modülü kuyruğu yönetir; son kullanıcı hızla cevap aldığını görür.",
+      "analoji": "Restoranda siparişten sonra mutfak: müşteri masada bekler, mutfak yemeği hazırlar, garson getirir. Müşteri mutfakta beklemez."
+    }
   }
 }

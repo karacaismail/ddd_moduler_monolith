@@ -1,0 +1,145 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+defaults:
+  run:
+    working-directory: framework-renderer
+
+jobs:
+  static:
+    name: Statik kontrol (typecheck + lint + audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: framework-renderer/package-lock.json
+      - run: npm ci
+      - name: TypeScript typecheck
+        run: npm run typecheck
+      - name: Cluster JSON şema + ref bütünlüğü
+        run: npm run validate:content
+      - name: 60+ jargon audit (yüksek bulgu varsa fail)
+        run: |
+          npx tsx scripts/audit-60plus.ts > audit-report.txt
+          cat audit-report.txt
+          high=$(grep -oE 'Yüksek.+: *[0-9]+' audit-report.txt | grep -oE '[0-9]+$' || echo 0)
+          if [ "$high" -gt 0 ]; then
+            echo "❌ $high yüksek 60+ uygunluk bulgusu var"
+            exit 1
+          fi
+          echo "✓ Yüksek bulgu yok"
+      - name: Template kalıntı temizliği DRY-RUN
+        run: |
+          out=$(npx tsx scripts/strip-template-content.ts)
+          echo "$out"
+          if echo "$out" | grep -qE 'TOPLAM detail temizlendi: *[1-9]'; then
+            echo "❌ Sahte autoFiveWH kalıntısı bulundu — strip-template-content.ts --write çalıştır"
+            exit 1
+          fi
+          echo "✓ Template kalıntı yok"
+
+  unit:
+    name: Unit testler (Vitest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: framework-renderer/package-lock.json
+      - run: npm ci
+      - run: npm test -- --coverage
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: framework-renderer/coverage
+
+  build:
+    name: Build artifact
+    runs-on: ubuntu-latest
+    needs: [static, unit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: framework-renderer/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: framework-renderer/dist
+
+  e2e:
+    name: E2E + a11y (Playwright ${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    needs: [build]
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: framework-renderer/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test --project=${{ matrix.browser }}
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: framework-renderer/playwright-report
+
+  visual:
+    name: Visual regression (chromium)
+    runs-on: ubuntu-latest
+    needs: [build]
+    continue-on-error: true  # baseline yoksa kırma
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: framework-renderer/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:visual
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-diff
+          path: framework-renderer/test-results
+
+  lighthouse:
+    name: Lighthouse CI (perf + a11y + best-practices + seo)
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: framework-renderer/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: npm install -g @lhci/cli@0.13.x
+      - run: lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}

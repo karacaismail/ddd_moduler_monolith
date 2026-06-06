@@ -26,25 +26,7 @@
           "name": "D01 — Audit Log & Event Sourcing",
           "desc": "**Faz 3 · P0 · Compliance + Platform Ops.** Tüm değişikliklerin yazılı kaydı. Append-only event log, replay, forensic search, retention policy. Agent eylemleri ayrı bir audit kanalında ve ek metadata'yla kayıt altına alınır. *Capabilities:* Append-Only Log · Event Replay · Forensic Search · Retention Policy · Agent Audit Channel. Bizim eşdeğer: {{ref:l1-audit}}.",
           "enrich": {
-            "info": "**Faz 3 · P0 · Compliance + Platform Ops.** Tüm değişikliklerin yazılı kaydı. Append-only event log, replay, forensic search, retention poli",
-            "detail": "**D01 — Audit Log & Event Sourcing** nedir?\n\n**Faz 3 · P0 · Compliance + Platform Ops.** Tüm değişikliklerin yazılı kaydı. Append-only event log, replay, forensic search, retention policy. Agent eylemleri ayrı bir audit kanalında ve ek metadata'yla kayıt altına alınır. *Capabilities:* Append-Only Log · Event Replay · Forensic Search · Retention Policy · Agent Audit Channel. Bizim eşdeğer: {{ref:l1-audit}}.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"D01 — Audit Log & Event Sourcing\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 3 · P0 · Compliance + Platform Ops.** Tüm değişikliklerin yazılı kaydı. Ap pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"D01 — Audit Log & Event Sourcing\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"D01 — Audit Log & Event Sourcing\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "**Faz 3 · P0 · Compliance + Platform Ops.** Tüm değişikliklerin yazılı kaydı. Append-only event log, replay, forensic search, retention poli"
           }
         },
         {
@@ -52,30 +34,12 @@
           "desc": "**Faz 3 · P0 · Compliance + Security.** Otomatik PII keşfi, data classification (public/internal/confidential/restricted), field-level encryption policy, redaction in logs, KVKK madde 7 (silme) ve madde 11 (erişim) hakları otomasyonu. *Capabilities:* PII Discovery · Data Classification · Field-level Encryption · Log Redaction · DSR Automation (KVKK Md.7, Md.11).",
           "enrich": {
             "info": "**Faz 3 · P0 · Compliance + Security.** Otomatik PII keşfi, data classification (public/internal/confidential/restricted), field-level encry",
-            "detail": "**D02 — PII Governance & Data Classification** nedir?\n\n**Faz 3 · P0 · Compliance + Security.** Otomatik PII keşfi, data classification (public/internal/confidential/restricted), field-level encryption policy, redaction in logs, KVKK madde 7 (silme) ve madde 11 (erişim) hakları otomasyonu. *Capabilities:* PII Discovery · Data Classification · Field-level Encryption · Log Redaction · DSR Automation (KVKK Md.7, Md.11).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
             "terms": [
               {
                 "term": "KVKK",
                 "abbrev_of": "Kişisel Verilerin Korunması Kanunu",
                 "meaning": "Türkiye'nin veri koruma kanunu (6698).",
                 "why": "TR pazarında zorunlu uyum."
-              }
-            ],
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"D02 — PII Governance & Data Classification\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 3 · P0 · Compliance + Security.** Otomatik PII keşfi, data classification  pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"D02 — PII Governance & Data Classification\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"D02 — PII Governance & Data Classification\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
             ]
           }
@@ -85,30 +49,12 @@
           "desc": "**Faz 4 · P1 · Compliance Squad.** Uyumluluk kontrol matrisi, kanıt toplama otomasyonu, periyodik tarama, discrepancy ticket. **KVKK VERBİS entegrasyonu**, GDPR Article 30 records, SOC2 evidence collection. *Capabilities:* Control Matrix · Evidence Collection · Periodic Scan · Discrepancy Tracking · VERBİS Integration.",
           "enrich": {
             "info": "**Faz 4 · P1 · Compliance Squad.** Uyumluluk kontrol matrisi, kanıt toplama otomasyonu, periyodik tarama, discrepancy ticket. **KVKK VERBİS ",
-            "detail": "**D03 — Compliance Framework (KVKK / GDPR / SOC2)** nedir?\n\n**Faz 4 · P1 · Compliance Squad.** Uyumluluk kontrol matrisi, kanıt toplama otomasyonu, periyodik tarama, discrepancy ticket. **KVKK VERBİS entegrasyonu**, GDPR Article 30 records, SOC2 evidence collection. *Capabilities:* Control Matrix · Evidence Collection · Periodic Scan · Discrepancy Tracking · VERBİS Integration.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
             "terms": [
               {
                 "term": "KVKK",
                 "abbrev_of": "Kişisel Verilerin Korunması Kanunu",
                 "meaning": "Türkiye'nin veri koruma kanunu (6698).",
                 "why": "TR pazarında zorunlu uyum."
-              }
-            ],
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"D03 — Compliance Framework (KVKK / GDPR / SOC2)\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici **Faz 4 · P1 · Compliance Squad.** Uyumluluk kontrol matrisi, kanıt toplama otom pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"D03 — Compliance Framework (KVKK / GDPR / SOC2)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"D03 — Compliance Framework (KVKK / GDPR / SOC2)\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
             ]
           }
@@ -133,12 +79,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "LandX'in 4. katmanı — yapay zeka kararlarının yasal denetlenebilirliği.",
+      "nicin": "Ajan karar verdi, denetçi 'nasıl' diye sorar. Cevap için kayıt gerek.",
+      "nasil": "3 modül — kayıt, KVKK uyumu.",
+      "nerede": "Yönetici panelinde 'AI Karar Geçmişi'.",
+      "ne_zaman": "Her ajan kararında otomatik.",
+      "kim": "Denetçi okur; sistem yazar.",
+      "analoji": "Mahkeme tutanağı: hangi kanıt, hangi madde — defterde."
+    }
   }
 }

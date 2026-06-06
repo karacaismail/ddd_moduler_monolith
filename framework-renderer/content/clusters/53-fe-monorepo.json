@@ -56,7 +56,16 @@
               },
               {
                 "name": "i18n/",
-                "comment": "ICU mesajlar (tr, en, ar), date/number formatters"
+                "comment": "ICU mesajlar (tr, en, ar), date/number formatters",
+                "enrich": {
+                  "lesson": {
+                    "ne": "Uluslararasılaştırma — yazılımın çoklu dilde çalışması.",
+                    "nicin": "Farklı pazarlara hizmet için.",
+                    "nasil": "Metinler kod yerine sözlük dosyalarında.",
+                    "kim": "Geliştirici yapı kurar, çevirmen doldurur.",
+                    "analoji": "Restoran menüsünün arka sayfasında İngilizce hali."
+                  }
+                }
               },
               {
                 "name": "ai/",
@@ -172,12 +181,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Tüm frontend kodunun tek bir kod deposunda toplandığı düzen. 15 ürünün arayüzü ayrı ayrı klasörlerde ama aynı çatı altında.",
+      "nicin": "Ayrı depo kuralsız: her ürünün kütüphanesi farklı sürüm olur, paylaşım acı verir. Tek depoda paylaşım kolay, tutarlılık garanti.",
+      "nasil": "Bir ana klasör + içinde 'packages' alt klasörleri (her ürün için bir tane) + 'shared' (paylaşılan). Bir komutla hepsi build edilir.",
+      "nerede": "GitHub'da tek bir repo. İçinde 15 ürün ayrı klasör.",
+      "ne_zaman": "Yeni ürün eklenirken yeni klasör açılır; mevcut kodu paylaşmak isteyince shared'a taşınır.",
+      "kim": "DevOps mühendisi kurar; her ürün ekibi kendi klasöründe çalışır; kütüphane mimar ortak parçaları yönetir.",
+      "analoji": "Büyük bir kütüphane: ayrı raflar (ürünler) + ortak okuma salonu (paylaşılan parçalar) + tek kütüphaneci."
+    }
   }
 }

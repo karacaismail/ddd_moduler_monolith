@@ -27,21 +27,42 @@ export class BlockRegistry {
     const renderer = this.renderers.get(block.type);
     if (!renderer) {
       console.warn(`[registry] no renderer for block type: ${block.type}`);
-      const placeholder = document.createElement('div');
-      placeholder.className = 'block-error';
-      placeholder.innerHTML = `<strong>Renderer eksik:</strong> ${block.type}`;
-      return placeholder;
+      return makeErrorBlock(
+        'Bu blok tipi henüz desteklenmiyor',
+        `<code>${escapeText(block.type)}</code> bloğu için renderer kayıtlı değil. JSON şemasını veya registry'yi kontrol edin.`,
+        'ph-puzzle-piece',
+      );
     }
     try {
       return renderer(block, ctx);
     } catch (err) {
       console.error(`[registry] render failed for ${block.type}:`, err);
-      const placeholder = document.createElement('div');
-      placeholder.className = 'block-error';
-      placeholder.innerHTML = `<strong>Render hatası (${block.type}):</strong> ${
-        err instanceof Error ? err.message : String(err)
-      }`;
-      return placeholder;
+      const message = err instanceof Error ? err.message : String(err);
+      return makeErrorBlock(
+        `Render hatası — ${block.type}`,
+        escapeText(message),
+        'ph-warning-circle',
+      );
     }
   }
+}
+
+function escapeText(s: string): string {
+  return s.replace(/[&<>"']/g, (ch) =>
+    ch === '&' ? '&amp;' : ch === '<' ? '&lt;' : ch === '>' ? '&gt;' : ch === '"' ? '&quot;' : '&#39;',
+  );
+}
+
+function makeErrorBlock(title: string, message: string, icon: string): HTMLElement {
+  const el = document.createElement('div');
+  el.className = 'block-error';
+  el.setAttribute('role', 'alert');
+  el.innerHTML = `
+    <i class="ph ${icon}" aria-hidden="true"></i>
+    <div class="block-error__body">
+      <strong>${escapeText(title)}</strong>
+      <div class="block-error__msg">${message}</div>
+    </div>
+  `;
+  return el;
 }

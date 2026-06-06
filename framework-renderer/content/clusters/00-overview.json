@@ -14,27 +14,104 @@
     "ai-first"
   ],
   "enrich": {
-    "info": "Tek cümle: 15 SaaS ürünü taşıyacak DDD modüler monolith framework'ünün master haritası.",
+    "info": "15 farklı yazılım ürününün ortak temelini oluşturan, 6 katmanlı bir altyapının genel haritası.",
     "detail": "**Amaç:** son ürün değil, **meta-framework** geliştirmek — Drupal/Django/Frappe sınıfı. FastAPI backend üstüne metadata-driven DocType engine, polyglot runtime (Python + TS), scale primitives core'da.\n\n**Çerçeve:** 6 katman (kum tanesi → kaya). Her katman aşağıdakini bilir, üstündekini bilmez.\n\n**Ölçek:** 15 ürün hedefi (HRMS, Commerce, Accounting, PMS, LMS, CMS, Social, MRP, AI, Marketing, Helpdesk, Drive, Field Service, Real Estate, Field-builder), her biri kendi Layer-2 stack'inde.",
     "terms": [
-      { "term": "DDD", "abbrev_of": "Domain-Driven Design", "abbrev_tr": "Alana Dayalı Tasarım", "meaning": "İş alanını (domain) yazılım modeline merkez yapan tasarım yaklaşımı.", "why": "İşin dili kodun dili olur; ayrık modüller daha az sızdırır." },
-      { "term": "Meta-framework", "abbrev_tr": "Üst-çerçeve", "meaning": "Framework yazmaya yarayan framework. Frappe, Drupal, Salesforce buna örnek.", "why": "Tek ürün yerine birden çok ürünü aynı çekirdek üstünde inşa etmemizi sağlar." },
-      { "term": "DocType", "abbrev_of": "Document Type", "abbrev_tr": "Belge Tipi", "meaning": "Metadata-driven varlık tanımı — kod yazmadan bir 'Müşteri' veya 'Fatura' tipinin alanları/tabloları/formu üretilir.", "why": "Frappe'den ilham; her custom plugin'in DB tablosu + form + API'sini kendiliğinden alır." }
+      {
+        "term": "DDD",
+        "abbrev_of": "Domain-Driven Design",
+        "abbrev_tr": "Alana Dayalı Tasarım",
+        "meaning": "İş alanını (domain) yazılım modeline merkez yapan tasarım yaklaşımı.",
+        "why": "İşin dili kodun dili olur; ayrık modüller daha az sızdırır."
+      },
+      {
+        "term": "Meta-framework",
+        "abbrev_tr": "Üst-çerçeve",
+        "meaning": "Framework yazmaya yarayan framework. Frappe, Drupal, Salesforce buna örnek.",
+        "why": "Tek ürün yerine birden çok ürünü aynı çekirdek üstünde inşa etmemizi sağlar."
+      },
+      {
+        "term": "DocType",
+        "abbrev_of": "Document Type",
+        "abbrev_tr": "Belge Tipi",
+        "meaning": "Metadata-driven varlık tanımı — kod yazmadan bir 'Müşteri' veya 'Fatura' tipinin alanları/tabloları/formu üretilir.",
+        "why": "Frappe'den ilham; her custom plugin'in DB tablosu + form + API'sini kendiliğinden alır."
+      }
     ],
     "stories": [
-      { "persona": "Sistem yöneticisi (SaaS müşterisi)", "context": "Admin paneline gider, 'Müşteri Şikayeti' adında yeni bir DocType tanımlar; alanlar: konu, açıklama, öncelik, atanan kişi.", "outcome": "Kod yazmadan: DB tablosu açılır, admin formu üretilir, REST/GraphQL endpoint'i hazır olur, audit log tutar." },
-      { "persona": "Plugin geliştirici", "context": "HRMS modülünün üzerine 'Performans 360' eklemek istiyor; manifest yazar, DocType tanımlar, hook bağlar.", "outcome": "Kernel'i kırmadan modül marketplace'e atılabilir; aynı çekirdek, farklı domain." }
-    ]
+      {
+        "persona": "Mahalle bakkalı Ahmet Amca",
+        "context": "60 yaşında, defterle hesap tutar. Oğlu 'baba dijital sistem alalım, defterler eskimekte' der.",
+        "outcome": "Bu sistemde önce muhasebe modülünü açar; aynı tek arşivde stok, müşteri kartı, fatura — hepsi yan yana. Defterin dijital ikizi gibi, ama el ile toplama yok."
+      },
+      {
+        "persona": "Apartman yöneticisi Zeynep Hanım",
+        "context": "8 daireli binayı yönetir. Aidat takibi, ev sahibi-kiracı bilgileri, ortak gider faturaları için ayrı dosyalar tutar.",
+        "outcome": "Sistemin emlak modülünü açar; her daire bir kart olur. Aidat ödendi-ödenmedi, kim kiracı kim ev sahibi, son fatura ne — hepsi tek bakışta. Posta kutusundaki kâğıt bilgi karmaşası biter."
+      },
+      {
+        "persona": "Tek başına çalışan terzi Mehmet",
+        "context": "Müşteri ölçüleri, sipariş tarihleri, peşinat-bakiye bilgileri için cep defteri kullanır. Defteri kaybetse iş biter.",
+        "outcome": "Sistemde müşteri kartı + sipariş kartı tanımlar (DocType yöntemiyle, kod yazmadan). Telefondan açar, müşteri ölçüsünü ekler. Defteri kaybetme korkusu son bulur."
+      }
+    ],
+    "lesson": {
+      "ne": "15 farklı yazılım ürününün ortak temelini oluşturan, 6 katmanlı bir altyapının genel haritası. Tek bir resim, bütün sistemin neye benzediğini gösterir.",
+      "nicin": "Karmaşık projeyi parça parça anlatmak yerine, önce bütünü göstermek gerekiyor. 'Bu küçük taş hangi büyük taşın altında?' sorusu önce harita ile cevaplanır.",
+      "nasil": "En altta yapı taşları (atomic types), üstüne çekirdek (kernel), ölçek aletleri (scale), ortak özellikler (in-tree core), ürün modülleri (stacks), en üstte tam ürünler — bu sıra ile.",
+      "nerede": "Ana sayfada, sistemin omurgasını anlatan haritadır.",
+      "ne_zaman": "Sisteme yeni girenler ilk burayı okur. Eski ekip karar verirken buraya döner.",
+      "kim": "Yöneticiler büyük resmi görsün, mimar haritayı çizer, geliştiriciler kendi katmanını gezer, yatırımcı sistemin ölçeğini anlar.",
+      "analoji": "Bir alışveriş merkezinin girişindeki bina krokisi: 'şu kattaki şu dükkân' diye herkes hızlıca yolunu bulur."
+    }
   },
   "blocks": [
     {
       "type": "paragraph",
       "text": "Bu sayfa daha önce paylaşılan iki HTML'in (core-domains, eksikler) birleşik, 20 kat derinleştirilmiş halinin JSON dosyalarına bölünmüş ve dinamik render edilen sürümüdür. Mevcut tahta tek katmanlı bir veri-modelleme görünüyordu; oysa 15 üründen Shopify/SAP/Odoo/Frappe sınıfı bir şey çıkacaksa **6 katmanlı bir mimari** gerek: Kum Tanesi (atomik tipler) → Küçük Taş (kernel) → Scale primitives (kernel-yakını) → Orta Taş (in-tree core) → Büyük Taş (Pages) → Services (dış).",
       "enrich": {
-        "info": "6 katman: atom → kum → toz → küçük taş → orta taş → büyük taş → kaya."
+        "info": "6 katman: atom → kum → toz → küçük taş → orta taş → büyük taş → kaya.",
+        "lesson": {
+          "ne": "Bu proje, tek bir ürün değil; aynı çekirdek üzerine kurulacak 15 farklı yazılım ürününün ortak altyapısıdır. Bu altyapıyı 6 katmana ayırdık — en küçük parçadan en büyüğe.",
+          "nicin": "Aynı altyapıyı 15 üründe paylaşmak iki kazanım sağlar: hata düzeltmesi tek yerde, ürünler birbirine benzer ve birlikte çalışabilir. Bu büyük ölçek tek bir kod yığınıyla yönetilemezdi; katmanlamak gerekti.",
+          "nasil": "En altta 'atom' (yapı taşı), üstüne 'kum' (kum tanesi büyüklüğünde küçük doğrulama), 'küçük taş' (vazgeçilmez 6 modül), 'orta taş' (ortak ihtiyaçlar), 'büyük taş' (her ürünün kendi mantığı), en üstte 'kaya' (kullanıma hazır ürün) sırası.",
+          "nerede": "Sol kenar çubuğundaki 'Tane büyüklüğü' kartı bu sıralamayı simge ve story-point ile gösterir.",
+          "ne_zaman": "Yeni bir özellik eklerken: 'Bu hangi katmana ait?' diye sorarsın. Doğru katman = doğru ekip, doğru iş hacmi.",
+          "kim": "Mimar (genel resmi çizer), modül geliştiricisi (büyük taşları yazar), eklenti geliştiricisi (orta-küçük taşlarla oynar).",
+          "frontend": {
+            "yer": "Kullanıcı bunları doğrudan görmez; ürünleri kullanır. Ama 'Müşteri Şikayeti' formunu açtığında 30 sn'de hazır olması katmanlamanın sonucudur.",
+            "gereklilik": "Kullanıcı için fark, hız ve tutarlılıktır: 15 üründe aynı 'kullanıcı menüsü', 'tarih seçici', 'arama kutusu'.",
+            "ornek": "İK ürününde girdiğin saat formatı, muhasebe ürününde de aynı şekilde davranır."
+          },
+          "backend": {
+            "yer": "Kod deposunda 6 ayrı klasör: atomic-types, kernel, scale, layer1, layer2-stacks, services. Her klasör kendi katmanı.",
+            "gereklilik": "Karmaşık projede 'her şey her yerden çağrılabilir' kuralı bir hafta sonra çorba olur. Katmanlama, kim kimi çağırabilir kuralını yazar.",
+            "ornek": "Layer-2 (büyük taş) sadece bir alt katmanı çağırabilir. Layer-0'a (atom) atlamak yasak. Bu kural otomatik olarak kontrol edilir."
+          },
+          "analoji": "Bir apartman binası: temel (atom), kolonlar (kernel), kat planı (orta taş), daire içi (büyük taş). Üst katları temele kadar inip karıştırmazsın; her katın kendi kuralı vardır."
+        }
       }
     },
-    { "type": "granularity-legend", "title": "Kilometre taşları — Story Point haritası" },
+    {
+      "type": "granularity-legend",
+      "title": "Kilometre taşları — Story Point haritası"
+    },
+    {
+      "type": "image",
+      "src": "/assets/overview-layers.svg",
+      "alt": "6 katmanlı mimari haritası — atom, kernel, scale, in-tree, stack ve rock",
+      "caption": "Sistemin 6 katmanı: en altta atomik tipler, en üstte kullanıma hazır ürünler.",
+      "enrich": {
+        "info": "6 katmanın yığın halinde görsel sunumu.",
+        "lesson": {
+          "ne": "Sistemin altı katmanını piramit gibi gösteren harita. Her katman bir altındakine dayanır.",
+          "nicin": "Yazıyla sayfalarca anlatılacak şey tek bir resimde gözle kavranır.",
+          "nasil": "Her katmanın renkli şeridi tıklanır; tıklayınca o katmanın detayı sağ tarafta açılır.",
+          "kim": "Yeni gelen okur ilk burayı görür; mimar tartışmada gösterir.",
+          "analoji": "Bir apartman kesit çizimi: temel, kolonlar, kat planı, daireler — bir bakışta bütün."
+        }
+      }
+    },
     {
       "type": "callout",
       "variant": "info",
@@ -43,13 +120,28 @@
       "enrich": {
         "detail": "**Pratik kullanım:** `hrms.işealım.adayhavuzu.aday-formu.tckn-input.tckn-validator` zinciri sırasıyla `kaya → büyük taş → orta taş → küçük taş → kum → toz`. Her seviyenin SP'si toplam projeyi besler.",
         "stories": [
-          { "persona": "Sprint planlama", "context": "PM, 'aday havuzu' (büyük taş, 34 SP) + 'TCKN validator' (toz, 1 SP) backlog'a alır.", "outcome": "Tahmini gerçeğe yakın olur; çünkü her ata atomik granularity'e oturur." }
+          {
+            "persona": "Sprint planlama",
+            "context": "PM, 'aday havuzu' (büyük taş, 34 SP) + 'TCKN validator' (toz, 1 SP) backlog'a alır.",
+            "outcome": "Tahmini gerçeğe yakın olur; çünkü her ata atomik granularity'e oturur."
+          }
         ]
       }
     },
     {
       "type": "paragraph",
-      "text": "**Sentez tek cümle:** kernel'i mümkün olduğunca dar tut (6 domain), scale primitive'lerini save pipeline'a göm, in-tree core'ları Medusa \"Infrastructure Module\" disiplini ile swappable yap, business logic'i first-party stack module'lerine bırak, asıl ürünleri Layer 3 community marketplace'e at. Ölçek-uyumu kernel'e yerleştir *ama policy değil, primitive olarak* — feed fan-out gibi politika kararları her zaman module katmanında."
+      "text": "**Sentez tek cümle:** kernel'i mümkün olduğunca dar tut (6 domain), scale primitive'lerini save pipeline'a göm, in-tree core'ları Medusa \"Infrastructure Module\" disiplini ile swappable yap, business logic'i first-party stack module'lerine bırak, asıl ürünleri Layer 3 community marketplace'e at. Ölçek-uyumu kernel'e yerleştir *ama policy değil, primitive olarak* — feed fan-out gibi politika kararları her zaman module katmanında.",
+      "enrich": {
+        "lesson": {
+          "ne": "Tüm sistemin felsefesi tek cümleye sıkıştırılmış halidir: çekirdek dar, ölçek aletleri çekirdeğin yanında, iş kuralları ürünlere bırakılır.",
+          "nicin": "Karmaşık projelerde 'ne yapıyoruz, nereden bakacak ne göreceğiz' sorusu zaman zaman kaybolur. Tek cümle, herkesin pusula olarak elinde tutacağı özet.",
+          "nasil": "Yeni bir karar verirken bu cümleye bakılır: 'bu, çekirdeğe mi yoksa modüle mi gider?' diye sorulur.",
+          "nerede": "Tasarım toplantısında, kod gözden geçirmede, yeni ekip üyesi eğitiminde.",
+          "ne_zaman": "Mimari karar her ne olursa olsun, bu pusula danışılır.",
+          "kim": "Mimar bu cümleyi yazar, tüm ekip uygular.",
+          "analoji": "Bir aile şirketinin değerleri panosu: 'müşteri her şeyden önce gelir, kalite asla taviz vermez'. Pusula olarak duvara asılır."
+        }
+      }
     },
     {
       "type": "layer-cards",
@@ -62,11 +154,39 @@
           "enrich": {
             "info": "DocType engine'i besleyen primitive tipler. Her field bunlardan birine referans verir.",
             "terms": [
-              { "term": "Primitive", "abbrev_tr": "İlkel", "meaning": "Bölünemez tip — string/int gibi.", "why": "Tüm karmaşık tipler bunlardan birleşik." }
+              {
+                "term": "Primitive",
+                "abbrev_tr": "İlkel",
+                "meaning": "Bölünemez tip — string/int gibi.",
+                "why": "Tüm karmaşık tipler bunlardan birleşik."
+              }
             ],
             "stories": [
-              { "persona": "Form tasarımcısı", "context": "Yeni 'Cari Hesap' DocType'ına `Money(TRY, Decimal(20,4))` alanı ekler.", "outcome": "Admin formda otomatik para input, API'de Decimal serileştirme, DB'de NUMERIC(20,4) kolonu üretilir." }
-            ]
+              {
+                "persona": "Form tasarımcısı",
+                "context": "Yeni 'Cari Hesap' DocType'ına `Money(TRY, Decimal(20,4))` alanı ekler.",
+                "outcome": "Admin formda otomatik para input, API'de Decimal serileştirme, DB'de NUMERIC(20,4) kolonu üretilir."
+              }
+            ],
+            "lesson": {
+              "ne": "Sistemin en küçük yapı taşları: 'para', 'tarih', 'telefon', 'kimlik numarası' gibi her yerde tekrar tekrar gerekecek temel bilgi türleri. 'Atomik' yani 'daha bölünemez' demek.",
+              "nicin": "Her form alanını sıfırdan tanımlamak yerine, hazır bir tip seçersin. Bir kez doğru yazılmış 'para' tipi tüm ürünlerde kuruşa kadar tutarlı çalışır.",
+              "nasil": "Yeni bir form alanı eklerken 'Tip seç' menüsünden Money/Phone/Email gibi bir tip seçersin. Geri kalan kuralları sistem otomatik uygular.",
+              "nerede": "İK ürününde maaş alanı = Money(TRY). Muhasebe ürününde fatura toplamı da = Money(TRY). İkisi de aynı atomik tip.",
+              "ne_zaman": "Her yeni form alanında. Her yeni rapor sütununda. Sistem buradaki seçimini hatırlar.",
+              "kim": "Form tasarımcısı tipleri seçer; framework tipleri sağlar; son kullanıcı bu tutarlılığı 'rahatlık' olarak hisseder.",
+              "frontend": {
+                "yer": "Form alanlarındaki davranış: Money girilirken otomatik 'TL' işareti, binlikler arası nokta. DateTime için takvim. Phone için ülke kodu.",
+                "gereklilik": "Kullanıcı düşünmek zorunda kalmadan doğru veri girer; yanlış girişi en başta engelleriz.",
+                "ornek": "Fatura tutarı kutusuna '1234.5' yazınca otomatik '1.234,50 ₺' olarak görünür."
+              },
+              "backend": {
+                "yer": "Veritabanı sütun türleri ve doğrulayıcılar: NUMERIC(20,4), TIMESTAMPTZ, VARCHAR(20) — hepsi atomik tipten gelir.",
+                "gereklilik": "Tip yanlış olursa ileride raporlar bozulur. En başta sıkı tutmak, sonradan temizlemekten ucuz.",
+                "ornek": "Money(TRY, Decimal(20,4)) tipi DB'de NUMERIC(20,4) kolonuna düşer, sıfır kayıp."
+              },
+              "analoji": "Marangozluk takımındaki standart vida boyları gibi: M4, M6, M8. Her seferinde özel ölçü yapmak yerine standartlardan birini seçersin; uyum garanti."
+            }
           }
         },
         {
@@ -76,7 +196,16 @@
           "tone": "kernel",
           "enrich": {
             "info": "Framework'ün vazgeçilmez 6 modülü. Çekirdek dar tutulur.",
-            "detail": "Frappe pattern: kernel ne kadar küçükse o kadar güvenli evrilir. Aşk tanımlama burada bitiyor — gerisi plugin."
+            "detail": "Frappe pattern: kernel ne kadar küçükse o kadar güvenli evrilir. Aşk tanımlama burada bitiyor — gerisi plugin.",
+            "lesson": {
+              "ne": "Çekirdek (kernel): sistemin kalbi olan 6 modül. Bunlar olmadan hiçbir ürün çalışamaz. Çekirdeği bilerek dar tuttuk — ne kadar küçükse o kadar güvenli.",
+              "nicin": "Eğer çekirdek büyürse her değişiklik tüm ürünleri etkiler. Çekirdeği 6 modülde sabitlersek, geri kalan her şey eklenti olur; değişiklik bir ürünü etkiler, diğerlerini etkilemez.",
+              "nasil": "6 modül: 1) Veri modeli (DocType), 2) Kimlik (kim sen?), 3) Yetki (ne yapabilirsin?), 4) Çoklu kiracılık (hangi şirket?), 5) Olay yayını (haberleri duyurma), 6) Eklenti listesi.",
+              "nerede": "Kod deposunda 'kernel/' klasörü. Yeni özellik buraya çok zor girer; girişine sıkı bekçi koyduk.",
+              "ne_zaman": "Sadece tasarım kararıyla değişir, asla hızlı bir hata düzeltmesi için değil. Buraya dokunmak büyük karar.",
+              "kim": "Çekirdek geliştiricileri sınırlı sayıda kişidir. Çoğu zaman 1-2 mimar nezareti gerekir.",
+              "analoji": "Bir uçağın motoru: 6 kritik parça. Koltuk kumaşı değişebilir, motor değişmez. Değişecekse büyük bir hazırlık ister."
+            }
           }
         },
         {
@@ -87,9 +216,29 @@
           "enrich": {
             "info": "Yüksek-ölçek için çekirdeğin yanına gömülmüş primitive'ler — policy değil.",
             "terms": [
-              { "term": "Outbox", "abbrev_tr": "Giden kutusu", "meaning": "DB transaction içinde mesaj yazmak; iletim asenkron worker tarafından.", "why": "DB ve message bus'ı atomik tutar; dual-write sorununu çözer." },
-              { "term": "CQRS", "abbrev_of": "Command Query Responsibility Segregation", "abbrev_tr": "Komut-Sorgu Ayrımı", "meaning": "Yazma modeli ile okuma modeli ayrı; okuma için projection tablosu.", "why": "Karmaşık list/dashboard sorguları join cehenneminden çıkar." }
-            ]
+              {
+                "term": "Outbox",
+                "abbrev_tr": "Giden kutusu",
+                "meaning": "DB transaction içinde mesaj yazmak; iletim asenkron worker tarafından.",
+                "why": "DB ve message bus'ı atomik tutar; dual-write sorununu çözer."
+              },
+              {
+                "term": "CQRS",
+                "abbrev_of": "Command Query Responsibility Segregation",
+                "abbrev_tr": "Komut-Sorgu Ayrımı",
+                "meaning": "Yazma modeli ile okuma modeli ayrı; okuma için projection tablosu.",
+                "why": "Karmaşık list/dashboard sorguları join cehenneminden çıkar."
+              }
+            ],
+            "lesson": {
+              "ne": "Ölçek aletleri: yazılım çok kullanıcılı olduğunda yavaşlamaması için kullandığımız özel hileler. Para çekme makinesinin önündeki sıraya benzer; sıra düzgün olunca hız kazanılır.",
+              "nicin": "Bir kişi kullanırken her şey hızlı çalışır. 10.000 kişi aynı anda kullanınca sistem patlar. Bu kategori 'patlama olmasın' diye yapılmış altyapı parçalarıdır.",
+              "nasil": "İşi parçalar halinde yapmak (worker), gönderilen mesajları kuyruğa atmak (outbox), aynı sorguyu iki kere çalıştırmamak (idempotency) — hepsi 'yavaşlamayı önle' fikrinin ayrı yöntemleri.",
+              "nerede": "Bir kayıt kaydedildiğinde arka planda devreye giren işler. Kullanıcı görmez ama hızını hisseder.",
+              "ne_zaman": "Sistem 1000+ kullanıcıya çıkınca etkisi büyük olur. 10 kullanıcıda fark edilmez ama altyapı baştan kurulur, sonradan eklemek zor.",
+              "kim": "Ölçek mühendisleri tasarlar; her geliştirici hazır olarak kullanır; son kullanıcı 'hızlı' diye memnun olur.",
+              "analoji": "Marketin kasalarındaki 'hızlı geçiş' kuyruğu, depodan rafa sürekli mal taşıyan iş arkadaşı, müşteri yoğunluğuna göre kasa açma — hepsi 'ölçek aleti'."
+            }
           }
         },
         {
@@ -98,7 +247,16 @@
           "desc": "Party, File, Workflow, Notification, Audit, Search, Calendar, Money, i18n, Realtime, Settings, Migration.",
           "tone": "l1",
           "enrich": {
-            "info": "Her ürünün ortak ihtiyaçları — çekirdeğe gömüyoruz."
+            "info": "Her ürünün ortak ihtiyaçları — çekirdeğe gömüyoruz.",
+            "lesson": {
+              "ne": "15 üründe ortak ihtiyaçlar: dosya yüklemek, bildirim göndermek, arama yapmak, takvim göstermek. Her üründe sıfırdan yazmak yerine, ortak bir yerde durur ve hepsine sunulur.",
+              "nicin": "İK ürününde de, muhasebe ürününde de 'dosya yükle' lazım. Her yerde ayrı yazmak hem zaman alır hem hata kaynağı olur. Ortak yerde olsun, hepsi aynı şekilde davransın.",
+              "nasil": "Kod deposunda 'layer1/' klasöründe duran 12 modül. Her ürün bu modülleri çağırarak ortak işlevleri kullanır.",
+              "nerede": "Dosya, Kişi, Akış, Bildirim, Denetim, Arama, Takvim, Para, Çoklu Dil, Anlık iletişim, Ayarlar, Veri Taşıma.",
+              "ne_zaman": "Bir ürün geliştirirken 'bunu sıfırdan yazmaya gerek var mı?' diye sorduğunda. Cevap 'orta taş'ta varsa hazır al.",
+              "kim": "Orta taş ekibi modülleri yazar; ürün geliştiricileri kullanır; son kullanıcı tutarlılığı yaşar.",
+              "analoji": "Apartmanın ortak kullanım alanları: çatı, asansör, elektrik panosu. Her daire kendi panosunu yapmaz; ortak olanı paylaşır."
+            }
           }
         },
         {
@@ -109,8 +267,31 @@
           "enrich": {
             "info": "İş alanı modülleri — burada Türkiye uyumu first-class.",
             "stories": [
-              { "persona": "HRMS müşterisi", "context": "Şirket kuruluyor, bordro modülü açar.", "outcome": "Layer-2 HRMS, Layer-1 Audit ve Workflow'u kullanarak SGK bildirgesi üretir." }
-            ]
+              {
+                "persona": "HRMS müşterisi",
+                "context": "Şirket kuruluyor, bordro modülü açar.",
+                "outcome": "Layer-2 HRMS, Layer-1 Audit ve Workflow'u kullanarak SGK bildirgesi üretir."
+              }
+            ],
+            "lesson": {
+              "ne": "Ürün modülleri: İK, muhasebe, e-ticaret, eğitim gibi 12 ayrı iş alanı. Her biri kendi kurallarını taşır, ama aynı çekirdek üzerinde durur.",
+              "nicin": "Müşteri 'İK lazım' veya 'muhasebe lazım' diyebilir; ayrı ayrı yazılım almak yerine aynı sistemde modüller halinde alır. Birbirleriyle de konuşurlar.",
+              "nasil": "Her modülün 'modül kartı' vardır: ne yapar, hangi alt katmanları kullanır, hangi ortak özellikleri sağlar. Müşteri tıkla-aç ile etkinleştirir.",
+              "nerede": "Müşterinin yönetim panelinde 'Modüller' menüsü. İhtiyaca göre aç/kapat.",
+              "ne_zaman": "Şirket büyüdükçe yeni modüller eklenir. İK ile başladım, üç ay sonra muhasebe modülünü açtım — veriler tek hesapta kalır.",
+              "kim": "Müşteri açar; modül geliştiricisi modülü yazar; framework çekirdeği iki tarafı buluşturur.",
+              "frontend": {
+                "yer": "Sol kenarda modül menüsü: HR, Finans, Satış, vb. Her birine tıklayınca o modülün ekranları açılır.",
+                "gereklilik": "Kullanıcı tek bir sistemde tüm iş alanlarını yönetebilmeli — pencere/sekme dağınıklığı olmamalı.",
+                "ornek": "İK modülünde 'Yeni Personel' kaydederken muhasebe modülü otomatik olarak maaş kaydını açar."
+              },
+              "backend": {
+                "yer": "Her modülün kendi klasörü (layer2/hrms, layer2/accounting). İçinde DocType'lar, hook'lar, raporlar.",
+                "gereklilik": "Modüller birbirinden bağımsız geliştirilebilmeli; bir modülün hatası diğerini durdurmamalı.",
+                "ornek": "İK modülünde 'yeni personel' eklendiğinde, muhasebe modülü 'event'i dinler, otomatik bordro kaydını başlatır."
+              },
+              "analoji": "Bir devlet hastanesi: ayrı bölümler (kadın doğum, dahiliye, ortopedi) — kendi uzmanları, kendi protokolleri. Ama hepsi aynı hastane kartını kullanır, kayıtlar bir merkezde."
+            }
           }
         }
       ]
@@ -144,7 +325,8 @@
     },
     {
       "type": "paragraph",
-      "text": "LandX agent-native meta-framework kataloğu (33 modül, 6 katman, 146 capability, 232 operation, 1398 field) bu döküman içine **dağıtılarak** entegre edildi. Ayrı bir grup olarak değil — her LandX modülü ilgili kernel/Layer-1/stack/crosscut/DX cluster'ı içinde ek bir bölüm olarak görünür."
+      "text": "LandX agent-native meta-framework kataloğu (33 modül, 6 katman, 146 capability, 232 operation, 1398 field) bu döküman içine **dağıtılarak** entegre edildi. Ayrı bir grup olarak değil — her LandX modülü ilgili kernel/Layer-1/stack/crosscut/DX cluster'ı içinde ek bir bölüm olarak görünür.",
+      "enrich": {}
     },
     {
       "type": "kv-row",

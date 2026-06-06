@@ -38,12 +38,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Sistemin güvenlik temeli: parola güvenliği, izinler, kayıt günlüğü, şifreleme, dış saldırı koruması.",
+      "nicin": "Veri sızıntısı en büyük kazadır. Güvenlik baştan kurulmalı, sonradan eklenmez.",
+      "nasil": "Her giriş kayıt edilir, her parola şifrelenir, her özel veri özel anahtarla saklanır, dış saldırılar engellenir.",
+      "nerede": "Sistemin omurgasında — her modüle uzanır.",
+      "ne_zaman": "7/24 — sistem yaşıyorsa.",
+      "kim": "Güvenlik mühendisi politika belirler; sistem otomatik uygular; denetçi periyodik kontrol eder.",
+      "analoji": "Bir bankanın güvenlik altyapısı: kasalar, kameralar, alarm sistemi, gece bekçisi — hepsi katmanlı koruma."
+    }
   }
 }

@@ -1,6 +1,6 @@
 import type { BlockRenderer } from '@/engine/registry';
 import { enrichButtonsHtml, stateBadgeHtml } from '@/components/popover';
-import { makeDetailKeyFromText } from '@/components/detail-panel';
+import { makeDetailKey, makeDetailKeyFromText } from '@/components/detail-panel';
 import type { Enrichment, State } from '@/types/content';
 
 type Cell =
@@ -116,7 +116,16 @@ export const tableRenderer: BlockRenderer<TableBlock> = (block, ctx) => {
     // Satırın bütününü tıklanır yap (ilk hücre başlık olarak)
     const firstCellText = cellText(row[0] ?? '');
     const rowJoined = row.map(cellText).join(' | ');
-    const dk = makeDetailKeyFromText(rowJoined, { title: firstCellText, contextLabel: ctx.cluster.title });
+    // Satır seviyesi enrich: ilk hücrenin enrich'i (lesson dahil) satırın detay kaynağı.
+    // Böylece her ünite için ayrı 60+ pedagojik içerik tetiklenebilir.
+    const firstEnrich = cellEnrich(row[0] ?? '');
+    const dk = firstEnrich
+      ? makeDetailKey(firstEnrich, {
+          title: firstCellText,
+          summary: rowJoined.slice(0, 200),
+          contextLabel: ctx.cluster.title,
+        })
+      : makeDetailKeyFromText(rowJoined, { title: firstCellText, contextLabel: ctx.cluster.title });
     if (dk) {
       tr.dataset.detailKey = dk;
       tr.classList.add('is-clickable');

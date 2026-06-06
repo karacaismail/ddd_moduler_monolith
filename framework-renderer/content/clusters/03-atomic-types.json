@@ -33,9 +33,19 @@
         "term": "Validator",
         "abbrev_tr": "Doğrulayıcı",
         "meaning": "Input'un kurallara uyup uymadığını test eden fonksiyon. Örn IBAN MOD-97 check.",
-        "why": "Yanlış data DB'ye girmesin; tek noktadan kontrol."
+        "why": "Yanlış data DB'ye girmesin; tek noktadan kontrol.",
+        "enrich": {}
       }
-    ]
+    ],
+    "lesson": {
+      "ne": "Sistemin en küçük yapı taşları: 'para', 'tarih', 'telefon', 'kimlik numarası' gibi her yerde tekrar tekrar gerekecek temel bilgi türleri.",
+      "nicin": "Her form alanını sıfırdan tanımlamak yerine, hazır tipler seçilir. Bir kez doğru yazılmış 'para' tipi tüm ürünlerde kuruşa kadar tutarlı çalışır.",
+      "nasil": "Yeni form alanı eklerken 'Tip seç' menüsünden Money/Phone/Email gibi bir tip seçilir. Sistem geri kalan kuralları otomatik uygular.",
+      "nerede": "Her DocType tanımının alan listesinde. İK formunda da, muhasebe formunda da aynı tipler.",
+      "ne_zaman": "Her yeni alan eklendiğinde.",
+      "kim": "Form tasarımcısı tip seçer; framework tipi sağlar; son kullanıcı tutarlılığı yaşar.",
+      "analoji": "Marangozluk takımındaki standart vida boyları: M4, M6, M8. Her seferinde özel ölçü yapmak yerine standartlardan seçersin."
+    }
   },
   "blocks": [
     {
@@ -43,7 +53,14 @@
       "text": "Senin tahtada **Field, Log, Handler, Security** yazdın. Bunlar başlangıç ama yetersiz. Field'ın altında somut tip sistemi olmalı. Aşağıda kritik tiplerin tam listesi — DocType engine bu primitive'leri kullanarak alan yaratıyor.",
       "enrich": {
         "info": "Field bir 'kutu'; tip o kutunun ne tutacağını söyler.",
-        "detail": "Frappe pattern'inde DocType'ın her alanı tip referansı tutar. Bizim ek katmanımız: tip sistemi **plugin'lerle genişletilebilir** (registry pattern)."
+        "detail": "Frappe pattern'inde DocType'ın her alanı tip referansı tutar. Bizim ek katmanımız: tip sistemi **plugin'lerle genişletilebilir** (registry pattern).",
+        "lesson": {
+          "ne": "Sistemde olan biteni metin satırları halinde kayıt.",
+          "nicin": "Hata teşhisi ve geriye dönük analiz için.",
+          "nasil": "Her olay zaman damgalı kaydedilir.",
+          "kim": "Sistem yazar, geliştirici okur.",
+          "analoji": "Kaptanın seyir defteri."
+        }
       }
     },
     {
@@ -111,14 +128,16 @@
                 "abbrev_of": "Universally Unique Identifier version 7",
                 "abbrev_tr": "Evrensel tek-kimlik v7",
                 "meaning": "İlk 48 bit ms timestamp; geri kalan random. RFC 9562.",
-                "why": "v4 random'dı, B-tree index'i parçalardı. v7 sıralı, insert performansı korunur."
+                "why": "v4 random'dı, B-tree index'i parçalardı. v7 sıralı, insert performansı korunur.",
+                "enrich": {}
               },
               {
                 "term": "ULID",
                 "abbrev_of": "Universally Unique Lexicographically Sortable Identifier",
                 "abbrev_tr": "Sözlük sırasına göre dizilebilir tek-kimlik",
                 "meaning": "128 bit, Crockford base32, 26 karakter.",
-                "why": "URL'lerde, log'larda okunaklı; sortable."
+                "why": "URL'lerde, log'larda okunaklı; sortable.",
+                "enrich": {}
               },
               {
                 "term": "Snowflake",
@@ -155,7 +174,16 @@
                 "term": "Decimal",
                 "abbrev_tr": "Ondalık (sabit-hassasiyet)",
                 "meaning": "Sabit hassasiyetli sayı. Float'tan farkı: 0.1+0.2 == 0.3 doğrudur.",
-                "why": "IEEE-754 float kuruş kaybeder; muhasebe testinden geçmez."
+                "why": "IEEE-754 float kuruş kaybeder; muhasebe testinden geçmez.",
+                "enrich": {
+                  "lesson": {
+                    "ne": "Hassas ondalıklı sayı tipi: 0,1 + 0,2 = 0,3 tam olmasını garanti eder.",
+                    "nicin": "Normal kayan nokta (float) toplamada küçük hatalar üretir; muhasebe tolere etmez.",
+                    "nasil": "Veritabanında NUMERIC sütunu, uygulamada Decimal nesnesi.",
+                    "kim": "Geliştirici para/oran/faiz alanlarında kullanır.",
+                    "analoji": "Eczacı terazisi: bir gramın binde biri bile sayılır; ev tartısı kullanmazsın."
+                  }
+                }
               },
               {
                 "term": "ISO 4217",
@@ -174,7 +202,14 @@
                 "context": "Yurt dışı satıcı 199.95 USD fatura kesiyor.",
                 "outcome": "USD field, TRY field'dan ayrı; toplam alırken FX rate ile dönüşüm zorunlu — yanlış kuru otomatik flag'lenir."
               }
-            ]
+            ],
+            "lesson": {
+              "ne": "Para tipi: kuruşuna kadar tutarlı saklanan tutar bilgisi.",
+              "nicin": "Para virgüllü sayıdan farklı çalışmalı; yuvarlama hataları gerçek paraya kayıp olur.",
+              "nasil": "NUMERIC(20,4) sütunu + para birimi etiketi (TRY, USD) birlikte saklanır.",
+              "kim": "Geliştirici tipi seçer; muhasebe doğru sonucu görür.",
+              "analoji": "Kasiyerin kasası: kuruşuna kadar tutmaya alışkın; tahmini yuvarlama yapmaz."
+            }
           }
         },
         {
@@ -219,7 +254,14 @@
                 "context": "Türkiye'den İstanbul saatiyle 14:00 toplantı oluşturur, sonra Berlin'e gider.",
                 "outcome": "Backend UTC 11:00 saklar; uçaktan inince ekran 12:00 (CEST) gösterir, doğru saatte hatırlatır."
               }
-            ]
+            ],
+            "lesson": {
+              "ne": "Tarih + saat + zaman dilimi tutan tip.",
+              "nicin": "Yalnızca tarih yetmez; bir randevu 'saat kaçta, hangi ülkede?' sorularını cevaplamalı.",
+              "nasil": "TIMESTAMPTZ tipi: UTC olarak saklanır, gösterimde kullanıcı dilime çevrilir.",
+              "kim": "Tüm modüller — log, randevu, sipariş, izin kaydı.",
+              "analoji": "Uçak biletindeki saat: hareket saati + gidiş saati + zaman dilimi birlikte yazılır."
+            }
           }
         },
         {
@@ -250,21 +292,6 @@
                 "persona": "Multi-tenant SaaS güvenlik",
                 "context": "Acme Ltd kullanıcısı, link alanına Beta Inc'in müşteri ID'sini girer.",
                 "outcome": "Reference tip otomatik tenant-scope check: red. SQL injection tarzı veri sızıntısı engellenmiş olur."
-              },
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Reference / Link\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Reference / Link\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Reference / Link\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
             ]
           }
@@ -291,21 +318,6 @@
                 "persona": "Social platform kullanıcısı",
                 "context": "Viral post: 100k like/dakika.",
                 "outcome": "Sharded counter sayesinde DB row lock olmaz, latency 5ms altında kalır."
-              },
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Counter (hot)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Counter (hot)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Counter (hot)\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
             ]
           }
@@ -339,21 +351,6 @@
                 "persona": "İki muhasebeci aynı anda",
                 "context": "Fatura kalemini ikisi aynı anda günceller.",
                 "outcome": "İkinci PUT 409 alır; UI 'son hali şu, sizin değişikliğiniz şu, neyi tutmak istersiniz?' merge ekranı açar."
-              },
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Version / ETag\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Version / ETag\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Version / ETag\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
             ]
           }
@@ -403,24 +400,8 @@
                 "persona": "Drive kullanıcısı",
                 "context": "1 GB PDF'yi 5 farklı klasöre koyar.",
                 "outcome": "Hash aynı → tek storage, 5 metadata kaydı; 4 GB tasarruf."
-              },
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Hash / Checksum\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Hash / Checksum\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Hash / Checksum\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
-            ],
-            "detail": "**Hash / Checksum** nedir?\n\nSHA-256, BLAKE3. Dosya integrity, idempotency key, content-addressable storage (Drive).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            ]
           }
         },
         {
@@ -433,24 +414,8 @@
                 "persona": "CMS editor",
                 "context": "Yazı başlığı 'İş İlanı: Şoför Aranıyor'.",
                 "outcome": "Slug: `is-ilani-sofor-araniyor` — Türkçe karakterler doğru normalize, tenant-scope unique."
-              },
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Slug\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Slug\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Slug\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
-            ],
-            "detail": "**Slug** nedir?\n\nTürkçe karakter normalizasyon (ı→i, ş→s, ğ→g, ü→u, ö→o, ç→c), uniqueness scope.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            ]
           }
         },
         {
@@ -472,24 +437,15 @@
                 "persona": "SaaS müşterisi",
                 "context": "CSV upload: '0533 123 45 67', '+905331234567', '90 533 1234567'.",
                 "outcome": "Hepsi `+905331234567` olarak normalize; NetGSM/Twilio'ya doğrudan gönderilir."
-              },
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Phone (E.164)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Phone (E.164)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Phone (E.164)\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
             ],
-            "detail": "**Phone (E.164)** nedir?\n\nCountry code parsing, format, validation. `phonenumbers` Python lib. Twilio/NetGSM gönderiminde şart.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            "lesson": {
+              "ne": "Telefon numarası tipi: ülke kodu, alan kodu, numara.",
+              "nicin": "Tek metin olarak tutsan format dağılır; +90, (212), 555... hepsi farklı yazılır.",
+              "nasil": "Ülke kodu ayrı sütun, kalan numara ayrı; gösterimde otomatik biçimlenir.",
+              "kim": "Kullanıcı kayıt, müşteri kaydı, SMS gönderiminde.",
+              "analoji": "Postanedeki standart paket etiketi: ülke + il + ilçe + sokak ayrı satırlar."
+            }
           }
         },
         {
@@ -509,27 +465,25 @@
                 "term": "Disposable email",
                 "abbrev_tr": "Tek kullanımlık mail",
                 "meaning": "10-minute-mail gibi geçici mail servisleri.",
-                "why": "Spam abuse, free-trial sömürüsünü engeller."
+                "why": "Spam abuse, free-trial sömürüsünü engeller.",
+                "enrich": {
+                  "lesson": {
+                    "ne": "E-posta adresi tipi: format doğrulamalı, küçük harfli, eşsiz.",
+                    "nicin": "Yanlış format hatalı bildirim demek; küçük harf farkı 'aynı e-posta iki kez' kazasına neden olur.",
+                    "nasil": "Otomatik doğrulama + normalize (tümünü küçük harfe çevir).",
+                    "kim": "Kullanıcı + müşteri + sözleşme imzaları.",
+                    "analoji": "Pasaport bilgisi: doğru yazılmazsa ülkeye girilmez."
+                  }
+                }
               }
             ],
-            "detail": "**Email** nedir?\n\nSyntax + DNS MX check + disposable detection (one-time mail engelle).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Email\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Email\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Email\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "lesson": {
+              "ne": "E-posta adresi tipi: format doğrulamalı, küçük harfli, eşsiz.",
+              "nicin": "Yanlış format hatalı bildirim demek; küçük harf farkı 'aynı e-posta iki kez' kazasına neden olur.",
+              "nasil": "Otomatik doğrulama + normalize (tümünü küçük harfe çevir).",
+              "kim": "Kullanıcı + müşteri + sözleşme imzaları.",
+              "analoji": "Pasaport bilgisi: doğru yazılmazsa ülkeye girilmez."
+            }
           }
         },
         {
@@ -544,24 +498,6 @@
                 "abbrev_tr": "Sunucu-tarafı istek sahteciliği",
                 "meaning": "Saldırgan, sunucuyu istemediği bir URL'e istek atmaya zorlar.",
                 "why": "AWS metadata endpoint'i, internal API gibi yerlere sızıntıya yol açar."
-              }
-            ],
-            "detail": "**URL** nedir?\n\nValidation, canonical form, scheme allowlist (file:// gibi zararlı scheme'leri engelle).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"URL\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"URL\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"URL\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
             ]
           }
@@ -584,99 +520,29 @@
                 "persona": "Field service teknisyeni",
                 "context": "Mobil app: 'En yakın 5 iş'.",
                 "outcome": "Geo sorgu + Polygon delivery zone ile sıralı liste döner."
-              },
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Geo Coordinate\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Geo Coordinate\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Geo Coordinate\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
-            ],
-            "detail": "**Geo Coordinate** nedir?\n\nlat/lng + PostGIS bridge. Real estate (#1), Field Service için kritik.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            ]
           }
         },
         {
           "name": "Address (atomic)",
           "desc": "Country/region/city/district/street/postal yapısı + locale formatting.",
           "enrich": {
-            "info": "Tek string değil — yapılandırılmış. Lokale göre format değişir (TR vs US).",
-            "detail": "**Address (atomic)** nedir?\n\nCountry/region/city/district/street/postal yapısı + locale formatting.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Address (atomic)\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Country/region/city/district/street/postal yapısı + locale formatting. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Address (atomic)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Address (atomic)\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Tek string değil — yapılandırılmış. Lokale göre format değişir (TR vs US)."
           }
         },
         {
           "name": "Color",
           "desc": "Hex string + picker UI. Theme, calendar event, tag.",
           "enrich": {
-            "info": "#RRGGBB[AA]. Tag, takvim, brand customization için.",
-            "detail": "**Color** nedir?\n\nHex string + picker UI. Theme, calendar event, tag.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Color\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Hex string + picker UI. Theme, calendar event, tag. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Color\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Color\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "#RRGGBB[AA]. Tag, takvim, brand customization için."
           }
         },
         {
           "name": "Tag",
           "desc": "Polymorphic label, çok-tag yapısı. Hiyerarşisiz (Taxonomy hiyerarşik).",
           "enrich": {
-            "info": "Düz etiket (#kritik #2026). Hiyerarşi gerekirse Taxonomy kullan.",
-            "detail": "**Tag** nedir?\n\nPolymorphic label, çok-tag yapısı. Hiyerarşisiz (Taxonomy hiyerarşik).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Tag\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Polymorphic label, çok-tag yapısı. Hiyerarşisiz (Taxonomy hiyerarşik). pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Tag\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Tag\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Düz etiket (#kritik #2026). Hiyerarşi gerekirse Taxonomy kullan."
           }
         },
         {
@@ -704,24 +570,8 @@
                 "persona": "KVKK sorumlusu",
                 "context": "Kullanıcı 'beni unutun' diyor.",
                 "outcome": "Soft-delete → 30 gün bekleme → hard-delete + audit log; yasal süreç eksiksiz."
-              },
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Soft Delete\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Soft Delete\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Soft Delete\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
-            ],
-            "detail": "**Soft Delete** nedir?\n\nTrash, restore, hard-delete policy. KVKK silme talepleri için altyapı.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            ]
           }
         },
         {
@@ -745,24 +595,13 @@
                 "why": "KVKK/GDPR uyumu için ek koruma şart."
               }
             ],
-            "detail": "**Encryption Field** nedir?\n\nPII/secret field-level encryption (AES-256-GCM), key versioning + rotation.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Encryption Field\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Encryption Field\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Encryption Field\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "lesson": {
+              "ne": "Verinin sadece yetkili kişinin anlayacağı şekilde şifrelenmesi.",
+              "nicin": "Sızıntı olsa bile şifre çözülemezse veri korunur.",
+              "nasil": "Saklamada (at rest) ve iletirken (in transit) iki yerde de.",
+              "kim": "Sistem otomatik yapar.",
+              "analoji": "Mektubu kasaya kilitlemek."
+            }
           }
         },
         {
@@ -778,24 +617,6 @@
                 "meaning": "PostgreSQL'in indexlenebilir JSON tipi.",
                 "why": "Schema-less esneklik + index hızı bir arada."
               }
-            ],
-            "detail": "**JSON / JSONB** nedir?\n\nPostgreSQL JSONB column, schema-less ek alan, opsiyonel JSON Schema validation.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"JSON / JSONB\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"JSON / JSONB\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"JSON / JSONB\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
             ]
           }
         },
@@ -809,24 +630,8 @@
                 "persona": "Çok-dilli SaaS",
                 "context": "Status enum'u TR'de 'Aktif', EN'de 'Active' görünmeli.",
                 "outcome": "Enum label'ı i18n'den çözülür; backend'de tek değer."
-              },
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Enum\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Enum\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Enum\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
-            ],
-            "detail": "**Enum** nedir?\n\nClosed set, multi-language label, ordering, default value.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            ]
           }
         },
         {
@@ -839,24 +644,8 @@
                 "persona": "Otel PMS",
                 "context": "Oda 101 için iki rezervasyon aynı tarihte gelir.",
                 "outcome": "Exclusion constraint çakışmayı DB seviyesinde reddeder, race condition imkansız."
-              },
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Range\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Range\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Range\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
-            ],
-            "detail": "**Range** nedir?\n\nDate range, int4range, tsrange. PostgreSQL native, exclusion constraint ile.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            ]
           }
         },
         {
@@ -869,7 +658,8 @@
                 "term": "Embedding",
                 "abbrev_tr": "Gömme",
                 "meaning": "Metni/görseli N boyutlu vektöre çeviren ML modeli çıktısı.",
-                "why": "Anlamsal yakınlık (cosine similarity) yapmak için."
+                "why": "Anlamsal yakınlık (cosine similarity) yapmak için.",
+                "enrich": {}
               },
               {
                 "term": "HNSW",
@@ -890,24 +680,8 @@
                 "persona": "AI asistanı kullanıcı",
                 "context": "'Geçen ayki bordro hatasını anlat' diye doğal dilde sorar.",
                 "outcome": "Sorgu embedding'i, audit log embedding'leriyle kosinüs karşılaştırılır; ilgili kayıtlar bulunur."
-              },
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Vector\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Vector\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Vector\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
-            ],
-            "detail": "**Vector** nedir?\n\npgvector primitive (`vector(N)`). AI-first için kritik. Embedding store + HNSW index.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            ]
           }
         },
         {
@@ -920,24 +694,8 @@
                 "persona": "Emlak müşterisi",
                 "context": "Haritada Beşiktaş'ı çizer.",
                 "outcome": "Polygon ile point-in-polygon: bölgedeki tüm satılık daireler döner."
-              },
-              {
-                "persona": "Yazılım mimarı",
-                "context": "Mimari karar verir. \"Polygon\" özelliği bu süreçte devreye girer.",
-                "outcome": "Bu primitive'i nereye koyacağına karar verir, plugin sınırlarını çizer."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Polygon\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Polygon\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
               }
-            ],
-            "detail": "**Polygon** nedir?\n\nPostGIS shape. Real estate çizerek arama (polygon search), delivery zone.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin."
+            ]
           }
         }
       ]
@@ -971,7 +729,16 @@
     {
       "type": "heading",
       "level": 4,
-      "text": "Log, Handler, Security — sen yazdın, korunuyor"
+      "text": "Log, Handler, Security — sen yazdın, korunuyor",
+      "enrich": {
+        "lesson": {
+          "ne": "Sistemde olan biteni metin satırları halinde kayıt.",
+          "nicin": "Hata teşhisi ve geriye dönük analiz için.",
+          "nasil": "Her olay zaman damgalı kaydedilir.",
+          "kim": "Sistem yazar, geliştirici okur.",
+          "analoji": "Kaptanın seyir defteri."
+        }
+      }
     },
     {
       "type": "paragraph",
@@ -988,7 +755,8 @@
             "term": "trace_id",
             "abbrev_tr": "İz kimliği",
             "meaning": "Bir isteğin sistem boyunca takip edilebilmesi için unique ID.",
-            "why": "Mikro-servis/iş kuyruğunda 'hangi log hangi istekten' sorusunu tek bakışta çözer."
+            "why": "Mikro-servis/iş kuyruğunda 'hangi log hangi istekten' sorusunu tek bakışta çözer.",
+            "enrich": {}
           }
         ]
       }

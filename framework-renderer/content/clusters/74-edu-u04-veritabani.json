@@ -197,11 +197,13 @@
         },
         {
           "title": "Silme davranışı seçilir",
-          "body": "`ON DELETE CASCADE` (müşteri silinince şikayetleri de sil), `SET NULL` (atananı boşalt), `RESTRICT` (şikayet varsa sil-me)."
+          "body": "`ON DELETE CASCADE` (müşteri silinince şikayetleri de sil), `SET NULL` (atananı boşalt), `RESTRICT` (şikayet varsa sil-me).",
+          "enrich": {}
         },
         {
           "title": "Tenant-scope check",
-          "body": "Bizim framework FK üstüne **otomatik** ekler: link tenant A'dan tenant B'ye gidemez — güvenlik."
+          "body": "Bizim framework FK üstüne **otomatik** ekler: link tenant A'dan tenant B'ye gidemez — güvenlik.",
+          "enrich": {}
         }
       ]
     },
@@ -226,25 +228,7 @@
           "body": "Ya hepsi başarılı, ya hiçbiri uygulanmadı.",
           "tone": "good",
           "enrich": {
-            "info": "Ya hepsi başarılı, ya hiçbiri uygulanmadı.",
-            "detail": "**Atomicity** nedir?\n\nYa hepsi başarılı, ya hiçbiri uygulanmadı.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Atomicity\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Ya hepsi başarılı, ya hiçbiri uygulanmadı. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Atomicity\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Atomicity\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Ya hepsi başarılı, ya hiçbiri uygulanmadı."
           }
         },
         {
@@ -253,25 +237,7 @@
           "body": "Transaction sonrası DB tutarlı (FK + check kurallar korunur).",
           "tone": "good",
           "enrich": {
-            "info": "Transaction sonrası DB tutarlı (FK + check kurallar korunur).",
-            "detail": "**Consistency** nedir?\n\nTransaction sonrası DB tutarlı (FK + check kurallar korunur).\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Consistency\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Transaction sonrası DB tutarlı (FK + check kurallar korunur). pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Consistency\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Consistency\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Transaction sonrası DB tutarlı (FK + check kurallar korunur)."
           }
         },
         {
@@ -280,25 +246,7 @@
           "body": "Eşzamanlı transaction'lar birbirini bozmaz.",
           "tone": "good",
           "enrich": {
-            "info": "Eşzamanlı transaction'lar birbirini bozmaz.",
-            "detail": "**Isolation** nedir?\n\nEşzamanlı transaction'lar birbirini bozmaz.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Isolation\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Eşzamanlı transaction'lar birbirini bozmaz. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Isolation\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Isolation\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "Eşzamanlı transaction'lar birbirini bozmaz."
           }
         },
         {
@@ -307,25 +255,7 @@
           "body": "COMMIT sonrası elektrik kesilse bile veri korunur.",
           "tone": "good",
           "enrich": {
-            "info": "COMMIT sonrası elektrik kesilse bile veri korunur.",
-            "detail": "**Durability** nedir?\n\nCOMMIT sonrası elektrik kesilse bile veri korunur.\n\n**Amaç:** Framework'ün modüler bir parçası. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç sistem bilmeyen biri için: bu özellik, sistem sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Yazılım mimarı",
-                "context": "\"Durability\" özelliğini sistem tasarımı sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici COMMIT sonrası elektrik kesilse bile veri korunur. pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Bu özelliği kullanır. \"Durability\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest'ten talep eder, kodda hazır API çağırır."
-              },
-              {
-                "persona": "Son kullanıcı",
-                "context": "Sonucunu görür. \"Durability\" özelliği bu süreçte devreye girer.",
-                "outcome": "UI'da nihai çıktıyı (form/sayfa/akış) deneyimler."
-              }
-            ]
+            "info": "COMMIT sonrası elektrik kesilse bile veri korunur."
           }
         }
       ]
@@ -444,12 +374,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Ünite 04 — Veritabanı Temelleri. PostgreSQL, kolon, indeks, ilişki, işlem (transaction), normalize/denormalize kavramları.",
+      "nicin": "Verinin nereye, nasıl saklandığını bilmeden yazılım yapılmaz.",
+      "nasil": "Tablo → satır → sütun mantığı + ilişkiler ile derinleşir.",
+      "nerede": "Müfredatın 4. ünitesi — DocType'tan sonra.",
+      "ne_zaman": "Veri saklama gerektiren her özellik için.",
+      "kim": "Tüm geliştiriciler — veritabanı her yerdedir.",
+      "analoji": "Devlet arşivi: klasörler, dolaplar, kim hangi belgeyi alabilir kuralları."
+    }
   }
 }

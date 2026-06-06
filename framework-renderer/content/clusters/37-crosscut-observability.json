@@ -94,12 +94,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Sistemin gözlemlenebilirliği: hız ölçümü, hata sayısı, kullanıcı sayısı — hepsinin grafikler halinde takibi.",
+      "nicin": "Sorun çıkmadan fark etmek için göstergeler lazım. 'Yavaşlıyor' diye şikayet gelene kadar beklemek geç olur.",
+      "nasil": "Sistem her isteği zaman damgalı kaydeder → gözlemleme aracı (Grafana) grafiklere döker → eşik aşılınca alarm.",
+      "nerede": "Operasyon panelinde — sürekli açık ekran.",
+      "ne_zaman": "Sürekli; alarm çalınca acil.",
+      "kim": "Operatör izler; geliştirici grafiklerden hatayı bulur; üst yönetim haftalık özet okur.",
+      "analoji": "Bir santralde basınç saatleri: sürekli izlenir, sınırı aşınca alarm çalar."
+    }
   }
 }

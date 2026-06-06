@@ -26,25 +26,7 @@
           "desc": "Sync engine, block storage, dedup, version, share, namespace",
           "critical": true,
           "enrich": {
-            "info": "Sync engine, block storage, dedup, version, share, namespace",
-            "detail": "**Drive (#7)** nedir?\n\nSync engine, block storage, dedup, version, share, namespace.\n\n**Amaç:** Belgelerin saklandığı, ekiplerle paylaşıldığı, beraber düzenlendiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç dosya & işbirliği bilmeyen biri için: bu özellik, dosya & işbirliği sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Belge sahibi",
-                "context": "\"Drive (#7)\" özelliğini dosya ve işbirliği sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Sync engine, block storage, dedup, version, share, namespace pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "İşbirliği üyesi",
-                "context": "Belge üzerinde yorum yapar. \"Drive (#7)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Gerçek-zamanlı edit, presence, change tracking."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"Drive (#7)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Belgenin hash'ini bulur, tüm kopyalarını ve yedekleri imha eder."
-              }
-            ]
+            "info": "Sync engine, block storage, dedup, version, share, namespace"
           }
         },
         {
@@ -52,125 +34,35 @@
           "desc": "Yjs (pycrdt binding) — Google Docs muadili real-time",
           "critical": true,
           "enrich": {
-            "info": "Yjs (pycrdt binding) — Google Docs muadili real-time",
-            "detail": "**Co-editing (CRDT)** nedir?\n\nYjs (pycrdt binding) — Google Docs muadili real-time.\n\n**Amaç:** Belgelerin saklandığı, ekiplerle paylaşıldığı, beraber düzenlendiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç dosya & işbirliği bilmeyen biri için: bu özellik, dosya & işbirliği sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Belge sahibi",
-                "context": "\"Co-editing (CRDT)\" özelliğini dosya ve işbirliği sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Yjs (pycrdt binding) — Google Docs muadili real-time pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "İşbirliği üyesi",
-                "context": "Belge üzerinde yorum yapar. \"Co-editing (CRDT)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Gerçek-zamanlı edit, presence, change tracking."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"Co-editing (CRDT)\" özelliği bu süreçte devreye girer.",
-                "outcome": "Belgenin hash'ini bulur, tüm kopyalarını ve yedekleri imha eder."
-              }
-            ]
+            "info": "Yjs (pycrdt binding) — Google Docs muadili real-time"
           }
         },
         {
           "name": "Wiki",
           "desc": "Frappe Wiki muadili — versioning, link, search",
           "enrich": {
-            "info": "Frappe Wiki muadili — versioning, link, search",
-            "detail": "**Wiki** nedir?\n\nFrappe Wiki muadili — versioning, link, search.\n\n**Amaç:** Belgelerin saklandığı, ekiplerle paylaşıldığı, beraber düzenlendiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç dosya & işbirliği bilmeyen biri için: bu özellik, dosya & işbirliği sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Belge sahibi",
-                "context": "\"Wiki\" özelliğini dosya ve işbirliği sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Frappe Wiki muadili — versioning, link, search pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "İşbirliği üyesi",
-                "context": "Belge üzerinde yorum yapar. \"Wiki\" özelliği bu süreçte devreye girer.",
-                "outcome": "Gerçek-zamanlı edit, presence, change tracking."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"Wiki\" özelliği bu süreçte devreye girer.",
-                "outcome": "Belgenin hash'ini bulur, tüm kopyalarını ve yedekleri imha eder."
-              }
-            ]
+            "info": "Frappe Wiki muadili — versioning, link, search"
           }
         },
         {
           "name": "Document e-Sign",
           "desc": "DocuSign muadili — e-imza/m-imza TR",
           "enrich": {
-            "info": "DocuSign muadili — e-imza/m-imza TR",
-            "detail": "**Document e-Sign** nedir?\n\nDocuSign muadili — e-imza/m-imza TR.\n\n**Amaç:** Belgelerin saklandığı, ekiplerle paylaşıldığı, beraber düzenlendiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç dosya & işbirliği bilmeyen biri için: bu özellik, dosya & işbirliği sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Belge sahibi",
-                "context": "\"Document e-Sign\" özelliğini dosya ve işbirliği sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici DocuSign muadili — e-imza/m-imza TR pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "İşbirliği üyesi",
-                "context": "Belge üzerinde yorum yapar. \"Document e-Sign\" özelliği bu süreçte devreye girer.",
-                "outcome": "Gerçek-zamanlı edit, presence, change tracking."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"Document e-Sign\" özelliği bu süreçte devreye girer.",
-                "outcome": "Belgenin hash'ini bulur, tüm kopyalarını ve yedekleri imha eder."
-              }
-            ]
+            "info": "DocuSign muadili — e-imza/m-imza TR"
           }
         },
         {
           "name": "Spreadsheet",
           "desc": "Cell-based, formula, chart",
           "enrich": {
-            "info": "Cell-based, formula, chart",
-            "detail": "**Spreadsheet** nedir?\n\nCell-based, formula, chart.\n\n**Amaç:** Belgelerin saklandığı, ekiplerle paylaşıldığı, beraber düzenlendiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç dosya & işbirliği bilmeyen biri için: bu özellik, dosya & işbirliği sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Belge sahibi",
-                "context": "\"Spreadsheet\" özelliğini dosya ve işbirliği sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Cell-based, formula, chart pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "İşbirliği üyesi",
-                "context": "Belge üzerinde yorum yapar. \"Spreadsheet\" özelliği bu süreçte devreye girer.",
-                "outcome": "Gerçek-zamanlı edit, presence, change tracking."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"Spreadsheet\" özelliği bu süreçte devreye girer.",
-                "outcome": "Belgenin hash'ini bulur, tüm kopyalarını ve yedekleri imha eder."
-              }
-            ]
+            "info": "Cell-based, formula, chart"
           }
         },
         {
           "name": "Whiteboard",
           "desc": "Tldraw muadili — collaborative drawing",
           "enrich": {
-            "info": "Tldraw muadili — collaborative drawing",
-            "detail": "**Whiteboard** nedir?\n\nTldraw muadili — collaborative drawing.\n\n**Amaç:** Belgelerin saklandığı, ekiplerle paylaşıldığı, beraber düzenlendiği modül. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç dosya & işbirliği bilmeyen biri için: bu özellik, dosya & işbirliği sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Belge sahibi",
-                "context": "\"Whiteboard\" özelliğini dosya ve işbirliği sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Tldraw muadili — collaborative drawing pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "İşbirliği üyesi",
-                "context": "Belge üzerinde yorum yapar. \"Whiteboard\" özelliği bu süreçte devreye girer.",
-                "outcome": "Gerçek-zamanlı edit, presence, change tracking."
-              },
-              {
-                "persona": "Compliance",
-                "context": "KVKK silme talebine cevap verir. \"Whiteboard\" özelliği bu süreçte devreye girer.",
-                "outcome": "Belgenin hash'ini bulur, tüm kopyalarını ve yedekleri imha eder."
-              }
-            ]
+            "info": "Tldraw muadili — collaborative drawing"
           }
         }
       ]
@@ -209,12 +101,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Dosya paylaşım modülü: belgelerin saklandığı, başkalarıyla paylaşıldığı, sürüm takibi yapıldığı bulut alanı.",
+      "nicin": "E-posta ile büyük dosya gönderemezsin. Kim hangi sürümü düzenledi bilinemiyor. Drive bunu çözer.",
+      "nasil": "Dosya yüklenir → klasör/kategori atanır → izinli kişilerle paylaşılır → değişiklikler sürüm olarak saklanır.",
+      "nerede": "Sözleşme arşivleri, sunum dosyaları, ekip belgeleri.",
+      "ne_zaman": "İki kişinin aynı dosya üstünde çalışması gerektiğinde.",
+      "kim": "Dosya sahibi yükler; ekip okur; yönetici izin verir.",
+      "analoji": "Mahalle bakkalının ortak rafı: herkesin ulaşabildiği ama sahibi belli olan eşyalar; kim eline aldı, kim koydu — bellidir."
+    }
   }
 }

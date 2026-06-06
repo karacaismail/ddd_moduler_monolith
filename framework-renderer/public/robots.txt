@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://karacaismail.github.io/ddd_moduler_monolith/sitemap.xml

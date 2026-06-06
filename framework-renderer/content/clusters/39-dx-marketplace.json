@@ -48,7 +48,18 @@
     },
     {
       "type": "paragraph",
-      "text": "Marketplace plugin'leri untrusted. **WASM/Extism** runtime — capability-based sandbox. \"Bu plugin sadece şu DocType'ı okuyabilir, network erişimi yok, disk yok\" diye kısıtlanabilir. First-party plugin sidecar veya embedded; third-party WASM zorunlu."
+      "text": "Marketplace plugin'leri untrusted. **WASM/Extism** runtime — capability-based sandbox. \"Bu plugin sadece şu DocType'ı okuyabilir, network erişimi yok, disk yok\" diye kısıtlanabilir. First-party plugin sidecar veya embedded; third-party WASM zorunlu.",
+      "enrich": {
+        "lesson": {
+          "ne": "Eklenti pazaryeri: dışarıdan geliştiricilerin yazdığı eklentilerin satıldığı veya ücretsiz dağıtıldığı dijital dükkân.",
+          "nicin": "Tek bir ekip her özelliği yazamaz. Pazaryeri sayesinde tüm dünya geliştiricileri sisteme katkı verir; çeşitlilik artar, müşteri seçer.",
+          "nasil": "Geliştirici eklentisini paketler, pazaryerine yükler. Satın alan kullanıcı tıkla-kur ile ekler. Para akışı, güvenlik kontrolü pazaryeri tarafından.",
+          "nerede": "Apple App Store, Google Play, WordPress Plugins, Shopify App Store — hepsi aynı fikrin örneği.",
+          "ne_zaman": "Sistemin ana özelliklerinde olmayan ama belirli müşteri grupları için lazım olan ihtiyaçlar pazaryerinden karşılanır.",
+          "kim": "Eklenti geliştiricileri yazar, pazaryeri sahibi düzeni sağlar, müşteri seçer ve kullanır.",
+          "analoji": "Bir AVM gibi: ana yapıyı (binayı) AVM sahibi yapar, dükkânlar (eklentiler) onun içinde açılır, müşteri istediğine girer."
+        }
+      }
     },
     {
       "type": "divider"
@@ -71,11 +82,12 @@
       "type": "callout",
       "variant": "tip",
       "label": "Marketplace flywheel",
-      "body": "O01 (observability + SLO) → güvenilirlik, O02 (marketplace) → keşif (developer + tenant arz/talep), O03 (security review + sandbox cert) → güvenlik (untrusted plugin sandboxing). **Üçü birlikte** Shopify App Store + VS Code Marketplace + Apple App Store sağlam üçgenini kurar. Hiçbiri tek başına yetmez."
+      "body": "O01 (observability + SLO) → güvenilirlik, O02 (marketplace) → keşif (developer + tenant arz/talep), O03 (security review + sandbox cert) → güvenlik (untrusted plugin sandboxing). **Üçü birlikte** Shopify App Store + VS Code Marketplace + Apple App Store sağlam üçgenini kurar. Hiçbiri tek başına yetmez.",
+      "enrich": {}
     }
   ],
   "enrich": {
-    "info": "VS Code Marketplace + Shopify App Store muadili. Semver + Proposed API.",
+    "info": "Dışarıdan geliştiricilerin yazdığı eklentilerin satıldığı dijital pazaryeri.",
     "detail": "VS Code Marketplace + Shopify App Store muadili. Semver + Proposed API.",
     "terms": [
       {
@@ -85,12 +97,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Eklenti pazaryeri: dışarıdan geliştiricilerin yazdığı eklentilerin satıldığı veya ücretsiz dağıtıldığı dijital dükkân.",
+      "nicin": "Tek ekip her özelliği yazamaz. Pazaryeri sayesinde tüm dünya geliştiricileri katkı verir.",
+      "nasil": "Geliştirici eklentisini paketler, pazaryerine yükler. Satın alan kullanıcı tıkla-kur ile ekler.",
+      "nerede": "Sistemde 'Eklentiler' menüsü → 'Pazara git'.",
+      "ne_zaman": "İhtiyaç doğduğunda — yazmaya gerek olmadan eklentiden alınır.",
+      "kim": "Eklenti yazarları yazar; pazaryeri sahibi düzeni sağlar; müşteri seçer ve kullanır.",
+      "analoji": "Bir AVM'deki dükkanlar: ana yapıyı AVM yapar, dükkânlar açılır, müşteri istediğine girer."
+    }
   }
 }

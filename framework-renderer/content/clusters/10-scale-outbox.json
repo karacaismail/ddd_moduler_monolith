@@ -24,6 +24,22 @@
       "text": "Naif yaklaşım (yanlış)"
     },
     {
+      "type": "image",
+      "src": "/assets/outbox-pattern.svg",
+      "alt": "Outbox pattern — modül A'nın transaction'ında outbox satırı + worker iletim akışı",
+      "caption": "Veri ve mesaj aynı transaction'da yazılır; worker arkadan iletir — kayıp yok.",
+      "enrich": {
+        "info": "Outbox pattern'in mekanik gösterimi.",
+        "lesson": {
+          "ne": "Veriyi yazma + duyuru yapma işlemlerinin nasıl atomik tutulduğunu gösteren şema.",
+          "nicin": "'Önce yazdım sonra duyurmaya çalıştım, internet kopuk, duyuru kayıp' kazasının nasıl önlendiği görsel.",
+          "nasil": "DB transaction içinde hem ana tablo hem outbox tablosu güncellenir; worker outbox'tan asenkron okur.",
+          "kim": "Backend geliştiricisi pattern'i kurar; sistem çalışınca herkes faydalanır.",
+          "analoji": "Postaneye gönderilecek mektupların kutu yöntemiyle saklanması: koyduğun an iş sende biter."
+        }
+      }
+    },
+    {
       "type": "code",
       "lang": "python",
       "content": "def place_order(order):\n    db.save(order)            # ✓ commit\n    kafka.publish(event)      # ✗ network down → event kayıp, Order var\n    # ya da\n    kafka.publish(event)      # ✓ yayınlandı\n    db.save(order)            # ✗ DB crash → event var, Order yok"
@@ -40,17 +56,20 @@
     },
     {
       "type": "paragraph",
-      "text": "Aynı DB transaction'da Order satırı + Outbox satırı INSERT et. Sonra ayrı relay worker outbox'tan Kafka'ya publish eder:"
+      "text": "Aynı DB transaction'da Order satırı + Outbox satırı INSERT et. Sonra ayrı relay worker outbox'tan Kafka'ya publish eder:",
+      "enrich": {}
     },
     {
       "type": "code",
       "lang": "python",
       "title": "Outbox relay worker",
-      "content": "async def outbox_relay():\n    while True:\n        async with db.transaction():\n            rows = await db.fetch(\"\"\"\n                SELECT * FROM outbox\n                WHERE status = 'pending'\n                  AND (next_retry_at IS NULL OR next_retry_at <= now())\n                ORDER BY occurred_at\n                LIMIT 100\n                FOR UPDATE SKIP LOCKED\n            \"\"\")\n            for row in rows:\n                try:\n                    await kafka.publish(row['event_type'], row['payload'])\n                    await db.execute(\n                        \"UPDATE outbox SET status='published', published_at=now() WHERE id=$1\",\n                        row['id'])\n                except Exception as e:\n                    backoff = min(60 * 2 ** row['attempts'], 3600)\n                    await db.execute(\"\"\"\n                        UPDATE outbox SET attempts = attempts + 1,\n                          next_retry_at = now() + interval '1 second' * $1\n                        WHERE id = $2\n                    \"\"\", backoff, row['id'])\n        await asyncio.sleep(1)"
+      "content": "async def outbox_relay():\n    while True:\n        async with db.transaction():\n            rows = await db.fetch(\"\"\"\n                SELECT * FROM outbox\n                WHERE status = 'pending'\n                  AND (next_retry_at IS NULL OR next_retry_at <= now())\n                ORDER BY occurred_at\n                LIMIT 100\n                FOR UPDATE SKIP LOCKED\n            \"\"\")\n            for row in rows:\n                try:\n                    await kafka.publish(row['event_type'], row['payload'])\n                    await db.execute(\n                        \"UPDATE outbox SET status='published', published_at=now() WHERE id=$1\",\n                        row['id'])\n                except Exception as e:\n                    backoff = min(60 * 2 ** row['attempts'], 3600)\n                    await db.execute(\"\"\"\n                        UPDATE outbox SET attempts = attempts + 1,\n                          next_retry_at = now() + interval '1 second' * $1\n                        WHERE id = $2\n                    \"\"\", backoff, row['id'])\n        await asyncio.sleep(1)",
+      "enrich": {}
     },
     {
       "type": "paragraph",
-      "text": "**FOR UPDATE SKIP LOCKED** concurrent worker için kritik. Birden çok worker aynı outbox'tan paralel okuyabilir, lock contention yok."
+      "text": "**FOR UPDATE SKIP LOCKED** concurrent worker için kritik. Birden çok worker aynı outbox'tan paralel okuyabilir, lock contention yok.",
+      "enrich": {}
     },
     {
       "type": "heading",
@@ -86,7 +105,7 @@
     }
   ],
   "enrich": {
-    "info": "Dual-write problem'inin tek doğru çözümü. Save pipeline'a örülü.",
+    "info": "Veritabanına yazılan ve dış dünyaya iletilecek mesajların kaybolmaması için kullanılan ara kutu.",
     "detail": "Dual-write problem'inin tek doğru çözümü. Save pipeline'a örülü.",
     "terms": [
       {
@@ -102,11 +121,30 @@
         "why": "Tehlikeli — biri başarısız olursa tutarsızlık."
       }
     ],
+    "lesson": {
+      "ne": "Veritabanına yazılan ve dış dünyaya gönderilecek mesajların kaybolmaması için kullanılan ara kutu. 'Bunu söylesem unutmam' diye yazılan not defteri.",
+      "nicin": "Aynı işlemde hem veriyi yaz hem haber gönder dersek ve haber yolda kaybolursa veri yazılmış ama duyuru yapılmamış olur. Outbox bu kazayı baştan engeller: önce kuyruğa yaz, sonra arka planda gerçek duyuru atılır.",
+      "nasil": "Modül A bir kayıt yaratır → aynı işlemde 'şunu duyur' notunu Outbox tablosuna yazar → ayrı bir işçi (worker) bu notları okur, gerçek duyuruyu yapar, başarılıysa notu siler.",
+      "nerede": "Sistemin perde arkasında, bir veritabanı tablosu olarak. Kullanıcı görmez ama hız ve güvenilirliği hisseder.",
+      "ne_zaman": "Bir modül başka modüllere haber göndermesi gerektiğinde — sipariş alındı, ödeme yapıldı, kullanıcı kaydı gibi.",
+      "kim": "Geliştirici outbox satırı yazmak için tek satırlık komut kullanır; arka taraf gerisini halleder.",
+      "analoji": "Postaneye gönderilecek mektupların önce posta kutusuna konması: kutuya koyduğun an iş sende biter; postacı sonra gelir, hepsini alır, dağıtır. Postacı gelmese bile mektup kutuda durur, kaybolmaz."
+    },
     "stories": [
       {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+        "persona": "Postacı Cengiz Bey",
+        "context": "Bir mektubu adres sahibine bizzat götürmesi gerekiyor. Ama acil bir yağmur başladı, dağıtım duracak. Mektup yine de kaybolmamalı.",
+        "outcome": "Cengiz Bey mektubu posta merkezindeki güvenli rafa bırakır (outbox). Yağmur dindiğinde başka postacı alıp götürür. Mektup 'yazıldı + bırakıldı' aynı anda olur; bırakılmadıysa kaybolur. Outbox = güvenli raf."
+      },
+      {
+        "persona": "Eczacı Bilge Hanım",
+        "context": "Müşteriye ilaç verirken doktor da haberdar olmalı. Eczanenin internet bağlantısı bazen kopuyor; doktora anlık mesaj atınca yarısı gitmiyor.",
+        "outcome": "Eczane sistemine outbox kurulu: ilaç verildiği an 'doktora bildir' notu güvenli kutuya yazılır. İnternet gelince arka plandaki işçi notu alıp doktora ulaştırır. İlaç kaydı tam, bildirim sonra ama mutlaka — kayıp yok."
+      },
+      {
+        "persona": "Aile içi alışveriş listesi",
+        "context": "Anne markete gidecek; tüm aile listeye eklemek istiyor ama anne acelesi var. 'Birazdan çıkıyorum, eklemek isteyen buzdolabındaki kâğıda yazsın'.",
+        "outcome": "Buzdolabı kapağındaki yapışkan not = outbox. Herkes günü içinde yazar; anne çıkmadan önce notu alır, gider. Yazıldı = gerçekleşecek garantili. Outbox tam buna benzer mantık: önce yaz, sonra ilet."
       }
     ]
   }

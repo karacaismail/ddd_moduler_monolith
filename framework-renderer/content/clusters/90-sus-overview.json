@@ -1,0 +1,111 @@
+{
+  "id": "sus-overview",
+  "title": "Sürdürülebilirlik haritası — neden mekanizma?",
+  "subtitle": "Olgun mimariyi 30-50 yıl yaşatan şey \"iyi tasarım\" değil; **mekanizmadır**. Linux/Stripe/Drupal/Shopify/PostgreSQL/IBM-i bunu kanıtladı.",
+  "cluster": "sus",
+  "order": 90,
+  "icon": "ph-infinity",
+  "tags": [
+    "sustainability",
+    "longevity",
+    "mechanism"
+  ],
+  "enrich": {
+    "info": "Uzun-ömür = iyi mimari değil; süreç + makine-zorlamasıyla yazılan kuralların disiplini.",
+    "lesson": {
+      "ne": "Bir yazılım mimarisini onlarca yıl yaşatan şey, başlangıçta \"güzel\" tasarımı değil; sonradan bozulmasını engelleyen yazılı kurallar ve onları kontrol eden makinelerdir.",
+      "nicin": "İyi tasarımlar zamanla bozulur — yeni geliştirici eski kuralı bilmez, baskı altında kısayol bulur. Tek koruma: sınırı kontrol eden bir makine + yazılı politika.",
+      "nasil": "8 kanıtlanmış mekanizma var: \"kullanıcıyı kırma\" sözleşmesi (Linux), tarih-tabanlı versiyon (Stripe), CI sınır denetçisi (Shopify), otomatik upgrade kodları (Drupal), stabil soyutlama katmanı (IBM-i), ve daha.",
+      "nerede": "Bu grubun 11 alt cluster'ında her mekanizma ayrı ayrı işleniyor.",
+      "ne_zaman": "Yazılım sadece çalışmayı değil yıllarca yaşamayı hedeflediğinde — başka deyişle marketplace, plugin ekosistemi, dış entegratör doğduğunda.",
+      "kim": "Mimar mekanizmaları seçer; ekip yazılı politikayı uygular; CI makinesı sınırı her PR'da kontrol eder; eski entegratör 5 yıl sonra kırılmamış sistem bulur.",
+      "analoji": "Bir yapı kanunu gibi: belediye \"şu duvar 5 yıl sonra yıkılmasın\" diye kontrol mekanizması koyar. Mimar güzel çizim çizebilir ama denetim mekanizması olmadan 5. yılda bina çürür."
+    },
+    "stories": [
+      {
+        "persona": "Mahalle muhtarı Hasan Bey, kayıt defteri",
+        "context": "Muhtarlık 1955'ten beri kayıt defteri tutar. Her muhtar geldiğinde \"benim defterim\" diye yeniden başlamak isteseydi 70 yıllık kayıt kaybolurdu.",
+        "outcome": "Kural: defter eski formatı korur, yeni muhtar yeni satır ekler ama eski sayfaya dokunmaz. Bu \"defter format sözleşmesi\" sayesinde 70 yıl boyunca tek defterden geçmişe bakılabilir. Yazılımda sözleşme katmanı tam buna benzer."
+      },
+      {
+        "persona": "Kayseri'de halı dokuyan Ayşe Teyze (74)",
+        "context": "Annesinden, ninesinden öğrendiği desenleri 60 yıldır dokumakta. Her halı aynı boyutta, aynı düğüm sayısında — ama renkleri değişebilir.",
+        "outcome": "Boyutu+düğüm sözleşme; renk evrilir. Müşteri 10 yıl önceki halısının eşini sipariş ederse Ayşe Teyze bir gün sonra teslim eder, çünkü boyut sözleşmesi sabit. Yazılım versiyonlaması da aynı: çekirdek sözleşme sabit, içerik evrilir."
+      },
+      {
+        "persona": "Apartman yöneticisi Zeynep Hanım, asansör bakımı",
+        "context": "Asansör firması her 6 ayda gelir, kontrol formu doldurur. Form 1990'dan beri aynı: 12 madde, her birinde işaret. Firma değişebilir, marka değişebilir; form aynı.",
+        "outcome": "Zeynep Hanım 30 yıllık tüm formları arşivde tutuyor; yeni firma gelse de aynı form formatını uygular. Bu \"form sözleşmesi\" sayesinde asansör tarihçesi okunabilir kalır. Yazılım sözleşme kapısı = form formatı."
+      }
+    ],
+    "terms": [
+      {
+        "term": "Mekanizma",
+        "meaning": "Sürekli aynı şekilde çalışan, kişiye bağlı olmayan otomatik denetim/işlem",
+        "why": "İnsan unutur, mekanizma unutmaz"
+      },
+      {
+        "term": "Sözleşme yüzeyi",
+        "meaning": "Sistemin dışarıya verdiği değişmez söz: \"bu API, bu format, bu davranış 10 yıl sonra da çalışacak\"",
+        "why": "Dış entegratör güvenir, ekosistem büyür"
+      },
+      {
+        "term": "CI kapısı",
+        "meaning": "Continuous Integration — kod birleştirme öncesi otomatik kontrol; ihlali olan PR reddedilir",
+        "why": "Tek koruma; insan göz kaçırır"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Asıl mesaj",
+      "body": "Uzun-ömür **iyi mimariden** değil, **mekanizmadan** gelir. Stripe (14 yıl API), IBM i (35 yıl donanım), Linux (don't break userspace), Drupal (Rector) — hepsi süreçle yaşadı."
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Mekanizma",
+        "Kaynak",
+        "Bizdeki karşılığı"
+      ],
+      "rows": [
+        [
+          "Don't break userspace",
+          "Linux (1991-)",
+          "Sözleşme yüzeyi + revert kapısı"
+        ],
+        [
+          "Tarih-versiyon + dönüşüm",
+          "Stripe (2011-)",
+          "Çekirdek tek-versiyon, eskileri katman yaşatır"
+        ],
+        [
+          "CI sınır-zorlama",
+          "Shopify Packwerk",
+          "import-linter (Python) + TS sınır denetçisi"
+        ],
+        [
+          "Deprecation + codemod",
+          "Drupal Rector",
+          "AI-yürütücülü LibCST codemod döngüsü"
+        ],
+        [
+          "TIMI soyutlama",
+          "IBM i (1988-)",
+          "DocType stabil substrat-bağımsız arayüz"
+        ],
+        [
+          "Bitemporal kayıt",
+          "XTDB",
+          "Postgres'te valid_time + system_time"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "philosophy",
+    "build-sequence"
+  ]
+}

@@ -125,12 +125,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Hangi modülün hangi ürünü beslediğini gösteren harita. 'İK ürünü = layer-2/hrms + l1/party + kernel/authz' gibi.",
+      "nicin": "Bir ürünün ne kadar modüle dayandığını görmeden ne maliyetlendirmesi ne yol planı yapılır.",
+      "nasil": "Tablo veya ağaç görüntüsü: her ürün → kullandığı modüller listelenir.",
+      "nerede": "Yöneticilerin karar verirken baktığı pano.",
+      "ne_zaman": "Yeni ürün planlamasında, kaynak ayırmada.",
+      "kim": "Ürün müdürü çıkarır; mimar onaylar; üst yönetim okur.",
+      "analoji": "Bir yemeğin reçetesi: hangi malzeme, ne kadar — alışveriş listesi buradan çıkar."
+    }
   }
 }

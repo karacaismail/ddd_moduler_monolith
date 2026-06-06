@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#0f172a" />
+<title>Çevrimdışı — Framework Master</title>
+<style>
+  :root { --bg:#fafafa; --ink:#111; --ink-3:#666; --accent:#2563eb; --line:#e6e6e6; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#15171b; --ink:#e8e8e8; --ink-3:#a0a0a0; --line:#2a2d33; }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 1rem; line-height: 1.6;
+    display: grid; place-items: center; padding: 1.5rem;
+  }
+  main {
+    max-width: 28rem; text-align: center;
+    border: 1px solid var(--line); border-radius: 12px;
+    background: #fff; padding: 2rem 1.75rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    main { background: #1c1f24; }
+  }
+  .icon { font-size: 3rem; opacity: 0.6; margin-bottom: 1rem; line-height: 1; }
+  h1 { margin: 0 0 0.5rem; font-size: 1.25rem; font-weight: 500; }
+  p { margin: 0 0 1.25rem; color: var(--ink-3); font-size: 1rem; }
+  button {
+    background: var(--accent); color: #fff; border: 0;
+    padding: 0.65rem 1.2rem; border-radius: 8px;
+    font: inherit; font-size: 1rem; cursor: pointer;
+  }
+  button:hover { opacity: 0.92; }
+  button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .hint { margin-top: 1rem; color: var(--ink-3); font-size: 0.95rem; }
+</style>
+</head>
+<body>
+<main>
+  <div class="icon" aria-hidden="true">📡</div>
+  <h1>Çevrimdışısın</h1>
+  <p>İnternet bağlantın yok ya da çok zayıf. Daha önce açtığın sayfalar
+  hâlâ okunabilir; yeni içerik için bağlantını kontrol et.</p>
+  <button onclick="location.reload()">Yeniden dene</button>
+  <p class="hint">Wi-Fi veya mobil veriyi açıp tekrar bu butona bas.</p>
+</main>
+</body>
+</html>

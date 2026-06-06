@@ -15,6 +15,12 @@
   ],
   "blocks": [
     {
+      "type": "callout",
+      "variant": "info",
+      "label": "🛠 Implementasyon kararı: DBOS",
+      "body": "Bu cluster Saga deseninin **ne yaptığını** anlatır. **Nasıl koşturulduğu** ayrı bir karardır: bu projede **DBOS Transact** seçildi (Postgres-native durable execution).\n\n**Neden DBOS?** Mevcut PostgreSQL altyapısına oturuyor; Temporal/Restate gibi ayrı orkestratör kümesi gerekmiyor; FastAPI + Pydantic AI uyumlu; AI ajan güvenilirliği için ideal. Detay: {{ref:sus-durable}}.\n\n**Reddedilen alternatif:** Temporal — ayrı altyapı maliyeti, fazladan operasyonel yük, mevcut Postgres-first felsefesine aykırı."
+    },
+    {
       "type": "paragraph",
       "text": "Cross-aggregate transaction. \"Order place → Payment charge → Stock reserve → Shipping create\" — herhangi biri fail ederse önceki adımları geri al."
     },
@@ -33,30 +39,7 @@
           "tone": "good",
           "body": "Merkezi koordinatör adım sırasını ve kompansasyonu bilir. Debug kolay, test edilebilir.\n\n**Modüler monolit için tercih.**",
           "enrich": {
-            "info": "Merkezi koordinatör adım sırasını ve kompansasyonu bilir. Debug kolay, test edilebilir.\n\n**Modüler monolit için tercih.**",
-            "detail": "**Orchestration** nedir?\n\nMerkezi koordinatör adım sırasını ve kompansasyonu bilir. Debug kolay, test edilebilir.\n\n**Modüler monolit için tercih.**.\n\n**Amaç:** Birden çok adım içeren işlerin (her adımı başarısız olabilir) güvenli yürütüldüğü pattern. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç saga (uzun iş akışı) bilmeyen biri için: bu özellik, saga (uzun iş akışı) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İş akışı mühendisi",
-                "context": "\"Orchestration\" özelliğini uzun-soluklu işlem zinciri sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Merkezi koordinatör adım sırasını ve kompansasyonu bilir. Debug kolay, test edil pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Backend mühendisi",
-                "context": "Sipariş + ödeme + kargo + email zinciri yazar. \"Orchestration\" özelliği bu süreçte devreye girer.",
-                "outcome": "Saga ile her adım izlenir, başarısızlıkta önceki adımlar telafi edilir."
-              },
-              {
-                "persona": "SRE",
-                "context": "Yarıda kalmış saga'ları izler. \"Orchestration\" özelliği bu süreçte devreye girer.",
-                "outcome": "Görselleştirme + manuel müdahale."
-              },
-              {
-                "persona": "Mimar",
-                "context": "Mali işlem güvenliğini garantiler. \"Orchestration\" özelliği bu süreçte devreye girer.",
-                "outcome": "Compensation logic + idempotency birlikte."
-              }
-            ]
+            "info": "Merkezi koordinatör adım sırasını ve kompansasyonu bilir. Debug kolay, test edilebilir.\n\n**Modüler monolit için tercih.**"
           }
         },
         {
@@ -65,30 +48,7 @@
           "tone": "neutral",
           "body": "Servisler event'lere reaktif. Merkezi koordinatör yok. Mikroservis için daha uygun. Modüler monolitte fazla karmaşık.",
           "enrich": {
-            "info": "Servisler event'lere reaktif. Merkezi koordinatör yok. Mikroservis için daha uygun. Modüler monolitte fazla karmaşık.",
-            "detail": "**Choreography** nedir?\n\nServisler event'lere reaktif. Merkezi koordinatör yok. Mikroservis için daha uygun. Modüler monolitte fazla karmaşık.\n\n**Amaç:** Birden çok adım içeren işlerin (her adımı başarısız olabilir) güvenli yürütüldüğü pattern. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç saga (uzun iş akışı) bilmeyen biri için: bu özellik, saga (uzun iş akışı) sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "İş akışı mühendisi",
-                "context": "\"Choreography\" özelliğini uzun-soluklu işlem zinciri sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Servisler event'lere reaktif. Merkezi koordinatör yok. Mikroservis için daha uyg pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Backend mühendisi",
-                "context": "Sipariş + ödeme + kargo + email zinciri yazar. \"Choreography\" özelliği bu süreçte devreye girer.",
-                "outcome": "Saga ile her adım izlenir, başarısızlıkta önceki adımlar telafi edilir."
-              },
-              {
-                "persona": "SRE",
-                "context": "Yarıda kalmış saga'ları izler. \"Choreography\" özelliği bu süreçte devreye girer.",
-                "outcome": "Görselleştirme + manuel müdahale."
-              },
-              {
-                "persona": "Mimar",
-                "context": "Mali işlem güvenliğini garantiler. \"Choreography\" özelliği bu süreçte devreye girer.",
-                "outcome": "Compensation logic + idempotency birlikte."
-              }
-            ]
+            "info": "Servisler event'lere reaktif. Merkezi koordinatör yok. Mikroservis için daha uygun. Modüler monolitte fazla karmaşık."
           }
         }
       ]
@@ -100,7 +60,16 @@
     },
     {
       "type": "paragraph",
-      "text": "DBOS Postgres'i durable execution log olarak kullanır — ek altyapı yok. Workflow durable: process crash olursa kaldığı yerden devam eder. Saga için ideal."
+      "text": "DBOS Postgres'i durable execution log olarak kullanır — ek altyapı yok. Workflow durable: process crash olursa kaldığı yerden devam eder. Saga için ideal.",
+      "enrich": {
+        "lesson": {
+          "ne": "Sistemde olan biteni metin satırları halinde kayıt.",
+          "nicin": "Hata teşhisi ve geriye dönük analiz için.",
+          "nasil": "Her olay zaman damgalı kaydedilir.",
+          "kim": "Sistem yazar, geliştirici okur.",
+          "analoji": "Kaptanın seyir defteri."
+        }
+      }
     },
     {
       "type": "code",
@@ -140,12 +109,14 @@
         "why": "ROLLBACK'in mikro-servis dünyasındaki karşılığı."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Birden çok adımdan oluşan uzun işlemlerin (ödeme + kargo + envanter) yarım kalmadan, geri çevrilebilir biçimde yürütülmesi.",
+      "nicin": "Bir adım hata verirse önceki adımlar nasıl geri alınacak? 'Ödeme alındı ama kargo açılmadı' kaza sayılır. Saga her adımın geri alma yolunu da yazar.",
+      "nasil": "Adımlar sırayla yürür: 1) ödeme al, 2) kargo aç, 3) envanter düş. Her adımın 'geri al' eşi var. 2. adım başarısızsa 1'in geri alımı (iade) tetiklenir.",
+      "nerede": "Sipariş onay süreci, abonelik yenileme, fatura kesme — tüm çok-adımlı işlerde.",
+      "ne_zaman": "Bir işlem 2'den fazla adım taşıyorsa.",
+      "kim": "Geliştirici adımları + geri alımı tanımlar; sistem orkestra şefi rolünü oynar; son kullanıcı 'her ne olsa tutarlı sonuç' alır.",
+      "analoji": "Tatil rezervasyonu: uçak + otel + araba. Uçak iptal olursa otel ve araba da iptal edilir. Saga bu zinciri otomatik yönetir."
+    }
   }
 }

@@ -141,12 +141,14 @@
         "why": "Tek dosyada tek bağımsız konu prensibi."
       }
     ],
-    "stories": [
-      {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
-      }
-    ]
+    "lesson": {
+      "ne": "Dış servisler katmanı: e-posta gönderimi, SMS, ödeme, harita, hava durumu gibi 3. parti hizmetlerin sisteme bağlanma noktaları.",
+      "nicin": "Her ürün e-posta sunucusunu sıfırdan kurmaz. SendGrid gibi hazır hizmetler kullanılır. Bu katman bağlantıları yönetir.",
+      "nasil": "Sistemde 'e-posta gönder' denildiğinde bu katman gerçek e-posta sağlayıcısına çevirir.",
+      "nerede": "Sistemin dış dünyaya açılan kapısı.",
+      "ne_zaman": "Her dış hizmet çağrısında.",
+      "kim": "Geliştirici 'gönder' der; sistem dış sağlayıcıyı çağırır; son kullanıcı e-postayı alır.",
+      "analoji": "Bir oteldeki resepsiyon: misafir 'taksi çağırın' der, resepsiyon dış taksi şirketini arar. Misafir taksi şirketini bilmez."
+    }
   }
 }

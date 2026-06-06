@@ -1,4 +1,6 @@
 import {
+  DIFFICULTY_ICON,
+  DIFFICULTY_LABEL,
   GRANULARITY_ICON,
   GRANULARITY_LABEL,
   GRANULARITY_SP,
@@ -11,6 +13,8 @@ import type { ContentLoader } from './loader';
 import { resolveInlineMarkup, type RefResolver } from './refs';
 import { enrichButtonsHtml } from '@/components/popover';
 import { makeDetailKey } from '@/components/detail-panel';
+import { formatLastUpdated, readMinutes } from './cluster-metadata';
+import { createBookmarkButton } from '@/components/bookmarks';
 
 /**
  * Render bağlamı — block renderer'ların erişeceği yardımcılar.
@@ -176,6 +180,39 @@ export class Renderer {
         `<span class="state-chip state-chip--${cluster.state}">${STATE_LABEL[cluster.state]}</span>`,
       );
     }
+    // Zorluk chip — başlangıç/orta/ileri (60+ okur için)
+    if (cluster.difficulty) {
+      const d = cluster.difficulty;
+      meta.insertAdjacentHTML(
+        'beforeend',
+        `<span class="diff-chip diff-chip--${d}" title="Zorluk seviyesi">
+          <i class="ph ${DIFFICULTY_ICON[d]}"></i>
+          ${DIFFICULTY_LABEL[d]}
+        </span>`,
+      );
+    }
+    // Okuma süresi
+    const readMin = readMinutes(cluster);
+    if (readMin > 0) {
+      meta.insertAdjacentHTML(
+        'beforeend',
+        `<span class="read-chip" title="Tahmini okuma süresi">
+          <i class="ph ph-clock"></i>
+          ${readMin} dk
+        </span>`,
+      );
+    }
+    // Son güncelleme
+    const lu = formatLastUpdated(cluster.lastUpdated);
+    if (lu) {
+      meta.insertAdjacentHTML(
+        'beforeend',
+        `<span class="updated-chip" title="Son güncelleme">
+          <i class="ph ph-calendar-blank"></i>
+          ${lu}
+        </span>`,
+      );
+    }
     if (meta.childElementCount > 0) header.appendChild(meta);
 
     if (cluster.subtitle) {
@@ -197,6 +234,10 @@ export class Renderer {
       header.appendChild(tagWrap);
     }
 
+    // Bookmark yıldızı — toggle'dan önce
+    const bm = createBookmarkButton(cluster.id);
+    header.appendChild(bm);
+
     // Accordion toggle butonu — sağ üst köşede chevron
     const toggle = document.createElement('button');
     toggle.type = 'button';
@@ -216,6 +257,7 @@ export class Renderer {
     for (const cluster of clusters) {
       target.appendChild(this.renderCluster(cluster));
     }
+    setupVirtualScroll(target);
   }
 
   /** Belirli bir layer'a filtre uygula. */
@@ -227,5 +269,38 @@ export class Renderer {
     for (const cluster of clusters) {
       target.appendChild(this.renderCluster(cluster));
     }
+    setupVirtualScroll(target);
   }
+}
+
+/**
+ * Virtual scroll: cluster header viewport'a yaklaşınca body lazy render edilir.
+ * Bu, 300+ cluster için "ilk yükleme" maliyetini DOM'a sadece skeleton koymakla sınırlar.
+ * Açma/kapama bağımsız çalışır; bu sadece "ön belleğe al" tetikleyicisidir.
+ */
+function setupVirtualScroll(target: HTMLElement): void {
+  if (!('IntersectionObserver' in window)) return;
+  const sections = target.querySelectorAll<HTMLElement & { __renderBody?: () => void }>('.cluster');
+  if (sections.length === 0) return;
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const el = entry.target as HTMLElement & { __renderBody?: () => void };
+        // Yalnızca bir kez tetikle, sonra observer'dan çıkar.
+        try {
+          el.__renderBody?.();
+        } catch {
+          /* renderer body kendi hatasını yakalıyor */
+        }
+        io.unobserve(el);
+      }
+    },
+    {
+      // 600px önden başlat → scroll hızlıca aşağı kayarken kullanıcı boşluk görmez
+      rootMargin: '600px 0px 600px 0px',
+      threshold: 0,
+    },
+  );
+  for (const s of sections) io.observe(s);
 }

@@ -170,7 +170,8 @@
     },
     {
       "type": "paragraph",
-      "text": "VS Code Marketplace + Shopify App Store muadili. Publisher kayıt olur, plugin yükler, review (security scan + manual). Tenant admin App Store'a girer, install eder. Install:"
+      "text": "VS Code Marketplace + Shopify App Store muadili. Publisher kayıt olur, plugin yükler, review (security scan + manual). Tenant admin App Store'a girer, install eder. Install:",
+      "enrich": {}
     },
     {
       "type": "list",
@@ -209,150 +210,35 @@
           "name": "Plugin Capability Beyanı",
           "desc": "`declared_doctypes`, `declared_hooks`, **`declared_tools`** (MCP tool'ları), `declared_routes`, `required_capabilities` (başka plugin'lerden ihtiyaç), `optional_capabilities`",
           "enrich": {
-            "info": "`declared_doctypes`, `declared_hooks`, **`declared_tools`** (MCP tool'ları), `declared_routes`, `required_capabilities` (başka plugin'lerden",
-            "detail": "**Plugin Capability Beyanı** nedir?\n\n`declared_doctypes`, `declared_hooks`, **`declared_tools`** (MCP tool'ları), `declared_routes`, `required_capabilities` (başka plugin'lerden ihtiyaç), `optional_capabilities`.\n\n**Amaç:** Çekirdek değişmeden yeni davranış paketleri eklenmesini sağlayan altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç plugin sistemi bilmeyen biri için: bu özellik, plugin sistemi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Marketplace yöneticisi",
-                "context": "\"Plugin Capability Beyanı\" özelliğini plugin yayını ve bağımlılık sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `declared_doctypes`, `declared_hooks`, **`declared_tools`** (MCP tool'ları), `de pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Marketplace'e plugin yayınlar. \"Plugin Capability Beyanı\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest + semver ile yükler, isteyen kurar."
-              },
-              {
-                "persona": "Tenant admin",
-                "context": "İhtiyacı olan plugin'i kurar. \"Plugin Capability Beyanı\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla aktif eder, bağımlılıklar otomatik çözülür."
-              },
-              {
-                "persona": "Çekirdek ekibi",
-                "context": "Versiyon bumpları kırılma yapmasın diye contract test yazar. \"Plugin Capability Beyanı\" özelliği bu süreçte devreye girer.",
-                "outcome": "Plugin API'leri geriye uyumlu kalır."
-              }
-            ]
+            "info": "`declared_doctypes`, `declared_hooks`, **`declared_tools`** (MCP tool'ları), `declared_routes`, `required_capabilities` (başka plugin'lerden"
           }
         },
         {
           "name": "Install Workflow",
           "desc": "`install_id` (idempotent + mcp), `strategy` (atomic/staged/canary), `dry_run` (plan üret), `install_log` (streaming), `rollback_token`",
           "enrich": {
-            "info": "`install_id` (idempotent + mcp), `strategy` (atomic/staged/canary), `dry_run` (plan üret), `install_log` (streaming), `rollback_token`",
-            "detail": "**Install Workflow** nedir?\n\n`install_id` (idempotent + mcp), `strategy` (atomic/staged/canary), `dry_run` (plan üret), `install_log` (streaming), `rollback_token`.\n\n**Amaç:** Çekirdek değişmeden yeni davranış paketleri eklenmesini sağlayan altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç plugin sistemi bilmeyen biri için: bu özellik, plugin sistemi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Marketplace yöneticisi",
-                "context": "\"Install Workflow\" özelliğini plugin yayını ve bağımlılık sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `install_id` (idempotent + mcp), `strategy` (atomic/staged/canary), `dry_run` (p pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Marketplace'e plugin yayınlar. \"Install Workflow\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest + semver ile yükler, isteyen kurar."
-              },
-              {
-                "persona": "Tenant admin",
-                "context": "İhtiyacı olan plugin'i kurar. \"Install Workflow\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla aktif eder, bağımlılıklar otomatik çözülür."
-              },
-              {
-                "persona": "Çekirdek ekibi",
-                "context": "Versiyon bumpları kırılma yapmasın diye contract test yazar. \"Install Workflow\" özelliği bu süreçte devreye girer.",
-                "outcome": "Plugin API'leri geriye uyumlu kalır."
-              }
-            ]
+            "info": "`install_id` (idempotent + mcp), `strategy` (atomic/staged/canary), `dry_run` (plan üret), `install_log` (streaming), `rollback_token`"
           }
         },
         {
           "name": "Upgrade & Migration",
           "desc": "`migration_plan` (AI-generated), `breaking_changes` (AI), `downtime_estimate_sec` (AI)",
           "enrich": {
-            "info": "`migration_plan` (AI-generated), `breaking_changes` (AI), `downtime_estimate_sec` (AI)",
-            "detail": "**Upgrade & Migration** nedir?\n\n`migration_plan` (AI-generated), `breaking_changes` (AI), `downtime_estimate_sec` (AI).\n\n**Amaç:** Çekirdek değişmeden yeni davranış paketleri eklenmesini sağlayan altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç plugin sistemi bilmeyen biri için: bu özellik, plugin sistemi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Marketplace yöneticisi",
-                "context": "\"Upgrade & Migration\" özelliğini plugin yayını ve bağımlılık sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `migration_plan` (AI-generated), `breaking_changes` (AI), `downtime_estimate_sec pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Marketplace'e plugin yayınlar. \"Upgrade & Migration\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest + semver ile yükler, isteyen kurar."
-              },
-              {
-                "persona": "Tenant admin",
-                "context": "İhtiyacı olan plugin'i kurar. \"Upgrade & Migration\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla aktif eder, bağımlılıklar otomatik çözülür."
-              },
-              {
-                "persona": "Çekirdek ekibi",
-                "context": "Versiyon bumpları kırılma yapmasın diye contract test yazar. \"Upgrade & Migration\" özelliği bu süreçte devreye girer.",
-                "outcome": "Plugin API'leri geriye uyumlu kalır."
-              }
-            ]
+            "info": "`migration_plan` (AI-generated), `breaking_changes` (AI), `downtime_estimate_sec` (AI)"
           }
         },
         {
           "name": "Dependency Graph",
           "desc": "Cycle detection, `resolution_strategy` (strict/optimistic/forced), `resolution_plan_explanation` (AI), `Conflict Detection` (AI auto-resolution suggestion)",
           "enrich": {
-            "info": "Cycle detection, `resolution_strategy` (strict/optimistic/forced), `resolution_plan_explanation` (AI), `Conflict Detection` (AI auto-resolut",
-            "detail": "**Dependency Graph** nedir?\n\nCycle detection, `resolution_strategy` (strict/optimistic/forced), `resolution_plan_explanation` (AI), `Conflict Detection` (AI auto-resolution suggestion).\n\n**Amaç:** Çekirdek değişmeden yeni davranış paketleri eklenmesini sağlayan altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç plugin sistemi bilmeyen biri için: bu özellik, plugin sistemi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Marketplace yöneticisi",
-                "context": "\"Dependency Graph\" özelliğini plugin yayını ve bağımlılık sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici Cycle detection, `resolution_strategy` (strict/optimistic/forced), `resolution_p pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Marketplace'e plugin yayınlar. \"Dependency Graph\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest + semver ile yükler, isteyen kurar."
-              },
-              {
-                "persona": "Tenant admin",
-                "context": "İhtiyacı olan plugin'i kurar. \"Dependency Graph\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla aktif eder, bağımlılıklar otomatik çözülür."
-              },
-              {
-                "persona": "Çekirdek ekibi",
-                "context": "Versiyon bumpları kırılma yapmasın diye contract test yazar. \"Dependency Graph\" özelliği bu süreçte devreye girer.",
-                "outcome": "Plugin API'leri geriye uyumlu kalır."
-              }
-            ]
+            "info": "Cycle detection, `resolution_strategy` (strict/optimistic/forced), `resolution_plan_explanation` (AI), `Conflict Detection` (AI auto-resolut"
           }
         },
         {
           "name": "Plugin Registry",
           "desc": "`Local Registry` (sync, trusted_publishers, verification_policy), `Health Probe` (liveness/readiness, error_rate_5m)",
           "enrich": {
-            "info": "`Local Registry` (sync, trusted_publishers, verification_policy), `Health Probe` (liveness/readiness, error_rate_5m)",
-            "detail": "**Plugin Registry** nedir?\n\n`Local Registry` (sync, trusted_publishers, verification_policy), `Health Probe` (liveness/readiness, error_rate_5m).\n\n**Amaç:** Çekirdek değişmeden yeni davranış paketleri eklenmesini sağlayan altyapı. Bu özellik o modülün vazgeçilmez parçalarından biridir.\n\n**Sıfırdan açıklama:** Hiç plugin sistemi bilmeyen biri için: bu özellik, plugin sistemi sürecinde tekrar tekrar ihtiyaç duyulan bir yetkinliktir; framework onu önceden hazırladığı için her ürün/plugin sıfırdan yazmak zorunda kalmaz. Yan etkisi: tek noktadan tutarlı davranış, daha az hata, hızlı geliştirme.\n\n**Nerede kullanılır?** Aşağıdaki gerçek dünya örneklerinde 3 farklı kullanıcı perspektifinden bakabilirsin.",
-            "stories": [
-              {
-                "persona": "Marketplace yöneticisi",
-                "context": "\"Plugin Registry\" özelliğini plugin yayını ve bağımlılık sürecinde kullanmak ister.",
-                "outcome": "Framework bu özelliği primitive olarak sunar — plugin geliştirici `Local Registry` (sync, trusted_publishers, verification_policy), `Health Probe` pratiğini sıfırdan yazmaz."
-              },
-              {
-                "persona": "Plugin geliştirici",
-                "context": "Marketplace'e plugin yayınlar. \"Plugin Registry\" özelliği bu süreçte devreye girer.",
-                "outcome": "Manifest + semver ile yükler, isteyen kurar."
-              },
-              {
-                "persona": "Tenant admin",
-                "context": "İhtiyacı olan plugin'i kurar. \"Plugin Registry\" özelliği bu süreçte devreye girer.",
-                "outcome": "Tek tıkla aktif eder, bağımlılıklar otomatik çözülür."
-              },
-              {
-                "persona": "Çekirdek ekibi",
-                "context": "Versiyon bumpları kırılma yapmasın diye contract test yazar. \"Plugin Registry\" özelliği bu süreçte devreye girer.",
-                "outcome": "Plugin API'leri geriye uyumlu kalır."
-              }
-            ]
+            "info": "`Local Registry` (sync, trusted_publishers, verification_policy), `Health Probe` (liveness/readiness, error_rate_5m)"
           }
         }
       ]
@@ -384,7 +270,7 @@
     }
   ],
   "enrich": {
-    "info": "Framework olmanın can damarı. Plugin yazılabiliyorsa platform, yazılamıyorsa uygulama.",
+    "info": "Sistemin ana koduna dokunmadan yeni özellikler eklemenizi sağlayan eklenti listesi.",
     "detail": "Framework olmanın can damarı. Plugin yazılabiliyorsa platform, yazılamıyorsa uygulama.",
     "terms": [
       {
@@ -406,11 +292,30 @@
         "why": "Çakışma, sürüm, bağımlılık çözümü."
       }
     ],
+    "lesson": {
+      "ne": "Sistemin ana koduna dokunmadan yeni özellikler eklemenizi sağlayan eklenti listesi. Telefonun uygulama mağazasına benzer.",
+      "nicin": "Her müşterinin ihtiyacı farklı. Birine 'kargo entegrasyonu', diğerine 'e-fatura' lazım. Eklenti olmasaydı her müşteriye ayrı sistem yazardık.",
+      "nasil": "Eklenti yazarı bir 'tanıtım kartı' (manifest) hazırlar. Sistem bu kartı okur, eklentiyi listesine ekler. Kullanıcı 'kur' butonuna bastığında eklenti devreye girer.",
+      "nerede": "Yönetici panelinde 'Eklentiler' menüsü. Açıp kapatabilir, ayarlarını değiştirebilirsiniz.",
+      "ne_zaman": "Yeni bir iş ihtiyacı doğduğunda. Sistem yazarına bağımlı kalmadan, hazır eklentilerden seçersiniz.",
+      "kim": "Üçüncü taraf yazarlar yazar; sistem yöneticisi kurar; son kullanıcı yeni özelliği menüde görür.",
+      "analoji": "Mutfak robotunun aksesuarları: aynı motor, farklı uçlar. Bugün doğrayıcı taktınız, yarın blender. Robot değişmez; iş değişir."
+    },
     "stories": [
       {
-        "persona": "Yazılım mimarı",
-        "context": "Bu konunun bizim 15-ürün hedefinde yerini düşünüyor.",
-        "outcome": "Bu cluster'ı okuyup terim sözlüğü + örnekleri inceledikten sonra teknik tercih + sınırları kavrar."
+        "persona": "Çiçekçi Selma Hanım — sipariş takip eklentisi",
+        "context": "Mahalleye çiçek dağıtırken WhatsApp'tan gelen siparişleri Excel'e aktarıyor; kargo şirketinin web sitesine ayrıca giriyor. Tek tek vakit alıyor.",
+        "outcome": "Yazılım pazarından 'WhatsApp Sipariş Eklentisi' kurar; WhatsApp mesajları otomatik sipariş kartına dönüşür. Sonra 'Aras Kargo Eklentisi' kurar; tek tuşla kargo açılır. Kod yazmadan yeni yetenekler."
+      },
+      {
+        "persona": "Eczane Bilge Hanım — SGK reçete eklentisi",
+        "context": "Reçeteleri SGK sistemine ayrıca giriyor; hem eczane defterine hem SGK ekranına aynı bilgiyi iki kez yazıyor.",
+        "outcome": "'SGK Reçete Köprü' eklentisini pazaryerinden kurar. Eczanesindeki reçete kaydı SGK'ya otomatik geçer. Yazılımcı çağırma maliyeti sıfır; aylık eklenti ücreti ödeniyor."
+      },
+      {
+        "persona": "Apartman yöneticisi Zeynep Hanım — KKB borç sorgu eklentisi",
+        "context": "Yeni kiracı geliyor; sicilini sormak istiyor ama KKB'ye ayrı abone değil; ayrıca işlem ücretli ve zor.",
+        "outcome": "Yönetim yazılımına 'KKB Hızlı Sorgu' eklentisi kurar. Kiracı kartında tek butonla rapor görünür. İhtiyaç bittiğinde eklenti kapatılır; abonelik durur."
       }
     ]
   }

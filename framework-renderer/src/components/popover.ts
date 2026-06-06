@@ -126,7 +126,8 @@ function openFor(target: HTMLElement, kind: 'info' | 'detail'): void {
 
   if (kind === 'info') {
     const txt = target.dataset.infoText ?? '';
-    i.body.innerHTML = `<div class="pop__short">${txt}</div>`;
+    // Markdown — **bold**, *italic*, `code` desteklensin
+    i.body.innerHTML = `<div class="pop__short">${inlineMd(txt)}</div>`;
   } else {
     const key = target.dataset.detailKey ?? '';
     const html = detailStore.get(key) ?? '<em>detay bulunamadı</em>';
@@ -229,11 +230,23 @@ export function htmlEscape(s: string): string {
 }
 
 function renderInlineMarkup(text: string): string {
-  let out = htmlEscape(text);
-  out = out.replace(/`([^`]+)`/g, (_, code: string) => `<code>${code}</code>`);
-  out = out.replace(/\*\*([^*]+)\*\*/g, (_, b: string) => `<strong>${b}</strong>`);
+  // Block-level: inlineMd + paragraph break + line break desteği
+  let out = inlineMd(text);
   out = out.replace(/\n\n+/g, '</p><p>');
   out = out.replace(/\n/g, '<br/>');
+  return out;
+}
+
+/** Inline markdown — popover içi kısa metin alanları için. */
+function inlineMd(text: string): string {
+  let out = htmlEscape(text);
+  out = out.replace(/`([^`]+)`/g, (_, c: string) => `<code>${c}</code>`);
+  out = out.replace(/\*\*([^*]+)\*\*/g, (_, b: string) => `<strong>${b}</strong>`);
+  out = out.replace(/(^|[\s(>])\*([^*\s][^*]*?)\*(?=[\s).,;:!?<]|$)/g,
+    (_m, lead: string, em: string) => `${lead}<em>${em}</em>`);
+  out = out.replace(/~~([^~]+)~~/g, (_, s: string) => `<del>${s}</del>`);
+  out = out.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,
+    (_, t: string, u: string) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`);
   return out;
 }
 
@@ -242,14 +255,14 @@ function termsHtml(terms: Term[]): string {
   const rows = terms
     .map((t) => {
       const abbrev = t.abbrev_of
-        ? `<div class="pop__abbrev"><strong>${htmlEscape(t.term)}</strong> = ${htmlEscape(t.abbrev_of)}${
-            t.abbrev_tr ? ` <span class="pop__tr">(${htmlEscape(t.abbrev_tr)})</span>` : ''
+        ? `<div class="pop__abbrev"><strong>${inlineMd(t.term)}</strong> = ${inlineMd(t.abbrev_of)}${
+            t.abbrev_tr ? ` <span class="pop__tr">(${inlineMd(t.abbrev_tr)})</span>` : ''
           }</div>`
-        : `<div class="pop__abbrev"><strong>${htmlEscape(t.term)}</strong></div>`;
-      const why = t.why ? `<div class="pop__why"><em>Neden:</em> ${htmlEscape(t.why)}</div>` : '';
+        : `<div class="pop__abbrev"><strong>${inlineMd(t.term)}</strong></div>`;
+      const why = t.why ? `<div class="pop__why"><em>Neden:</em> ${inlineMd(t.why)}</div>` : '';
       return `<div class="pop__term">
         ${abbrev}
-        <div class="pop__meaning">${htmlEscape(t.meaning)}</div>
+        <div class="pop__meaning">${inlineMd(t.meaning)}</div>
         ${why}
       </div>`;
     })
@@ -265,9 +278,9 @@ function storiesHtml(stories: UserStory[]): string {
   const items = stories
     .map(
       (s) => `<div class="pop__story">
-        <div class="pop__persona"><i class="ph ph-user"></i> ${htmlEscape(s.persona)}</div>
-        <div class="pop__context">${htmlEscape(s.context)}</div>
-        <div class="pop__outcome"><i class="ph ph-arrow-right"></i> ${htmlEscape(s.outcome)}</div>
+        <div class="pop__persona"><i class="ph ph-user"></i> ${inlineMd(s.persona)}</div>
+        <div class="pop__context">${inlineMd(s.context)}</div>
+        <div class="pop__outcome"><i class="ph ph-arrow-right"></i> ${inlineMd(s.outcome)}</div>
       </div>`,
     )
     .join('');
