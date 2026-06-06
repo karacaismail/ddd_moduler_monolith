@@ -46,7 +46,7 @@
       { "title": "5. Deactivate", "body": "Hook'lar unsubscribe. Veri durur (silinmez). Tekrar aktive edilebilir." },
       { "title": "6. Uninstall", "body": "Plugin tamamen kaldırılır. uninstall_hook → migrate down → veri silinir/arşivlenir." }
     ] },
-    { "type": "callout", "variant": "good", "label": "Filter vs Action — pratik örnek",
+    { "type": "callout", "variant": "tip", "label": "Filter vs Action — pratik örnek",
       "body": "**Filter**: `apply_filter('order_total', $total)` → her plugin total'ı modifiye edebilir (kupon plugin %10 düşer). **Action**: `do_action('order_placed', $order)` → her plugin tepki verir (email plugin gönderir, analytics plugin loglar). İkisi de hook ama farklı semantik." },
     { "type": "callout", "variant": "critical", "label": "Plugin güvenliği",
       "body": "Plugin'i tam yetkiyle çalıştırma! Permission scope (kullanıcı izniyle): 'Bu plugin Order tablosuna OKUR' → user onaylar → o izinle çalışır. Diğer tablolara erişim 403. WordPress'in yaşadığı 'sql injection plugin' tarihi öğretici." },

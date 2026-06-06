@@ -39,7 +39,7 @@
       { "title": "Business logic", "body": "Hook'lar (before_save, validate) çalışır; iş kuralları uygulanır." },
       { "title": "Audit emit", "body": "İşlem sonunda audit log'a append: user, action, target, before/after, IP, UA." }
     ] },
-    { "type": "callout", "variant": "good", "label": "Session vs JWT — ne zaman ne?",
+    { "type": "callout", "variant": "tip", "label": "Session vs JWT — ne zaman ne?",
       "body": "**Session** = küçük/orta SaaS, anında revoke gerekli, kullanıcı bağımlı state büyük. **JWT** = mikroservis/distributed, stateless gateway, scale önemli. **Hibrit** (JWT + revoke list cache) = modern saaS'ın çoğunluğunun seçimi." },
     { "type": "callout", "variant": "tr", "label": "KVKK silme talebi",
       "body": "Kullanıcı 'beni unutun' der → sistem **soft-delete** (deleted_at = now) → 30 gün bekleme → **hard-delete** + audit log + KVKK kayıt mektubu. Her aşama audit'lenir; geriye dönüş yok." },

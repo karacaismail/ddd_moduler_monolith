@@ -50,7 +50,7 @@
     ] },
     { "type": "callout", "variant": "tip", "label": "Bizim deploy",
       "body": "**Frontend:** Mac'te `yap` → GitHub Actions → Pages. **Backend:** Hetzner sunucu, ayrı pipeline (SSH/rsync veya Docker). Detay: {{ref:deploy-yap}}." },
-    { "type": "callout", "variant": "good", "label": "Feature flag = risk yönetimi",
+    { "type": "callout", "variant": "tip", "label": "Feature flag = risk yönetimi",
       "body": "Yeni ödeme flow'unu deploy et ama flag KAPALI. Dark launch (kod çalışıyor, kullanıcı görmüyor) → metric izle → %1 canary → %10 → %50 → %100. Hata varsa flag KAPAT, deploy/rollback gerek YOK." },
     { "type": "callout", "variant": "critical", "label": "Blameless post-mortem",
       "body": "Hata yapan KIŞIYI sorgulamak yerine SİSTEMI sorgula. 'Niye Ali production'a yanlış config push etti?' yerine 'Niye sistem yanlış config'i kabul etti? Validation neden yoktu?'. Suçlama kültürü → hata gizlenir → tekrar olur. **Öğrenme kültürü → hata raporlanır → düzeltilir.**" },

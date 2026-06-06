@@ -290,7 +290,7 @@ small, .small, code, kbd, .meta, .caption {
     gap: 0.45rem;
     color: var(--ink-2);
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 0.9375rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     border-radius: var(--radius);
@@ -363,7 +363,7 @@ small, .small, code, kbd, .meta, .caption {
 
   // Group counter — kaç cluster
   &__group-count {
-    font-size: 1rem;
+    font-size: 0.8125rem;
     color: var(--ink-4);
     font-weight: 400;
     margin-left: 0.3rem;
@@ -403,7 +403,7 @@ small, .small, code, kbd, .meta, .caption {
 
   &__hint {
     font-family: 'Roboto Mono', monospace;
-    font-size: 1rem;
+    font-size: 0.8125rem;
     background: var(--bg-softer);
     color: var(--ink-3);
     padding: 0.1rem 0.45rem;
@@ -443,8 +443,8 @@ small, .small, code, kbd, .meta, .caption {
   &:hover { background: var(--bg-soft); }
 
   &__title { font-weight: 500; color: var(--ink); font-size: 1rem; }
-  &__snippet { font-size: 1rem; color: var(--ink-3); margin-top: 0.2rem; line-height: 1.5; }
-  &__meta { font-size: 1rem; color: var(--ink-4); margin-top: 0.25rem; font-family: 'Roboto Mono', monospace; }
+  &__snippet { font-size: 0.9375rem; color: var(--ink-3); margin-top: 0.2rem; line-height: 1.5; }
+  &__meta { font-size: 0.8125rem; color: var(--ink-4); margin-top: 0.25rem; font-family: 'Roboto Mono', monospace; }
 
   mark { background: linear-gradient(180deg, transparent 60%, var(--l1-soft) 60%); color: inherit; padding: 0 1px; }
 }
@@ -468,7 +468,7 @@ small, .small, code, kbd, .meta, .caption {
 
   &__badge {
     display: inline-block;
-    font-size: 1rem;
+    font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     font-weight: 500;
@@ -510,7 +510,7 @@ small, .small, code, kbd, .meta, .caption {
 
 .tag {
   display: inline-block;
-  font-size: 1rem;
+  font-size: 0.875rem;
   padding: 0.15rem 0.6rem;
   background: var(--bg-softer);
   color: var(--ink-3);
@@ -535,7 +535,7 @@ small, .small, code, kbd, .meta, .caption {
   &--l2 { font-size: 1.5rem; font-weight: 400; margin: 2.5rem 0 1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem; }
   &--l3 { font-size: 1.25rem; font-weight: 500; margin: 2rem 0 0.85rem; }
   &--l4 { font-size: 1.125rem; font-weight: 500; margin: 1.5rem 0 0.65rem; color: var(--ink-2); }
-  &--l5 { font-size: 1rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); margin: 1.25rem 0 0.5rem; }
+  &--l5 { font-size: 0.9375rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); margin: 1.25rem 0 0.5rem; }
 
   i { color: var(--l1); font-size: 1.25em; }
 
@@ -567,7 +567,7 @@ small, .small, code, kbd, .meta, .caption {
     cursor: pointer;
     user-select: none;
     list-style: none;
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--ink-2);
 
     &::-webkit-details-marker { display: none; }
@@ -581,13 +581,13 @@ small, .small, code, kbd, .meta, .caption {
     align-items: center;
     transition: transform 160ms ease;
     color: var(--ink-3);
-    i { font-size: 1rem; }
+    i { font-size: 0.95rem; }
   }
   &[open] &__chevron { transform: rotate(90deg); color: var(--ink-2); }
 
   &__title {
     font-family: 'Roboto Mono', monospace;
-    font-size: 1rem;
+    font-size: 0.92rem;
     color: var(--ink);
     flex: 1;
   }
@@ -595,7 +595,7 @@ small, .small, code, kbd, .meta, .caption {
   &__meta {
     display: inline-flex;
     gap: 0.4rem;
-    font-size: 1rem;
+    font-size: 0.78rem;
     color: var(--ink-3);
   }
   &__lang {
@@ -624,7 +624,7 @@ small, .small, code, kbd, .meta, .caption {
     background: var(--code-bg);
     padding: 1rem 1.25rem;
     overflow-x: auto;
-    font-size: 1rem;
+    font-size: 0.9375rem;
     line-height: 1.6;
     margin: 0;
     border: 0;
@@ -658,7 +658,7 @@ p code, li code, td code, dd code {
   background: var(--code-bg);
   padding: 0.12rem 0.4rem;
   border-radius: 3px;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 400;
 }
 
@@ -675,7 +675,7 @@ p code, li code, td code, dd code {
   &__label {
     font-weight: 500;
     text-transform: uppercase;
-    font-size: 1rem;
+    font-size: 0.875rem;
     letter-spacing: 0.12em;
     margin-bottom: 0.5rem;
     display: flex; align-items: center; gap: 0.45rem;
@@ -719,7 +719,7 @@ p code, li code, td code, dd code {
 }
 .feature-list__tag {
   display: inline-block;
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -730,7 +730,7 @@ p code, li code, td code, dd code {
   color: #fff;
 }
 .feature-list__name { font-weight: 500; color: var(--ink); display: inline-flex; align-items: center; gap: 0.4rem; i { color: var(--l1); } }
-.feature-list__desc { display: block; color: var(--ink-3); font-size: 1rem; margin-top: 0.2rem; line-height: 1.55; }
+.feature-list__desc { display: block; color: var(--ink-3); font-size: 0.9375rem; margin-top: 0.2rem; line-height: 1.55; }
 
 // ------ Block: table ------
 .block-table__wrap { overflow-x: auto; margin: 1.25rem 0 1.75rem; }
@@ -741,10 +741,10 @@ p code, li code, td code, dd code {
 
   caption { caption-side: top; text-align: left; font-style: italic; color: var(--ink-3); margin-bottom: 0.4rem; }
   th, td { text-align: left; padding: 0.75rem 0.95rem; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
-  th { font-weight: 500; background: var(--bg-soft); text-transform: uppercase; letter-spacing: 0.08em; font-size: 1rem; color: var(--ink-3); }
+  th { font-weight: 500; background: var(--bg-soft); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.875rem; color: var(--ink-3); }
   td:first-child { font-weight: 500; color: var(--ink); }
 
-  &--compact th, &--compact td { padding: 0.55rem 0.7rem; font-size: 1rem; }
+  &--compact th, &--compact td { padding: 0.55rem 0.7rem; font-size: 0.9375rem; }
 }
 
 // ------ Block: grid ------
@@ -799,9 +799,9 @@ p code, li code, td code, dd code {
   background: var(--bg);
   padding: 1.1rem 0.95rem;
 
-  &__tag { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500; margin-bottom: 0.5rem; color: var(--ink-4); }
+  &__tag { font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500; margin-bottom: 0.5rem; color: var(--ink-4); }
   &__name { font-weight: 500; font-size: 1.0625rem; margin-bottom: 0.4rem; color: var(--ink); }
-  &__desc { font-size: 1rem; color: var(--ink-3); line-height: 1.55; }
+  &__desc { font-size: 0.9375rem; color: var(--ink-3); line-height: 1.55; }
 
   &--kernel  { border-top: 3px solid var(--kernel); .layer-card__tag { color: var(--kernel); } }
   &--scale   { border-top: 3px solid var(--scale);  .layer-card__tag { color: var(--scale); } }
@@ -851,7 +851,7 @@ p code, li code, td code, dd code {
 .block-tree {
   margin: 1rem 0 1.5rem;
 
-  &__title { font-family: 'Roboto Mono', monospace; font-size: 1rem; color: var(--ink-3); margin-bottom: 0.4rem; }
+  &__title { font-family: 'Roboto Mono', monospace; font-size: 0.875rem; color: var(--ink-3); margin-bottom: 0.4rem; }
   &__pre {
     font-family: 'Roboto Mono', monospace;
     background: var(--code-bg);
@@ -859,7 +859,7 @@ p code, li code, td code, dd code {
     border-radius: var(--radius);
     padding: 1.1rem 1.35rem;
     overflow-x: auto;
-    font-size: 1rem;
+    font-size: 0.9375rem;
     line-height: 1.65;
     margin: 0;
     color: var(--ink);
@@ -891,7 +891,7 @@ p code, li code, td code, dd code {
   &:hover { background: var(--bg); color: var(--l1); border-color: var(--l1); }
 
   &__title { font-weight: 500; flex: 1; }
-  &__group { font-size: 1rem; color: var(--ink-4); font-family: 'Roboto Mono', monospace; }
+  &__group { font-size: 0.8125rem; color: var(--ink-4); font-family: 'Roboto Mono', monospace; }
   &__arrow { color: var(--ink-4); }
 
   &--missing { opacity: 0.5; }
@@ -933,7 +933,7 @@ p code, li code, td code, dd code {
   padding: 1rem 1.25rem;
   color: var(--kernel);
   font-family: 'Roboto Mono', monospace;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   margin: 0.5rem 0;
 }
 
@@ -1049,7 +1049,7 @@ p code, li code, td code, dd code {
 // Tablolarda iç satır yüksekliğini bozmaması için biraz küçült
 td .enrich-btn, .feature-list__head .enrich-btn {
   width: 1.5rem; height: 1.5rem; min-width: 1.5rem;
-  i { font-size: 1rem; }
+  i { font-size: 0.9rem; }
 }
 
 .pop {
@@ -1061,7 +1061,7 @@ td .enrich-btn, .feature-list__head .enrich-btn {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   box-shadow: 0 10px 30px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.55;
   color: var(--ink);
 
@@ -1118,7 +1118,7 @@ td .enrich-btn, .feature-list__head .enrich-btn {
 
     h6 {
       margin: 0 0 0.45rem;
-      font-size: 1rem;
+      font-size: 0.78rem;
       font-weight: 500;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -1139,8 +1139,8 @@ td .enrich-btn, .feature-list__head .enrich-btn {
   }
   &__abbrev { color: var(--ink); }
   &__tr { color: var(--ink-3); font-style: italic; }
-  &__meaning { color: var(--ink-2); margin-top: 0.2rem; font-size: 1rem; }
-  &__why { color: var(--ink-3); font-size: 1rem; margin-top: 0.2rem; em { color: var(--enrich-detail); font-style: normal; font-weight: 500; } }
+  &__meaning { color: var(--ink-2); margin-top: 0.2rem; font-size: 0.92rem; }
+  &__why { color: var(--ink-3); font-size: 0.88rem; margin-top: 0.2rem; em { color: var(--enrich-detail); font-style: normal; font-weight: 500; } }
 
   &__story {
     padding: 0.5rem 0.6rem;
@@ -1153,14 +1153,14 @@ td .enrich-btn, .feature-list__head .enrich-btn {
   &__persona {
     font-weight: 500;
     color: var(--enrich-detail);
-    font-size: 1rem;
+    font-size: 0.88rem;
     display: flex; align-items: center; gap: 0.3rem;
     margin-bottom: 0.25rem;
     i { color: var(--enrich-detail); }
   }
-  &__context { color: var(--ink-2); font-size: 1rem; }
+  &__context { color: var(--ink-2); font-size: 0.92rem; }
   &__outcome {
-    color: var(--ink); font-size: 1rem; margin-top: 0.2rem;
+    color: var(--ink); font-size: 0.92rem; margin-top: 0.2rem;
     display: flex; gap: 0.3rem; align-items: flex-start;
     i { color: var(--state-ok); margin-top: 4px; }
   }
@@ -1172,7 +1172,7 @@ td .enrich-btn, .feature-list__head .enrich-btn {
 .state-chip {
   display: inline-flex;
   align-items: center;
-  font-size: 1rem;
+  font-size: 0.78rem;
   font-weight: 500;
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
@@ -1204,7 +1204,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 1rem;
+  font-size: 0.78rem;
   font-weight: 400;
   padding: 0.1rem 0.55rem;
   border-radius: 999px;
@@ -1212,11 +1212,11 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
   color: var(--ink-2);
   border: 1px solid var(--line);
 
-  i { font-size: 1rem; }
+  i { font-size: 0.85rem; }
   &__sp {
     margin-left: 0.3rem; padding-left: 0.4rem;
     border-left: 1px solid var(--line);
-    color: var(--ink-3); font-size: 1rem;
+    color: var(--ink-3); font-size: 0.72rem;
   }
   &--kaya        { color: var(--gran-kaya);        border-color: var(--gran-kaya); }
   &--buyuk-tas   { color: var(--gran-buyuk-tas);   border-color: var(--gran-buyuk-tas); }
@@ -1254,13 +1254,13 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     input {
       border: 0; outline: 0; background: transparent;
       font: inherit; color: var(--ink); flex: 1;
-      font-size: 1rem;
+      font-size: 0.92rem;
     }
   }
 }
 
 .chip--xs {
-  font-size: 1rem;
+  font-size: 0.78rem;
   padding: 0.15rem 0.55rem;
   border-radius: 999px;
   border: 1px solid var(--line);
@@ -1318,7 +1318,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
   &__intro {
     margin: 0 0 0.9rem;
     color: var(--ink-2);
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 }
 
@@ -1349,13 +1349,13 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
   &__label { font-weight: 500; color: var(--ink); }
   &__sp {
     margin-left: auto;
-    font-size: 1rem; color: var(--ink-3);
+    font-size: 0.78rem; color: var(--ink-3);
     padding: 0.05rem 0.4rem;
     background: var(--bg-soft);
     border-radius: 999px;
   }
   &__desc {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: var(--ink-2);
     line-height: 1.5;
   }
@@ -1387,7 +1387,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     display: flex; align-items: center; gap: 0.3rem;
   }
   &__context, &__outcome {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--ink-2);
     margin-bottom: 0.25rem;
     line-height: 1.55;
@@ -1395,7 +1395,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
   &__outcome { color: var(--ink); }
   &__tag {
     display: inline-block;
-    font-size: 1rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     padding: 0.05rem 0.4rem;
@@ -1433,13 +1433,13 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     dd {
       margin: 0;
       color: var(--ink-2);
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
   }
 }
 .term__abbrev { color: var(--ink-3); font-weight: 400; }
 .term__tr { color: var(--ink-4); font-style: italic; }
-.term__why { color: var(--ink-3); font-size: 1rem; margin-top: 0.15rem; em { color: var(--enrich-detail); font-style: normal; font-weight: 500; } }
+.term__why { color: var(--ink-3); font-size: 0.88rem; margin-top: 0.15rem; em { color: var(--enrich-detail); font-style: normal; font-weight: 500; } }
 
 // ============================================================================
 // Sidebar — granularity legend mini
@@ -1448,13 +1448,13 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
   margin-top: auto;
   padding-top: 1rem;
   border-top: 1px dashed var(--line);
-  font-size: 1rem;
+  font-size: 0.8rem;
   color: var(--ink-3);
 
   &__title {
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    font-size: 1rem;
+    font-size: 0.72rem;
     color: var(--ink-3);
     margin-bottom: 0.4rem;
   }
@@ -1490,14 +1490,14 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     margin-bottom: 0.35rem;
   }
   &__unit {
-    font-size: 1rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.15em;
     color: var(--edu);
     font-weight: 500;
   }
   &__level {
-    font-size: 1rem;
+    font-size: 0.72rem;
     padding: 0.1rem 0.5rem;
     border-radius: 999px;
     font-weight: 500;
@@ -1506,7 +1506,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     &--ileri { background: var(--state-critical-bg); color: var(--state-critical); }
   }
   &__time {
-    font-size: 1rem;
+    font-size: 0.78rem;
     color: var(--ink-3);
     display: inline-flex; align-items: center; gap: 0.25rem;
   }
@@ -1518,7 +1518,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     letter-spacing: -0.01em;
   }
   &__prereq {
-    font-size: 1rem;
+    font-size: 0.92rem;
     color: var(--ink-2);
     margin: 0.4rem 0;
     strong { color: var(--ink); font-weight: 500; margin-right: 0.3rem; }
@@ -1532,12 +1532,12 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
       font-weight: 500;
       color: var(--edu);
       margin-bottom: 0.3rem;
-      font-size: 1rem;
+      font-size: 0.92rem;
       i { margin-right: 0.25rem; }
     }
     ul {
       margin: 0; padding-left: 1.25rem;
-      li { color: var(--ink-2); font-size: 1rem; line-height: 1.55; }
+      li { color: var(--ink-2); font-size: 0.95rem; line-height: 1.55; }
     }
   }
 }
@@ -1569,7 +1569,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     width: 2rem; height: 2rem;
     display: flex; align-items: center; justify-content: center;
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
   &__title {
     font-weight: 500;
@@ -1581,7 +1581,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
   &__body {
     color: var(--ink-2);
     line-height: 1.6;
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 }
 
@@ -1602,7 +1602,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
   }
   &__progress {
     margin-left: auto;
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: var(--ink-3);
     padding: 0.1rem 0.6rem;
     background: var(--bg);
@@ -1646,7 +1646,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
   }
   &--optional .checklist__label .checklist__opt {
     color: var(--ink-4);
-    font-size: 1rem;
+    font-size: 0.78rem;
   }
 }
 .checklist__label {
@@ -1656,7 +1656,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
 }
 .checklist__hint {
   grid-column: 2;
-  font-size: 1rem;
+  font-size: 0.88rem;
   color: var(--ink-3);
   margin-top: 0.15rem;
 }
@@ -1667,7 +1667,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
 .detail-panel {
   &__inner {
     position: relative;
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   &__placeholder {
@@ -1730,7 +1730,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
   &__context {
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    font-size: 1rem;
+    font-size: 0.72rem;
     color: var(--enrich-detail);
     font-weight: 500;
     margin-bottom: 0.4rem;
@@ -1746,7 +1746,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
   &__summary {
     color: var(--ink-2);
     margin: 0;
-    font-size: 1rem;
+    font-size: 0.98rem;
     line-height: 1.55;
   }
 
@@ -1756,7 +1756,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
 
     h4 {
       margin: 0 0 0.65rem;
-      font-size: 1rem;
+      font-size: 0.78rem;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: var(--enrich-detail);
@@ -1795,11 +1795,11 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     &-head { margin-bottom: 0.25rem; }
     &-abbrev { color: var(--ink-3); margin-left: 0.3rem; }
     &-tr { color: var(--ink-4); font-style: italic; margin-left: 0.25rem; font-size: 0.92em; }
-    &-meaning { color: var(--ink-2); font-size: 1rem; line-height: 1.55; }
+    &-meaning { color: var(--ink-2); font-size: 0.93rem; line-height: 1.55; }
     &-why {
       margin-top: 0.35rem;
       color: var(--ink-3);
-      font-size: 1rem;
+      font-size: 0.88rem;
       line-height: 1.5;
       span { color: var(--enrich-detail); font-weight: 500; }
     }
@@ -1821,7 +1821,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
       gap: 0.35rem;
     }
     &-context, &-outcome {
-      font-size: 1rem;
+      font-size: 0.93rem;
       line-height: 1.6;
       margin-bottom: 0.3rem;
       color: var(--ink-2);
@@ -1829,7 +1829,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     &-outcome { color: var(--ink); margin-bottom: 0; }
     &-tag {
       display: inline-block;
-      font-size: 1rem;
+      font-size: 0.68rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       padding: 0.08rem 0.45rem;
@@ -1848,7 +1848,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     text-align: center;
     padding: 1rem 0.5rem;
     color: var(--ink-3);
-    font-size: 1rem;
+    font-size: 0.9rem;
     border-top: 1px dashed var(--line);
 
     i {
@@ -1867,7 +1867,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
       border-radius: 4px;
       font-size: 0.85em;
     }
-    &-hint { color: var(--ink-4); font-size: 1rem; }
+    &-hint { color: var(--ink-4); font-size: 0.82rem; }
   }
 
   // 5N1K — MASTER vertical stack (label üstte, value altta) — her ekranda
@@ -1894,7 +1894,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-bottom: var(--space-2);
-    i { font-size: 1rem; }
+    i { font-size: 0.95rem; }
   }
   &__5n1k-val {
     display: block;
@@ -1911,7 +1911,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     &--fe { background: color-mix(in srgb, var(--state-wip) 5%, var(--bg)); border-color: color-mix(in srgb, var(--state-wip) 22%, transparent); }
     &--be { background: color-mix(in srgb, var(--atomic) 5%, var(--bg)); border-color: color-mix(in srgb, var(--atomic) 22%, transparent); }
   }
-  &__side-row { line-height: 1.55; margin-bottom: 0.4rem; font-size: 1rem; color: var(--ink-2);
+  &__side-row { line-height: 1.55; margin-bottom: 0.4rem; font-size: 0.92rem; color: var(--ink-2);
     &:last-child { margin-bottom: 0; }
   }
   &__side-label { font-weight: 500; color: var(--ink); margin-right: 0.35rem; }
@@ -1927,7 +1927,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     border-radius: var(--radius);
     color: var(--ink-2);
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 0.92rem;
     transition: all 120ms ease;
     i { color: var(--enrich-detail); }
     &:hover {
@@ -1964,7 +1964,7 @@ tr.tr--state-wip      td:first-child { box-shadow: inset 3px 0 0 var(--state-wip
     color: var(--ink-4);
     opacity: 0;
     transition: opacity 120ms ease, transform 120ms ease;
-    font-size: 1rem;
+    font-size: 0.85rem;
   }
   &:hover::after, &.is-detail-active::after {
     opacity: 1;
@@ -2395,7 +2395,7 @@ tr.is-clickable {
   }
   &__body {
     line-height: 1.75 !important;
-    font-size: 1rem;
+    font-size: 0.96rem;
     color: var(--ink-2);
   }
 
@@ -2552,7 +2552,7 @@ tr.is-clickable {
   li.is-clickable {
     // Etiket (em-dash öncesi) + açıklama (sonrası)
     line-height: 1.65;
-    font-size: 1rem;
+    font-size: 0.97rem;
 
     // Etiket vurgusu için <strong> kullanıyorsa zaten kalın. Em-dash sonrası ink-2.
     strong, b { color: var(--ink); font-weight: 500; }
@@ -2585,7 +2585,7 @@ tr.is-clickable {
   letter-spacing: 0.08em;
   color: var(--enrich-detail);
   font-weight: 500;
-  i { font-size: 1rem; opacity: 0.85; }
+  i { font-size: 0.95rem; opacity: 0.85; }
 }
 .dp__5n1k-val {
   font-size: var(--fs-sm) !important;
@@ -2604,7 +2604,7 @@ tr.is-clickable {
   margin-bottom: var(--space-4) !important;
 }
 .dp__section { margin-bottom: var(--space-6) !important; }
-.dp__detail p { font-size: 1rem !important; }
+.dp__detail p { font-size: 0.95rem !important; }
 
 .dp__side {
   padding: var(--space-3) var(--space-4) !important;
@@ -3069,12 +3069,12 @@ tr.is-clickable {
   @media (max-width: 419px) {
     padding: var(--space-2) var(--space-3) !important;
     font-size: var(--fs-xs);
-    .block-code__lang, .block-code__lines { padding: 0.1rem 0.4rem !important; font-size: 1rem; }
+    .block-code__lang, .block-code__lines { padding: 0.1rem 0.4rem !important; font-size: 0.7rem; }
   }
 }
 .block-code pre {
   @media (max-width: 719px) {
-    font-size: 1rem !important;
+    font-size: 0.78rem !important;
     line-height: 1.5 !important;
     padding: var(--space-3) var(--space-3) !important;
   }
@@ -3122,7 +3122,7 @@ tr.is-clickable {
     color: var(--bg);
     border-radius: 999px;
     padding: 0.05rem 0.45rem;
-    font-size: 1rem;
+    font-size: 0.7rem;
     font-weight: 600;
     min-width: 1.25rem;
     text-align: center;
@@ -3151,7 +3151,7 @@ tr.is-clickable {
     gap: var(--space-1);
     align-self: flex-start;
     transition: color 140ms;
-    i { font-size: 1rem; }
+    i { font-size: 0.9rem; }
     &:hover { color: var(--state-critical); border-color: var(--state-critical); }
   }
 }
@@ -3234,7 +3234,7 @@ tr.is-clickable {
     min-width: 2.25rem !important;
     height: 2rem !important;
     padding: 0 var(--space-2) !important;
-    font-size: 1rem !important;
+    font-size: 0.65rem !important;
     &::after { content: ""; }
   }
   // Detail panel mobile drawer
@@ -3244,7 +3244,7 @@ tr.is-clickable {
     padding: 0 0 var(--space-3) !important;
     margin-bottom: var(--space-3) !important;
     &__title { font-size: 1.25rem !important; }
-    &__lede { font-size: 1rem !important; }
+    &__lede { font-size: 0.9rem !important; }
   }
 }
 
@@ -3333,7 +3333,7 @@ tr.is-clickable {
     padding: 0.1rem 0.4rem;
     border-radius: var(--radius-sm);
     font-family: 'Roboto Mono', monospace;
-    font-size: 1rem;
+    font-size: 0.75rem;
   }
 }
 :root[data-theme="dark"] .appfooter kbd {
@@ -3518,7 +3518,7 @@ body.pop-open {
     }
   }
   &__meta {
-    font-size: 1rem;
+    font-size: 0.7rem;
     color: var(--ink-4);
     margin-top: 0.2rem;
     font-family: 'Roboto Mono', monospace;
@@ -4134,7 +4134,7 @@ input, select, textarea { max-width: 100%; }
   flex-shrink: 0;
 }
 @media (max-width: 419px) {
-  .chip { padding: var(--space-1) var(--space-2) !important; font-size: 1rem !important; }
+  .chip { padding: var(--space-1) var(--space-2) !important; font-size: 0.72rem !important; }
 }
 
 // Sidebar artık brand+search içermiyor; brand'i appbar tutuyor
@@ -4731,7 +4731,7 @@ input, select, textarea { max-width: 100%; }
   &__desc {
     color: var(--ink-2);
     margin-top: 0.2rem;
-    font-size: 1rem;
+    font-size: 0.94rem;
     line-height: 1.55;
   }
   &__name {
