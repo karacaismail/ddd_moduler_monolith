@@ -2976,8 +2976,12 @@ tr.is-clickable {
 // ============================================================================
 // APPBAR — mobile-first (320px+)
 // ============================================================================
-// MOBILE: yatay scroll yok
-html, body { max-width: 100vw; overflow-x: hidden; }
+// MOBILE: yatay scroll yok — overflow-x: clip kullan, hidden DEĞİL
+// (hidden body'yi scroll container yapar ve sticky'yi kırar.)
+html, body {
+  max-width: 100vw;
+  overflow-x: clip; // hidden YASAK: sticky'yi kırar
+}
 body { min-width: 0; }
 * { min-width: 0; box-sizing: border-box; }
 
