@@ -33,15 +33,33 @@ export function mountSearchBox(target: HTMLElement, index: SearchIndex): void {
     }, 120);
   });
 
+  // Klavye navigasyon: ↑/↓/Enter/Esc
+  let activeIdx = -1;
+  const updateActive = (): void => {
+    const items = results.querySelectorAll<HTMLAnchorElement>('a.search-result');
+    items.forEach((el, i) => el.classList.toggle('is-active', i === activeIdx));
+    const active = activeIdx >= 0 ? items[activeIdx] : undefined;
+    if (active) active.scrollIntoView({ block: 'nearest' });
+  };
   input.addEventListener('keydown', (e) => {
+    const items = results.querySelectorAll<HTMLAnchorElement>('a.search-result');
     if (e.key === 'Escape') {
       input.value = '';
       results.hidden = true;
+      activeIdx = -1;
       input.blur();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIdx = Math.min(activeIdx + 1, items.length - 1);
+      updateActive();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIdx = Math.max(activeIdx - 1, -1);
+      updateActive();
     } else if (e.key === 'Enter') {
-      const first = results.querySelector<HTMLAnchorElement>('a.search-result');
-      if (first) {
-        first.click();
+      const pick = activeIdx >= 0 ? items[activeIdx] : items[0];
+      if (pick) {
+        pick.click();
         results.hidden = true;
       }
     }
@@ -65,12 +83,19 @@ export function mountSearchBox(target: HTMLElement, index: SearchIndex): void {
 
 function renderResults(container: HTMLDivElement, hits: SearchHit[], query: string): void {
   if (hits.length === 0) {
-    container.innerHTML = '<div class="search-box__empty">Sonuç yok.</div>';
+    container.innerHTML = `
+      <div class="search-box__empty">
+        <i class="ph-duotone ph-magnifying-glass-minus"></i>
+        <p><strong>"${escapeHtml(query)}"</strong> için sonuç yok.</p>
+        <p class="search-box__empty-hint">İpucu: outbox, doctype, polyglot, kvkk, tenancy gibi kelimeler dene.</p>
+      </div>`;
     container.hidden = false;
     return;
   }
   container.hidden = false;
-  container.innerHTML = '';
+  container.innerHTML = `
+    <div class="search-box__count" aria-live="polite">${hits.length} sonuç bulundu</div>
+  `;
   for (const hit of hits) {
     const a = document.createElement('a');
     a.className = 'search-result';
@@ -81,10 +106,19 @@ function renderResults(container: HTMLDivElement, hits: SearchHit[], query: stri
     a.innerHTML = `
       <div class="search-result__title">${highlight(hit.title, query)}</div>
       <div class="search-result__snippet">${highlight(hit.snippet, query)}</div>
-      <div class="search-result__meta">${hit.clusterId} · score ${hit.score}</div>
+      <div class="search-result__meta">${hit.clusterId}</div>
     `;
     container.appendChild(a);
   }
+  // a11y-live region için anons
+  const live = document.getElementById('a11y-live');
+  if (live) live.textContent = `${hits.length} sonuç`;
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,
+  );
 }
 
 function highlight(text: string, query: string): string {

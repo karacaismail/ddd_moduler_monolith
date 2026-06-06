@@ -1,6 +1,7 @@
 import type { BlockRenderer } from '@/engine/registry';
 import { escapeHtml } from '@/engine/refs';
 import { makeDetailKeyFromText } from '@/components/detail-panel';
+import { toast } from '@/components/toast';
 
 type CodeBlock = { type: 'code'; lang: string; content: string; title?: string };
 
@@ -18,6 +19,8 @@ export const codeRenderer: BlockRenderer<CodeBlock> = (block, ctx) => {
 
   const summary = document.createElement('summary');
   summary.className = 'block-code__summary';
+  // Cluster header click handler (detail panel) ile çakışmasın
+  summary.addEventListener('click', (e) => e.stopPropagation());
   summary.innerHTML = `
     <span class="block-code__chevron" aria-hidden="true">
       <i class="ph ph-caret-right"></i>
@@ -49,10 +52,14 @@ export const codeRenderer: BlockRenderer<CodeBlock> = (block, ctx) => {
   copyBtn.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    navigator.clipboard.writeText(block.content).then(() => {
-      copyBtn.innerHTML = '<i class="ph ph-check"></i>';
-      setTimeout(() => (copyBtn.innerHTML = '<i class="ph ph-copy"></i>'), 1500);
-    });
+    navigator.clipboard.writeText(block.content).then(
+      () => {
+        copyBtn.innerHTML = '<i class="ph ph-check"></i>';
+        toast('Kod kopyalandı', 'success');
+        setTimeout(() => (copyBtn.innerHTML = '<i class="ph ph-copy"></i>'), 1500);
+      },
+      () => toast('Kopyalama başarısız', 'error'),
+    );
   });
   body.appendChild(copyBtn);
 

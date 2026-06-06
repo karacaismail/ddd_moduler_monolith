@@ -236,7 +236,8 @@ async function boot(): Promise<void> {
   const filterBarEl = document.getElementById('filter-bar');
   const initialRoute = parseRoute();
   const applyFilter = (filter: { layer?: string; cluster?: string }): void => {
-    if (filter.layer || filter.cluster) {
+    const isFiltered = !!(filter.layer || filter.cluster);
+    if (isFiltered) {
       renderer.renderFiltered(contentEl, filter);
     } else {
       renderer.renderAll(contentEl);
@@ -248,6 +249,14 @@ async function boot(): Promise<void> {
     // Re-setup scroll spy after re-render
     const tocEl = document.getElementById('toc');
     if (tocEl) setupScrollSpy(tocEl);
+    // FILTER APPLIED → ilgili cluster'ları auto-expand (kullanıcı içerik görsün)
+    if (isFiltered) {
+      contentEl.querySelectorAll<HTMLElement>('.cluster').forEach((el) => {
+        lazyRender(el as LazyCluster);
+        el.classList.remove('cluster--collapsed');
+        el.querySelector('.cluster__header')?.setAttribute('aria-expanded', 'true');
+      });
+    }
   };
   if (filterBarEl) {
     mountFilterBar(filterBarEl, manifest, applyFilter, {
@@ -274,15 +283,22 @@ async function boot(): Promise<void> {
     }, 50);
   }
 
-  // Cluster accordion toggle + hash hedefini otomatik aç
+  // Cluster accordion toggle + hash hedefini otomatik aç + LAZY RENDER
+  type LazyCluster = HTMLElement & { __renderBody?: () => void };
+  const lazyRender = (el: LazyCluster): void => {
+    if (typeof el.__renderBody === 'function') el.__renderBody();
+  };
   const expandCluster = (id: string) => {
-    const el = document.getElementById(id);
+    const el = document.getElementById(id) as LazyCluster | null;
     if (!el || !el.classList.contains('cluster')) return;
+    lazyRender(el);
     el.classList.remove('cluster--collapsed');
     const h = el.querySelector('.cluster__header');
     h?.setAttribute('aria-expanded', 'true');
   };
   const toggleCluster = (el: HTMLElement) => {
+    const wasCollapsed = el.classList.contains('cluster--collapsed');
+    if (wasCollapsed) lazyRender(el as LazyCluster);
     el.classList.toggle('cluster--collapsed');
     const collapsed = el.classList.contains('cluster--collapsed');
     el.querySelector('.cluster__header')?.setAttribute('aria-expanded', String(!collapsed));
@@ -311,6 +327,7 @@ async function boot(): Promise<void> {
       const sec = header.closest<HTMLElement>('.cluster');
       if (sec && sec.classList.contains('cluster--collapsed')) {
         // SADECE expand — detail panel açmaya devam etsin (event continue)
+        lazyRender(sec as LazyCluster);
         sec.classList.remove('cluster--collapsed');
         header.setAttribute('aria-expanded', 'true');
         // event.preventDefault YOK → detail panel handler tetiklenir

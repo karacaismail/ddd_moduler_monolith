@@ -160,21 +160,44 @@ export const tableRenderer: BlockRenderer<TableBlock> = (block, ctx) => {
     queueMicrotask(() => {
       const chips = filterBar!.querySelectorAll<HTMLButtonElement>('.chip');
       const input = filterBar!.querySelector<HTMLInputElement>('input')!;
-      let activeState = 'all';
+      // Çoklu state filter — Set
+      const activeStates = new Set<string>(['all']);
       let query = '';
       const apply = (): void => {
+        let visibleCount = 0;
         tbody.querySelectorAll<HTMLTableRowElement>('tr').forEach((tr) => {
-          const matchState = activeState === 'all' || tr.dataset.state === activeState;
+          const matchState =
+            activeStates.has('all') ||
+            (tr.dataset.state ? activeStates.has(tr.dataset.state) : false);
           const matchQ =
             !query || (tr.textContent ?? '').toLowerCase().includes(query.toLowerCase());
-          tr.style.display = matchState && matchQ ? '' : 'none';
+          const show = matchState && matchQ;
+          tr.style.display = show ? '' : 'none';
+          if (show) visibleCount++;
         });
+        // a11y-live region'a anons
+        const live = document.getElementById('a11y-live');
+        if (live) live.textContent = `${visibleCount} satır görünür`;
       };
       chips.forEach((c) =>
         c.addEventListener('click', () => {
-          chips.forEach((x) => x.classList.remove('chip--active'));
-          c.classList.add('chip--active');
-          activeState = c.dataset.state ?? 'all';
+          const state = c.dataset.state ?? 'all';
+          if (state === 'all') {
+            // "Tümü" → tek başına
+            activeStates.clear();
+            activeStates.add('all');
+          } else {
+            // "all"'u kaldır, bu state'i toggle et
+            activeStates.delete('all');
+            if (activeStates.has(state)) activeStates.delete(state);
+            else activeStates.add(state);
+            // Hiçbiri kalmadıysa "all"a dön
+            if (activeStates.size === 0) activeStates.add('all');
+          }
+          chips.forEach((x) => {
+            const s = x.dataset.state ?? 'all';
+            x.classList.toggle('chip--active', activeStates.has(s));
+          });
           apply();
         }),
       );

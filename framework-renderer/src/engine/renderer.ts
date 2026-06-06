@@ -60,31 +60,43 @@ export class Renderer {
       renderBlock: (block) => this.registry.render(block, ctx),
     };
 
-    // Body — accordion içeriği
+    // Body — accordion içeriği (LAZY: ilk expand'te oluştur)
     const body = document.createElement('div');
     body.className = 'cluster__body';
     body.id = `${cluster.id}__body`;
-    // Null guard: block veya block.type yoksa skip + warn
-    const blocks = Array.isArray(cluster.blocks) ? cluster.blocks : [];
-    for (const block of blocks) {
-      if (!block || typeof block !== 'object' || !('type' in block)) {
-        console.warn(`[renderer] cluster=${cluster.id}: invalid block`, block);
-        continue;
-      }
-      try {
-        body.appendChild(this.registry.render(block, ctx));
-      } catch (err) {
-        console.error(`[renderer] cluster=${cluster.id} block=${(block as { type: string }).type} render hatası:`, err);
-        const fallback = document.createElement('div');
-        fallback.className = 'block-error';
-        fallback.innerHTML = `
-          <i class="ph ph-warning-circle"></i>
-          <span>Bu blok render edilemedi: <code>${(block as { type: string }).type}</code></span>
-        `;
-        body.appendChild(fallback);
-      }
-    }
     section.appendChild(body);
+
+    // Lazy render closure — section.dataset üzerinden tetiklenir
+    let rendered = false;
+    const blocks = Array.isArray(cluster.blocks) ? cluster.blocks : [];
+    const renderBody = (): void => {
+      if (rendered) return;
+      rendered = true;
+      for (const block of blocks) {
+        if (!block || typeof block !== 'object' || !('type' in block)) {
+          console.warn(`[renderer] cluster=${cluster.id}: invalid block`, block);
+          continue;
+        }
+        try {
+          body.appendChild(this.registry.render(block, ctx));
+        } catch (err) {
+          console.error(`[renderer] cluster=${cluster.id} block=${(block as { type: string }).type} render hatası:`, err);
+          const fallback = document.createElement('div');
+          fallback.className = 'block-error';
+          fallback.innerHTML = `
+            <i class="ph ph-warning-circle"></i>
+            <span>Bu blok render edilemedi: <code>${(block as { type: string }).type}</code></span>
+          `;
+          body.appendChild(fallback);
+        }
+      }
+    };
+    // Section'a closure'ı bağla; main.ts toggle'da çağıracak
+    (section as HTMLElement & { __renderBody?: () => void }).__renderBody = renderBody;
+    // Eğer cluster zaten initially açık geldiyse hemen render
+    if (!section.classList.contains('cluster--collapsed')) {
+      renderBody();
+    }
 
     return section;
   }

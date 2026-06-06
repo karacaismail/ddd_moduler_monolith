@@ -220,8 +220,18 @@ body {
   cursor: pointer;
   transition: all 0.12s;
 
-  &:hover { border-color: var(--ink-4); color: var(--ink); }
-  &--active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  // Hover: sadece border + minik bg shift; bg KARARTMA (kontrast kırılmasın)
+  &:hover:not(.chip--active) {
+    border-color: var(--ink-4);
+    color: var(--ink);
+    background: var(--bg-soft);
+  }
+  &--active {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+    &:hover { background: var(--ink); color: var(--bg); }
+  }
 
   &--kernel.chip--active { background: var(--kernel); border-color: var(--kernel); }
   &--scale.chip--active  { background: var(--scale); border-color: var(--scale); }
@@ -3142,6 +3152,360 @@ tr.is-clickable {
 }
 
 // ============================================================================
+// TOAST (R2-G)
+// ============================================================================
+.toast-container {
+  position: fixed;
+  bottom: var(--space-5);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  pointer-events: none;
+  @media (max-width: 719px) {
+    bottom: var(--space-4);
+    left: var(--space-3);
+    right: var(--space-3);
+    transform: none;
+  }
+}
+.toast {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 240ms ease, transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: auto;
+  i { font-size: 1.1rem; }
+  &.is-visible { opacity: 1; transform: translateY(0); }
+  &--success { background: #16a34a; color: #fff; }
+  &--error { background: #dc2626; color: #fff; }
+  &--info { background: var(--ink); color: var(--bg); }
+}
+:root[data-theme="dark"] .toast {
+  &--info { background: var(--ink); color: var(--bg); }
+  &--success { background: #4ade80; color: #0a0a0a; }
+  &--error { background: #ff7a7a; color: #0a0a0a; }
+}
+
+// ============================================================================
+// 420px ekstra mobile sıkıştırma + detail panel iç flat (R2-G)
+// ============================================================================
+@media (max-width: 419px) {
+  // iPhone 5 — minimum padding
+  .cluster {
+    padding: var(--space-3) var(--space-3) var(--space-3) !important;
+    border-left-width: 3px !important;
+  }
+  .cluster__title {
+    font-size: 1.05rem !important;
+    padding-right: 3.25rem !important;
+  }
+  .cluster__toggle {
+    min-width: 2.25rem !important;
+    height: 2rem !important;
+    padding: 0 var(--space-2) !important;
+    font-size: 0.65rem !important;
+    &::after { content: ""; }
+  }
+  // Detail panel mobile drawer
+  .detail-panel { padding: var(--space-3) var(--space-3) var(--space-5) !important; }
+  // Hero kompakt
+  .hero {
+    padding: 0 0 var(--space-3) !important;
+    margin-bottom: var(--space-3) !important;
+    &__title { font-size: 1.25rem !important; }
+    &__lede { font-size: 0.9rem !important; }
+  }
+}
+
+// Detail panel iç bloklarına flat pattern — mobile'da iç içe padding'i sıfırla
+@media (max-width: 719px) {
+  .dp__term, .dp__story, .dp__5n1k-row, .dp__side, .dp__ref {
+    padding: var(--space-3) var(--space-3) !important;
+    border-radius: var(--radius-md) !important;
+    margin: 0 0 var(--space-2) !important;
+  }
+  .dp__terms, .dp__stories, .dp__5n1k, .dp__refs {
+    padding: 0 !important;
+    gap: var(--space-2) !important;
+  }
+  .dp__section {
+    padding: 0 !important;
+    margin-bottom: var(--space-4) !important;
+  }
+}
+
+// ============================================================================
+// iOS Safari dvh fix + Layer-cards hover/active + Footer (R2-E)
+// ============================================================================
+// 100vh → 100dvh (dynamic viewport height) — iOS URL bar gizlenince viewport büyür
+@supports (height: 100dvh) {
+  .sidebar, .detail-panel {
+    @media (min-width: 1240px) {
+      height: calc(100dvh - var(--appbar-h)) !important;
+    }
+    @media (max-width: 1239px) {
+      height: 100dvh !important;
+    }
+  }
+  .pop.pop--detail {
+    @media (max-width: 719px) {
+      max-height: 80dvh !important;
+    }
+  }
+}
+
+// Layer cards / grid items — hover vs active clear ayrım
+.layer-card, .block-grid__item {
+  position: relative;
+  transition: all 160ms ease;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    z-index: 1;
+  }
+  &.is-detail-active {
+    border-color: var(--enrich-detail) !important;
+    border-width: 2px !important;
+    background: color-mix(in srgb, var(--enrich-detail) 8%, var(--card-bg-soft)) !important;
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--enrich-detail);
+      clip-path: polygon(100% 0, 0 0, 100% 100%);
+      border-top-right-radius: var(--card-radius);
+    }
+  }
+}
+:root[data-theme="dark"] {
+  .layer-card:hover, .block-grid__item:hover {
+    box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+  }
+  .layer-card.is-detail-active, .block-grid__item.is-detail-active {
+    background: color-mix(in srgb, var(--enrich-detail) 18%, var(--card-bg-soft)) !important;
+  }
+}
+
+// Footer — mobile 1 sütun, kbd hatırlatma sticky değil ama belirgin
+.appfooter {
+  @media (max-width: 719px) {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+    padding: var(--space-5) var(--space-3) !important;
+    gap: var(--space-3) !important;
+  }
+  kbd {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--radius-sm);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.75rem;
+  }
+}
+:root[data-theme="dark"] .appfooter kbd {
+  background: var(--bg);
+  border-color: var(--line-2);
+  color: var(--ink-2);
+}
+
+// ============================================================================
+// DETAIL PANEL — tablet width + close button sticky (R2-C)
+// ============================================================================
+// Close butonu uzun içerikte kaybolmasın — sticky top
+.detail-panel .dp__close {
+  position: sticky !important;
+  top: 0;
+  margin-left: auto;
+  z-index: 5;
+  // Daha belirgin
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+// Tablet: 820–1239px arası 90vw çok geniş — sınırlı tut
+@media (min-width: 820px) and (max-width: 1239px) {
+  .detail-panel {
+    width: min(540px, 70vw) !important;
+    max-width: 540px;
+  }
+}
+// Tablet + mobile drawer açıkken sidebar tıklanmasın (pointer-events kapat)
+body:has(.detail-panel--open) .sidebar {
+  @media (max-width: 1239px) {
+    pointer-events: none;
+    opacity: 0.4;
+    transition: opacity 200ms;
+  }
+}
+
+// ============================================================================
+// POPOVER mobile fix — backdrop + scroll + viewport-fit (R2-B)
+// ============================================================================
+.pop {
+  position: fixed;
+  z-index: 110;
+  max-width: min(420px, calc(100vw - 1rem));
+  max-height: min(70vh, 32rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  // Touch device'da pop'a tıklamaya odaklı; iframe scroll'ı çakışmasın
+  -webkit-overflow-scrolling: touch;
+
+  @media (max-width: 719px) {
+    // Mobile'da bottom-sheet mantığı için detail popover
+    &.pop--detail {
+      position: fixed !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      top: auto !important;
+      max-width: 100vw !important;
+      max-height: 80vh !important;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.3);
+      .pop__arrow { display: none; }
+    }
+  }
+}
+.pop-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms ease;
+  z-index: 105;
+  &.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  @media (min-width: 720px) {
+    display: none !important;
+  }
+}
+body.pop-open {
+  @media (max-width: 719px) {
+    overflow: hidden;
+  }
+}
+
+// ============================================================================
+// SEARCH BOX — mobile + dark + a11y (R2-A)
+// ============================================================================
+.search-box {
+  position: relative;
+  &__results {
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    left: 0;
+    right: 0;
+    max-height: min(70vh, 32rem);
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    z-index: 90;
+    @media (max-width: 719px) {
+      // Mobile: appbar grid'inde alt satırdaysa search-box, results full-width
+      position: fixed;
+      top: auto;
+      left: var(--space-2);
+      right: var(--space-2);
+      max-height: 60vh;
+    }
+  }
+  &__count {
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--fs-xs);
+    color: var(--ink-3);
+    border-bottom: 1px solid var(--line-2);
+    background: var(--bg-soft);
+  }
+  &__empty {
+    padding: var(--space-5) var(--space-4);
+    text-align: center;
+    color: var(--ink-3);
+    i {
+      font-size: 2rem;
+      color: var(--ink-4);
+      display: block;
+      margin-bottom: var(--space-2);
+    }
+    p {
+      margin: 0 0 var(--space-1);
+      strong { color: var(--ink); }
+    }
+    &-hint {
+      font-size: var(--fs-xs);
+      color: var(--ink-4);
+      margin-top: var(--space-2) !important;
+    }
+  }
+}
+.search-result {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--line-2);
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: background 120ms;
+  &:hover, &.is-active {
+    background: var(--bg-soft);
+    color: var(--ink);
+  }
+  &:last-child { border-bottom: 0; }
+  &__title {
+    font-weight: 500;
+    color: var(--ink);
+    font-size: var(--fs-sm);
+    mark {
+      background: color-mix(in srgb, var(--enrich-detail) 30%, transparent);
+      color: var(--enrich-detail);
+      padding: 0 0.15rem;
+      border-radius: 2px;
+    }
+  }
+  &__snippet {
+    font-size: var(--fs-xs);
+    color: var(--ink-3);
+    margin-top: 0.15rem;
+    line-height: 1.4;
+    mark {
+      background: color-mix(in srgb, var(--enrich-info) 30%, transparent);
+      color: var(--enrich-info);
+      padding: 0 0.15rem;
+      border-radius: 2px;
+    }
+  }
+  &__meta {
+    font-size: 0.7rem;
+    color: var(--ink-4);
+    margin-top: 0.2rem;
+    font-family: 'Roboto Mono', monospace;
+  }
+}
+
+// ============================================================================
 // PRINT STYLESHEET (P8)
 // ============================================================================
 @media print {
@@ -3512,11 +3876,30 @@ body { min-width: 0; }
     .cluster__body { max-height: none; opacity: 1; margin-top: var(--space-5); }
   }
 
-  // Kapalı state: kart, "hint" ile birlikte
+  // Kapalı state: kart kompakt — gereksiz boşluk YOK
   &.cluster--collapsed {
-    padding-bottom: var(--space-5) !important;
-    .cluster__body { max-height: 0; opacity: 0; margin-top: 0; pointer-events: none; }
-    .cluster__header { padding-bottom: 0; border-bottom: 0; margin-bottom: 0; }
+    // Header'ın etrafında tek katman padding; alt boşluk minimal
+    padding: var(--space-3) var(--space-5) var(--space-3) !important;
+    .cluster__body {
+      max-height: 0;
+      opacity: 0;
+      margin: 0;
+      padding: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .cluster__header {
+      padding-bottom: 0;
+      border-bottom: 0;
+      margin-bottom: 0;
+    }
+    // Cluster header içindeki opsiyonel sub-elementlerin kapanmış altı
+    .cluster__subtitle,
+    .cluster__tags,
+    .cluster__meta-row {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
 
     &:hover {
       background: var(--bg);
@@ -4006,11 +4389,16 @@ input, select, textarea { max-width: 100%; }
     background: var(--bg);
     color: var(--ink-2);
     border-color: var(--line);
-    &:hover { background: var(--bg-soft); border-color: var(--ink-4); color: var(--ink); }
-    &.is-active {
+    &:hover:not(.chip--active) {
+      background: var(--bg-soft);
+      border-color: var(--ink-4);
+      color: var(--ink);
+    }
+    &.chip--active {
       background: var(--enrich-detail);
-      color: var(--bg);
+      color: #0a0a0a;
       border-color: var(--enrich-detail);
+      &:hover { background: var(--enrich-detail); color: #0a0a0a; }
     }
   }
 

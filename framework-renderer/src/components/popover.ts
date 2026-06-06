@@ -42,6 +42,13 @@ function ensureInstance(): PopoverInstance {
   el.appendChild(body);
   document.body.appendChild(el);
 
+  // Backdrop — mobile'da popover dışında bir yere tıklayınca kapansın
+  const backdrop = document.createElement('div');
+  backdrop.className = 'pop-backdrop';
+  backdrop.setAttribute('aria-hidden', 'true');
+  backdrop.addEventListener('click', () => closeNow());
+  document.body.appendChild(backdrop);
+
   // Mouse-leave-into-popover keeps it open
   el.addEventListener('mouseenter', () => {
     if (inst?.closeTimer) {
@@ -104,6 +111,8 @@ function closeNow(): void {
   inst.el.hidden = true;
   inst.current?.removeAttribute('aria-expanded');
   inst.current = undefined;
+  document.querySelector('.pop-backdrop')?.classList.remove('is-visible');
+  document.body.classList.remove('pop-open');
 }
 
 function openFor(target: HTMLElement, kind: 'info' | 'detail'): void {
@@ -125,6 +134,11 @@ function openFor(target: HTMLElement, kind: 'info' | 'detail'): void {
   }
   i.current = target;
   target.setAttribute('aria-expanded', 'true');
+  // Mobile'da backdrop göster — detail popover için
+  if (kind === 'detail' && window.matchMedia('(max-width: 719px)').matches) {
+    document.querySelector('.pop-backdrop')?.classList.add('is-visible');
+    document.body.classList.add('pop-open');
+  }
   position(target, kind);
 }
 
