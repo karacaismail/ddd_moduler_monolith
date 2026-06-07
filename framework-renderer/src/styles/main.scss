@@ -95,8 +95,8 @@
   --fs-2xl: 1.75rem;
   --fs-3xl: 2.125rem;
 
-  // Layout — sol/sağ eşit genişlik, tutarlı
-  --sidebar-w: 320px;
+  // Layout — sol sidebar %50 genişletildi (tablet 420, desktop 420, mobile drawer 480)
+  --sidebar-w: 420px;
   --detail-w: 320px;
   --main-pad-y: var(--space-9);
   --main-pad-x: var(--space-8);
@@ -2987,7 +2987,7 @@ tr.is-clickable {
   .sidebar {
     position: fixed !important;
     top: 0; left: 0;
-    width: min(85vw, 320px) !important;
+    width: min(90vw, 480px) !important;
     height: 100vh !important;
     z-index: 80;
     transform: translateX(-100%);
@@ -3002,8 +3002,9 @@ tr.is-clickable {
 }
 
 // 2) Tablet (820px – 1239px): sidebar sticky 2-sütun grid, detail panel DRAWER
+// Sidebar %50 genişletildi (uzun grup/cluster başlıkları için): 280 → 420
 @media (min-width: 820px) and (max-width: 1239px) {
-  #app { grid-template-columns: 280px minmax(0, 1fr) !important; }
+  #app { grid-template-columns: 420px minmax(0, 1fr) !important; }
   .sidebar {
     position: sticky !important;
     top: var(--appbar-h) !important;
@@ -3043,9 +3044,9 @@ tr.is-clickable {
 }
 
 // 3) Desktop (1240px+): 3 sütun grid — HER İKİ panel STICKY
-// Sol sidebar 280px, sağ detail panel +%50 daha geniş = 720px
+// Sol sidebar %50 genişletildi (uzun grup/cluster başlıkları için): 280 → 420
 @media (min-width: 1240px) {
-  #app { grid-template-columns: 280px minmax(0, 1fr) 720px !important; }
+  #app { grid-template-columns: 420px minmax(0, 1fr) 720px !important; }
   .sidebar {
     position: sticky !important;
     top: var(--appbar-h) !important;
