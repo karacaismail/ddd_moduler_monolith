@@ -95,8 +95,9 @@
   --fs-2xl: 1.75rem;
   --fs-3xl: 2.125rem;
 
-  // Layout — sol sidebar %50 genişletildi (tablet 420, desktop 420, mobile drawer 480)
-  --sidebar-w: 420px;
+  // Layout — sol sidebar FLUID: clamp(min, viewport%, max)
+  // min 280px (yazılar sığsın), max 360px (geniş ekran fazla yer kaplamasın), ideal ~22vw
+  --sidebar-w: clamp(280px, 22vw, 360px);
   --detail-w: 320px;
   --main-pad-y: var(--space-9);
   --main-pad-x: var(--space-8);
@@ -2987,7 +2988,7 @@ tr.is-clickable {
   .sidebar {
     position: fixed !important;
     top: 0; left: 0;
-    width: min(90vw, 480px) !important;
+    width: min(88vw, 400px) !important;
     height: 100vh !important;
     z-index: 80;
     transform: translateX(-100%);
@@ -3002,9 +3003,9 @@ tr.is-clickable {
 }
 
 // 2) Tablet (820px – 1239px): sidebar sticky 2-sütun grid, detail panel DRAWER
-// Sidebar %50 genişletildi (uzun grup/cluster başlıkları için): 280 → 420
+// Sidebar fluid (--sidebar-w token, clamp ile responsive)
 @media (min-width: 820px) and (max-width: 1239px) {
-  #app { grid-template-columns: 420px minmax(0, 1fr) !important; }
+  #app { grid-template-columns: var(--sidebar-w) minmax(0, 1fr) !important; }
   .sidebar {
     position: sticky !important;
     top: var(--appbar-h) !important;
@@ -3044,9 +3045,9 @@ tr.is-clickable {
 }
 
 // 3) Desktop (1240px+): 3 sütun grid — HER İKİ panel STICKY
-// Sol sidebar %50 genişletildi (uzun grup/cluster başlıkları için): 280 → 420
+// Sol sidebar fluid (--sidebar-w token), sağ detail panel 720px
 @media (min-width: 1240px) {
-  #app { grid-template-columns: 420px minmax(0, 1fr) 720px !important; }
+  #app { grid-template-columns: var(--sidebar-w) minmax(0, 1fr) 720px !important; }
   .sidebar {
     position: sticky !important;
     top: var(--appbar-h) !important;
