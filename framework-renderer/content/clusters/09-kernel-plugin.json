@@ -4,7 +4,7 @@
   "subtitle": "Framework olmanın can damarı. Plugin yazılabiliyorsa platform, yazılamıyorsa uygulama.",
   "cluster": "layer0",
   "layer": "kernel",
-  "order": 9,
+  "order": 6,
   "icon": "ph-puzzle-piece",
   "badge": "Layer 0 — Kernel #6",
   "tags": [

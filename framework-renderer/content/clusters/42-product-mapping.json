@@ -3,7 +3,7 @@
   "title": "15 Ürün → Stack Mapping",
   "subtitle": "Hangi ürün hangi Layer 2 stack'lerini kullanır.",
   "cluster": "build",
-  "order": 42,
+  "order": 2,
   "icon": "ph-list-numbers",
   "tags": [
     "mapping",

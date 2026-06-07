@@ -1,0 +1,208 @@
+{
+  "id": "edu-u13",
+  "title": "Log Disiplini — yazılımın günlüğü",
+  "subtitle": "Çökmüş üretimi log olmadan çözmek = karanlık odada iğne aramak. Doğru log = aydınlık.",
+  "cluster": "edu",
+  "order": 16,
+  "icon": "ph-list-bullets",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "logging",
+    "structured-logging",
+    "correlation-id",
+    "observability"
+  ],
+  "enrich": {
+    "info": "Log seviyeleri, correlation ID, structured (JSON) log, log injection güvenlik açığı, 'log her şeyi' = log hiçbir şey.",
+    "detail": "**Log = yazılımın günlüğü.** Üretimde sorun çıkınca 'ne oldu, kim yaptı, ne zaman' sorularına ancak log cevap verir.\n\n**4 seviye + 1 yasak:**\n\n- `DEBUG`: Geliştirici için detay. Üretimde KAPALI.\n- `INFO`: 'Sipariş #1234 oluşturuldu' gibi iş olayı.\n- `WARN`: 'Stok azaldı (5 kaldı)' — sorun değil ama dikkat.\n- `ERROR`: İstisna fırlatıldı, hata oluştu.\n- ~~`FATAL`~~: Modern sistemde gereksiz; ERROR + alarm yeter.\n\n**Structured logging:** Düz metin değil JSON. `{level, message, user_id, request_id, timestamp}`. Grafana/Loki bu alanları indeksler.\n\n**Correlation ID:** Bir request, A → B → C → D servislerinden geçer. Hepsi aynı `correlation_id` kullanırsa, sonradan 'bu siparişe ne oldu' sorgusunu tek aramayla cevaplarsın.\n\n**Log injection (güvenlik):** Kullanıcı input'unu log'a doğrudan yazma. Saldırgan `\\n[ERROR] Admin password reset` yazarsa, fake log girer. Çözüm: structured log + escape.",
+    "terms": [
+      {
+        "term": "Log Level",
+        "abbrev_tr": "Log seviyesi",
+        "meaning": "Log'un önem derecesi: DEBUG (en az), INFO, WARN, ERROR (en çok).",
+        "why": "Üretimde DEBUG kapatılırsa log diski şişmez; ERROR'u açık bırakırsan kritik olayı kaçırmazsın."
+      },
+      {
+        "term": "Structured Log",
+        "abbrev_tr": "Yapısal log",
+        "meaning": "JSON format'ında log. Her alan adlı: `{user_id: 42, action: 'login'}`.",
+        "why": "Düz metni Grafana sorgulayamaz. JSON'ı sorgulayabilir: 'user_id=42 olan tüm log'lar'."
+      },
+      {
+        "term": "Correlation ID",
+        "abbrev_tr": "İlişki anahtarı",
+        "meaning": "Bir HTTP request'in tüm log satırlarında geçen ortak UUID.",
+        "why": "5 servisten geçen bir sipariş için tek aramayla tüm log'ları bulursun."
+      },
+      {
+        "term": "PII Redaction",
+        "abbrev_tr": "Kişisel veri maskele",
+        "meaning": "Email, telefon, T.C. kimlik no'sunu log'a yazmadan önce maskelemek.",
+        "why": "KVKK + GDPR. Log dosyası sızarsa kişisel veri açığa çıkmaz."
+      },
+      {
+        "term": "Log Aggregation",
+        "abbrev_tr": "Log toplama",
+        "meaning": "Tüm sunuculardan log'u tek yere (Loki, Elasticsearch) toplama.",
+        "why": "30 sunucuda SSH'la log aramak imkânsız; tek yerde aranır."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Doktor muayene defteri — Ayşe Teyze (63)",
+        "context": "Ayşe Teyze yıllardır aynı doktora gidiyor. Doktor her ziyarette dosyaya kısa not yazar: 'tansiyon yüksek, ilaç X verildi'. 5 yıl sonra Ayşe Teyze farklı bir doktora geliyor; dosyayı okuyup geçmişi anında anlıyor.",
+        "outcome": "Bu log. Doğru yazılırsa 5 yıl sonra okunabilir; kötü yazılırsa 'doktor anlamadı, dosya yine baştan'."
+      },
+      {
+        "persona": "Bakkal Hatice Teyze (62) — sipariş defteri",
+        "context": "Hatice Teyze günde 50 satış yapar; her satışı deftere yazar. Müşteri 'geçen hafta ne almıştım?' diye sorduğunda defterden bulur. Ama eğer 'mama' diye yazıp markasını yazmadıysa, müşteri 'kedi maması mı, bebek maması mı?' sorusunu cevaplayamaz.",
+        "outcome": "Eksik log = sonradan işe yaramaz. Structured log = 'urun: kedi_mamasi_2kg, miktar: 1, fiyat: 45TL' — net cevap."
+      },
+      {
+        "persona": "Apartman güvenlik kamerası — Murat Bey (61)",
+        "context": "Murat Bey 8 daireli binayı yönetir. Yeni güvenlik kamerası taktı; her gece 50 GB kaydediyor. Disk hemen doluyor. Önemli olanı bulmak için saatlerce gerekti.",
+        "outcome": "Çözüm: gündüz sadece 'hareket algılandı' anları kaydet (warn/error log). Gece sürekli kayıt sadece olay sonrası 1 saat. = log seviyeleri."
+      }
+    ],
+    "lesson": {
+      "ne": "Yazılımın yaptığı işleri zaman damgalı, yapısal şekilde dosyaya yazmak. Sonradan sorun çıkarsa bu kayıtlardan geri çözmek.",
+      "nicin": "Üretimde hata 'gözlemlenebilir' değilse, çözülemez. Log = gözlemin temeli. Yanlış log = gürültü = hiç yok gibi.",
+      "nasil": "1) JSON formatında log yaz. 2) Her HTTP request'e correlation_id ata, tüm log'larda kullan. 3) DEBUG'u üretimde kapat; INFO/WARN/ERROR aç. 4) PII (email, telefon) maskele. 5) Tüm log'u Loki/Grafana'ya akıt.",
+      "nerede": "Her servis bir logger kullanır (Python: structlog, JS: pino). cc-obs cluster'ı log infra'sını anlatır.",
+      "ne_zaman": "Her iş olayında (sipariş oluştu, kullanıcı girdi, ödeme alındı) INFO. Hata olduğunda ERROR + Sentry.",
+      "kim": "Geliştirici log satırı yazar; SRE Loki/Grafana kurar; on-call mühendis sorun çıkınca log okur.",
+      "frontend": {
+        "yer": "Frontend de log gönderir (Sentry browser SDK). Hata, slow request, kullanıcı action.",
+        "gereklilik": "Console.log üretimde KAPALI; structured log servisine gönder.",
+        "ornek": "`logger.error('checkout_failed', {orderId, errorCode})` — Sentry'de görülür."
+      },
+      "backend": {
+        "yer": "Her HTTP middleware request'e UUID ata: `req.correlation_id`. Logger her satıra otomatik ekler.",
+        "gereklilik": "PII filter: email/tel/TC no maskele. Log injection escape.",
+        "ornek": "`logger.info('order_created', {orderId: 1234, customerId: 42, total: 199.99, correlationId: req.cid})`"
+      },
+      "analoji": "Karayolları kazaya gidip 'ne oldu?' diye soruyor. Görgü tanıkları ifade veriyor. Tutanak yazılıyor. Sigorta tutanaktan tazminat ödüyor. Log = tutanak. Yok = sigorta yok = hata öğrenilmiyor."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Log disiplininin özü:** *'Az log = sorun çözülmez. Çok log = sorun bulunamaz. Doğru yapısal log = tek aramayla bulunur.'* JSON + correlation ID = sağlıklı log."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "En klasik tuzak",
+      "body": "Geliştirici `console.log('hata oldu')` yazar, üretimde 100.000 satır. Hangi user'da? Hangi request'te? Bilinmez. Çözüm: **structured log** — `logger.error('payment_failed', {userId, orderId, errorCode})`."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a şöyle yaz: *'Payment service'e structured log ekle. Pino logger ile JSON çıktı, her log'da correlation_id, level, message, user_id. PII (email, tel) için redact list ekle. DEBUG sadece dev'de, üretimde INFO+.'* Sadece 'log ekle' dersen `console.log` üretir."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Log seviyesi → ne zaman"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Seviye",
+        "Ne zaman",
+        "Üretimde?",
+        "Örnek"
+      ],
+      "rows": [
+        [
+          "DEBUG",
+          "Geliştirme detayı",
+          "✗ KAPALI",
+          "'Database query: SELECT * FROM ...'"
+        ],
+        [
+          "INFO",
+          "Normal iş olayı",
+          "✓ AÇIK",
+          "'Sipariş #1234 oluşturuldu'"
+        ],
+        [
+          "WARN",
+          "Beklenmedik ama hata değil",
+          "✓ AÇIK",
+          "'Stok azaldı: 5 kaldı'"
+        ],
+        [
+          "ERROR",
+          "Hata, exception",
+          "✓ AÇIK + alarm",
+          "'Banka API timeout'"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Log içeriği — kontrol listesi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Alan",
+        "Zorunlu mu?",
+        "Örnek"
+      ],
+      "rows": [
+        [
+          "timestamp",
+          "✓ Zorunlu",
+          "ISO 8601 UTC"
+        ],
+        [
+          "level",
+          "✓ Zorunlu",
+          "'info', 'error'"
+        ],
+        [
+          "message",
+          "✓ Zorunlu",
+          "'order_created' (sabit, parametre değil)"
+        ],
+        [
+          "correlation_id",
+          "✓ Zorunlu",
+          "UUID per request"
+        ],
+        [
+          "user_id",
+          "Varsa",
+          "42"
+        ],
+        [
+          "error stack",
+          "ERROR'da zorunlu",
+          "Tam stack trace"
+        ],
+        [
+          "PII",
+          "✗ YASAK",
+          "Email/telefon/T.C. maskelenir"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "Güvenlik: Log Injection",
+      "body": "`logger.info('User ' + req.body.name + ' logged in')` → saldırgan name'e `\\n[ERROR] Admin\\npassword reset OK` yazar → fake log üretildi. Çözüm: **structured log her zaman**: `logger.info('login', {user: req.body.name})` — name escape edilir."
+    }
+  ],
+  "related": [
+    "cc-obs",
+    "edu-u11",
+    "cc-security"
+  ]
+}

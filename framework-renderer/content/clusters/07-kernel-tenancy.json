@@ -4,7 +4,7 @@
   "subtitle": "SaaS = aynı yazılım çok müşteriye, izole veri. Day-1'den tenant_id her satırda.",
   "cluster": "layer0",
   "layer": "kernel",
-  "order": 7,
+  "order": 4,
   "icon": "ph-buildings",
   "badge": "Layer 0 — Kernel #4",
   "tags": [

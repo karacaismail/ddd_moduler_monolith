@@ -3,7 +3,7 @@
   "title": "Tipli kinetik aksiyon yüzeyi (AI için)",
   "subtitle": "Palantir Ontology: AI ham tabloya değil; tipli, yetkili, audit'li \"action\"lara erişir. Güvenlik + denetlenebilirlik içkin.",
   "cluster": "sus",
-  "order": 97,
+  "order": 8,
   "icon": "ph-lightning",
   "tags": [
     "sustainability",

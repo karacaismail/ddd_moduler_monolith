@@ -1,0 +1,146 @@
+{
+  "id": "scale-multiregion",
+  "title": "Multi-region + Disaster Recovery",
+  "subtitle": "Tek veri merkezi = tek nokta arıza. İki bölge = iş sürekliliği. KVKK + GDPR veri-yerelleştirme zorunluluğu da var.",
+  "cluster": "scale",
+  "order": 9,
+  "icon": "ph-globe-hemisphere-west",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "scale",
+    "multi-region",
+    "disaster-recovery",
+    "replication",
+    "gdpr"
+  ],
+  "enrich": {
+    "info": "Aktif-pasif (cold standby) vs aktif-aktif. Read replica başlangıç için yeter. Conflict resolution (CRDT) ileri seviye.",
+    "detail": "**Disaster Recovery seviyeleri:**\n\n- **DR Tier 0**: Hiçbir şey yok. Veri kaybı garantili.\n- **DR Tier 1**: Günlük backup off-site. RPO 24 saat.\n- **DR Tier 2**: Saatlik snapshot + 6 saatlik replica. RPO 6 saat.\n- **DR Tier 3 (mevcut hedef)**: Postgres streaming replication. RPO ~1 dk, RTO 15 dk.\n- **DR Tier 4**: Aktif-aktif iki bölge. RPO ~0, RTO 0.\n\n**KVKK + GDPR veri yerelleştirme:**\n\n- TR vatandaşının verisi TR sınırları içinde işlenmeli (KVKK Madde 9)\n- AB vatandaşının verisi AB içinde (GDPR Madde 44+)\n- Hetzner Finlandiya datacenter = AB; TR için ayrı sağlayıcı (Türk Telekom, Vodafone)\n\n**Multi-region pattern'ler:**\n\n1. **Read replica**: TR ana, AB read-only replica. Yazma TR'ye gider.\n2. **Tenant-bound region**: TR tenant TR DB'sinde, AB tenant AB DB'sinde\n3. **Active-active CRDT**: İki bölgede yazma, conflict resolution otomatik\n\nBaşlangıç için 1+2 yeter. CRDT (yapay konuşmalar) ileri seviye, $$$.",
+    "terms": [
+      {
+        "term": "RPO",
+        "abbrev_of": "Recovery Point Objective",
+        "abbrev_tr": "Kayıp tolerans noktası",
+        "meaning": "Felaketten önceki en son güvenli veri noktası. RPO=1 saat = max 1 saatlik kayıp tolerans.",
+        "why": "İş ihtiyacı belirler: bankacılık RPO=0, blog RPO=24 saat olabilir."
+      },
+      {
+        "term": "RTO",
+        "abbrev_of": "Recovery Time Objective",
+        "abbrev_tr": "Kurtarma süresi hedefi",
+        "meaning": "Felaketten sonra sistemin kalkmasına izin verilen max süre.",
+        "why": "SaaS satış sözleşmesinde 'uptime 99.9%' = yılda 8.7 saat down. RTO bu süreyi belirler."
+      },
+      {
+        "term": "Streaming Replication",
+        "abbrev_tr": "Akış kopyası",
+        "meaning": "Postgres WAL'ı (write-ahead log) anlık bir slave'e gönderir.",
+        "why": "Master çökerse slave'e döner. RPO ~saniye seviye."
+      },
+      {
+        "term": "CRDT",
+        "abbrev_of": "Conflict-Free Replicated Data Type",
+        "abbrev_tr": "Çatışmasız çoğaltılan veri tipi",
+        "meaning": "İki bölgede aynı anda yazılan veriyi otomatik birleştiren matematiksel yapı.",
+        "why": "Aktif-aktif için zorunlu; klasik DB conflict'i çözemez."
+      },
+      {
+        "term": "Geo-failover",
+        "abbrev_tr": "Bölge geçişi",
+        "meaning": "Ana bölge çökünce trafiği yedek bölgeye yönlendirme.",
+        "why": "DNS TTL + healthcheck ile 1-5 dk içinde olur."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Banka şubesi sistemleri — yangın",
+        "context": "Bir bankanın merkez şubesinde yangın çıktı, sistem odası yandı. Müşteriler ATM'lerden para çekemiyor. 3 saat sonra yedek datacenter devreye girdi.",
+        "outcome": "DR Tier 3 ile 15 dk içinde dönülürdü. 3 saat = milyonlarca lira kayıp + güven kaybı. **Yangın bekleme; bugün hazırla.**"
+      },
+      {
+        "persona": "E-ticaret sitesi — KVKK denetimi",
+        "context": "TR'de e-ticaret sitesi, kullanıcı verisi AB'deki sunucuda. KVKK denetiminde 'TR vatandaşı verisi TR'de mi?' sorusu. Hayır cevabı = ceza.",
+        "outcome": "Multi-region tenant-bound: TR kullanıcısı TR DB'sine, kayıt anında ülkeye göre routing. KVKK uyumu."
+      }
+    ],
+    "lesson": {
+      "ne": "Sistemi birden fazla coğrafi bölgede çalıştırmak — yedeklilik + yasal uyumluluk için.",
+      "nicin": "Tek datacenter = tek nokta arıza. Yangın, sel, network kesintisi tüm sistemi durdurur. Hedef RTO/RPO için çoklu bölge zorunlu.",
+      "nasil": "1) DR Tier 3 başlangıç: Hetzner FSN1 (master) + HEL1 (replica). 2) Streaming replication açık. 3) Healthcheck + DNS failover. 4) İleride: tenant-bound region.",
+      "nerede": "`scale-multiregion` mimari kararları. `k-tenancy` ile birlikte tenant'a göre region routing.",
+      "ne_zaman": "100+ müşteri veya ARR > $100K olunca DR Tier 3 zorunlu. KVKK var = tenant region routing hemen.",
+      "kim": "SRE replication kurar; ürün ekibi region selection UX'i tasarlar; hukuk KVKK/GDPR maddelerini doğrular.",
+      "analoji": "Tek banka şubesi yetersiz. Her ilde şube + ortak bilgisayar sistemi = tek şube yansa diğeri devam eder."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**DR olmayan SaaS = saatli bomba.** Tek datacenter'da yangın, sel, network kesintisi 'olmaz' diye varsayılamaz — istatistiksel olarak 10 yılda olur. Hedef RTO/RPO'yu belirleyip ona göre tier seç."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "KVKK Madde 9 zorlama",
+      "body": "TR vatandaşı kişisel verisi yurt dışına aktarılamaz (istisnalar var). Hetzner FSN1 (Almanya) = yurt dışı. TR tenant'lar için ayrı bölge gerek. **Mimari hazır olmalı, sonradan değiştirmek aylar alır.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Postgres streaming replication kur: master FSN1, replica HEL1. systemd timer ile her gün backup verify (point-in-time recovery test). Healthcheck endpoint + DNS failover script.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "DR Tier seçimi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Tier",
+        "RPO",
+        "RTO",
+        "Maliyet",
+        "Kim için"
+      ],
+      "rows": [
+        [
+          "Tier 1",
+          "24 saat",
+          "8+ saat",
+          "€",
+          "Pre-revenue startup"
+        ],
+        [
+          "Tier 2",
+          "6 saat",
+          "2-4 saat",
+          "€€",
+          "< 100 müşteri SaaS"
+        ],
+        [
+          "Tier 3",
+          "< 1 dk",
+          "< 15 dk",
+          "€€€",
+          "100-1000 müşteri SaaS — mevcut hedef"
+        ],
+        [
+          "Tier 4",
+          "~0",
+          "< 1 dk",
+          "€€€€€",
+          "Bankacılık, kritik altyapı"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "cc-obs",
+    "k-tenancy",
+    "cc-tr",
+    "cc-privacy"
+  ]
+}

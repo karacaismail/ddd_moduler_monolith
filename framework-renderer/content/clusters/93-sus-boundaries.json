@@ -3,7 +3,7 @@
   "title": "Makine-zorlamalı modül sınırı (CI kapısı)",
   "subtitle": "Shopify Packwerk: 2.8M satırlık monolit modüler kalmasını CI'da PR reddiyle sağlıyor.",
   "cluster": "sus",
-  "order": 93,
+  "order": 4,
   "icon": "ph-traffic-signal",
   "tags": [
     "sustainability",

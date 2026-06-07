@@ -3,7 +3,7 @@
   "title": "Türkiye Uyum Birinci Sınıf",
   "subtitle": "e-Belge, e-Defter, SGK, KVKK, BES, MERSİS, KEP — framework-level paket.",
   "cluster": "crosscut",
-  "order": 35,
+  "order": 1,
   "icon": "ph-flag",
   "tags": [
     "tr",

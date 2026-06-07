@@ -1,0 +1,131 @@
+{
+  "id": "cc-obs-deep",
+  "title": "Health Check + Readiness/Liveness Probes",
+  "subtitle": "/health, /ready, /live — Kubernetes ve LB'nin sistemi 'şu an çalışıyor mu?' sorusunu cevaplaması.",
+  "cluster": "crosscut",
+  "order": 6,
+  "icon": "ph-heartbeat",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "crosscut",
+    "health",
+    "probes",
+    "k8s",
+    "liveness",
+    "readiness"
+  ],
+  "enrich": {
+    "info": "/health (genel), /ready (trafik kabul), /live (yeniden başlat). DB ping + dış servis ping. Kubernetes probe.",
+    "detail": "**3 farklı endpoint:**\n\n1. **/health** — genel durum (UI dashboard)\n2. **/ready** — trafik kabul (Load balancer)\n3. **/live** — alive check (Kubernetes)\n\n**Farklar:**\n- /ready FAIL = LB trafik göndermez (geçici)\n- /live FAIL = Kubernetes pod öldürür (kalıcı)\n\n**Kontroller:**\n```javascript\nGET /health\n{\n  status: 'ok',\n  checks: {\n    database: { status: 'ok', latency_ms: 5 },\n    redis: { status: 'ok', latency_ms: 2 },\n    stripe: { status: 'degraded', latency_ms: 800 }\n  },\n  version: '2.4.1',\n  uptime_seconds: 3600\n}\n```\n\n**Tehlike:** /health'da ağır iş = DB yıkılır. **SELECT 1 yeter.**",
+    "terms": [
+      {
+        "term": "Liveness Probe",
+        "abbrev_tr": "Yaşam yoklaması",
+        "meaning": "Pod canlı mı?",
+        "why": "Sonsuz loop'a düşeni restart."
+      },
+      {
+        "term": "Readiness Probe",
+        "abbrev_tr": "Hazırlık yoklaması",
+        "meaning": "Pod trafik kabul edebilir mi?",
+        "why": "Boot esnasında trafik kabul etme."
+      },
+      {
+        "term": "Healthcheck",
+        "abbrev_tr": "Sağlık kontrolü",
+        "meaning": "DB, Redis, dış servis durumu.",
+        "why": "Dashboard + alarm."
+      },
+      {
+        "term": "Status Page",
+        "abbrev_tr": "Durum sayfası",
+        "meaning": "Müşterilere uptime + incident.",
+        "why": "'Bizim taraf mı?' sorusu yok."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Apartman güvenlik nöbetçisi — Murat Bey (61)",
+        "context": "Nöbetçilere 'iyi misin?' diye soruyor.",
+        "outcome": "Liveness probe: cevap yok = vardiya değiştir."
+      },
+      {
+        "persona": "Berber Mehmet Usta (60) — dükkân kontrolü",
+        "context": "Açılıştan önce lavabo, ışık, kasa kontrol eder.",
+        "outcome": "Readiness probe: tüm bağımlılıklar OK = trafik kabul."
+      }
+    ],
+    "lesson": {
+      "ne": "Sistemin sağlığını otomatik kontrol eden endpoint'ler.",
+      "nicin": "30 pod'lu sistemde otomasyon zorunlu.",
+      "nasil": "1) /live - process alive. 2) /ready - bağımlılıklar. 3) /health - detaylı. 4) Kubernetes probe.",
+      "nerede": "`cc-obs` cluster.",
+      "ne_zaman": "İlk pod deploy öncesi.",
+      "kim": "Backend developer endpoint; SRE probe konfig.",
+      "analoji": "Hastane: hasta canlı mı (live) + hazır mı (ready) + tedavi planı tamam mı (health)."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**3 probe = 3 farklı soru.** /live ve /ready karıştırılır; sonuç: gereksiz restart."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Probe içinde ağır iş tuzağı",
+      "body": "/health'da `SELECT * FROM order` = DB yıkılır. **SELECT 1 yeter + Redis PING.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Express endpoint /live (200 OK), /ready (DB ping + Redis ping → 503 if fail), /health (detaylı JSON). Kubernetes yaml probe.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Probe türü"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Endpoint",
+        "Kim kullanır",
+        "Ne kontrol",
+        "Fail = ne olur"
+      ],
+      "rows": [
+        [
+          "/live",
+          "Kubernetes",
+          "Process alive",
+          "Pod restart"
+        ],
+        [
+          "/ready",
+          "Load Balancer",
+          "Servis veriyor",
+          "Trafik göndermez"
+        ],
+        [
+          "/health",
+          "Dashboard",
+          "Detay",
+          "Alarm"
+        ],
+        [
+          "/metrics",
+          "Prometheus",
+          "Metrik scrape",
+          "Grafana"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "cc-obs",
+    "scale-multiregion"
+  ]
+}

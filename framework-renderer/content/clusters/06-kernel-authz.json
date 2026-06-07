@@ -4,7 +4,7 @@
   "subtitle": "Kim ne yapabilir? Query layer'a örülmüş — application-level if-check yetmez.",
   "cluster": "layer0",
   "layer": "kernel",
-  "order": 6,
+  "order": 3,
   "icon": "ph-shield-check",
   "badge": "Layer 0 — Kernel #3",
   "tags": [

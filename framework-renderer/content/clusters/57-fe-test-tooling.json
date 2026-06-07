@@ -3,7 +3,7 @@
   "title": "Frontend — Test + Tooling + Observability + Security",
   "subtitle": "Vitest + Playwright + Maestro · Biome + lefthook · Sentry + PostHog · OWASP baseline.",
   "cluster": "frontend",
-  "order": 57,
+  "order": 6,
   "icon": "ph-wrench",
   "tags": [
     "frontend",

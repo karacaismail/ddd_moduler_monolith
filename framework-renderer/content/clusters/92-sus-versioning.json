@@ -3,7 +3,7 @@
   "title": "Tarih-tabanlı versiyonlama + dönüşüm katmanı",
   "subtitle": "Stripe 2011'den beri her API sürümüyle uyumlu (14 yıl). Çekirdek tek-sürüm yazar, dönüşüm katmanı eskileri yaşatır.",
   "cluster": "sus",
-  "order": 92,
+  "order": 3,
   "icon": "ph-calendar-check",
   "tags": [
     "sustainability",

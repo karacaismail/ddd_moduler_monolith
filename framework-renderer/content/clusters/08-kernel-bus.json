@@ -4,7 +4,7 @@
   "subtitle": "Module'lerin loose-coupled konuştuğu omurga. Aynı kod, üç ölçek.",
   "cluster": "layer0",
   "layer": "kernel",
-  "order": 8,
+  "order": 5,
   "icon": "ph-broadcast",
   "badge": "Layer 0 — Kernel #5",
   "tags": [

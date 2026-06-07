@@ -3,7 +3,7 @@
   "title": "Frontend — Deploy + OTA + Store Rollout",
   "subtitle": "Hetzner + Docker + Caddy · GitHub Actions · Fastlane · TestFlight + Play Internal Testing · kendi OTA server.",
   "cluster": "frontend",
-  "order": 58,
+  "order": 7,
   "icon": "ph-rocket-launch",
   "tags": [
     "frontend",

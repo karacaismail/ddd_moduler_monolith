@@ -3,7 +3,7 @@
   "title": "Observability + Performance + DR",
   "subtitle": "Logging, metrics, tracing, alerting, backup, restore.",
   "cluster": "crosscut",
-  "order": 37,
+  "order": 3,
   "icon": "ph-chart-line",
   "tags": [
     "observability",

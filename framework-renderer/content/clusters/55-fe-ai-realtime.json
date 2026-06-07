@@ -3,7 +3,7 @@
   "title": "Frontend — AI + Realtime + Offline",
   "subtitle": "Vercel AI SDK, multi-provider, SSE + WS + Yjs CRDT, TanStack Query offline.",
   "cluster": "frontend",
-  "order": 55,
+  "order": 4,
   "icon": "ph-lightning",
   "tags": [
     "frontend",

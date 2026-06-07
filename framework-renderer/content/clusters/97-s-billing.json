@@ -1,0 +1,140 @@
+{
+  "id": "s-billing",
+  "title": "Billing + Subscription — SaaS satış altyapısı",
+  "subtitle": "15 SaaS ürünü SaaS olarak satılacak: abonelik, trial, prorate, dunning, fatura, vergi otomasyonu.",
+  "cluster": "stack",
+  "order": 13,
+  "icon": "ph-receipt",
+  "granularity": "buyuk-tas",
+  "state": "wip",
+  "tags": [
+    "stack",
+    "billing",
+    "subscription",
+    "saas",
+    "tax",
+    "invoicing"
+  ],
+  "enrich": {
+    "info": "Subscription lifecycle, trial, upgrade/downgrade prorating, dunning (ödeme başarısız), invoice PDF, KDV otomatik.",
+    "detail": "**Subscription lifecycle:**\n\n1. **Signup** — Trial 14 gün, ücretsiz, kart bilgisi opsiyonel\n2. **Trial ending** — Bitime 3 gün kala uyarı email\n3. **Conversion** — Kart bilgisi alınır, ilk faturalandırma\n4. **Renewal** — Otomatik aylık/yıllık fatura\n5. **Upgrade** — Daha üst plana geçiş, anlık prorate\n6. **Downgrade** — Alt plana, bir sonraki dönem aktif\n7. **Cancellation** — Dönem sonuna kadar erişim sürer\n8. **Reactivation** — 90 gün içinde geri gelse aynı plan\n\n**Dunning (ödeme başarısız):**\n- 1. deneme: 1 gün sonra retry\n- 2. deneme: 3 gün sonra + email\n- 3. deneme: 7 gün sonra + son uyarı\n- Hala başarısız: hesap suspend (veri silinmez)\n\n**Prorating (orantılı):**\n- Free → Pro mid-month → Pro'nun günlük ücreti × kalan gün\n- Pro → Enterprise mid-month → fark günlük × kalan gün, hemen ücret\n\n**Tax (KDV/VAT):**\n- TR müşteri: %20 KDV otomatik\n- AB müşteri: KDV reverse charge (B2B) veya yerel oran (B2C)\n- ABD müşteri: state tax (TaxJar entegrasyonu)\n\n**Fatura PDF:** Pandoc/wkhtmltopdf ile HTML → PDF. e-Fatura entegrasyonu TR için ayrı.",
+    "terms": [
+      {
+        "term": "Subscription",
+        "abbrev_tr": "Abonelik",
+        "meaning": "Düzenli aralıklarla (ay/yıl) otomatik fatura.",
+        "why": "SaaS işletme modelinin temeli — recurring revenue."
+      },
+      {
+        "term": "Trial",
+        "abbrev_tr": "Deneme",
+        "meaning": "Ücretsiz deneme süresi, kart bilgisi opsiyonel.",
+        "why": "Conversion oranı %2-5; conversion hunisinin başı."
+      },
+      {
+        "term": "Dunning",
+        "abbrev_tr": "Borç hatırlatma",
+        "meaning": "Ödeme başarısız → retry + email + suspend süreci.",
+        "why": "Kart süresi dolmuş, banka declined — %5-8 churn buradan."
+      },
+      {
+        "term": "MRR",
+        "abbrev_of": "Monthly Recurring Revenue",
+        "abbrev_tr": "Aylık tekrar gelir",
+        "meaning": "Aylık fatura toplamı — SaaS ana KPI.",
+        "why": "Yatırımcı/değerleme buna bakar."
+      },
+      {
+        "term": "Prorating",
+        "abbrev_tr": "Orantılı kesim",
+        "meaning": "Plan değişiminde kalan süreye orantılı fatura.",
+        "why": "Üyeyi adil hisset; ay ortası upgrade'i para basar."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Apartman aidatı — Murat Bey (61)",
+        "context": "Murat Bey aidat tablosu tutuyor. Dairenin biri ay ortasında satıldı, yeni sakin geldi. Eski sakine 'yarısı sen öde' diye not yazdı; yeni sakine 'kalan yarısı'.",
+        "outcome": "Bu prorate. Tam ay almak adil değildi; günlük hesaba göre bölündü."
+      },
+      {
+        "persona": "Spor salonu üyeliği — Yusuf Bey (66)",
+        "context": "Yusuf Bey aylık üyelik aldı, 3 ay sonra iptal istedi. Salon 'bu ay sonuna kadar gel' dedi.",
+        "outcome": "Bu cancellation policy: dönem sonuna kadar erişim, sonra otomatik kapanma."
+      }
+    ],
+    "lesson": {
+      "ne": "SaaS ürününü satmak için abonelik yönetimi, ödeme tahsilatı, fatura üretimi ve müşteri lifecycle'i.",
+      "nicin": "Tek seferlik ödeme = e-ticaret. Aylık tekrar gelir = SaaS. Subscription mimarisi olmadan SaaS satamazsın.",
+      "nasil": "1) Stripe/Paddle ödeme sağlayıcı entegrasyonu. 2) Subscription tablo: customer + plan + status + period. 3) Webhook listener: payment.succeeded/failed. 4) Dunning state machine. 5) Invoice PDF üretici. 6) KVKK/vergi otomatik.",
+      "nerede": "`s-billing` cluster + Stripe (uluslararası) veya Iyzico/PayTR (TR). l1-audit ile her billing event log.",
+      "ne_zaman": "İlk müşteri kazanmadan ÖNCE billing altyapısı hazır. Sonradan migration = aylar.",
+      "kim": "Backend mühendisi entegrasyon yazar; muhasebe vergi kuralı verir; CS dunning sürecini takip.",
+      "analoji": "Internet servisi: ayda 200 TL, otomatik kesilir. Ödenmezse uyarı, sonra kesinti, sonra hattın sökülmesi. SaaS aynı."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Billing = revenue engine.** Bug = direct gelir kaybı. Çift fatura, eksik fatura, vergi hatası — hepsi muhasebe + güven krizi."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "Stripe vs custom",
+      "body": "Custom billing yazmak = aylar + sürekli compliance bakım. **Stripe (uluslararası) veya Iyzico (TR) zorunlu seçim** — kendisi PCI-DSS, vergi, dunning vs. hallediyor. Sıfırdan billing yazma."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Stripe entegrasyonu: Checkout Session ile signup, webhook listener payment.succeeded → subscription tablosu güncelle. Plan değişikliği için Stripe API. Dunning Stripe'ın smart_retries ayarı. Fatura PDF Stripe'ın hosted invoice URL'i.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Subscription state machine"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Durum",
+        "Sonraki olası durum",
+        "Tetikleyici"
+      ],
+      "rows": [
+        [
+          "trialing",
+          "active / canceled",
+          "Trial sonu + kart ekleme"
+        ],
+        [
+          "active",
+          "past_due / canceled",
+          "Ödeme başarısız / kullanıcı iptal"
+        ],
+        [
+          "past_due",
+          "active / unpaid",
+          "Dunning retry başarılı / max retry"
+        ],
+        [
+          "unpaid",
+          "active / canceled",
+          "Manuel ödeme / süre dolması"
+        ],
+        [
+          "canceled",
+          "active",
+          "Reactivation (90 gün içinde)"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "s-commerce",
+    "s-accounting",
+    "cc-tr",
+    "cc-privacy"
+  ]
+}

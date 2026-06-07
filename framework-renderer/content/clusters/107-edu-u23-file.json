@@ -1,0 +1,147 @@
+{
+  "id": "edu-u23",
+  "title": "Dosya İşleme — yükleme, optimize, virüs taraması",
+  "subtitle": "Kullanıcı 100MB dosya yükledi; sunucu çöktü. Antivirus taramadın, kötü dosya geldi. Presigned URL + ClamAV = çözüm.",
+  "cluster": "edu",
+  "order": 26,
+  "icon": "ph-file-arrow-up",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "file-upload",
+    "s3",
+    "clamav",
+    "image-optimization"
+  ],
+  "enrich": {
+    "info": "Presigned URL (direkt S3), MIME validation, size limit, antivirus (ClamAV), image resize (sharp), video encoding (FFmpeg).",
+    "detail": "**Direkt-from-browser-to-S3 (presigned URL):**\n\nKlasik (kötü): browser → backend → S3. Backend 100MB'ı RAM'e alır, S3'e yollar. RAM şişer, yavaş.\n\nModern (iyi): backend `presigned PUT URL` üretir → browser direkt S3'e yükler → backend sadece metadata kaydeder.\n\n**Validation katmanları:**\n\n1. **Frontend** (UX): boyut + MIME type bildiri\n2. **Presigned URL** kısıtlama: max 50MB, sadece image/*\n3. **Backend webhook**: S3 'upload bitti' der; backend metadata kaydeder + virus scan tetikler\n4. **Antivirus**: ClamAV ile dosyayı tarayıp clean değilse silmek\n\n**MIME validation:**\n- Frontend'in dediği MIME'a güvenme; backend `file --mime-type` çalıştır\n- Filename extension'a güvenme; saldırgan `evil.png.exe` yazar\n\n**Image optimization (sharp):**\n- Yüklenen 5MB JPEG → 200KB WebP + 800px thumbnail\n- Disk + bandwidth %90 tasarruf\n- Worker tarafında, async\n\n**Video encoding (FFmpeg):**\n- Kullanıcı 1GB MP4 yükledi → 360p/720p/1080p HLS chunks\n- Adaptive bitrate streaming için zorunlu\n- Pahalı: dedicated worker pool\n\n**Storage tier:**\n- Hot (S3 Standard): son 30 gün\n- Warm (S3 IA): 30-90 gün\n- Cold (S3 Glacier): 90+ gün — saniyeler içinde erişim değil",
+    "terms": [
+      {
+        "term": "Presigned URL",
+        "abbrev_tr": "İmzalı geçici URL",
+        "meaning": "Backend'in S3'e izin verdiğini gösteren, 15 dk geçerli URL.",
+        "why": "Browser direkt S3'e yükler; backend RAM kullanmaz."
+      },
+      {
+        "term": "MIME Type",
+        "abbrev_tr": "İçerik tipi",
+        "meaning": "Dosyanın gerçek tipi: image/png, application/pdf.",
+        "why": "Filename'e güven olmaz; magic bytes'tan tespit edilir."
+      },
+      {
+        "term": "ClamAV",
+        "abbrev_tr": "Antivirus motoru",
+        "meaning": "Açık kaynaklı virus tarayıcı; dosyayı imza database'i ile eşleştirir.",
+        "why": "Kötü amaçlı dosyayı kullanıcıya servis etmek = sorumluluk."
+      },
+      {
+        "term": "Sharp",
+        "abbrev_tr": "Image kütüphanesi",
+        "meaning": "Node.js için hızlı image işleme: resize, format dönüştürme.",
+        "why": "5MB JPEG → 200KB WebP = %90 tasarruf."
+      },
+      {
+        "term": "Storage Tier",
+        "abbrev_tr": "Saklama katmanı",
+        "meaning": "Hot/warm/cold — erişim sıklığına göre fiyat.",
+        "why": "Cold tier %80 ucuz; 90 gün sonra otomatik düşür."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Berber Mehmet Usta (60) — randevu defteri fotoğrafı",
+        "context": "Mehmet Usta müşteri saç fotoğraflarını telefonla çekip arşivliyor. Defter dolu, telefon dolu. Hangi müşteri hangi tarihte? Arama imkânsız.",
+        "outcome": "Sistem: foto upload → S3 → image optimize 800px thumbnail → metadata (müşteri, tarih) ile arama. Telefon ağı kullanmaz."
+      },
+      {
+        "persona": "Apartman belge arşivi — Murat Bey (61)",
+        "context": "Murat Bey apartman karar tutanaklarını PDF olarak topluyor. 50 PDF, hangisi hangi yıla?",
+        "outcome": "Yüklerken: metadata (yıl, konu, katılımcılar). S3'te saklama. Arama: 'su deposu' kelimesi geçen tutanaklar. PDF text extraction (Tika) + search index."
+      }
+    ],
+    "lesson": {
+      "ne": "Kullanıcı dosya yüklemesi + optimize + güvenlik + arşivleme.",
+      "nicin": "Dosya yüklerken sunucu çökmesin, virus geçmesin, alan bol kullanılmasın.",
+      "nasil": "1) Presigned URL ile direkt S3'e. 2) MIME + size validation. 3) ClamAV antivirus. 4) sharp ile image optimize. 5) Storage tier policy.",
+      "nerede": "`l1-file` cluster + S3-compatible storage (Hetzner Object Storage veya Backblaze B2).",
+      "ne_zaman": "İlk file upload özelliği eklenirken disiplin hazır.",
+      "kim": "Backend developer worker yazar; DevOps S3 + ClamAV kurar; security team antivirus güncel tutar.",
+      "analoji": "Eşya yükleme: kantar (size), ne olduğunu yazma (MIME), gümrükte tarama (antivirus), dolaba yerleştirme (storage tier)."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Dosya yükleme = en risky özellik.** Boyut, içerik tipi, virus, depolama — hepsi tuzak. Presigned URL + worker chain ile temiz çözüm."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "Backend-through upload tuzağı",
+      "body": "Kullanıcı 500MB yükledi → backend RAM'e alır → çökme. Birden fazla eşzamanlı yükleme = OOM. **Presigned URL direkt-from-browser-to-S3 ile backend RAM'i kullanmaz.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'File upload: presigned PUT URL endpoint, max 50MB image/*, 15dk valid. S3 webhook → backend metadata kaydet → ClamAV scan job → sharp resize 800px thumbnail → image_status = ready. Failed scan = file delete + log.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Upload chain — worker adımları"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Adım",
+        "İş",
+        "Süre"
+      ],
+      "rows": [
+        [
+          "1. Presigned URL",
+          "Backend URL üretir",
+          "< 100ms"
+        ],
+        [
+          "2. Direct upload",
+          "Browser → S3",
+          "Dosya boyutuna göre"
+        ],
+        [
+          "3. Webhook",
+          "S3 → backend 'upload done'",
+          "Anında"
+        ],
+        [
+          "4. Metadata",
+          "Backend DB'ye kaydet",
+          "< 50ms"
+        ],
+        [
+          "5. Antivirus",
+          "ClamAV scan",
+          "5-60 sn"
+        ],
+        [
+          "6. Optimize",
+          "sharp resize/convert",
+          "1-10 sn"
+        ],
+        [
+          "7. Ready",
+          "Frontend bildir (SSE)",
+          "Anında"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "l1-file",
+    "scale-webhook",
+    "cc-security"
+  ]
+}

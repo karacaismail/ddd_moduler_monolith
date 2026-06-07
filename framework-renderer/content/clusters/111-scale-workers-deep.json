@@ -1,0 +1,132 @@
+{
+  "id": "scale-workers-deep",
+  "title": "Background Jobs — cron, delay, recurring, priority",
+  "subtitle": "'Şimdi yapma, 3 saat sonra' veya 'her sabah 6'da'. Scheduler katmanı + retry + priority + DLQ.",
+  "cluster": "scale",
+  "order": 12,
+  "icon": "ph-clock-counter-clockwise",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "scale",
+    "scheduler",
+    "cron",
+    "background-jobs",
+    "bull"
+  ],
+  "enrich": {
+    "info": "BullMQ veya DBOS (Postgres-native). Cron syntax, delayed jobs, recurring, priority queue, exponential retry, DLQ.",
+    "detail": "**4 job türü:**\n\n1. **Immediate** — hemen çalış\n2. **Delayed** — X süre sonra\n3. **Recurring (cron)** — sabit aralık\n4. **Scheduled** — belli tarih\n\n**Cron syntax:**\n```\n* * * * *  → her dakika\n0 6 * * *  → her gün 06:00\n0 0 * * 0  → her Pazar\n0 0 1 * *  → her ayın 1'i\n```\n\n**Job priority:** High (kullanıcı bekliyor) > Normal (arka plan) > Low (toplu).\n\n**Retry strategy:** exponential backoff 1s, 2s, 4s, 8s, vazgeç → DLQ.\n\n**Implementation:**\n- **BullMQ** (Redis): yaygın\n- **DBOS** (Postgres durable execution): mevcut karara uygun — preferred\n- **Temporal**: workflow orchestration",
+    "terms": [
+      {
+        "term": "Cron",
+        "abbrev_tr": "Cron (zamanlanmış)",
+        "meaning": "Unix'in zamanlama syntax'ı.",
+        "why": "60 yıllık standart."
+      },
+      {
+        "term": "Delayed Job",
+        "abbrev_tr": "Gecikmeli iş",
+        "meaning": "X süre sonra çalışsın.",
+        "why": "'1 saat sonra cart hatırlatma'."
+      },
+      {
+        "term": "Priority Queue",
+        "abbrev_tr": "Öncelik kuyruğu",
+        "meaning": "Yüksek öncelikli önce işlenir.",
+        "why": "Kullanıcı bekleyen iş önce."
+      },
+      {
+        "term": "Visibility Timeout",
+        "abbrev_tr": "Görünürlük süresi",
+        "meaning": "Worker iş aldıktan sonra başkasının görmemesi süresi.",
+        "why": "Worker crash = iş başkasına geçer."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Apartman temizlik programı — Murat Bey (61)",
+        "context": "Haftalık temizlik: 'Pzt elektrik, Çar lavabo, Cuma genel'.",
+        "outcome": "Bu cron job: belli zamanlarda otomatik tekrar."
+      },
+      {
+        "persona": "Berber Mehmet Usta (60) — randevu hatırlatma",
+        "context": "Müşteriye 'yarın 10:00 randevun' 1 gün önce SMS atıyor.",
+        "outcome": "Scheduled job: randevu - 24 saat = SMS gönder."
+      }
+    ],
+    "lesson": {
+      "ne": "Anlık olmayan işleri güvenilir çalıştırma altyapısı.",
+      "nicin": "Synchronous yapamazsın: email 5 sn, kullanıcı bekletme. Cron olmayan recurring imkânsız.",
+      "nasil": "1) DBOS veya BullMQ. 2) Priority. 3) Exponential backoff. 4) DLQ + alarm.",
+      "nerede": "`scale-workers` cluster.",
+      "ne_zaman": "İlk async iş öncesi queue hazır.",
+      "kim": "Backend developer worker; SRE pool; on-call DLQ.",
+      "analoji": "Belediye çöp kamyonu: çöp kutusu dolduğunda (immediate), her Salı sabah (cron)."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Background jobs = async sistem omurgası.** Worker olmadan synchronous = yavaş + kırılgan."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Idempotency olmadan retry",
+      "body": "'sipariş için email gönder' job, retry sonrası **çift email**. Çözüm: `processed_jobs` tablosu, ON CONFLICT DO NOTHING."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'DBOS ile durable worker: order_created → send_email job (HIGH priority, idempotency_key = order_id). Cron: 0 6 * * * daily_report. Retry: 5 attempt exponential. Failed → DLQ + Slack alarm.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Job tipi seçim"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "İhtiyaç",
+        "Tip",
+        "Örnek"
+      ],
+      "rows": [
+        [
+          "Anlık async",
+          "Immediate",
+          "Email after order"
+        ],
+        [
+          "X süre sonra",
+          "Delayed",
+          "1h after cart abandon"
+        ],
+        [
+          "Tekrarlayan",
+          "Cron",
+          "Daily report 06:00"
+        ],
+        [
+          "Belli tarih",
+          "Scheduled",
+          "Black Friday 00:00"
+        ],
+        [
+          "Multi-step",
+          "Saga/Durable",
+          "Order → pay → ship"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "scale-workers",
+    "scale-saga",
+    "sus-durable",
+    "scale-outbox"
+  ]
+}

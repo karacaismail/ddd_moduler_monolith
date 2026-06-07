@@ -4,7 +4,7 @@
   "subtitle": "Framework AI-first iddiasının çıktığı yer. Diğer stack'ler bu primitive'leri tüketir.",
   "cluster": "stack",
   "layer": "l2",
-  "order": 31,
+  "order": 9,
   "icon": "ph-robot",
   "badge": "Layer 2 Stack #9 — Differentiator",
   "tags": [

@@ -3,7 +3,7 @@
   "title": "Frontend — Çekirdek + UI + State + API",
   "subtitle": "React 19 + Vite 6 + TypeScript 5.6 + Flowbite Pro + TanStack + Refine.",
   "cluster": "frontend",
-  "order": 54,
+  "order": 3,
   "icon": "ph-puzzle-piece",
   "tags": [
     "frontend",

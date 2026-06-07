@@ -1,0 +1,143 @@
+{
+  "id": "fe-cdn",
+  "title": "CDN Strategy — sınırın uçtaki dağıtım",
+  "subtitle": "Static asset kullanıcıya en yakın edge sunucudan servisle. Bunny veya Cloudflare; cache invalidation.",
+  "cluster": "frontend",
+  "order": 9,
+  "icon": "ph-globe-stand",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "frontend",
+    "cdn",
+    "cloudflare",
+    "bunny",
+    "cache-invalidation"
+  ],
+  "enrich": {
+    "info": "Cloudflare/Bunny/Fastly edge cache, signed URL, image optimize at edge, cache invalidation, hash-based versioning.",
+    "detail": "**CDN ne?** Statik dosyaları dünyaya yayılmış edge sunucularda cache'leyen ağ. İstanbul kullanıcı İstanbul edge'inden alır.\n\n**CDN seçimi:**\n- **Cloudflare**: Free tier var, WAF + DDoS dahil\n- **Bunny CDN**: Çok ucuz ($0.005/GB)\n- **Fastly**: Pahalı, premium\n- **AWS CloudFront**: AWS ekosistem\n\n**Cache header'ları:**\n```\nCache-Control: public, max-age=31536000, immutable\n```\n\n**Hash-based versioning:**\n```\napp.a3f9b2c.js  ← hash dosya adında\napp.b8e1d4a.js  ← yeni build, yeni hash\n```\n\n**Image optimization at edge:**\n```\noriginal.jpg → bunny.cdn/?width=400&quality=75 → optimized.webp\n```",
+    "terms": [
+      {
+        "term": "CDN",
+        "abbrev_of": "Content Delivery Network",
+        "abbrev_tr": "İçerik dağıtım ağı",
+        "meaning": "Edge sunucu ağı.",
+        "why": "İstanbul 5ms vs Almanya 50ms."
+      },
+      {
+        "term": "Edge",
+        "abbrev_tr": "Sınır sunucu",
+        "meaning": "CDN'in dağıttığı önbellekleyen sunucu.",
+        "why": "Kullanıcıya en yakın = en hızlı."
+      },
+      {
+        "term": "Cache Invalidation",
+        "abbrev_tr": "Önbellek geçersiz kılma",
+        "meaning": "Eski cache'i temizleyip yeniyi servisleme.",
+        "why": "Bilgisayar biliminin 2 zor probleminden biri."
+      },
+      {
+        "term": "Hash-based Versioning",
+        "abbrev_tr": "Hash tabanlı versiyon",
+        "meaning": "Dosya adına içerik hash'i.",
+        "why": "Yeni içerik = yeni URL = invalidation otomatik."
+      },
+      {
+        "term": "Signed URL",
+        "abbrev_tr": "İmzalı URL",
+        "meaning": "Kısa süreli kullanıcıya özel CDN linki.",
+        "why": "Premium content public link olmasın."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Hatice Teyze (62) — semt fırın",
+        "context": "Semt fırınından her sabah ekmek alıyor.",
+        "outcome": "Bu CDN: yakın olan kazanır."
+      },
+      {
+        "persona": "Murat Bey (61) — apartman su deposu",
+        "context": "Tek depo + uzun boru yerine her daire için yedek depo.",
+        "outcome": "Edge cache: tek origin + yakın yedek."
+      }
+    ],
+    "lesson": {
+      "ne": "Statik dosyaları edge sunucularda cache'leyip yakın yerden servisle.",
+      "nicin": "5ms vs 50ms = 10x hız.",
+      "nasil": "1) Cloudflare veya Bunny. 2) Hash-based versioning. 3) Cache-Control doğru. 4) Image optimize at edge.",
+      "nerede": "`fe-deploy` ile birlikte.",
+      "ne_zaman": "İlk production deploy öncesi.",
+      "kim": "DevOps CDN ayarı; frontend developer header.",
+      "analoji": "Posta: tek merkez yerine 50 ilde dağıtım."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**CDN olmadan modern frontend = yavaş.** Cloudflare free tier startup için yeter."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Cache invalidation = en zor problem",
+      "body": "Hash-based versioning bunu büyük ölçüde çözer; manuel PURGE son çare."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Vite build hash-based filename. Cloudflare config: max-age=31536000 immutable. Image upload S3, CDN edge transform.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "CDN seçim matrisi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "CDN",
+        "Fiyat",
+        "Free tier",
+        "WAF",
+        "Image"
+      ],
+      "rows": [
+        [
+          "Cloudflare",
+          "$",
+          "Var",
+          "✓",
+          "Polish (paid)"
+        ],
+        [
+          "Bunny",
+          "$",
+          "Yok",
+          "✗",
+          "✓ Optimizer"
+        ],
+        [
+          "Fastly",
+          "$$$",
+          "Yok",
+          "✓",
+          "✓"
+        ],
+        [
+          "CloudFront",
+          "$$",
+          "Yok",
+          "✓",
+          "Lambda@Edge"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "fe-deploy",
+    "l1-file",
+    "scale-cache"
+  ]
+}

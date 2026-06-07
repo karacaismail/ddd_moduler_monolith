@@ -1,0 +1,147 @@
+{
+  "id": "edu-u22",
+  "title": "Email + SMS — bildirim güvenirliği",
+  "subtitle": "Email gönderdin diye geldi sanma. SPF/DKIM/DMARC yoksa spam'a düşer. SMS: cep operatörü engelleyebilir.",
+  "cluster": "edu",
+  "order": 25,
+  "icon": "ph-envelope",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "email",
+    "sms",
+    "deliverability",
+    "spf",
+    "dkim",
+    "dmarc"
+  ],
+  "enrich": {
+    "info": "SMTP vs SES/SendGrid, SPF/DKIM/DMARC, bounce/complaint handling, SMS provider seçimi, multi-channel fallback.",
+    "detail": "**Email gönderim seçenekleri:**\n\n1. **Self-hosted SMTP**: Postfix kurarsın → IP reputation zayıf → spam'a düşer. **YASAK** modern sistemde.\n2. **SES (AWS)**: Ucuz ($0.10/1000), reputation iyi. EU region için Hetzner ile uyumlu.\n3. **SendGrid/Mailgun/Postmark**: Pahalı ama temiz reputation + analytics.\n\n**Deliverability triple (zorunlu DNS):**\n\n- **SPF** (Sender Policy Framework): 'Bu domain'in gönderebileceği sunucu listesi'. `v=spf1 include:_spf.mailgun.org -all`\n- **DKIM** (DomainKeys Identified Mail): Her email'e cryptographic imza. Sahteciliği önler.\n- **DMARC**: SPF + DKIM uyumsuz olursa ne yap? Reject mi, quarantine mi?\n\nBu üçü yoksa Gmail/Outlook %80 spam'a yollar.\n\n**Bounce + Complaint handling:**\n- **Hard bounce** (kalıcı): Suppression list — bir daha gönderme\n- **Soft bounce** (geçici): 24 saat sonra retry\n- **Complaint** (spam işareti): O kullanıcıya bir daha mail gönderme; AWS senin reputation'unu düşürür\n\n**SMS sağlayıcı:**\n- **Twilio**: Uluslararası, pahalı\n- **Netgsm/İletimerkezi**: TR yerel, ucuz, operatör dostu\n- **MessageBird**: Avrupa\n\n**Multi-channel fallback:**\n```\n1. Push notification → kullanıcı app'i açtı mı?\n2. Email → 5 dk içinde tıklandı mı?\n3. SMS → kritik bildirim (ödeme, randevu) için son şans\n```",
+    "terms": [
+      {
+        "term": "SPF",
+        "abbrev_of": "Sender Policy Framework",
+        "abbrev_tr": "Gönderici politika kuralı",
+        "meaning": "DNS TXT kaydı: bu domain'in mail göndermesine izinli sunucular.",
+        "why": "Sahte 'bizden geliyormuş gibi' email'ler engellenir."
+      },
+      {
+        "term": "DKIM",
+        "abbrev_of": "DomainKeys Identified Mail",
+        "abbrev_tr": "Anahtarlı email kimliği",
+        "meaning": "Email'e cryptographic imza ekleme.",
+        "why": "Email içeriği yolda değiştirildi mi? İmza doğrulamaz = değişti."
+      },
+      {
+        "term": "DMARC",
+        "abbrev_of": "Domain-based Message Authentication",
+        "abbrev_tr": "Etki alanı tabanlı doğrulama",
+        "meaning": "SPF/DKIM uyumsuz mail için politika: reject/quarantine/none.",
+        "why": "Uyumsuz mail bir yere bildirilmezse spam reputation düşer."
+      },
+      {
+        "term": "Bounce",
+        "abbrev_tr": "Sıçrama (mail dönüşü)",
+        "meaning": "Mail kabul edilmedi; suppress list'e at.",
+        "why": "Tekrar deneme = reputation kaybı."
+      },
+      {
+        "term": "Complaint",
+        "abbrev_tr": "Şikâyet",
+        "meaning": "Kullanıcı 'spam' işaretledi.",
+        "why": "Reputation'unu düşürür; sağlayıcı seni keser."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Postacı Yusuf Bey (66) — eski usul mektup",
+        "context": "Yusuf Bey emekli postacı. Mektup elden teslim edilir; alıcı yoksa kapı kâğıdı bırakır, tekrar dener. 3 deneme sonu posta kutusuna.",
+        "outcome": "Bu deliverability: mektup 'gönderildi' demek 'teslim edildi' demek değil. Sistem aynı: gönderim = ?, teslim = bounce kontrolü ile."
+      },
+      {
+        "persona": "Hatice Teyze (62) — randevu hatırlatma",
+        "context": "Doktor randevusunu unuttu, geç geldi. Klinik telefon edemedi (numara değişmiş), SMS attılar — gitmedi (operatör spam filtresi).",
+        "outcome": "Multi-channel fallback: önce push, sonra email, sonra SMS. Tek kanala bel bağlama."
+      }
+    ],
+    "lesson": {
+      "ne": "Email ve SMS bildirimleri güvenilir gönderme + ulaşıldığını doğrulama.",
+      "nicin": "Email gönderdin = ulaştığı belli değil. SPF/DKIM/DMARC olmadan spam'a düşer. Multi-channel olmadan kritik bildirim kaybolur.",
+      "nasil": "1) SES veya SendGrid + SPF/DKIM/DMARC DNS. 2) Bounce/complaint webhook → suppression list. 3) Multi-channel: push → email → SMS. 4) Open/click tracking (analytics).",
+      "nerede": "`l1-notification` cluster. Worker'lar event'ten tetiklenir.",
+      "ne_zaman": "İlk transactional email (password reset, fatura) öncesi deliverability hazır.",
+      "kim": "DevOps DNS kayıtlarını ekler; backend developer worker yazar; CRM team şikâyet oranını izler.",
+      "analoji": "Kargo: gönderildi (ship), yolda (in_transit), teslim edildi (delivered), iade (bounce). Email aynı 4 durum."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Email = en az güvenilir kanal.** Gönderdin diye ulaştı sanma. SPF/DKIM/DMARC + bounce handling olmadan transactional email kullanılamaz."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Self-hosted SMTP tuzağı",
+      "body": "'Postfix kurarım, ücretsiz' der. Yeni IP = 0 reputation = spam'a düşer. Reputation kazanmak 6 ay + sabır. **SES/SendGrid kullan, IP reputation hazır.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Email worker: SES kullan, from address verified domain, SPF/DKIM/DMARC DNS kayıtlı varsayım. Bounce webhook → users.email_status = bounced. Open/click tracking. Idempotency: aynı (user, template, day) tekrar gönderme.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Deliverability kontrol listesi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Kontrol",
+        "Komut/Yer",
+        "Beklenen"
+      ],
+      "rows": [
+        [
+          "SPF",
+          "dig TXT yourdomain.com",
+          "v=spf1 include:..."
+        ],
+        [
+          "DKIM",
+          "dig TXT selector._domainkey.yourdomain.com",
+          "v=DKIM1; k=rsa;..."
+        ],
+        [
+          "DMARC",
+          "dig TXT _dmarc.yourdomain.com",
+          "v=DMARC1; p=quarantine;..."
+        ],
+        [
+          "Bounce webhook",
+          "SES/SendGrid dashboard",
+          "Endpoint yapılandırılmış"
+        ],
+        [
+          "Suppression list",
+          "users tablo",
+          "email_status kolonu"
+        ],
+        [
+          "Reputation",
+          "mail-tester.com",
+          "10/10"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "l1-notification",
+    "cc-obs",
+    "cc-security"
+  ]
+}

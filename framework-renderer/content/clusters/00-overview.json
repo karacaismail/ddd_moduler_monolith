@@ -3,7 +3,7 @@
   "title": "Yönetici özeti",
   "subtitle": "Bu sayfa 15 SaaS ürünü taşıyacak DDD modüler monolith framework'ün master haritası — JSON-driven, dinamik render.",
   "cluster": "meta",
-  "order": 0,
+  "order": 1,
   "icon": "ph-list-checks",
   "granularity": "kaya",
   "state": "wip",

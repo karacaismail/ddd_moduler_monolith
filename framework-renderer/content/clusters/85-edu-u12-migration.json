@@ -1,0 +1,194 @@
+{
+  "id": "edu-u12",
+  "title": "Migration Disiplini — şema evrimi",
+  "subtitle": "Çalışan üretimde tablo değiştirmek = bisikletin lastiğini yolda değiştirmek. Yöntem var: expand/contract.",
+  "cluster": "edu",
+  "order": 15,
+  "icon": "ph-arrows-clockwise",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "migration",
+    "schema",
+    "zero-downtime",
+    "backfill"
+  ],
+  "enrich": {
+    "info": "Forward-only mu rollback'li mi, expand/contract, zero-downtime, backfill, migration testing.",
+    "detail": "**Temel kural:** Üretimde çalışan tabloda **dramatik değişiklik yok**. Adım adım, geri-uyumlu.\n\n**Expand/Contract pattern (Stripe + GitHub):**\n\n1. **Expand**: Yeni kolonu/tabloyu ekle (eski hala çalışır)\n2. **Migrate**: Veriyi yavaş yavaş yeniye kopyala (backfill)\n3. **Switch**: Kod yeni kolonu okumaya başla\n4. **Contract**: Eski kolonu sil\n\nHer adım ayrı deployment. Geri dönmek mümkün. Kullanıcı görmez.\n\n**Forward-only**: Modern yaklaşım. Rollback yerine 'ileri git ve düzelt'. Sebep: rollback'in kendisi de tehlikeli olabilir (ileride yazılmış veri ne olacak?).\n\n**Backfill**: Yeni kolonu eski satırlar için doldurma. Büyük tabloda batch'lerle (her seferinde 1000 satır) yapılır. Yoksa tablo kilitlenir.\n\n**Migration testing**: Üretim verisinin kopyası üzerinde önceden çalıştır. 'Test'te geçti, üretimde patladı' = tehlikeli.",
+    "terms": [
+      {
+        "term": "Migration",
+        "abbrev_tr": "Şema göçü",
+        "meaning": "Veritabanı yapısını (tablolar, kolonlar) değiştiren tanımlı, sıralı kod parçası.",
+        "why": "El ile SQL çalıştırılırsa hangi DB'de hangi yapı var bilinmez; migration sıralı, versioned, izlenebilir."
+      },
+      {
+        "term": "Expand/Contract",
+        "abbrev_tr": "Genişlet/Daralt",
+        "meaning": "Önce yeni yapıyı ekle (genişlet), kod geçer, sonra eski yapıyı sil (daralt).",
+        "why": "Tek adımda değişiklik = kullanıcı kesintisi. İki adımda = sıfır kesinti."
+      },
+      {
+        "term": "Backfill",
+        "abbrev_tr": "Geri doldurma",
+        "meaning": "Yeni eklenen kolonun eski satırlarda doldurulması.",
+        "why": "Yeni kolon NOT NULL'sa eski satırlar bunu içermeli; yoksa migration düşer."
+      },
+      {
+        "term": "Zero-downtime",
+        "abbrev_tr": "Sıfır kesinti",
+        "meaning": "Migration sırasında kullanıcı hizmeti hiç durmaz.",
+        "why": "SaaS satıyorsan 'gece bakım, sistem kapalı' kabul edilmez. Modern beklenti 7/24."
+      },
+      {
+        "term": "Forward-only",
+        "abbrev_tr": "İleri-yön (geri yok)",
+        "meaning": "Rollback yazma; hata olursa ileri yeni bir migration ile düzelt.",
+        "why": "Rollback ileride yazılan veriyi kaybedebilir; ileri-yön safer."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Apartman duvarına yeni kolon eklenmesi",
+        "context": "Bina 30 yıllık. Asansör eklemek isteniyor. Kapı kapı dolaşıp 'evden çıkın' diyebilirler mi? Hayır.",
+        "outcome": "Önce yeni şaft inşa et (expand). Asansör kuruldu, test edildi. Sonra eski merdiven duvarı dekoratif kapla (contract). Kimse 1 gün bile evden çıkmadı. Migration aynısı."
+      },
+      {
+        "persona": "Bakkal Cengiz Bey (60) — yeni POS",
+        "context": "Cengiz Bey yeni POS aldı. Eski yazar kasayı hemen söküp atmadı; 2 hafta yeni POS'u öğrenirken eskisi yedek olarak yanında durdu. İkinci hafta sonu eski kasayı sattı.",
+        "outcome": "Bu expand/contract: yeni sistem ekle, eski hala çalışsın, yeni öğrenildikten sonra eskiyi kaldır. Tek günde POS değişimi yapsaydı, 'ya yeni bozulursa?' korkusuyla iş aksardı."
+      },
+      {
+        "persona": "Otel rezervasyon kartı — telefon kolonu eklenmesi",
+        "context": "Otel 10.000 müşteri kartına 'telefon' kolonu eklemek istiyor. Tek `ALTER TABLE` ile NOT NULL eklerse: eski 10K kayıt 'telefon yok' → migration patlar, otel çalışmaz.",
+        "outcome": "Expand: telefon kolonu NULLABLE eklendi. Backfill: 1000'er kayıt batch'i, telefonu olmayanlara '-' default. Switch: form 'telefon zorunlu' kontrolü, eski kayıtlar düzenlenirken doldurulur. Contract: 6 ay sonra NOT NULL'a çevril."
+      }
+    ],
+    "lesson": {
+      "ne": "Veritabanı yapısını üretimde kullanıcıyı bilgilendirmeden, kesinti yaratmadan değiştirme tekniği.",
+      "nicin": "SaaS'ta tek günlük kesinti müşteri kaybettirir. Yanlış migration veri kaybettirir. Doğru migration disiplini olmadan üretime özellik göndermek imkânsız.",
+      "nasil": "1) Expand: yeni kolon NULLABLE ekle. 2) Kod hem eskiyi hem yeniyi yazsın. 3) Backfill batch ile. 4) Kod yeniyi okumaya başlasın. 5) Contract: eskiyi sil. **Her adım ayrı PR, ayrı deploy.**",
+      "nerede": "`prisma migrate` veya benzeri tool. Migration dosyaları sıralı: `20260101000000_add_phone.sql`. Üretim öncesi staging'de test edilir.",
+      "ne_zaman": "Her şema değişikliği için. NOT NULL ekleme, kolon yeniden adlandırma, tip değiştirme — hepsi expand/contract gerektirir.",
+      "kim": "Geliştirici migration yazar; DBA (varsa) gözden geçirir; SRE üretimde çalıştırır; on-call izler.",
+      "frontend": {
+        "yer": "Kullanıcı hiçbir şey hissetmemeli. Migration sırasında form çalışmalı.",
+        "gereklilik": "Yeni alan form'a hemen eklenmez; migration tamamen bitince eklenir.",
+        "ornek": "'Telefon kolonu' migration: backend backfill çalışırken frontend hâlâ telefonsuz çalışıyor; tüm satırlar doldurulduktan sonra form'a kolon eklenir."
+      },
+      "backend": {
+        "yer": "Prisma `schema.prisma` değişir → `npx prisma migrate dev --name add_phone` → SQL üretilir → review → staging → production.",
+        "gereklilik": "NOT NULL kolonu DEFAULT ile eklenir; sonra DEFAULT kaldırılır. NULL kolonu zorunluya çevrilir.",
+        "ornek": "`ALTER TABLE customer ADD COLUMN phone TEXT;` (NULLABLE) → backfill → `ALTER TABLE customer ALTER COLUMN phone SET NOT NULL;`"
+      },
+      "analoji": "Köprü inşaatı: trafik durmadan yeni köprü inşa edilir, açılır, eski köprü sonra kapatılır. Bir günlük 'köprü kapalı' yok."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Migration disiplinin özü:** *'Eski hala çalışırken yeniyi ekle. Yeni çalıştığını doğrula. Sonra eskiyi sil.'* Bu üç adım kullanıcıya hiç hissettirmez. Tek seferlik 'reform' = kesinti = hata."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "En klasik felaket",
+      "body": "Migration: `ALTER TABLE order ADD COLUMN status TEXT NOT NULL`. Eski 1M satırda status yok. Migration başlar, transaction tablo kilitler, 10 dakika kullanıcı sipariş veremez. Çözüm: **NOT NULL'u en son ekle**, önce NULLABLE + backfill."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a şöyle yaz: *'Order tablosuna status kolonu ekle. Expand/contract pattern ile: önce NULLABLE migration; sonra batch backfill script (1000'er); sonra NOT NULL migration. Üç ayrı Prisma migration dosyası.'* Tek seferde NOT NULL üretirse üretim çöker."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Şema değişikliği → adım sayısı"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Değişiklik",
+        "Tek adım?",
+        "Doğru yol"
+      ],
+      "rows": [
+        [
+          "Yeni NULLABLE kolon",
+          "✓ Tek adım",
+          "ALTER TABLE ADD COLUMN ... NULL"
+        ],
+        [
+          "Yeni NOT NULL kolon",
+          "✗ 3 adım",
+          "NULL ekle → backfill → NOT NULL'a çevir"
+        ],
+        [
+          "Kolon adı değiştirme",
+          "✗ 4 adım",
+          "Yeni kolon ekle → kod ikisini de yaz → backfill → eskiyi sil"
+        ],
+        [
+          "Kolon tipi değiştirme",
+          "✗ 4 adım",
+          "Yeni tipte kolon → kod ikisini de yaz → backfill → eskiyi sil"
+        ],
+        [
+          "Tablo silme",
+          "✗ 2 adım",
+          "Önce kod kullanmayı bıraksın → 1 hafta bekle → DROP"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Backfill — büyük tablo için"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Adım",
+        "Pratik",
+        "Sebep"
+      ],
+      "rows": [
+        [
+          "Batch boyutu",
+          "1000-5000 satır",
+          "Tek transaction tablo kilitlemez"
+        ],
+        [
+          "İki batch arası",
+          "100-500ms bekle",
+          "Replication slot bunalmasın"
+        ],
+        [
+          "İlerleme takibi",
+          "status kolonu veya ayrı tablo",
+          "Yarıda kalırsa kaldığı yerden devam"
+        ],
+        [
+          "Yeniden çalıştırılabilir",
+          "INSERT ON CONFLICT DO UPDATE",
+          "Aynı batch 2 kez çalışsa bile sorun yok"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Migration testing",
+      "body": "Üretim verisinin anonimleştirilmiş kopyasını staging'e yükle. Migration'ı orada çalıştır. **Süresini ölç.** 10 dakikadan uzunsa batch boyutunu küçült. 'Hızlı bittiğine sevin' = üretimde sürpriz."
+    }
+  ],
+  "related": [
+    "sus-bitemporal",
+    "sus-versioning",
+    "edu-u04",
+    "l1-misc"
+  ]
+}

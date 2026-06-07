@@ -1,0 +1,131 @@
+{
+  "id": "scale-streaming",
+  "title": "Streaming — Kafka, real-time aggregation",
+  "subtitle": "Modüler monolith için NADİREN gerekli. Ama 1M event/sn akışı varsa: Kafka + Flink/Materialize.",
+  "cluster": "scale",
+  "order": 14,
+  "icon": "ph-flow-arrow",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "scale",
+    "streaming",
+    "kafka",
+    "flink",
+    "real-time"
+  ],
+  "enrich": {
+    "info": "Kafka topic + consumer group, windowing, stateful aggregation. Modüler monolit'te Postgres LISTEN/NOTIFY veya outbox yeter.",
+    "detail": "**Streaming = real-time event processing.** Klasik batch yerine sürekli akış.\n\n**Ne zaman GEREKLI:**\n- > 100K event/saniye\n- Sub-second latency hedefi\n- Windowed aggregation (son 5 dk count)\n- Multiple consumer with replay\n\n**Mevcut framework için:** Çoğu SaaS bunu gerekmez. **Postgres LISTEN/NOTIFY + outbox + worker** yeterli. Kafka ekleme = ekip + operations + cost.\n\n**Eğer gerekirse:**\n- **Kafka** (en yaygın): KRaft mode, ZooKeeper-less\n- **Redpanda**: Kafka-uyumlu, daha hızlı, Go yazılı\n- **NATS JetStream**: Daha basit, küçük ölçek\n- **Materialize/RisingWave**: Streaming SQL\n\n**Patterns:**\n- **Event sourcing**: tüm state'i event'lerden kur\n- **CQRS**: read/write ayrı (scale-projections cluster zaten anlatıyor)\n- **Windowed aggregation**: 'son 5 dk view count' sürekli güncel\n\n**Karar mantığı:**\n- Olay sayısı < 10K/sn → Outbox + worker\n- 10K-100K/sn → Postgres + tuned worker pool\n- 100K+/sn → Kafka düşünülebilir",
+    "terms": [
+      {
+        "term": "Kafka",
+        "abbrev_tr": "Apache Kafka",
+        "meaning": "Distributed event log / streaming platform.",
+        "why": "100K+ event/sn ölçeklenir."
+      },
+      {
+        "term": "Topic",
+        "abbrev_tr": "Konu",
+        "meaning": "Kafka'da event akışının kanalı.",
+        "why": "Producer yazar, consumer okur."
+      },
+      {
+        "term": "Consumer Group",
+        "abbrev_tr": "Tüketici grubu",
+        "meaning": "Aynı topic'ten paralel okuma için worker grubu.",
+        "why": "Yatay ölçek."
+      },
+      {
+        "term": "Windowing",
+        "abbrev_tr": "Pencereleme",
+        "meaning": "Akan event'leri belli zaman penceresi içinde grup.",
+        "why": "'Son 5 dk' agregasyonu için."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Belediye trafik ışığı — sürekli akış",
+        "context": "Trafik ışığı sürekli araç sayar, dakika başı raporlar.",
+        "outcome": "Bu streaming. Tek olay değil, sürekli akış."
+      },
+      {
+        "persona": "Hatice Teyze (62) — market kasası",
+        "context": "Hatice Teyze ay sonu raporu çıkarır; günlük detay lazım değil.",
+        "outcome": "Bu batch processing — streaming değil. Çoğu küçük işletme bu kategoride."
+      }
+    ],
+    "lesson": {
+      "ne": "Sürekli event akışını real-time işleme platformu.",
+      "nicin": "100K+ event/sn için klasik request-response yetmez.",
+      "nasil": "1) Önce gerçekten gerekli mi sor. 2) Gerekirse Kafka/Redpanda. 3) Consumer group + windowing.",
+      "nerede": "`scale-streaming` cluster. Mevcut framework için OPSIYONEL.",
+      "ne_zaman": "Sadece 100K+ event/sn olduğunda. Erken eklenirse over-engineering.",
+      "kim": "Senior DataOps + Kafka deneyimi olan ekip.",
+      "analoji": "Köy değirmeni: un öğütüyor sürekli, her dakika kontrol. Tek seferlik 'şu kadar öğüt' = batch, sürekli = streaming."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Streaming'in altın kuralı:** *'Postgres + worker yetmediğinden emin olmadan Kafka ekleme.'* Ekip + operations yükü ciddi."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Kafka over-engineering tuzağı",
+      "body": "Startup '100 event/sn'de Kafka kuruyor — günde 4 saat operations. Çözüm: Postgres NOTIFY + worker = 100K/sn'ye kadar yeter."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Şu an Kafka YASAK. Postgres NOTIFY + outbox + scale-workers. 100K+ event/sn'e ulaşılırsa Redpanda değerlendirilecek (Kafka değil, daha basit).'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Karar matrisi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Event/sn",
+        "Çözüm",
+        "Operations yükü"
+      ],
+      "rows": [
+        [
+          "< 1K",
+          "Sync handler",
+          "Yok"
+        ],
+        [
+          "1K-10K",
+          "Outbox + worker",
+          "Düşük"
+        ],
+        [
+          "10K-100K",
+          "Postgres NOTIFY + pool",
+          "Orta"
+        ],
+        [
+          "100K-1M",
+          "Redpanda/Kafka",
+          "Yüksek"
+        ],
+        [
+          "1M+",
+          "Kafka cluster",
+          "Ciddi (dedicated team)"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "scale-outbox",
+    "scale-projections",
+    "k-bus"
+  ]
+}

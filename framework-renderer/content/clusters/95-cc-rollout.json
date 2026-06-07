@@ -1,0 +1,143 @@
+{
+  "id": "cc-rollout",
+  "title": "Feature Flag + Kademeli Rollout",
+  "subtitle": "Yeni özelliği %5 kullanıcıya aç, izle, sorun yoksa %100'e çık. Sorun varsa anında kapat (kill switch).",
+  "cluster": "crosscut",
+  "order": 4,
+  "icon": "ph-toggle-right",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "crosscut",
+    "feature-flag",
+    "rollout",
+    "ab-test",
+    "kill-switch"
+  ],
+  "enrich": {
+    "info": "Boolean flag, % rollout, tenant whitelist, A/B test variant. Backend: Unleash veya custom. Frontend: aynı flag'i okur.",
+    "detail": "**Feature flag türleri:**\n\n1. **Release flag**: Yeni özellik gizli, hazır olduğunda aç\n2. **Experiment flag**: A/B test — kullanıcının %50'sine A, %50'sine B göster\n3. **Ops flag (kill switch)**: Sorun olunca özelliği anında kapat\n4. **Permission flag**: Premium kullanıcıya bu özellik\n\n**Rollout stratejisi:**\n\n- %1 internal (dogfooding)\n- %5 beta tester'lar\n- %10 random kullanıcılar\n- %50 — metrikler iyiyse\n- %100 — 24 saat sorun yoksa\n\nHerhangi bir adımda sorun → kill switch → %0.\n\n**Flag temizlik (technical debt):**\nFlag açık kaldıkça kod karışır. Her flag'in **sona erme tarihi** olmalı; 30 gün sonra kod temizliği şart.\n\n**Vibecoding ile çakışma:**\nAI ajan flag'in iki dalını da bilmeli — *'flag açıksa X, kapalıysa Y'* — yoksa flag'i yok sayar.",
+    "terms": [
+      {
+        "term": "Feature Flag",
+        "abbrev_tr": "Özellik anahtarı",
+        "meaning": "Kodda if-else: bu kullanıcı için açık mı?",
+        "why": "Deploy ile feature açma birbirinden ayrılır — risk azaltır."
+      },
+      {
+        "term": "Kill Switch",
+        "abbrev_tr": "Acil kapatma",
+        "meaning": "Sorun çıkınca özelliği anında kapatma butonu.",
+        "why": "Rollback olmadan, deploy olmadan saniyeler içinde özelliği geri al."
+      },
+      {
+        "term": "Canary",
+        "abbrev_tr": "Kanarya",
+        "meaning": "%5 trafiği yeni sürüme yönlendir; sorun varsa fark et.",
+        "why": "Eski madende kanarya zehirli gazda ölürdü — insan korunurdu. Software'de aynı prensip."
+      },
+      {
+        "term": "A/B Test",
+        "abbrev_tr": "A/B testi",
+        "meaning": "İki varyantı (A ve B) eşit gruplara göster, hangisi iyi?",
+        "why": "Sezgi yerine veri ile karar."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Berber Mehmet Usta (60) — yeni saç modeli",
+        "context": "Mehmet Usta yeni saç modelini öğrendi. Tüm müşterilere aynı modeli vermedi; önce yakın 3 müşteriye denedi.",
+        "outcome": "Bu canary rollout. 3 müşteri beğendi, sonra herkese. Beğenmeselerdi, sadece 3 kişi etkilenirdi."
+      },
+      {
+        "persona": "Aşçı Hatice Teyze (62) — yeni reçete",
+        "context": "Yeni baklava reçetesi denedi; önce komşulara verdi, sonra dükkâna koydu.",
+        "outcome": "Aynı pattern: küçük gruba test, geri bildirim, sonra geniş kullanım."
+      }
+    ],
+    "lesson": {
+      "ne": "Bir özelliği aşamalı olarak kullanıcılara açma + sorun çıkarsa anında kapatma sistemi.",
+      "nicin": "Tek seferde herkese açmak = sorun çıkarsa herkese çıkar. Aşamalı = sorun küçük grupta görünür, dakikada geri alınır.",
+      "nasil": "1) Yeni özelliği flag arkasına yaz: `if (flags.newCheckout) { ... } else { ... }`. 2) %1 internal → %5 beta → %10 → %50 → %100. 3) Her adımda metrik izle. 4) Sorun = kill switch. 5) %100 + 30 gün = flag temizle.",
+      "nerede": "`cc-rollout` cluster. Unleash veya custom feature_flags tablosu. Frontend ve backend aynı flag'i okur.",
+      "ne_zaman": "Her yeni özellik için. Bug fix bile risk taşıyorsa flag arkasından.",
+      "kim": "Ürün ekibi flag stratejisi; geliştirici flag yazar; SRE kill switch erişimine sahip.",
+      "analoji": "Yeni ilaç önce 50 gönüllüye, sonra 500, sonra binlerce. FDA kademeli onay süreci aynı mantık."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Feature flag = deploy ile launch'u ayırma.** Kod ürünleşse de özellik kapalı. Açma kararı ürün/SRE'nin; deploy kararı geliştiricinin. İki rol ayrı."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Flag çöplüğü",
+      "body": "6 ay önce eklenen flag hala kodda. İki dalı da maintain etmek zorunda kalıyorsun. Bir gün biri 'kapalı dal' kodunu silsin diyor; sorun çıkıyor. **Her flag'in TTL'i olmalı; 30-60 gün sonra temizlenmeli.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Yeni checkout flow'u flag arkasından yaz. Flag adı: `new_checkout_v2`. Backend ve frontend aynı flag'i okur. Default OFF. Tenant whitelist tablosu + % rollout. Flag'in TTL'i 2026-12-01.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Rollout aşamaları + bekleme süresi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Aşama",
+        "Kullanıcı %",
+        "Bekleme",
+        "Metrik kontrolü"
+      ],
+      "rows": [
+        [
+          "Internal",
+          "Şirket içi",
+          "1 hafta",
+          "Bug var mı?"
+        ],
+        [
+          "Beta",
+          "Whitelist",
+          "3 gün",
+          "Geri bildirim?"
+        ],
+        [
+          "%5",
+          "Random %5",
+          "2 gün",
+          "Error rate < %0.5?"
+        ],
+        [
+          "%25",
+          "Random %25",
+          "1 gün",
+          "p95 latency normal?"
+        ],
+        [
+          "%50",
+          "Random %50",
+          "24 saat",
+          "Hala iyi?"
+        ],
+        [
+          "%100",
+          "Tüm kullanıcı",
+          "30 gün",
+          "Flag temizle"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "scale-saga",
+    "sus-versioning",
+    "cc-obs"
+  ]
+}

@@ -3,7 +3,7 @@
   "title": "Declarative resource'tan türetme",
   "subtitle": "Ash Framework (Elixir): tek resource tanımından DB+API+authz+state machine türetilir. \"Model your domain, derive the rest.\"",
   "cluster": "sus",
-  "order": 98,
+  "order": 9,
   "icon": "ph-magic-wand",
   "tags": [
     "sustainability",

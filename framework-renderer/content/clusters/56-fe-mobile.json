@@ -3,7 +3,7 @@
   "title": "Frontend — Capacitor Mobile + KYC/KYB",
   "subtitle": "Capacitor 7, plugin ekosistemi, TC kimlik NFC kendi modülü, KYB Veriff/Onfido.",
   "cluster": "frontend",
-  "order": 56,
+  "order": 5,
   "icon": "ph-device-mobile",
   "tags": [
     "frontend",

@@ -3,7 +3,7 @@
   "title": "Her-şey-metadata (introspectable kayıt)",
   "subtitle": "ServiceNow: \"tablo, rol, workflow, API — her şey introspectable kayıt\". Governance + audit + AI içkin.",
   "cluster": "sus",
-  "order": 100,
+  "order": 11,
   "icon": "ph-magnifying-glass-plus",
   "tags": [
     "sustainability",

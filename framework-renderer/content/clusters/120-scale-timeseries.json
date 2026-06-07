@@ -1,0 +1,130 @@
+{
+  "id": "scale-timeseries",
+  "title": "Time-Series — IoT, metrik, sensör verisi",
+  "subtitle": "Saniyede 100K sensör verisi = klasik PostgreSQL yetmez. TimescaleDB + downsampling + retention policy.",
+  "cluster": "scale",
+  "order": 13,
+  "icon": "ph-chart-line-up",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "scale",
+    "timeseries",
+    "timescaledb",
+    "iot",
+    "metrics"
+  ],
+  "enrich": {
+    "info": "TimescaleDB hyper-tables, continuous aggregation, downsampling, retention policy, chunk_time_interval.",
+    "detail": "**Time-series ne?** Zamana göre indekslenmiş, append-heavy veri: sensör ölçümleri, sistem metrikleri, kullanıcı analitiği.\n\n**Klasik PostgreSQL ne zaman yetmez?**\n- > 1B satır → INSERT yavaşlar, sorgu yıkılır\n- Compression yok → disk patlama\n- Time-based partition manuel yönetim\n\n**TimescaleDB çözümü:**\n- **Hyper-table**: zaman bazlı otomatik chunk'lara böl\n- **Continuous aggregation**: 'son 1 saat ortalaması' otomatik güncel\n- **Compression**: %90 disk tasarrufu eski chunk'lar için\n- **Retention policy**: 90 gün sonra otomatik DROP\n\n**Mevcut framework için:** Sensör/metrik var mı? Yok → bu cluster opsiyonel. Var → TimescaleDB extension Postgres'e ekle.",
+    "terms": [
+      {
+        "term": "Time-series",
+        "abbrev_tr": "Zaman serisi",
+        "meaning": "Zaman damgalı, ardışık veri akışı.",
+        "why": "Sensör/metrik 'şu an x değer' bilgisi sürekli."
+      },
+      {
+        "term": "TimescaleDB",
+        "abbrev_tr": "TimescaleDB",
+        "meaning": "PostgreSQL extension, time-series için optimize.",
+        "why": "Pgvector gibi extension; ayrı DB değil."
+      },
+      {
+        "term": "Hyper-table",
+        "abbrev_tr": "Hiper-tablo",
+        "meaning": "Zaman bazlı otomatik chunk'lara bölünen tablo.",
+        "why": "INSERT performans, eski chunk compress."
+      },
+      {
+        "term": "Downsampling",
+        "abbrev_tr": "Örnek azaltma",
+        "meaning": "Saniyelik veriyi dakikalık ortalamaya düşürme.",
+        "why": "30 gün sonra her saniye lazım değil."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Apartman elektrik sayacı — Murat Bey (61)",
+        "context": "Murat Bey her ay sayaç okuyor; tek değer. Akıllı sayaçta dakika başı okuma. Her daire için ayda 43K kayıt × 8 daire = 350K.",
+        "outcome": "TimescaleDB ile hyper-table: günlük chunk, 90 gün sonra compress, 1 yıl sonra DROP."
+      },
+      {
+        "persona": "Hava istasyonu — Hatice Teyze (62) tarla",
+        "context": "Tarlasındaki hava istasyonu sıcaklık + nem ölçer dakikada bir.",
+        "outcome": "30 gün ham, sonra saatlik ortalamaya downsample, 1 yıl sonra günlük."
+      }
+    ],
+    "lesson": {
+      "ne": "Zamana göre çok yoğun veri akışını verimli saklama + sorgulama altyapısı.",
+      "nicin": "Klasik tablo 1B+ satıra dayanmaz.",
+      "nasil": "1) TimescaleDB extension. 2) Hyper-table day chunk. 3) Continuous aggregation. 4) Retention policy.",
+      "nerede": "Sensör/metrik veri için. `scale-timeseries` cluster.",
+      "ne_zaman": "Sensör verisi gelecekse baştan. Olmayacaksa eklenmesin.",
+      "kim": "DBA TimescaleDB kurulumu; backend developer hyper-table tasarımı.",
+      "analoji": "Meteoroloji: her dakika sıcaklık ölçer ama 1 yıl sonra 'şubat ortalaması' yeter. Eski detay sıkıştır."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Time-series = ayrı bir veri sınıfı.** Append-heavy, time-indexed. Klasik OLTP DB optimize değil; TimescaleDB var olduğu için ayrı DB gerekmez."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'TimescaleDB extension yükle. metric tablosu hyper-table, chunk_time_interval 1 day. Continuous aggregation: 1m, 1h, 1d. Compression 7 gün sonra. Retention 90 gün.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Retention policy örneği"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Yaş",
+        "Granularity",
+        "Compression",
+        "Tutulma"
+      ],
+      "rows": [
+        [
+          "0-7 gün",
+          "Raw (1 sn)",
+          "Hayır",
+          "Sıcak"
+        ],
+        [
+          "7-30 gün",
+          "Raw",
+          "Evet (%90)",
+          "Sıcak"
+        ],
+        [
+          "30-90 gün",
+          "1 dakika downsample",
+          "Evet",
+          "Soğuk"
+        ],
+        [
+          "90-365 gün",
+          "1 saat downsample",
+          "Evet",
+          "Arşiv"
+        ],
+        [
+          "365+ gün",
+          "Silinir",
+          "-",
+          "Geriye yok"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "scale-cache",
+    "cc-obs"
+  ]
+}

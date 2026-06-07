@@ -1,0 +1,132 @@
+{
+  "id": "l1-export",
+  "title": "Veri Dışa Aktarma — CSV, Excel, PDF",
+  "subtitle": "100K satırlık export'u synchronously yapma; worker → S3 → email link. Excel için xlsx, PDF için Pandoc.",
+  "cluster": "layer1",
+  "order": 8,
+  "icon": "ph-export",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "layer1",
+    "export",
+    "csv",
+    "xlsx",
+    "pdf"
+  ],
+  "enrich": {
+    "info": "Streaming CSV (memory-safe), xlsx (büyük spreadsheet), PDF (Pandoc + HTML template), background job için S3 + email.",
+    "detail": "**Export boyut sınıfları:**\n\n- **Küçük** (<1000 satır): Synchronous, browser direct download\n- **Orta** (1K-100K): Background job, S3'e koy, email link\n- **Büyük** (100K+): Background job, chunk'lı, S3 multipart\n\n**CSV streaming:**\n```javascript\nconst stream = db.queryStream();\nstream.pipe(csvFormatter).pipe(fs.createWriteStream('out.csv'));\n```\n\n**Excel (xlsx):** SheetJS veya ExcelJS. Stream-write için ExcelJS.\n\n**PDF:** Pandoc (Markdown → PDF) veya Puppeteer (HTML → PDF).\n\n**TR e-Fatura:** GIB UBL-TR formatı (XML). Ayrı entegrasyon.",
+    "terms": [
+      {
+        "term": "Streaming Export",
+        "abbrev_tr": "Akıtarak dışa aktarma",
+        "meaning": "Veriyi RAM'e almadan parça parça dosyaya yazma.",
+        "why": "1M satır RAM'e sığmaz."
+      },
+      {
+        "term": "Presigned URL",
+        "abbrev_tr": "İmzalı geçici link",
+        "meaning": "S3 dosyasına 1 saat erişim.",
+        "why": "Backend statik servis vermeden."
+      },
+      {
+        "term": "Multipart Upload",
+        "abbrev_tr": "Parçalı yükleme",
+        "meaning": "100MB+ dosyayı parça parça S3'e yükleme.",
+        "why": "Tek istek timeout'u aşar."
+      },
+      {
+        "term": "UBL-TR",
+        "abbrev_of": "Universal Business Language - Turkey",
+        "abbrev_tr": "E-Fatura XML",
+        "meaning": "GIB'in e-fatura standardı.",
+        "why": "TR B2B fatura için zorunlu."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Murat Bey (61) apartman raporu",
+        "context": "Yıllık aidat raporunu Excel'de istiyor. 5000 satır.",
+        "outcome": "Export butonu → 'rapor hazırlanıyor' → 30 sn sonra email link."
+      },
+      {
+        "persona": "Hatice Teyze (62) market",
+        "context": "Muhasebeciye aylık satışları vermek istiyor.",
+        "outcome": "CSV export: tarih + ürün + miktar + tutar."
+      }
+    ],
+    "lesson": {
+      "ne": "Veritabanından CSV/Excel/PDF dosyası üretme + güvenli teslim.",
+      "nicin": "Müşteri 'tüm sipariş listesi indir' der.",
+      "nasil": "1) <1K: sync direct. 2) >1K: background + S3 + email. 3) Streaming write. 4) PDF için Pandoc.",
+      "nerede": "`l1-export` cluster + `scale-workers-deep`.",
+      "ne_zaman": "İlk müşteri sorduğunda.",
+      "kim": "Backend developer worker; frontend developer UX.",
+      "analoji": "Belediye nüfus suretini hemen vermez; 'hazırlanınca SMS gelecek'."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Export = senin sisteminden çıkış kapısı.** Müşteri verisini dışarı alabilmesi gerek."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Synchronous export tuzağı",
+      "body": "100K satırı senkron = browser 30 sn bekler, timeout. **Background job + email link** zorunlu."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'POST /orders/export: sync if rows<1000, else queue. Worker: streaming CSV → S3 multipart → presigned URL 1 saat → email link. UI: 'rapor hazırlanıyor' bildirimi.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Format → kullanım"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Format",
+        "En iyi",
+        "Yazı için"
+      ],
+      "rows": [
+        [
+          "CSV",
+          "Veri taşıma",
+          "Streaming, RAM-safe"
+        ],
+        [
+          "Excel xlsx",
+          "Muhasebe",
+          "ExcelJS, formula desteği"
+        ],
+        [
+          "PDF",
+          "Rapor, fatura",
+          "Pandoc + HTML template"
+        ],
+        [
+          "JSON",
+          "API entegrasyon",
+          "Standart"
+        ],
+        [
+          "UBL-TR XML",
+          "TR e-fatura",
+          "GIB onaylı"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "scale-workers-deep",
+    "l1-file",
+    "s-accounting"
+  ]
+}

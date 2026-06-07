@@ -4,7 +4,7 @@
   "subtitle": "Async job queue. Outbox relay, projection rebuild, fan-out, cron — hepsi burada.",
   "cluster": "scale",
   "layer": "scale",
-  "order": 13,
+  "order": 4,
   "icon": "ph-gear-six",
   "badge": "Scale primitive #4",
   "tags": [

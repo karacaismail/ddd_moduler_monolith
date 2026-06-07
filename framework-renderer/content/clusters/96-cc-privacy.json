@@ -1,0 +1,155 @@
+{
+  "id": "cc-privacy",
+  "title": "KVKK + GDPR — somut implementasyon",
+  "subtitle": "Veri mahremiyeti hukukun değil sistemin işi: silme talebi, veri taşınabilirliği, rıza yönetimi, ihlal bildirimi 72 saat.",
+  "cluster": "crosscut",
+  "order": 5,
+  "icon": "ph-shield-check",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "crosscut",
+    "kvkk",
+    "gdpr",
+    "privacy",
+    "consent",
+    "compliance"
+  ],
+  "enrich": {
+    "info": "6 zorunlu mekanizma: right to be forgotten, data portability, consent management, retention policy, breach notification, DSAR.",
+    "detail": "**KVKK + GDPR 6 zorunlu özellik:**\n\n1. **Right to be Forgotten (silme talebi)** — kullanıcı 'verimi silin' der; 30 gün içinde gerçek silme + audit logu\n2. **Data Portability (veri verme)** — kullanıcı 'tüm verimi indir' der; JSON/CSV export\n3. **Consent Management (rıza paneli)** — pazarlama, analitik, çerez için ayrı rıza; iptal edebilir\n4. **Data Retention Policy (saklama süresi)** — fatura 10 yıl, log 90 gün; otomatik silme\n5. **Breach Notification (ihlal bildirimi)** — sızıntı tespit edilince 72 saat içinde KVKK/EDPB'ye + kullanıcıya\n6. **DSAR (Data Subject Access Request)** — kullanıcı 'verim ne, kim erişti' sorgusu; 1 ay içinde cevap\n\n**Pseudonymization (takma ad):** PII (kişisel bilgi) hash'lendi → analitiğe gönder. Geri çözülemez.\n\n**Anonymization (anonimleştirme):** PII tamamen kaldırıldı; istatistik için bile geri çözülemez.\n\n**Mimari etki:**\n- Soft delete (deleted_at) yetmez; cron ile gerçek silme\n- Audit log ile 'kim erişti' kaydı zorunlu\n- Encryption at rest + in transit\n- Data classification: PII / sensitive / public",
+    "terms": [
+      {
+        "term": "KVKK",
+        "abbrev_of": "Kişisel Verilerin Korunması Kanunu",
+        "abbrev_tr": "KVKK (TR)",
+        "meaning": "6698 sayılı kanun, 2016.",
+        "why": "TR'de uyumsuzluk = ciroya bağlı ceza + suç duyurusu."
+      },
+      {
+        "term": "GDPR",
+        "abbrev_of": "General Data Protection Regulation",
+        "abbrev_tr": "GDPR (AB)",
+        "meaning": "AB veri koruma tüzüğü, 2018.",
+        "why": "AB vatandaşı verisi işlenirken zorunlu; ceza yıllık cironun %4'üne kadar."
+      },
+      {
+        "term": "PII",
+        "abbrev_of": "Personally Identifiable Information",
+        "abbrev_tr": "Kişisel veri",
+        "meaning": "Kişiyi tanımlayabilen veri: ad, email, T.C. kimlik, IP.",
+        "why": "Özel rejim altında; sızıntı = ihlal."
+      },
+      {
+        "term": "DSAR",
+        "abbrev_of": "Data Subject Access Request",
+        "abbrev_tr": "Veri erişim talebi",
+        "meaning": "Kullanıcının 'verim ne, kim erişti' sorma hakkı.",
+        "why": "1 ay içinde cevap zorunlu; otomasyon olmadan manuel = ölçeklenmez."
+      },
+      {
+        "term": "Soft delete",
+        "abbrev_tr": "Yumuşak silme",
+        "meaning": "Kayıt silinmez, `deleted_at` damgalanır.",
+        "why": "Kullanıcı 'sil' talep ederse soft delete YETMEZ; gerçek silme gerek."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Apartman defteri — Murat Bey (61) eski sakin",
+        "context": "Murat Bey apartman yöneticisi. 3 yıl önce taşınan sakin 'beni defterinden sil' istiyor. Defterde kişinin telefonu, plaka, ödeme geçmişi var.",
+        "outcome": "KVKK Madde 7: silinme hakkı. Murat Bey kişinin PII'sını gerçekten silmeli (fatura saklama zorunluluğu varsa pseudonymize). Sadece 'çizgi çekmek' yetmez."
+      },
+      {
+        "persona": "Doktor muayene defteri — Ayşe Teyze (63)",
+        "context": "Ayşe Teyze'nin tıbbi geçmişi doktorda. Yeni doktora geçmek istiyor; geçmiş dosyasını istiyor.",
+        "outcome": "Data portability: doktor PDF olarak vermeli, '20 yıllık dosyayı taşı' kullanıcının hakkı. Sistemde 'tüm verimi indir' butonu zorunlu."
+      }
+    ],
+    "lesson": {
+      "ne": "Veri mahremiyeti yasalarının (KVKK, GDPR) somut sistem implementasyonu — 6 zorunlu mekanizma.",
+      "nicin": "Yasa cezaları yüksek (cironun %4'üne kadar) + güven kaybı geri gelmez. Mimari hazır değilse sonradan kurmak imkânsız.",
+      "nasil": "1) Soft delete + 30 gün sonra cron ile gerçek silme. 2) 'Verimi indir' endpoint = tüm tablolardan kullanıcı verisi JSON. 3) Consent tablosu + UI rıza paneli. 4) Retention policy cron. 5) Breach notification playbook (72 saat).",
+      "nerede": "`cc-privacy` cluster + her DocType `pii_fields` metadata + audit log (l1-audit).",
+      "ne_zaman": "İlk kullanıcı verisi toplanmadan ÖNCE. Sonradan eklemek tüm veri modelini etkiler.",
+      "kim": "Hukuk ekibi gereksinim verir; backend implementer; ürün ekibi UI; DPO (data protection officer) denetler.",
+      "analoji": "Banka hesap defteri: kapatma talebi gelirse defter ortadan kaldırılır (silme), bakiye bilgisi başka bankaya aktarılabilir (portability), 'kim hesabıma baktı' sorgusu cevap alır (DSAR)."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**KVKK/GDPR hukuk değil mimari karar.** Sonradan eklemeye çalışmak = tüm veri modelini yeniden yapmak. Baştan tasarımda PII alanları işaretlenmeli."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "72 saat ihlal bildirimi",
+      "body": "Veri sızıntısı fark edildikten 72 saat sonra KVKK + etkilenen kullanıcı bilgilendirilmek zorunda. Bunu yapamayan sistem = ek ceza. **Playbook hazır olmalı:** incident detection → impact assessment → notification."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Customer DocType'a PII metadata ekle: ['email', 'phone', 'tcKimlik']. Delete request endpoint: soft delete + 30 gün sonra cron ile DELETE FROM tablo WHERE deleted_at < now - 30d. Audit log ile pii_access tablosu: kim ne zaman okudu.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "6 zorunlu özellik"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Özellik",
+        "KVKK md",
+        "GDPR md",
+        "Yapılması gereken"
+      ],
+      "rows": [
+        [
+          "Right to be Forgotten",
+          "7",
+          "17",
+          "30 gün içinde gerçek silme + audit"
+        ],
+        [
+          "Data Portability",
+          "11",
+          "20",
+          "JSON/CSV indirme endpoint"
+        ],
+        [
+          "Consent Management",
+          "5",
+          "6,7",
+          "Rıza paneli + iptal"
+        ],
+        [
+          "Data Retention",
+          "7",
+          "5(1)(e)",
+          "Otomatik silme cron"
+        ],
+        [
+          "Breach Notification",
+          "12",
+          "33,34",
+          "72 saat playbook"
+        ],
+        [
+          "DSAR",
+          "11",
+          "15",
+          "1 ay içinde cevap"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "cc-tr",
+    "cc-security",
+    "l1-audit",
+    "sus-bitemporal"
+  ]
+}

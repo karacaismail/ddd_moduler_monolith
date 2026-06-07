@@ -1,0 +1,139 @@
+{
+  "id": "edu-u20",
+  "title": "Backup Disiplini — felaket önleme",
+  "subtitle": "Backup yapmak yetmez; backup'tan dönmeyi test etmediysen backup yok demektir.",
+  "cluster": "edu",
+  "order": 23,
+  "icon": "ph-cloud-arrow-down",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "backup",
+    "restore",
+    "disaster-recovery",
+    "pitr"
+  ],
+  "enrich": {
+    "info": "3-2-1 kuralı, point-in-time recovery, backup verification, geo-replication. 'Test edilmemiş backup = backup değil'.",
+    "detail": "**3-2-1 kuralı (altın standart):**\n\n- **3** kopya verinin\n- **2** farklı fiziksel medya (disk + S3)\n- **1** kopyası coğrafi olarak farklı yerde\n\n**Backup türleri:**\n\n1. **Full backup**: Tüm DB. Haftalık.\n2. **Incremental**: Son backup'tan beri değişen. Günlük.\n3. **Differential**: Son full'dan beri değişen. Günlük.\n4. **WAL archiving (PITR)**: Sürekli; her transaction loglanır. Postgres standart.\n\n**Point-in-Time Recovery (PITR):**\n- 'Geçen pazartesi 14:23'ten önceki haline geri dön' diyebilirsin\n- Postgres WAL archive ile mümkün\n- RPO ~saniye seviye\n\n**Backup verification (zorunlu):**\n- Backup alındı = yarısı\n- **Restore test edildi** = tamamı\n- Aylık: restore staging'e, smoke test çalıştır\n- 'Backup işliyor görünüyor' yeterli değil; gerçekten dönüldüğü kanıtlanmalı\n\n**Yaygın felaketler:**\n- Disk arızası (en yaygın)\n- Yanlış DELETE (insan hatası)\n- Ransomware (kötü amaçlı şifreleme)\n- Yangın/sel/deprem (doğal afet)\n- Datacenter network kesintisi",
+    "terms": [
+      {
+        "term": "Backup",
+        "abbrev_tr": "Yedekleme",
+        "meaning": "Verinin kopyasını başka bir yere alma.",
+        "why": "Asıl veri kaybolursa kopyadan dönülür."
+      },
+      {
+        "term": "PITR",
+        "abbrev_of": "Point-in-Time Recovery",
+        "abbrev_tr": "Zaman noktasına geri dönüş",
+        "meaning": "Geçmiş bir an'a kadar veriyi geri yükleme.",
+        "why": "Yanlış DELETE 14:23'te oldu = 14:22'ye dön."
+      },
+      {
+        "term": "3-2-1",
+        "abbrev_tr": "3-2-1 kuralı",
+        "meaning": "3 kopya, 2 medya, 1 coğrafi farklı.",
+        "why": "Tek noktanın hepsini kaybetme riskini elimine eder."
+      },
+      {
+        "term": "RPO/RTO",
+        "abbrev_tr": "Kayıp toleransı / Kurtarma süresi",
+        "meaning": "Ne kadar veri kaybı kabul, ne kadar süre içinde toparlanma.",
+        "why": "İş ihtiyacı belirler: bankacılık RPO=0; blog RPO=24 saat."
+      },
+      {
+        "term": "WAL Archiving",
+        "abbrev_of": "Write-Ahead Log Archive",
+        "abbrev_tr": "Yazma öncesi log arşivi",
+        "meaning": "Postgres WAL'ı (transaction log'u) S3'e sürekli arşivleme.",
+        "why": "PITR için zorunlu; her transaction kurtarılabilir."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Apartman ana defteri — Murat Bey (61)",
+        "context": "Murat Bey apartman defterini her ay xerox edip kayınvalidesi'ne veriyor. Bir gün dairesinde su sızıntısı, defter ıslandı. Kayınvalidesi'nden geri aldı.",
+        "outcome": "3-2-1 ev versiyonu: 1 asıl (apartman), 1 kopya (kayınvalide), farklı konum. Tek su baskını her şeyi silmedi."
+      },
+      {
+        "persona": "Aşçı Hatice Teyze (62) — reçete defteri",
+        "context": "30 yıllık reçete defteri kayıp oldu. Hatice Teyze 6 ay önce telefonla fotoğraflamıştı — kurtuldu.",
+        "outcome": "Backup olmadan 30 yıllık birikim kayıp. Olduğu için sadece son 6 ayın yenisi eksik."
+      }
+    ],
+    "lesson": {
+      "ne": "Verinin kopyasını alma + felaket sonrası geri dönme disiplini.",
+      "nicin": "Disk, insan hatası, yangın, hack — hepsi olabilir. Backup olmadan iş biter.",
+      "nasil": "1) Postgres pgBackRest veya pg_basebackup günlük. 2) WAL archive S3'e (PITR). 3) 3-2-1: lokal + S3 (Hetzner) + Backblaze (farklı şirket/coğrafi). 4) Aylık restore test.",
+      "nerede": "`cc-obs` infra + `scale-multiregion` ile birlikte. Cron job + monitoring.",
+      "ne_zaman": "İlk veri girilmeden ÖNCE backup kurulu. Sonradan = unutulur.",
+      "kim": "SRE backup script; DBA verification; on-call restore drill.",
+      "analoji": "Yangın söndürücüsü: var olması yetmez, çalıştığı doğrulanmalı. Bir gün lazım olunca bozuksa = yangın çıkar. Backup aynı."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Backup'ın altın kuralı:** *'Test edilmemiş backup = backup değil.'* Aylık restore test yap; staging'e geri yükle, smoke test çalıştır. Yoksa gerçek felakette bozuk olduğunu öğrenirsin."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "Ransomware riski",
+      "body": "Saldırgan sisteme girdi, tüm veriyi şifreledi, fidye istiyor. Lokal backup ona erişilebilir mi? Erişilebilirse şifreleyebilir → fidye + tüm backup'lar gitti. **Air-gap backup** zorunlu: ayrı hesap, yazma kısıtlı (immutable S3 bucket)."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Postgres backup stratejisi: pgBackRest günlük full + WAL archive S3'e. Hetzner FSN1 → Backblaze farklı coğrafi. Aylık restore drill script. Sentry alarm: 24 saat içinde backup yoksa.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Backup stratejisi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Hangi",
+        "Sıklık",
+        "Tutulma süresi"
+      ],
+      "rows": [
+        [
+          "Full backup",
+          "Haftalık (Pazar gece)",
+          "3 ay"
+        ],
+        [
+          "Incremental",
+          "Günlük",
+          "1 ay"
+        ],
+        [
+          "WAL archive",
+          "Sürekli (anlık)",
+          "30 gün PITR"
+        ],
+        [
+          "Off-site copy",
+          "Günlük",
+          "6 ay"
+        ],
+        [
+          "Air-gap immutable",
+          "Haftalık",
+          "1 yıl"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "scale-multiregion",
+    "cc-obs",
+    "sus-bitemporal"
+  ]
+}

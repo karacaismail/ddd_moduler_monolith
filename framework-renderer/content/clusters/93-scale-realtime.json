@@ -1,0 +1,145 @@
+{
+  "id": "scale-realtime",
+  "title": "Real-time Backend — WebSocket + SSE",
+  "subtitle": "Sunucu istemciye 'kendiliğinden' mesaj yollar — kullanıcı yenilemeden bildirim, chat, canlı veri.",
+  "cluster": "scale",
+  "order": 10,
+  "icon": "ph-broadcast",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "scale",
+    "realtime",
+    "websocket",
+    "sse",
+    "pubsub"
+  ],
+  "enrich": {
+    "info": "WebSocket (iki yön), SSE (sunucudan istemciye). Pub/sub kanal yönetimi (Redis veya NATS). 1M concurrent için scaling.",
+    "detail": "**3 seçenek:**\n\n1. **Long polling**: İstemci 30 sn bekleyen istek atar. En basit; en kaynak yiyici.\n2. **SSE (Server-Sent Events)**: Tek yönlü, sunucudan istemciye. HTTP üstünde. Bildirim için ideal.\n3. **WebSocket**: İki yönlü, kalıcı bağlantı. Chat, canlı oyun, ortak düzenleme için.\n\n**Seçim:**\n- Bildirim/feed → SSE (basit, HTTP/2 ile çoklayabilir)\n- Chat/oyun/işbirlikçi düzenleme → WebSocket\n- Eski tarayıcı/proxy → Long polling fallback\n\n**Pub/sub mimarisi:**\n- Mesaj geldiğinde event yayılır (Redis pub/sub veya NATS)\n- Realtime gateway'ler kanal başına subscriber listesini tutar\n- Mesaj geldiğinde ilgili WebSocket'lere broadcast\n\n**1M concurrent connection için:**\n- Tek Node.js: ~50K WebSocket connection (Linux ulimit ayarı)\n- 1M için 20 gateway pod + connection load balancer\n- Sticky session veya Redis ile state paylaşımı",
+    "terms": [
+      {
+        "term": "WebSocket",
+        "abbrev_tr": "Web yuva",
+        "meaning": "İstemci-sunucu arası kalıcı, iki yönlü iletişim kanalı.",
+        "why": "HTTP istemci başlatır; WebSocket sonra sunucu da push yapabilir."
+      },
+      {
+        "term": "SSE",
+        "abbrev_of": "Server-Sent Events",
+        "abbrev_tr": "Sunucudan olay",
+        "meaning": "HTTP üzerinde tek-yönlü push: sunucu mesaj yollar, istemci dinler.",
+        "why": "WebSocket'ten basit, HTTP/2 ile multipleks. Bildirim için ideal."
+      },
+      {
+        "term": "Pub/Sub",
+        "abbrev_tr": "Yayımla/Abone ol",
+        "meaning": "Mesaj yayımcı yazar; konuyu (kanal) dinleyenler okur.",
+        "why": "Çok sayıda dinleyici için ölçeklenebilir."
+      },
+      {
+        "term": "Presence",
+        "abbrev_tr": "Var olma",
+        "meaning": "Kimin online olduğunu takip.",
+        "why": "Chat'te 'Ahmet yazıyor', 'Ayşe online' gösterimi için."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Mahalle telefon zinciri — Ayşe Teyze (63)",
+        "context": "Mahalle hanımları haber yaymak için telefon zinciri kullanırdı. Ayşe Teyze birini arar, o sıradakini arar...",
+        "outcome": "Bu pub/sub: bir mesaj çok sayıda kişiye yayılır. WebSocket = mahallenin walkie-talkie'si: yayın açık, herkes duyar."
+      },
+      {
+        "persona": "TV haberleri — Yusuf Bey (66)",
+        "context": "Yusuf Bey TV'yi açar, sunucu yayın yapar. Yusuf cevap vermez; sadece dinler.",
+        "outcome": "Bu SSE: tek-yönlü, sunucudan istemciye. Bildirim için ideal — kullanıcı cevap vermek zorunda değil."
+      }
+    ],
+    "lesson": {
+      "ne": "Sunucudan kullanıcıya anlık mesaj göndermek için kalıcı bağlantı mekanizması.",
+      "nicin": "Klasik HTTP istemci başlatır; canlı bildirim, chat, paylaşımlı düzenleme için sunucu da başlatabilmeli.",
+      "nasil": "1) Bildirim için SSE. 2) Chat/oyun için WebSocket. 3) Pub/sub için Redis veya NATS. 4) 50K+ concurrent için pod ölçeklendir.",
+      "nerede": "`scale-realtime` cluster + `fe-ai-rt` (frontend tarafı). l1-notification ile entegre.",
+      "ne_zaman": "Chat, bildirim, dashboard live update, paylaşımlı editör.",
+      "kim": "Backend mühendisi gateway kurar; frontend reconnect logic yazar; SRE limit ayarı.",
+      "analoji": "Mektup = HTTP istek-cevap. Telefon = WebSocket (iki yön). Radyo yayını = SSE (tek yön, sunucudan)."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Sunucu push gerekirse:** *Bildirim için SSE, chat için WebSocket.* Long polling sadece eski uyumluluk için."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Connection sayısı tehlikesi",
+      "body": "1 Node.js pod max 50K WebSocket. 1M concurrent = 20 pod gerek. Sticky session veya Redis ile state paylaşımı kurmadan ölçeklenmez."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Notification için SSE endpoint /events/sse, JWT auth. Redis pub/sub: kanal `user:${userId}:notifications`. Reconnect logic frontend tarafında. Heartbeat 30sn.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Karşılaştırma"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "",
+        "Long polling",
+        "SSE",
+        "WebSocket"
+      ],
+      "rows": [
+        [
+          "Yön",
+          "İstemci başlatır",
+          "Sunucu → istemci",
+          "İki yönlü"
+        ],
+        [
+          "Protokol",
+          "HTTP",
+          "HTTP/HTTP2",
+          "WS protocol"
+        ],
+        [
+          "Tarayıcı uyumu",
+          "Tümü",
+          "Modern",
+          "Modern"
+        ],
+        [
+          "Proxy/firewall",
+          "✓ İyi",
+          "✓ İyi",
+          "✗ Bazen sorun"
+        ],
+        [
+          "Kaynak",
+          "Yüksek",
+          "Düşük",
+          "Orta"
+        ],
+        [
+          "Kullanım",
+          "Eski fallback",
+          "Bildirim, feed",
+          "Chat, oyun"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "l1-notification",
+    "fe-ai-rt",
+    "k-bus",
+    "scale-cache"
+  ]
+}

@@ -4,7 +4,7 @@
   "subtitle": "Framework'ün kalbi. Frappe DocType, Salesforce Object, Strapi Content-Type — aynı fikir.",
   "cluster": "layer0",
   "layer": "kernel",
-  "order": 4,
+  "order": 1,
   "icon": "ph-database",
   "badge": "Layer 0 — Kernel #1",
   "tags": [

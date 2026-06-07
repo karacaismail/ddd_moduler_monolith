@@ -3,7 +3,7 @@
   "title": "DocType → TIMI stabil arayüz",
   "subtitle": "IBM i (1988-) TIMI sayesinde 35+ yıl 25 farklı işlemci nesli üzerinde aynı uygulamayı çalıştırdı. Soyutlama = uzun-ömür.",
   "cluster": "sus",
-  "order": 95,
+  "order": 6,
   "icon": "ph-cube-transparent",
   "tags": [
     "sustainability",

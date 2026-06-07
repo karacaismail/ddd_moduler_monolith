@@ -3,7 +3,7 @@
   "title": "Marketplace + Versioning",
   "subtitle": "VS Code Marketplace + Shopify App Store muadili. Semver + Proposed API.",
   "cluster": "dx",
-  "order": 39,
+  "order": 2,
   "icon": "ph-storefront",
   "tags": [
     "marketplace",

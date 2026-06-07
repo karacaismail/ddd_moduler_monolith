@@ -3,7 +3,7 @@
   "title": "Frontend — Kilitli Kararlar",
   "subtitle": "AI-first SaaS Panel (Web + Mobile) için kilitli teknik kararlar (2026-05-14). Tek codebase, PWA + iOS + Android, hibrit (operatör + son kullanıcı).",
   "cluster": "frontend",
-  "order": 52,
+  "order": 1,
   "icon": "ph-lock",
   "tags": [
     "frontend",

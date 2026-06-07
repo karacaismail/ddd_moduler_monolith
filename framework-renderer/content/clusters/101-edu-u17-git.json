@@ -1,0 +1,159 @@
+{
+  "id": "edu-u17",
+  "title": "Git Disiplini — kod tarihi yönetimi",
+  "subtitle": "Branch stratejisi, commit yazma kuralı, semantic versioning. Vibecoding'de AI ajan değişikliği = mutlaka ayrı branch.",
+  "cluster": "edu",
+  "order": 20,
+  "icon": "ph-git-branch",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "git",
+    "branch",
+    "commit",
+    "semver",
+    "github"
+  ],
+  "enrich": {
+    "info": "main + feature branch + release. Conventional commits. Semantic versioning (major.minor.patch). Pre-commit hooks.",
+    "detail": "**Branch stratejisi (trunk-based):**\n\n- `main` — her zaman üretime hazır, kırık değil\n- `feature/xxx` — yeni özellik, kısa ömürlü (1-3 gün), PR ile main'e merge\n- `release/x.y` — sadece büyük release'lerde\n- `hotfix/xxx` — üretim acil düzeltme\n\nUzun ömürlü branch = merge cehennemi. Her gün main'e döndür.\n\n**Conventional Commits:**\n\n- `feat: yeni özellik eklendi`\n- `fix: bug düzeltildi`\n- `docs: dokümantasyon`\n- `refactor: kod düzenleme, davranış değişmedi`\n- `test: test eklendi`\n- `chore: bağımlılık güncellemesi`\n- `BREAKING CHANGE: API uyumsuzluğu`\n\nNeden? Changelog otomatik üretilir, semver otomatik bumplar.\n\n**Semantic Versioning (semver):**\n\n- `MAJOR.MINOR.PATCH` — örn. `2.4.1`\n- MAJOR: kıran değişiklik (1 → 2)\n- MINOR: yeni özellik, uyumlu (2.4 → 2.5)\n- PATCH: bug fix (2.4.1 → 2.4.2)\n\n**Pre-commit hooks (Husky + lint-staged):**\n\n- Her commit öncesi otomatik: ESLint + Prettier + TypeScript type check\n- Bozuk kod commit edilemez\n\n**Code review:**\n\n- 'Approve' verirken: 'çalışır mı', 'test var mı', 'okunabilir mi'\n- 100 satır altı PR = hızlı review, kaliteli\n- 500 satır PR = yarım okunur, bug geçer",
+    "terms": [
+      {
+        "term": "Branch",
+        "abbrev_tr": "Dal",
+        "meaning": "Kod tarihinde paralel bir yön. main'den ayrılır, geri merge edilir.",
+        "why": "Farklı işler birbirini bozmasın; iş tamamlanınca main'e döner."
+      },
+      {
+        "term": "Pull Request",
+        "abbrev_tr": "Birleşme talebi",
+        "meaning": "Branch'ten main'e merge talebi. Code review burada yapılır.",
+        "why": "Tek geliştirici bug atamasın; ekip gözden geçirir."
+      },
+      {
+        "term": "Semantic Versioning",
+        "abbrev_tr": "Anlamlı versiyon",
+        "meaning": "X.Y.Z formatı: major.minor.patch. Anlamı standart.",
+        "why": "Müşteri '1.0.0 → 1.1.0 güvenli mi?' sorusunu standardına göre cevaplar."
+      },
+      {
+        "term": "Conventional Commits",
+        "abbrev_tr": "Kurallı commit mesajı",
+        "meaning": "feat:, fix:, docs: gibi prefix ile commit yazma kuralı.",
+        "why": "Changelog ve versioning otomatik üretilir."
+      },
+      {
+        "term": "Hotfix",
+        "abbrev_tr": "Acil yama",
+        "meaning": "Üretimde kritik bug için hızlı düzeltme.",
+        "why": "Normal süreçten geçirmek 2 gün; üretim yanıyorsa 30 dk gerek."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Defter yöneticisi Murat Bey (61)",
+        "context": "Murat Bey apartman defterini kullanıyor. Her gün ayrı sayfa açıyor; yeni bir not 'temiz' sayfaya. Eski sayfaları korur, geriye bakabilir.",
+        "outcome": "Bu commit + branch: her değişiklik bir 'sayfa', geri dönüş mümkün. Defteri silip yeniden yazsa geçmiş kaybolur."
+      },
+      {
+        "persona": "Reçete defteri — Hatice Teyze (62)",
+        "context": "Hatice Teyze 30 yıllık reçete defteri. Yeni reçete denerken eski reçeteyi silmiyor; yan sayfaya yeni versiyonu yazıyor: '2024 versiyonu'.",
+        "outcome": "Bu versiyonlama. Yeni versiyon eskisini bozmuyor; her ikisi de defterde duruyor."
+      }
+    ],
+    "lesson": {
+      "ne": "Kod değişikliklerinin sıralı, anlaşılır, geri-dönülebilir şekilde tutulması. Git = kod tarihi.",
+      "nicin": "Test ortamı dönüşü, geçmiş bug arama, ekip senkronizasyonu için kod tarihi şart.",
+      "nasil": "1) Her yeni iş için branch. 2) Conventional commit mesajı. 3) PR ile review. 4) Squash merge main'e. 5) Tag = semver release.",
+      "nerede": "GitHub private repo (Hetzner deploy buradan otomatik). main + feature branch'ler.",
+      "ne_zaman": "Her kod değişikliğinde. Notepad'de 'düzeltme' yapma — git'e kaydet.",
+      "kim": "Geliştirici commit yazar; reviewer PR onaylar; CI release tag'ler.",
+      "frontend": {
+        "yer": "VSCode git eklentisi veya Git CLI. GitHub Desktop yeni başlayanlar için.",
+        "gereklilik": "Branch açmadan ana branch'te commit YASAK.",
+        "ornek": "`git checkout -b feature/cart-empty-state && git commit -m 'feat(cart): empty state UI' && git push -u origin feature/cart-empty-state`"
+      },
+      "backend": {
+        "yer": "GitHub Actions CI: PR açılınca test + lint + type check otomatik.",
+        "gereklilik": "Yeşil CI olmadan merge YOK.",
+        "ornek": "`.github/workflows/ci.yml`: pnpm test, pnpm lint, tsc --noEmit."
+      },
+      "analoji": "Belediye nikâh defteri: her nikâh ayrı satır, tarih + isim. 50 yıl sonra 'şu kişi ne zaman evlendi' tek bakışta. Sayfa kaldırılırsa = tarih kayıp."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Git = kod versiyon zinciri.** Her commit zincirin bir halkası. Disiplin: küçük PR, anlamlı mesaj, yeşil CI, code review."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Main'e direkt push tuzağı",
+      "body": "Solo geliştirici 'kim review yapacak ki?' deyip main'e push eder. 2 ay sonra ekibe katılan + main'in 100 commit history'si karmaşa. **Tek kişi de PR aç; kendi PR'ını kendi onaylayabilir.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Bu task için yeni branch aç: feature/<task-slug>. Değişiklikleri commit et: feat(area): <ne yaptın>. PR aç ana branch'e karşı, açıklama: ne, neden, test sonucu, screenshot.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Conventional commit prefix'leri"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Prefix",
+        "Anlam",
+        "Semver etkisi"
+      ],
+      "rows": [
+        [
+          "feat",
+          "Yeni özellik",
+          "MINOR (+0.1.0)"
+        ],
+        [
+          "fix",
+          "Bug fix",
+          "PATCH (+0.0.1)"
+        ],
+        [
+          "docs",
+          "Dokümantasyon",
+          "- (yok)"
+        ],
+        [
+          "refactor",
+          "Davranış değişmedi",
+          "- veya PATCH"
+        ],
+        [
+          "test",
+          "Test eklendi",
+          "- (yok)"
+        ],
+        [
+          "chore",
+          "Bağımlılık güncellemesi",
+          "- (yok)"
+        ],
+        [
+          "BREAKING CHANGE",
+          "API kırıldı",
+          "MAJOR (+1.0.0)"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "deploy-yap",
+    "sus-versioning",
+    "sus-conformance",
+    "edu-u10"
+  ]
+}

@@ -3,7 +3,7 @@
   "title": "Dosya / Dizin Yapısı",
   "subtitle": "Önerilen monorepo yapısı.",
   "cluster": "build",
-  "order": 41,
+  "order": 1,
   "icon": "ph-folder-open",
   "tags": [
     "layout",

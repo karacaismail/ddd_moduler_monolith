@@ -1,0 +1,114 @@
+{
+  "id": "l1-quiet-hours",
+  "title": "Quiet Hours — sessiz saatler",
+  "subtitle": "Kullanıcının saat dilimi + uyku saati = bildirim göndermeme. Acil olmayan SMS gece atılmaz.",
+  "cluster": "layer1",
+  "order": 11,
+  "icon": "ph-moon",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "layer1",
+    "notification",
+    "quiet-hours",
+    "timezone",
+    "ux"
+  ],
+  "enrich": {
+    "info": "User timezone + sleep window (22:00-08:00 varsayılan). Critical bypass (security, payment). Per-channel ayar.",
+    "detail": "**Quiet Hours mantığı:**\n\n- Her kullanıcının `timezone` + `quiet_hours_start` + `quiet_hours_end` saklanır\n- Bildirim göndermeden önce: kullanıcının yerel saatine çevir, quiet window içinde mi?\n- İçindeyse: cron job uyandırma saatine kaydır\n- Kritik bildirim (security alert, payment failed): bypass\n\n**Kullanıcı bazında ayar:**\n```sql\nuser_notification_prefs(\n  user_id, channel, quiet_start TIME, quiet_end TIME, bypass_critical BOOL\n)\n```\n\n**Per-channel:**\n- Email: 24 saat aç (kullanıcı sabah okur)\n- Push: 22:00-08:00 kapalı\n- SMS: sadece kritik\n\n**Cron job:**\n- 'Send notification' job'ı queue'ya alındığında scheduled_at hesapla\n- Kullanıcı quiet'te → next available time\n- Saat dilimine göre delayed\n\n**60+ kullanıcı için ekstra:**\n- Varsayılan quiet window genişletilmeli (20:00-09:00)\n- Acil yenisinin de bypass'i kullanıcı seçer",
+    "terms": [
+      {
+        "term": "Quiet Hours",
+        "abbrev_tr": "Sessiz saatler",
+        "meaning": "Bildirim göndermenin yasak olduğu saat aralığı.",
+        "why": "Kullanıcı gece bildirim istemez."
+      },
+      {
+        "term": "Bypass",
+        "abbrev_tr": "Atlatma",
+        "meaning": "Quiet hours'a bakmadan kritik bildirim gönderme.",
+        "why": "Güvenlik (kart yetkisiz kullanım) gece bile bildirilmeli."
+      },
+      {
+        "term": "Per-channel",
+        "abbrev_tr": "Kanal başına",
+        "meaning": "Email/SMS/push için ayrı ayar.",
+        "why": "Email sessiz, push gürültülü — farklı."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Ayşe Teyze (63) — gece bildirimi",
+        "context": "Ayşe Teyze gece 02:00'de telefon zili çaldı: 'Aylık raporunuz hazır'. Korktu, kalkamadı.",
+        "outcome": "Quiet hours: Ayşe Teyze'nin profili 22:00-09:00 sessiz. Rapor bildirimi 09:00'da gelir."
+      },
+      {
+        "persona": "Mehmet Bey (61) — kart kullanımı uyarı",
+        "context": "Mehmet Bey gece 03:00'te uyandı; banka SMS: 'Kartınız İspanya'da kullanıldı'.",
+        "outcome": "Kritik bypass. Quiet hours içinde olsa bile gönderildi — saldırı olabilir, hemen bilmek lazım."
+      }
+    ],
+    "lesson": {
+      "ne": "Kullanıcının sessiz saatlerini bilgilendirme katmanı.",
+      "nicin": "60+ kullanıcı gece bildirimle uyanırsa rahatsız olur.",
+      "nasil": "1) User profili timezone + quiet window. 2) Bildirim gönderirken kontrol. 3) Kritik bypass. 4) Per-channel ayar.",
+      "nerede": "`l1-notification` ile birlikte. Worker bildirim göndermeden önce kontrol.",
+      "ne_zaman": "İlk push notification öncesi.",
+      "kim": "Backend developer worker logic; product team UX ayarları.",
+      "analoji": "Apartman kapıcısı: gece 22'den sonra zil çalmayacak, acil dışı misafir gelmeyecek. Acil ise (yangın) bypass."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Sessiz saatler = saygı.** Özellikle 60+ kullanıcı için. Otomatik varsayılan + kullanıcı ince ayar."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Notification worker: user.quietHours + user.timezone kontrol. Quiet window içinde + not critical → reschedule next available. Critical bypass tablo (security, payment_failed). Per-channel ayar.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "60+ önerilen default"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Kanal",
+        "Quiet window",
+        "Bypass"
+      ],
+      "rows": [
+        [
+          "Email",
+          "Hep açık",
+          "-"
+        ],
+        [
+          "Push",
+          "20:00-09:00",
+          "Critical"
+        ],
+        [
+          "SMS",
+          "22:00-08:00",
+          "Security, payment"
+        ],
+        [
+          "Phone call",
+          "Hep kapalı",
+          "Sadece kullanıcı acil"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "l1-notification",
+    "edu-u22-email-sms",
+    "edu-u15-ux-60-plus"
+  ]
+}

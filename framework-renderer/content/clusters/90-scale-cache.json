@@ -1,0 +1,138 @@
+{
+  "id": "scale-cache",
+  "title": "Caching katmanı — pattern + invalidation",
+  "subtitle": "Yavaş veri kaynağına aynı soruyu 2. kez sormama tekniği. Doğru cache 10x hız, yanlış cache eski veri.",
+  "cluster": "scale",
+  "order": 7,
+  "icon": "ph-lightning",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "scale",
+    "cache",
+    "redis",
+    "invalidation",
+    "performance"
+  ],
+  "enrich": {
+    "info": "Cache-aside (en yaygın), write-through, write-behind. Redis varsayılan. Invalidation: TTL + event-based.",
+    "detail": "**Cache stratejisi karar ağacı:**\n\n- Sık okunur + nadiren değişir → **Redis + TTL 1-24 saat** (örn. ürün katalog)\n- Sık okunur + sık değişir → **Redis + event-based invalidate** (örn. kullanıcı profili)\n- Her kullanıcıya farklı + büyük → **Application memory + LRU** (örn. yetki cache'i)\n- Static asset → **CDN edge cache** (örn. resim, JS bundle)\n\n**Cache key disiplini:** `<entity>:<id>:<version>` — `customer:42:v1`. Version eklersen şema değişince eski cache otomatik invalidate.\n\n**Tehlikeler:**\n- **Cache stampede** (thundering herd): TTL bitince 1000 istek aynı anda DB'ye gider. Çözüm: distributed lock veya stale-while-revalidate.\n- **Cache poisoning**: Yanlış veri cache'e girdiyse 1 saat öyle kalır. Çözüm: write-through veya event-based invalidate.\n- **Stale read**: Eski veri kullanıcıya gider. Kabul edilebilir mi? Fiyat: HAYIR. Mesai saati: EVET.",
+    "terms": [
+      {
+        "term": "Cache-aside",
+        "abbrev_tr": "Cache yanında",
+        "meaning": "Kod önce cache'e bakar, yoksa DB'den çeker + cache'e yazar.",
+        "why": "En yaygın, en güvenli. Cache çalışmasa bile sistem DB'den çalışır."
+      },
+      {
+        "term": "Write-through",
+        "abbrev_tr": "Yazarken geç",
+        "meaning": "Yazma anında DB + cache aynı anda güncellenir.",
+        "why": "Cache her zaman taze. Ama yazma yavaşlar."
+      },
+      {
+        "term": "Stampede",
+        "abbrev_tr": "Sürü saldırısı",
+        "meaning": "TTL bitince 1000 istek aynı anda DB'ye gider, DB çöker.",
+        "why": "Distributed lock veya stale-while-revalidate gerek."
+      },
+      {
+        "term": "LRU",
+        "abbrev_of": "Least Recently Used",
+        "abbrev_tr": "En az kullanılanı sil",
+        "meaning": "Cache dolu, hangi kayıdı atalım? En uzun süredir okunmayan.",
+        "why": "RAM sınırlı; eski kayıt yer açar."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Bakkal Hatice Teyze (62) — fiyat kâğıdı",
+        "context": "Sık satılan 10 ürünün fiyatını kâğıda yazıp masaya yapıştırdı. Müşteri sorduğunda kâğıda bakıyor, hızlı. Fiyat artınca yeni kâğıt yapıştırıyor.",
+        "outcome": "Bu cache-aside + manual invalidate. Hızlı + eski fiyat gösterilmez (kâğıt güncellenir)."
+      },
+      {
+        "persona": "Apartman yöneticisi Murat Bey (61) — dairelerin ödeme durumu",
+        "context": "Murat Bey defterde 'kim ödedi, kim ödemedi' bilgisini tutuyordu. Her sorduğunda defter açıyor. Sonra kapıya kısa bir tablo astı: 'Eylül aidatı durumu'. Tablo özet; detay deftere.",
+        "outcome": "Bu cache: özet kâğıt = cache, defter = DB. Yeni ödeme geldiğinde tabloyu güncellemek lazım — invalidation."
+      }
+    ],
+    "lesson": {
+      "ne": "Yavaş veri kaynağına aynı soruyu tekrar sormamak için hızlı bir yerde (Redis) kopya tutma sistemi.",
+      "nicin": "DB sorgusu 100ms, Redis 1ms = 100x hız. 1000 eşzamanlı kullanıcı için olmazsa olmaz.",
+      "nasil": "1) Cache-aside default. 2) Key: `entity:id:version`. 3) TTL 60sn-1 saat (veri taze kalma süresine göre). 4) Yazma anında ilgili key'i sil. 5) Stampede için stale-while-revalidate.",
+      "nerede": "Layer-1 öncesi middleware veya repository layer. Redis cluster Hetzner'da Postgres ile yan yana.",
+      "ne_zaman": "Aynı veri günde 10+ kez sorulursa cache kur. Profil, katalog, yetki bilgisi tipik.",
+      "kim": "Geliştirici cache key seçer; SRE TTL+invalidation kuralını ayarlar.",
+      "analoji": "Sözlük açmadan kelime bilmek = cache hit. Bilmiyorsan sözlüğe bakıp aklında tutmak = cache miss + cache fill."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Cache'in altın kuralı:** *'Verinin tazelenme süresi cache TTL'inden uzun olmalı.'* Fiyat saniyede değişiyorsa cache koyma; günde bir değişiyorsa 1 saat TTL güvenli."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Cache stampede tuzağı",
+      "body": "10.000 kullanıcı aynı sayfaya bakıyor. TTL bitti. 10.000 istek aynı anda DB'ye → DB çöker. Çözüm: **distributed lock** (1 istek DB'ye gider, diğerleri bekler) veya **stale-while-revalidate** (eski cache'i kullan, arka planda yenile)."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Product katalog için Redis cache. Key: `product:${slug}:v1`. TTL 1 saat. Cache-aside pattern. Stampede koruması için singleflight (aynı key 2. kez aynı anda hesaplanmaz). PUT/PATCH product'ta invalidate.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Cache stratejisi → veri tipi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Veri",
+        "Strateji",
+        "TTL",
+        "Invalidation"
+      ],
+      "rows": [
+        [
+          "Ürün katalog",
+          "Cache-aside Redis",
+          "1 saat",
+          "Event-based + TTL"
+        ],
+        [
+          "Kullanıcı profili",
+          "Cache-aside Redis",
+          "5 dakika",
+          "Yazma anında"
+        ],
+        [
+          "Yetki/Rol",
+          "App memory LRU",
+          "60 sn",
+          "Event-based"
+        ],
+        [
+          "Static asset",
+          "CDN edge",
+          "30 gün",
+          "Hash-based URL"
+        ],
+        [
+          "Anlık fiyat",
+          "CACHE YOK",
+          "-",
+          "-"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "scale-counter",
+    "scale-projections",
+    "cc-obs"
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "id": "edu-u19",
+  "title": "Güvenlik Tuzakları — OWASP Top 10",
+  "subtitle": "En yaygın 10 saldırı: SQL injection, XSS, CSRF, IDOR... Bunları bilmeden web yazılımı yazılmaz.",
+  "cluster": "edu",
+  "order": 22,
+  "icon": "ph-shield-warning",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "security",
+    "owasp",
+    "sql-injection",
+    "xss",
+    "csrf"
+  ],
+  "enrich": {
+    "info": "SQL injection, XSS, CSRF, SSRF, IDOR, input validation, parola hashing, secret management, least privilege.",
+    "detail": "**OWASP Top 10 (2021):**\n\n1. **Broken Access Control (IDOR)**: `/api/order/123` istek atınca başkasının siparişini görme. Çözüm: her endpoint kullanıcı yetkisini DB'de doğrular.\n2. **Cryptographic Failures**: Parolayı MD5'le hash'leme, https kullanmama. Çözüm: bcrypt/argon2, HTTPS zorunlu.\n3. **Injection (SQL/NoSQL/Command)**: `WHERE name = '${userInput}'` = saldırgan yazılır SQL çalışır. Çözüm: prepared statement (`WHERE name = $1`).\n4. **Insecure Design**: Şifre sıfırlama maili sınırsız → spam. Çözüm: rate limit + token TTL.\n5. **Security Misconfiguration**: Default parolalar, açık port'lar, debug mode prod'da. Çözüm: checklist + Trivy/Snyk tarama.\n6. **Vulnerable Components**: 3 yıllık library, bilinen CVE. Çözüm: Dependabot + haftalık update.\n7. **Authentication Failures**: Brute force, parola reuse. Çözüm: rate limit + MFA + breach password check.\n8. **Software & Data Integrity**: CI/CD'ye unsigned package, npm typo-squatting. Çözüm: lock file + audit.\n9. **Logging Failures**: Saldırı log'a yazılmaz, fark edilmez. Çözüm: structured log + alarm.\n10. **SSRF**: Sunucu saldırgan URL'ini fetch eder, internal network'e gider. Çözüm: URL whitelist.\n\n**XSS (Cross-Site Scripting):** Saldırgan kullanıcının tarayıcısında JS çalıştırır.\n- Stored: yorum alanına `<script>` yazılır, herkes etkilenir\n- Reflected: URL parametre'ye yazılır, tıklayan etkilenir\n- DOM: Frontend `innerHTML` saldırgan input'la dolar\n- **Çözüm:** Framework auto-escape (React, Vue varsayılan) + CSP header\n\n**CSRF (Cross-Site Request Forgery):** Saldırgan başka sitedeyken senin siteye istek attırır.\n- **Çözüm:** SameSite cookie + CSRF token",
+    "terms": [
+      {
+        "term": "SQL Injection",
+        "abbrev_tr": "SQL enjeksiyonu",
+        "meaning": "Kullanıcı input'unun SQL sorgusunda string concat ile birleştirildiği saldırı.",
+        "why": "Veritabanı tamamen ele geçirilebilir."
+      },
+      {
+        "term": "XSS",
+        "abbrev_of": "Cross-Site Scripting",
+        "abbrev_tr": "Siteler arası script",
+        "meaning": "Saldırganın kullanıcının tarayıcısında JS çalıştırması.",
+        "why": "Çerez çalma, kimlik hırsızlığı, fake form."
+      },
+      {
+        "term": "CSRF",
+        "abbrev_of": "Cross-Site Request Forgery",
+        "abbrev_tr": "Siteler arası istek sahteciliği",
+        "meaning": "Başka sitede kurban açıkken, senin siteye istek attırma.",
+        "why": "Para transferi, kullanıcı sebebi olmadan yapılır."
+      },
+      {
+        "term": "IDOR",
+        "abbrev_of": "Insecure Direct Object Reference",
+        "abbrev_tr": "Doğrudan nesne referansı açığı",
+        "meaning": "`/order/123` → 456 yazınca başkasının siparişi görünür.",
+        "why": "%1 trafik bu yöntemle başkasının veri okur."
+      },
+      {
+        "term": "bcrypt/argon2",
+        "abbrev_tr": "Modern parola hash",
+        "meaning": "Yavaş + tuzlu hash; bcrypt 10+ round, argon2 önerilen.",
+        "why": "MD5/SHA-1 saniyede milyarlarca brute force; argon2 saniyede 100."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Apartman kapı görevlisi — Murat Bey (61)",
+        "context": "Yeni güvenlik görevlisi geldi. 'Kim sorarsa söyle' diyen Murat Bey. Saldırgan 'Ahmet Bey 5. katta mı?' diye sordu, görevli 'evet' dedi. Hırsızlık.",
+        "outcome": "Information disclosure: 'kim, nerede oturuyor' bilgisi açığı. Güvenlik görevlisi sadece sakine bilgi verir, dışarıya değil. **Yetki kontrolü her cevapta.**"
+      },
+      {
+        "persona": "Hatice Teyze (62) — sahte SMS",
+        "context": "Hatice Teyze'ye bankadan SMS geldi: 'Hesabınız tıklayın'. Linke tıkladı, formuna kart bilgilerini girdi.",
+        "outcome": "Phishing + XSS-tarzı. Hatice Teyze sahte siteye düştü. **Eğitim + bank sitenin tek bir URL olduğunu vurgulama gerek.**"
+      }
+    ],
+    "lesson": {
+      "ne": "En yaygın 10 web saldırısı; nasıl yapılır, nasıl korunur.",
+      "nicin": "Bir bug = bir özellik kaybı. Bir güvenlik açığı = tüm veri tabanı sızıntısı + iş kaybı.",
+      "nasil": "1) Prepared statement (SQL injection). 2) Framework auto-escape (XSS). 3) SameSite cookie + CSRF token. 4) Her endpoint yetki kontrolü (IDOR). 5) bcrypt/argon2 parola. 6) Dependabot. 7) Rate limit.",
+      "nerede": "`cc-security` cluster + her DocType handler'da yetki kontrolü. CI'da Snyk/Trivy tarama.",
+      "ne_zaman": "İlk satır kod yazılırken. Sonradan eklemek imkânsız.",
+      "kim": "Tüm geliştiriciler bilir; security champion kontrol eder; pentester yılda 1 doğrular.",
+      "analoji": "Apartman güvenlik: kapı kilidi (auth), interkom (validation), kamera (logging), bekçi (rate limit), site sözleşmesi (yetki). Hepsi olunca güvenli."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**OWASP Top 10 = ezber kategorisi.** Her birini somut örnekle bil, kodda nerede tuzak, framework nasıl koruyor — bunu bilmeden production'a çıkma."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "SQL Injection - hala yaşıyor",
+      "body": "2026'da bile %5 web uygulamada SQL injection açığı var. Sebep: string concat. `query = 'SELECT * FROM user WHERE name = \"' + name + '\"';' = klasik. **Her zaman prepared statement: `query('SELECT * FROM user WHERE name = $1', [name])`.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Bu endpoint için OWASP kontrol listesi: 1) Prepared statement (SQL injection). 2) Auth middleware (broken access). 3) Zod input validation. 4) Rate limit. 5) Output escape (React varsayılan). 6) Audit log.'* AI bunları default vermez; iste."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "OWASP Top 10 → çözüm map"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Saldırı",
+        "Bir cümle",
+        "Çözüm"
+      ],
+      "rows": [
+        [
+          "Broken Access",
+          "ID değiştir, başkasını gör",
+          "Her endpoint user.id kontrolü"
+        ],
+        [
+          "Crypto",
+          "MD5 parola",
+          "bcrypt/argon2 + HTTPS"
+        ],
+        [
+          "Injection",
+          "String concat SQL",
+          "Prepared statement"
+        ],
+        [
+          "Insecure Design",
+          "Limit yok",
+          "Rate limit + token TTL"
+        ],
+        [
+          "Misconfiguration",
+          "Default şifre",
+          "Checklist + secret rotation"
+        ],
+        [
+          "Vulnerable Comp.",
+          "Eski lib",
+          "Dependabot"
+        ],
+        [
+          "Auth Failures",
+          "Brute force",
+          "Rate limit + MFA"
+        ],
+        [
+          "Software Integrity",
+          "Unsigned package",
+          "Lock file + npm audit"
+        ],
+        [
+          "Logging",
+          "Saldırı görünmez",
+          "Structured log + Sentry"
+        ],
+        [
+          "SSRF",
+          "URL fetch internal",
+          "Whitelist + AWS metadata block"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "cc-security",
+    "k-authz",
+    "edu-u07",
+    "cc-privacy"
+  ]
+}

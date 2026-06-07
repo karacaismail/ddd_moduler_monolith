@@ -4,7 +4,7 @@
   "subtitle": "Klaviyo + Salesforce CRM muadili. Lead, pipeline, campaign, automation.",
   "cluster": "stack",
   "layer": "l2",
-  "order": 32,
+  "order": 10,
   "icon": "ph-megaphone",
   "badge": "Layer 2 Stack #10",
   "tags": [

@@ -1,0 +1,131 @@
+{
+  "id": "k-tenancy-deep",
+  "title": "Sharding — büyük ölçek için yatay bölme",
+  "subtitle": "100M satırlık tek tablo yavaşladığında, tenant başına ayrı schema/DB. Shard key seçimi + cross-shard query problemi.",
+  "cluster": "layer0",
+  "order": 8,
+  "icon": "ph-rows",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "layer0",
+    "sharding",
+    "scaling",
+    "multi-tenant",
+    "postgres"
+  ],
+  "enrich": {
+    "info": "Pool model (tek shard), bridge (schema-per-tenant), silo (DB-per-tenant). Shard key seçimi, cross-shard query.",
+    "detail": "**Tenancy 3 model:**\n\n1. **Pool model** (mevcut k-tenancy): Tek shard, tenant_id kolonu. **100-10K tenant için ideal.**\n2. **Bridge model**: Schema-per-tenant. 100-1000 tenant için.\n3. **Silo model**: DB-per-tenant. Enterprise için.\n\n**Ne zaman shard?**\n- Tek tablo 100M+ satır\n- p95 > 500ms\n- Storage > 1 TB\n- Backup > 4 saat\n\n**Shard key seçimi:**\n- **tenant_id**: Doğal; ama hot shard riski\n- **user_id**: Eşit dağılım; cross-shard query olur\n- **time-based**: Eski veri ayrı (cold storage)\n- **hash(id)**: Eşit ama tahmin edilebilirlik kayıp\n\n**Cross-shard query problemi:**\n```sql\nSELECT * FROM order ORDER BY created_at DESC LIMIT 10;\n```\n- Tek shard: 1 sorgu, 10ms\n- 10 shard: 10 sorgu paralel + merge = 50ms",
+    "terms": [
+      {
+        "term": "Sharding",
+        "abbrev_tr": "Parçalama",
+        "meaning": "Tek tabloyu birden fazla DB'ye bölme.",
+        "why": "100M+ satır tek DB yavaş."
+      },
+      {
+        "term": "Shard Key",
+        "abbrev_tr": "Parça anahtarı",
+        "meaning": "Hangi satır hangi shard'a gider.",
+        "why": "Yanlış seçim = hot shard."
+      },
+      {
+        "term": "Hot Shard",
+        "abbrev_tr": "Sıcak parça",
+        "meaning": "Birkaç tenant tek shard'da, geri kalan boş.",
+        "why": "Yük dengesiz."
+      },
+      {
+        "term": "Scatter-gather",
+        "abbrev_tr": "Yay-topla",
+        "meaning": "Query tüm shard'lara gider, sonuçlar merge.",
+        "why": "Cross-shard tek seçenek."
+      },
+      {
+        "term": "Bridge model",
+        "abbrev_tr": "Köprü model",
+        "meaning": "Schema-per-tenant.",
+        "why": "Pool ile silo arası orta seçenek."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Apartman 8'den 80 daireye — Murat Bey (61)",
+        "context": "Tek defter yetiyordu, sonra 80 daire için karman çorman.",
+        "outcome": "10 defter (her kata 1) = sharding."
+      },
+      {
+        "persona": "Manav Selim Bey (62) — 5 şube",
+        "context": "Tek kasada karışırdı; her şubeye ayrı kasa.",
+        "outcome": "DB-per-tenant (silo)."
+      }
+    ],
+    "lesson": {
+      "ne": "Fizyolojik sınıra ulaşıldığında veriyi tenant'lara göre bölme.",
+      "nicin": "Pool 10K tenant yeter. Üstünde shard'lamadan çare yok.",
+      "nasil": "1) Önce: pool + index + cache. 2) 100K satır/tenant aşılırsa: bridge. 3) Enterprise: silo. 4) Shard key tenant_id.",
+      "nerede": "`k-tenancy` derinleştirme.",
+      "ne_zaman": "100M+ satır VE p95 > 500ms VE index optimize edilmişse.",
+      "kim": "Senior DBA + mimar karar; backend dual-write.",
+      "analoji": "Kütüphane: 10K kitap tek raf, 1M için Dewey decimal, 100M için katlı bina."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Sharding = son çare.** Önce cache, index, read replica. Erken shard = teknik borç."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "Erken sharding tuzağı",
+      "body": "1000 satırlı sistem shard'lanırsa tüm query 10x karmaşık. **Pool model + cache 10K tenant'a yeter.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'k-tenancy şimdi pool model. Migration plan: 100K tenant aşılırsa bridge. Shard key tenant_id.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Tenancy model karar"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Model",
+        "Tenant sayısı",
+        "Karmaşıklık",
+        "İzolasyon"
+      ],
+      "rows": [
+        [
+          "Pool",
+          "< 10K",
+          "Düşük",
+          "Logical (tenant_id)"
+        ],
+        [
+          "Bridge",
+          "10K-100K",
+          "Orta",
+          "Schema-level"
+        ],
+        [
+          "Silo",
+          "Enterprise",
+          "Yüksek",
+          "Tam (ayrı DB)"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "k-tenancy",
+    "scale-multiregion",
+    "cc-privacy"
+  ]
+}

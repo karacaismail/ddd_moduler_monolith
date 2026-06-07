@@ -4,7 +4,7 @@
   "subtitle": "Dual-write problem'inin tek doğru çözümü. Save pipeline'a örülü.",
   "cluster": "scale",
   "layer": "scale",
-  "order": 10,
+  "order": 1,
   "icon": "ph-tray",
   "badge": "Scale primitive #1",
   "tags": [

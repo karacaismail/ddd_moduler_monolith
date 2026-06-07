@@ -3,7 +3,7 @@
   "title": "Deploy — yap otomasyonu",
   "subtitle": "Tek komut: 'yap' → commit + push + Actions + Pages deploy. Mac → GitHub → canlı site.",
   "cluster": "build",
-  "order": 45,
+  "order": 5,
   "icon": "ph-rocket-launch",
   "granularity": "buyuk-tas",
   "state": "ok",

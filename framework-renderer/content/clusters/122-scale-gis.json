@@ -1,0 +1,125 @@
+{
+  "id": "scale-gis",
+  "title": "PostGIS — coğrafi veri ve sorgular",
+  "subtitle": "'Bana 5 km'deki bakkallar' = klasik SQL değil PostGIS. Mesafe, geofencing, route planning.",
+  "cluster": "scale",
+  "order": 15,
+  "icon": "ph-map-pin",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "scale",
+    "gis",
+    "postgis",
+    "geo",
+    "distance"
+  ],
+  "enrich": {
+    "info": "PostgreSQL PostGIS extension. Geo coordinate (POINT), spatial index (GiST), distance sorgular, geofencing.",
+    "detail": "**PostGIS ne?** PostgreSQL'in coğrafi veri eklentisi. Lat/lng saklama + sorgu.\n\n**Use case'ler:**\n- 'Bana yakın 10 bakkal' (proximity)\n- 'Kullanıcı bu mahallede mi?' (containment)\n- 'A noktasından B'ye yürüme mesafesi' (route)\n- 'Mağaza teslimat bölgesi içinde mi?' (geofencing)\n\n**Tipler:**\n- **POINT** (lat, lng): tek nokta\n- **POLYGON**: bölge (mahalle sınırı)\n- **LINESTRING**: rota (yol parçası)\n- **GEOGRAPHY**: yer küre üzerinde (gerçek mesafe)\n- **GEOMETRY**: düz koordinat (Euclidean)\n\n**Sorgu örnekleri:**\n```sql\n-- Yakındaki bakkallar\nSELECT name, ST_Distance(location, ST_MakePoint(28.97, 41.03)::geography) AS m\nFROM shop ORDER BY location <-> ST_MakePoint(28.97, 41.03) LIMIT 10;\n\n-- Geofencing\nSELECT * FROM delivery_zone\nWHERE ST_Contains(boundary, ST_MakePoint(28.97, 41.03));\n```\n\n**Index zorunlu:** `CREATE INDEX shop_loc ON shop USING GIST(location);` Olmadan tablo scan = ölüm.",
+    "terms": [
+      {
+        "term": "PostGIS",
+        "abbrev_tr": "PostGIS extension",
+        "meaning": "PostgreSQL'in coğrafi veri eklentisi.",
+        "why": "Lat/lng sorgular standart SQL'de zor."
+      },
+      {
+        "term": "GiST",
+        "abbrev_of": "Generalized Search Tree",
+        "abbrev_tr": "GiST index",
+        "meaning": "Spatial veri için index türü.",
+        "why": "Coğrafi sorgu hızlı için zorunlu."
+      },
+      {
+        "term": "Geofencing",
+        "abbrev_tr": "Coğrafi sınırlama",
+        "meaning": "Bir noktanın belli polygon içinde olup olmadığı.",
+        "why": "Teslimat bölgesi, sınır kontrolü."
+      },
+      {
+        "term": "Geography vs Geometry",
+        "abbrev_tr": "Coğrafya vs geometri",
+        "meaning": "Geography: küre, gerçek mesafe. Geometry: düz koordinat.",
+        "why": "100 km'de geometry hatalı; geography doğru."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Mahalle market — Selim Bey (62) teslimat",
+        "context": "Selim Bey market'i. Müşteri 'kapıma kadar getirir misin?' diyor. 'Yakın mahalleye veririm, uzakta veremem'.",
+        "outcome": "Geofencing: 2 km poligon. Müşteri içinde mi? Evet → teslimat, hayır → sadece dükkândan."
+      },
+      {
+        "persona": "Apartman taksimat — Murat Bey (61)",
+        "context": "Murat Bey en yakın eczaneyi soruyor.",
+        "outcome": "PostGIS proximity: kullanıcı konumundan en yakın 5 eczane sıralı."
+      }
+    ],
+    "lesson": {
+      "ne": "Coğrafi koordinat (lat/lng) ile sorgu yapma altyapısı.",
+      "nicin": "'Yakın olanları bul' SQL'de imkânsız; PostGIS extension ile mümkün.",
+      "nasil": "1) PostGIS extension yükle. 2) POINT tipi kolon. 3) GiST index. 4) Proximity/containment sorgular.",
+      "nerede": "`scale-gis` cluster. atomic-types Geo Coordinate ile bağlantılı.",
+      "ne_zaman": "Konum-tabanlı özellik gerekirse. Yoksa eklenmesin.",
+      "kim": "Backend developer; map specialist (Mapbox/MapLibre).",
+      "analoji": "Posta dağıtıcı: 'şu mahalleye git, en yakın 10 kapı'. PostGIS aynı: 'şu noktaya yakın 10 dükkân'."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**PostGIS = Postgres'in 'gizli süper gücü'.** Coğrafi sorgu için tek seçenek. Lat/lng kolonu açtın diye yetmez; PostGIS olmadan 'yakın olanı bul' yapılmaz."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Postgres'e PostGIS extension. shop tablosuna location geography(POINT,4326). GiST index. Proximity query: ST_Distance + ORDER BY location <-> point. Geofencing: ST_Contains(zone.boundary, user_location).'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "PostGIS fonksiyon cheatsheet"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Sorgu",
+        "Fonksiyon",
+        "Örnek"
+      ],
+      "rows": [
+        [
+          "Mesafe",
+          "ST_Distance",
+          "ST_Distance(a, b) → meter"
+        ],
+        [
+          "İçinde mi",
+          "ST_Contains",
+          "ST_Contains(polygon, point)"
+        ],
+        [
+          "En yakın K",
+          "ORDER BY <->",
+          "ORDER BY loc <-> point LIMIT 10"
+        ],
+        [
+          "Buffer (X metre)",
+          "ST_Buffer",
+          "ST_Buffer(point, 1000)"
+        ],
+        [
+          "Kesişme",
+          "ST_Intersects",
+          "ST_Intersects(a, b)"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "atomic-types",
+    "l1-search"
+  ]
+}

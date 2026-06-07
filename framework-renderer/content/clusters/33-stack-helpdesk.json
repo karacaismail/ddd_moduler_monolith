@@ -4,7 +4,7 @@
   "subtitle": "Gorgias, Zendesk, Frappe Helpdesk, Confluence muadili.",
   "cluster": "stack",
   "layer": "l2",
-  "order": 33,
+  "order": 11,
   "icon": "ph-headset",
   "badge": "Layer 2 Stack #11",
   "tags": [

@@ -3,7 +3,7 @@
   "title": "Postgres-native durable execution",
   "subtitle": "DBOS: ayrı orkestratör altyapısı yok; workflow durumu mevcut Postgres'inde checkpoint'lenir. AI ajan güvenilirliği için.",
   "cluster": "sus",
-  "order": 99,
+  "order": 10,
   "icon": "ph-database",
   "tags": [
     "sustainability",

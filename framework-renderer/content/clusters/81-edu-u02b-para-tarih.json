@@ -1,0 +1,190 @@
+{
+  "id": "edu-u02b",
+  "title": "Para, Tarih ve Zaman Dilimi — gizli karmaşıklık",
+  "subtitle": "Yazılımda iki şey en çok yanlış kurulur: para tipi ve zaman. Yüzeyde basit, derinde tuzak.",
+  "cluster": "edu",
+  "order": 4,
+  "icon": "ph-coin",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "money",
+    "datetime",
+    "timezone",
+    "decimal"
+  ],
+  "enrich": {
+    "info": "Para'da Decimal kullan, asla float değil. Zamanda her şeyi UTC sakla, sadece gösterirken yerel saate çevir.",
+    "detail": "**Para tuzakları:**\n\n- `0.1 + 0.2 = 0.30000000000000004` (float aritmetiği yıllık ciroyu kuruş kuruş kaybeder)\n- Kuruş yuvarlama yönü (yukarı/aşağı/banker's) — vergi farkı doğurur\n- Çoklu kur: aynı tablo'da TL, USD, EUR — hangi kur, hangi tarihte?\n\n**Zaman tuzakları:**\n\n- `datetime` (saat dilimsiz) vs `datetimetz` (zaman dilimli) — PostgreSQL'de iki ayrı tip\n- DST (gün ışığı tasarrufu): Mart'ta saat 03:00 yok, Ekim'de 03:00 iki kez var\n- Ramazan/Bayram: TR tatil takvimi her yıl değişir; iş günü hesabı zor\n- Sipariş 23:55'te girildi, ödeme 00:05'te tamamlandı → hangi gün?",
+    "terms": [
+      {
+        "term": "Decimal",
+        "abbrev_tr": "Ondalık (kesin)",
+        "meaning": "Bilgisayarda virgüllü sayıyı kesin saklama tipi. Float'ın aksine 0.10 + 0.20 tam olarak 0.30 verir.",
+        "why": "Para float'ta tutulursa yıl sonu bilançosu kuruşlarda şaşar."
+      },
+      {
+        "term": "Float",
+        "abbrev_tr": "Kayan nokta",
+        "meaning": "Yaklaşık virgüllü sayı tipi. Hızlıdır ama parada YASAKTIR.",
+        "why": "Float'ta 0.1 + 0.2 ≠ 0.3 — banka asla bunu kabul etmez."
+      },
+      {
+        "term": "UTC",
+        "abbrev_of": "Coordinated Universal Time",
+        "abbrev_tr": "Eşgüdümlü evrensel zaman",
+        "meaning": "Dünya'nın referans saati — Greenwich saatine yakın. Tüm sunucu zamanları bunda tutulur.",
+        "why": "Sunucu UTC, kullanıcı yerel → tek noktada karmaşa biter."
+      },
+      {
+        "term": "DST",
+        "abbrev_of": "Daylight Saving Time",
+        "abbrev_tr": "Yaz saati uygulaması",
+        "meaning": "Yılda iki kez saat ileri/geri alma. TR 2016'dan beri uygulamıyor; AB hâlâ uyguluyor.",
+        "why": "Çoklu ülkeli sistem DST'yi unutursa randevu saatleri kayar."
+      },
+      {
+        "term": "Money Type",
+        "abbrev_tr": "Para tipi",
+        "meaning": "Para tutmak için tasarlanmış özel tip: tutar + para birimi + ondalık duyarlık.",
+        "why": "100 TL ile 100 USD aynı kolona konursa karışır; Money tipi bunu ayrıştırır."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Bakkal Hasan Amca (64) — kasa toplamı",
+        "context": "Gün sonu kasada toplam 4250.30 TL var. Hasan Amca defterine yazdı. Yazılımdaki rakam 4250.27 yazıyor.",
+        "outcome": "Programcı float kullanmış. 3 kuruş açık göründü. Ayda 30 kuruş, yılda 3.60 TL... ama 100 dükkâna kurulan sistemde yılda 360 TL gizli kayıp. Decimal'e geçilince fark kapandı."
+      },
+      {
+        "persona": "Apartman yöneticisi Zeynep Hanım (61) — aidat",
+        "context": "4500 TL aidat 8 daireye bölünecek: 562.50 TL. Sistem '562.4999...' diye basıyor.",
+        "outcome": "Programcı Decimal kullanmamış. Banker's rounding (yukarı/aşağı yuvarlama kuralı) belirlemediği için biri 562.50, biri 562.49 ödüyor — kavga çıkıyor. Decimal + ROUND_HALF_UP eklenince sorun bitti."
+      },
+      {
+        "persona": "Otel rezervasyonu yapan Yusuf Bey (66)",
+        "context": "İngiltere'den Antalya'ya gece varış 23:50 olarak kayıtlı. Otel kayıt sistemine 'erken giriş' yazıyor.",
+        "outcome": "İngiltere'de saat 20:50, TR'de 23:50 — sistem İngiltere saatine kayıtlı. Müşteri 'gece yarısı geleceğim, oda hazır olsun' diyor; otel '20:50 erken, sorun yok' diyor. Aynı an iki ayrı saat. UTC'ye çevrildiğinde herkes anlaştı."
+      }
+    ],
+    "lesson": {
+      "ne": "Para Decimal tipinde, zaman UTC'de saklanır. Yerel saat sadece kullanıcıya gösterilirken çevrilir.",
+      "nicin": "Float para = gizli kayıp. Yerel saat veri = saatler arası karmaşa, DST'de tamamen kırılır.",
+      "nasil": "Veritabanı kolonu `numeric(18,2)` veya `numeric(18,4)` yap. Tarih kolonu `timestamptz` (PostgreSQL'de zaman dilimli) yap. Sunucu saati UTC.",
+      "nerede": "`atomic-types` modülünde Money + DateTime tipleri tanımlı. Tüm Layer-1 ve Layer-2 bu tipleri kullanır.",
+      "ne_zaman": "Para tutan veya tarih tutan **her** alan için. İstisna yok.",
+      "kim": "Geliştirici tip seçer; veritabanı yöneticisi kolonu doğrular; muhasebeci rapor okur.",
+      "frontend": {
+        "yer": "Form input alanı: para 100,00 TL formatında (TR'de virgül), tarih 06.06.2026 (TR formatı).",
+        "gereklilik": "Kullanıcı '100,00' yazar; arka taraf Decimal('100.00') olarak alır.",
+        "ornek": "Tarih seçici: takvim açılır, tıklanır; arka taraf ISO 8601 ('2026-06-06T12:00:00Z') tutar."
+      },
+      "backend": {
+        "yer": "PostgreSQL kolonu `total numeric(18,2) NOT NULL, currency char(3) NOT NULL`. Tarih: `created_at timestamptz DEFAULT now()`.",
+        "gereklilik": "`numeric` = Decimal'in DB karşılığı. `timestamptz` = UTC + offset bilgisi.",
+        "ornek": "Prisma şema: `total Decimal @db.Decimal(18,2)` ve `createdAt DateTime @db.Timestamptz`"
+      },
+      "analoji": "Para float = kantarda 'yaklaşık 1 kilo' demek; market kabul etmez. Tarih yerel = randevuya 'akşam' demek; saati yazmadan kimse gelmez. Kesin tip + UTC = kantarın hassas olması + saatin sayısal olması."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Şu iki cümleyi ezberle:** *Para Decimal'dir, float değil.* *Zaman UTC'dir, yerel saat değil.* Bu iki kural projeyi ilk yıl baş ağrısının %40'ından kurtarır."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "En klasik hata",
+      "body": "Programcı 'kolay olsun' diye fiyat alanını `float` yapar. 100 satışta 30 kuruş gizli kayıp = ayda 9 TL. 1000 müşterili sistemde yılda 108.000 TL. **Decimal kullan.**"
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a 'fatura tablosu yap' demek yetmez. Şöyle yaz: *'fatura tablosu yap, tutar `numeric(18,2)`, para birimi `char(3)`, tarih `timestamptz`, Prisma şeması ile.'* Eksik söylersen float verir."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Para — pratik kontrol listesi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Soru",
+        "Doğru cevap",
+        "Yanlış cevap"
+      ],
+      "rows": [
+        [
+          "Kolon tipi",
+          "numeric(18,2) veya Decimal",
+          "float, real, double"
+        ],
+        [
+          "Yuvarlama yönü",
+          "ROUND_HALF_UP (yukarı)",
+          "Belirsiz (DB'ye bırak)"
+        ],
+        [
+          "Para birimi",
+          "Ayrı kolon: char(3) ISO 4217",
+          "Tutarın yanına 'TL' yapıştır"
+        ],
+        [
+          "Çoklu kur",
+          "Kur tarihi + kur tablosu",
+          "Anlık kur ile çevir, geçmişe bakma"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Zaman — pratik kontrol listesi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Soru",
+        "Doğru cevap",
+        "Yanlış cevap"
+      ],
+      "rows": [
+        [
+          "Sunucu saati",
+          "UTC",
+          "Yerel (İstanbul) saat"
+        ],
+        [
+          "DB kolon tipi",
+          "timestamptz",
+          "timestamp (tz'siz)"
+        ],
+        [
+          "Kullanıcıya gösterim",
+          "Yerel saate çevir (frontend'de)",
+          "UTC göster, 'kafan karıştıysa hesapla'"
+        ],
+        [
+          "Tatil takvimi",
+          "Ayrı tablo: tarih + tatil_adı + ülke",
+          "Kod içinde sabit liste"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Frontend formatı",
+      "body": "TR'de para '1.234,56 TL', tarih '06.06.2026'. Sistem ISO 8601'de saklar ('2026-06-06'), gösterimde `Intl.DateTimeFormat('tr-TR')` ve `Intl.NumberFormat('tr-TR')` kullan."
+    }
+  ],
+  "related": [
+    "atomic-types",
+    "edu-u02",
+    "edu-u04"
+  ]
+}

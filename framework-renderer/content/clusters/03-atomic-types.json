@@ -3,7 +3,7 @@
   "title": "Atomik tipler — Kum Tanesi",
   "subtitle": "DocType engine'i besleyen atomik primitive'ler. Field'ın altındaki tip katmanı.",
   "cluster": "atomic",
-  "order": 3,
+  "order": 1,
   "layer": "atomic",
   "icon": "ph-circle-half",
   "granularity": "atom",

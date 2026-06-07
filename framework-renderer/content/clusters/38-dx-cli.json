@@ -3,7 +3,7 @@
   "title": "Plugin CLI + Scaffolding",
   "subtitle": "create-module CLI, hook contract, test harness.",
   "cluster": "dx",
-  "order": 38,
+  "order": 1,
   "icon": "ph-terminal",
   "tags": [
     "dx",

@@ -1,0 +1,188 @@
+{
+  "id": "edu-u04b",
+  "title": "Veri Tasarımı — normalleştirme ve ilişkiler",
+  "subtitle": "Doğru tablo yapısı 3 ay sonra hayat kurtarır; yanlış yapı 3 ay sonra her şeyi yeniden yazdırır.",
+  "cluster": "edu",
+  "order": 7,
+  "icon": "ph-graph",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "data-modeling",
+    "normalization",
+    "foreign-key",
+    "junction-table"
+  ],
+  "enrich": {
+    "info": "1NF/2NF/3NF normalleştirme, foreign key kuralları, many-to-many junction tablo, ne zaman denormalize.",
+    "detail": "**Normalleştirme nedir?** Bir bilgi sadece bir yerde durur; tekrar etmez. Müşteri adres bilgisi siparişe yazılırsa 100 siparişte 100 kopya olur — müşteri taşınırsa hepsini güncellemek gerekir.\n\n**3 seviye:**\n\n1. **1NF**: Her kolonda tek değer (virgülle ayrılmış liste YASAK).\n2. **2NF**: Tablonun her sütunu birincil anahtarın tamamına bağlı (birincil anahtarın bir parçasına bağlı kolon ayrı tabloya).\n3. **3NF**: Transitive bağımlılık yok (A→B→C ise B ve C ayrı tabloya).\n\n**Foreign key (yabancı anahtar):** bir tablodaki kolonun başka tabloyu işaret etmesi — `siparis.musteri_id → musteri.id`. Veritabanı 'olmayan müşteriye sipariş'in yazılmasına izin vermez.\n\n**Junction tablo (many-to-many):** sipariş ↔ ürün — bir siparişte çok ürün, bir ürün çok siparişte. Üçüncü tablo gerekir: `siparis_kalem(siparis_id, urun_id, adet, fiyat)`.\n\n**Ne zaman denormalize?** Sadece okuma çok yavaşladıysa ve cache çözmediyse. CQRS pattern'i ile okuma projeksiyonları denormalize tutulur.",
+    "terms": [
+      {
+        "term": "Normalleştirme",
+        "abbrev_tr": "Normalleştirme (NF)",
+        "meaning": "Bilginin tekrar etmeden saklanması — her bilgi tek yerde.",
+        "why": "Tek yerde olunca güncelleme tek noktadan yapılır, tutarsızlık olmaz."
+      },
+      {
+        "term": "Foreign Key",
+        "abbrev_tr": "Yabancı anahtar (FK)",
+        "meaning": "Bir tablonun başka tablodaki kayda işaret etmesi.",
+        "why": "Veritabanı bütünlüğü: olmayan kayda referans yapamazsın; kayıt silinemez (veya kademeli silinir)."
+      },
+      {
+        "term": "Junction Table",
+        "abbrev_tr": "Bağlantı tablosu",
+        "meaning": "İki tablo arasında çok-çoklu ilişkiyi kuran üçüncü tablo. Sipariş + Ürün → Sipariş_Kalem.",
+        "why": "Bir tabloda virgülle ürün listesi tutulamaz; her bağlantı bir satır."
+      },
+      {
+        "term": "Composite Key",
+        "abbrev_tr": "Bileşik anahtar",
+        "meaning": "Birden fazla kolondan oluşan birincil anahtar. Junction tablolarda yaygın.",
+        "why": "`(siparis_id, urun_id)` ikilisi tekildir; ikinci kez aynı eşleşme eklenemez."
+      },
+      {
+        "term": "Denormalize",
+        "abbrev_tr": "Denormalize (tekrar koy)",
+        "meaning": "Hızlı okuma için bilgiyi bilerek birkaç yere kopyalama.",
+        "why": "100M satırlı tabloda JOIN yavaşsa, sık okunan kolonu tekrar yazıp tek tablodan okuruz. CQRS okuma tarafıdır."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Manav Selim Bey (62) — müşteri telefonu",
+        "context": "Selim Bey müşteri listesini Excel'de tutuyordu. Bir müşterinin telefonu değişti; sipariş listesinde, fatura listesinde, teslimat listesinde — üç ayrı yerde güncellemek zorunda kaldı. Birini unuttu, yanlış telefonu aradı, sipariş kaçırdı.",
+        "outcome": "Doğru tasarım: müşteri tek tabloda. Sipariş ve fatura `musteri_id` ile bağlanır. Telefon tek yerde değişir, her yer otomatik günceldir."
+      },
+      {
+        "persona": "Berber Mehmet Usta (60) — randevu defteri",
+        "context": "Mehmet Usta defterinde her randevuya müşteri adını, telefonunu, geçmiş saç modelini yazardı. Aynı müşteri 10 sayfada 10 kez yazılı. Adres değişince geriye gidip silmek günler aldı.",
+        "outcome": "Yazılım: müşteri tablosu + randevu tablosu (musteri_id ile). 10 randevu = 10 satır, ama müşteri bilgisi 1 yerde. Adres güncellemek 5 saniye."
+      },
+      {
+        "persona": "Terzi Ayşe Teyze (63) — sipariş kalemleri",
+        "context": "Bir sipariş 3 farklı kumaş + 2 farklı düğme içeriyor. Ayşe Teyze deftere 'kumaş1, kumaş2, kumaş3, düğme1, düğme2' yazdı. Kumaş2 stokta kalmadığında geri çekmek istedi, ama hangi siparişlerde geçtiğini bulması saatler aldı.",
+        "outcome": "Junction tablo: `siparis_kalem` — her satır bir kalem. Kumaş2 hangi siparişlerde geçtiği tek sorgu: 'SELECT siparis_id FROM siparis_kalem WHERE urun_id = kumas2'."
+      }
+    ],
+    "lesson": {
+      "ne": "Veriyi nasıl tablolara böleceğini öğrenirsin. Tekrar eden bilgi ayrı tabloya çıkar; ilişkiyi foreign key kurar; çok-çoklu ilişki için üçüncü tablo açarsın.",
+      "nicin": "Yanlış tablo yapısı bir kez büyüdükten sonra düzeltmek aylar alır. Doğru yapı baştan kurulursa 'müşteri taşındı' sorunu 3 saniyede çözülür.",
+      "nasil": "1) Tekrar eden bilgiyi bul (müşteri adı, ürün açıklaması) → ayrı tabloya çıkar. 2) Bağlantıyı `_id` kolonu ile kur. 3) Veritabanına FK constraint yaz — bütünlüğü DB korur, sen değil.",
+      "nerede": "Her DocType tanımlarken (k-schema) ilişki türü seçilir: one-to-one, one-to-many, many-to-many. Many-to-many için junction tablo otomatik üretilir.",
+      "ne_zaman": "Tablo açarken **ilk önce** normalleştir. Sonra performans sorunu çıkarsa CQRS okuma projeksiyonu eklenir — ama temel veri her zaman normalleştirilmiştir.",
+      "kim": "Veri modelci (genelde mimar veya senior dev) ilk şemayı çizer. Junior dev junction tabloyu eklemeyi öğrenir.",
+      "frontend": {
+        "yer": "Form 'müşteri seç' kutusu (dropdown) gösterir, arka tarafta `musteri_id` gönderir.",
+        "gereklilik": "Kullanıcı 'Ahmet Yılmaz' yazar; sistem ID'yi bulur, FK'yı kurar.",
+        "ornek": "Sipariş formu: müşteri seçimi + ürün satırları (her satır bir kalem)."
+      },
+      "backend": {
+        "yer": "Prisma şemasında `@relation(fields: [musteriId], references: [id])`. PostgreSQL'de `FOREIGN KEY (musteri_id) REFERENCES musteri(id) ON DELETE RESTRICT`.",
+        "gereklilik": "FK constraint = DB'nin 'olmayan kayıt' yazılmasına izin vermemesi. Kod hata yapsa bile veri tutarlı.",
+        "ornek": "`siparis.musteri_id INTEGER NOT NULL REFERENCES musteri(id) ON DELETE RESTRICT` — müşteri silinemez, önce siparişleri taşımalısın."
+      },
+      "analoji": "Kütüphanede her kitabın bir kart-numarası var. Ödünç defterine kitabın tüm bilgisini değil, kart-numarasını yazarsın. Kitap adı değişirse (yeni baskı) tek kart günceller, defter eski kalır."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Üç kural:** *(1) Bilgi tekrar etmez — her bilgi tek yerde.* *(2) İlişki foreign key ile kurulur.* *(3) Çok-çoklu ilişki için ayrı junction tablo.* Bu üç kuralı uygulayan veri tasarımı 5 yıl yaşar."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "En klasik hata",
+      "body": "Programcı 'fatura' tablosuna müşteri adını + ürün listesini virgülle yazar: `'Ahmet Yılmaz', 'Domates, Soğan, Patates'`. 3 ay sonra 'domateste fiyat değiştirelim, hangi faturalarda var?' sorusuna cevap **YOK**. Junction tablo zorunlu."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a şöyle yaz: *'Sipariş + Ürün many-to-many ilişki kur, junction tablosu `siparis_kalem(siparis_id, urun_id, adet, fiyat)` ile. Prisma şemasında her iki tarafta `@relation` ekle. FK ON DELETE RESTRICT.'* Bu detayları söylemezsen virgüllü liste döndürür."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "İlişki türleri — pratik tablosu"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "İlişki",
+        "Örnek",
+        "Çözüm"
+      ],
+      "rows": [
+        [
+          "Bire-bir (1:1)",
+          "Müşteri → Müşteri Profili",
+          "Aynı tabloya koy veya FK + UNIQUE"
+        ],
+        [
+          "Bire-çok (1:N)",
+          "Müşteri → Siparişler",
+          "FK çocuk tabloda: siparis.musteri_id"
+        ],
+        [
+          "Çok-çoklu (N:N)",
+          "Sipariş ↔ Ürün",
+          "Junction tablo: siparis_kalem"
+        ],
+        [
+          "Kendine referans",
+          "Kategori → Üst Kategori",
+          "FK aynı tabloda: kategori.parent_id"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Normalleştirme — denetim listesi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Kontrol",
+        "Sorun",
+        "Çözüm"
+      ],
+      "rows": [
+        [
+          "Kolonda virgüllü liste var mı?",
+          "'domates, soğan, patates'",
+          "Ayrı tabloya çıkar (1NF)"
+        ],
+        [
+          "Aynı bilgi 2+ yerde mi?",
+          "Müşteri adı hem sipariş hem fatura'da",
+          "FK ile bağla, tek yerde tut"
+        ],
+        [
+          "İsim değişince 10 yer güncellenecek mi?",
+          "Evet → tasarım yanlış",
+          "Normalleştir"
+        ],
+        [
+          "JOIN çok yavaş mı?",
+          "p99 > 500ms",
+          "CQRS okuma projeksiyonu — ama denormalize EN SON çare"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Denormalize ne zaman caiz?",
+      "body": "**Sadece** okuma çok yavaşladıysa, **cache çözmediyse**, ve denormalize verinin güncel kalması için outbox/event listener kurduysan. 'Hızlı olsun' diye baştan denormalize = kötü."
+    }
+  ],
+  "related": [
+    "edu-u04",
+    "k-schema",
+    "scale-projections"
+  ]
+}

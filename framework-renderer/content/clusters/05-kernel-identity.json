@@ -4,7 +4,7 @@
   "subtitle": "Her request'in başında 'kim bu' sorusunu cevaplayan mekanizma. Login/signup'tan çok daha fazlası.",
   "cluster": "layer0",
   "layer": "kernel",
-  "order": 5,
+  "order": 2,
   "icon": "ph-user-circle",
   "badge": "Layer 0 — Kernel #2",
   "tags": [

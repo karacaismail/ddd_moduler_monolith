@@ -1,0 +1,127 @@
+{
+  "id": "cc-a11y-backend",
+  "title": "Accessibility Backend — API yanıt yapısı + dark/high-contrast",
+  "subtitle": "A11y sadece frontend değil. API yanıtları ekran okuyucu için alt metin, label, kontrast tema desteği.",
+  "cluster": "crosscut",
+  "order": 8,
+  "icon": "ph-eye",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "crosscut",
+    "a11y",
+    "accessibility",
+    "wcag",
+    "theme"
+  ],
+  "enrich": {
+    "info": "API response: alt text, label, description fields. Theme: dark mode, high contrast, font-size pref. WCAG 2.2 AA.",
+    "detail": "**Backend a11y sorumlulukları:**\n\n1. **Image response: alt text zorunlu**\n```json\n{\n  url: 'https://...',\n  alt: 'Mavi gömlek, 200 TL',  // ZORUNLU\n  width: 800,\n  height: 600\n}\n```\nFrontend `<img alt=...>` doğru atar.\n\n2. **Label / Aria description**\n```json\n{\n  field: 'phone',\n  label: 'Telefon numaranız',\n  description: 'Örnek: 0532 123 45 67',\n  required: true\n}\n```\n\n3. **Theme preference saklama**\n```sql\nuser_prefs(user_id, theme TEXT CHECK (theme IN ('light','dark','high-contrast')),\n           font_size INTEGER DEFAULT 16,\n           reduce_motion BOOL DEFAULT false)\n```\nKullanıcı seçimi cihazlar arası senkron.\n\n4. **Color tokens, semantic değil sabit kod**\n```json\n{\n  color_token: 'danger',  // 'danger' değil, '#ff0000' değil\n  // frontend 'danger' tokenını mevcut tema'ya göre çevirir\n}\n```\n\n5. **Reduce motion** — animasyon mu?\n- Backend reduce_motion=true ise loading state'lerde spinner yerine static text\n\n**WCAG 2.2 AA seviye:** TR'de yasal gereksinim (Engelliler Hakkında Kanun ile bağlı).",
+    "terms": [
+      {
+        "term": "A11y",
+        "abbrev_of": "Accessibility",
+        "abbrev_tr": "Erişilebilirlik",
+        "meaning": "a + 11 harf + y = 'accessibility'.",
+        "why": "Engelli kullanıcılar yazılımı kullanabilsin."
+      },
+      {
+        "term": "Alt Text",
+        "abbrev_tr": "Alternatif metin",
+        "meaning": "Resmin metin açıklaması; ekran okuyucu okur.",
+        "why": "Görme engelli kullanıcı için."
+      },
+      {
+        "term": "WCAG",
+        "abbrev_of": "Web Content Accessibility Guidelines",
+        "abbrev_tr": "WCAG",
+        "meaning": "Web erişilebilirlik kuralları.",
+        "why": "Yasal + etik standart."
+      },
+      {
+        "term": "Reduce Motion",
+        "abbrev_tr": "Hareket azalt",
+        "meaning": "Animasyonu kapatma seçeneği.",
+        "why": "Vertigo, motion sickness için."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Yusuf Bey (66) — görme zayıf",
+        "context": "Yusuf Bey gözlük takıyor, yine de küçük yazıyı zor okuyor. Telefon font'unu büyültmek istiyor.",
+        "outcome": "Sistem font_size kullanıcı tercihi olarak saklar; cihazlar arası senkron."
+      },
+      {
+        "persona": "Ayşe Teyze (63) — koyu modda gece",
+        "context": "Ayşe Teyze gece beyaz ekran rahatsız ediyor.",
+        "outcome": "Theme tercihi: dark mode. Backend kaydeder; yeni cihazda hemen aktif."
+      }
+    ],
+    "lesson": {
+      "ne": "A11y'nin sadece frontend değil backend tarafı.",
+      "nicin": "Tema tercihi, alt text, label — bunlar backend'den gelmeli.",
+      "nasil": "1) Image response alt zorunlu. 2) Field schema label + description. 3) Theme + font_size + reduce_motion user_prefs. 4) Color token semantic.",
+      "nerede": "`cc-a11y-backend` cluster. Her DocType image/field için a11y metadata.",
+      "ne_zaman": "İlk image upload öncesi alt text zorunlu kuralı.",
+      "kim": "Backend developer schema; frontend developer render; accessibility consultant denetim.",
+      "analoji": "Müzedeki tabela: resim altına yazı, ses rehberi opsiyonu. Sadece görsel olmaz; metin + ses + dokunma alternatifleri."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**A11y backend'i unutulan boyut.** Frontend ARIA, kontrast vs. tartışılır ama alt text + tema tercihi backend tarafından gelir."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Image upload alt zorunlu (boş kabul edilmez). DocType field schema {label, description, ariaLabel}. user_prefs tablo theme + font_size + reduce_motion. Color token semantic (danger/success), hex değil.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Backend a11y checklist"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Alan",
+        "Backend sorumluluğu",
+        "Frontend kullanımı"
+      ],
+      "rows": [
+        [
+          "Image",
+          "alt text zorunlu",
+          "<img alt={alt}>"
+        ],
+        [
+          "Form field",
+          "label + description",
+          "<label>{label}</label> + aria-describedby"
+        ],
+        [
+          "Theme",
+          "user_prefs.theme",
+          "data-theme attribute"
+        ],
+        [
+          "Font size",
+          "user_prefs.font_size",
+          "CSS variable --font-base"
+        ],
+        [
+          "Reduce motion",
+          "user_prefs.reduce_motion",
+          "CSS @media + JS disable animations"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "edu-u15-ux-60-plus",
+    "fe-core-ui",
+    "fe-mobile"
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "id": "cc-i18n-deep",
+  "title": "i18n Derinleştirme — pluralization, RTL, lokal format",
+  "subtitle": "Çoğul kuralları diller arası farklı. RTL için layout reverse. Tarih/sayı format yerelleştirme.",
+  "cluster": "crosscut",
+  "order": 7,
+  "icon": "ph-globe",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "crosscut",
+    "i18n",
+    "l10n",
+    "rtl",
+    "pluralization"
+  ],
+  "enrich": {
+    "info": "ICU MessageFormat (pluralization), RTL CSS, Intl.* yerelleştirme, locale-aware sort, fallback chain.",
+    "detail": "**Pluralization:**\n\n- TR: '1 elma' / '2 elma' — tek bir form\n- EN: '1 apple' / '2 apples' — iki form\n- RU: '1 яблоко' / '2 яблока' / '5 яблок' — üç form\n- AR: 0, 1, 2, few, many, other — altı form!\n\n**Çözüm: ICU MessageFormat:**\n```\n{count, plural,\n  =0 {hiç elma yok}\n  one {1 elma var}\n  other {# elma var}\n}\n```\n\nLibrary: `react-i18next` + `i18next-icu` veya `format.js`.\n\n**RTL (Right-to-Left):**\n- Arapça, İbranice, Farsça\n- `<html dir=\"rtl\">` set\n- CSS `text-align: start` (left değil)\n- Logical properties: `margin-inline-start` (margin-left değil)\n- Icon flip: `transform: scaleX(-1)` arrow icons için\n\n**Yerel format:**\n```javascript\nnew Intl.NumberFormat('tr-TR').format(1234567.89) // '1.234.567,89'\nnew Intl.DateTimeFormat('ar-EG').format(date) // arapça takvim\n```\n\n**Locale fallback chain:** `tr-TR` → `tr` → `en` (default).\n\n**Static analysis:**\n- Tüm UI string'leri t() ile sarılı mı?\n- Hard-coded date format yok mu?\n- Number format Intl.NumberFormat mı?",
+    "terms": [
+      {
+        "term": "i18n",
+        "abbrev_of": "Internationalization",
+        "abbrev_tr": "Uluslararasılaştırma",
+        "meaning": "Yazılımın farklı dillere uyumlu olması.",
+        "why": "i+18+n = baş+orta+son harfler."
+      },
+      {
+        "term": "l10n",
+        "abbrev_of": "Localization",
+        "abbrev_tr": "Yerelleştirme",
+        "meaning": "Belirli bir locale için çeviri + format ayarı.",
+        "why": "i18n altyapı, l10n içerik."
+      },
+      {
+        "term": "ICU MessageFormat",
+        "abbrev_tr": "ICU mesaj formatı",
+        "meaning": "Unicode'un çoğul/cinsiyet/koşul formatı.",
+        "why": "Karmaşık çoğul kuralları çözer."
+      },
+      {
+        "term": "RTL",
+        "abbrev_of": "Right-to-Left",
+        "abbrev_tr": "Sağdan sola",
+        "meaning": "Arapça/İbranice yazı yönü.",
+        "why": "Layout'u tersine çevirir; CSS logical properties şart."
+      },
+      {
+        "term": "Locale",
+        "abbrev_tr": "Yerel ayar",
+        "meaning": "Dil + bölge: tr-TR, en-US.",
+        "why": "tr-TR + tr-CY farklı para birimi."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Hatice Teyze (62) — yabancı menü",
+        "context": "Hatice Teyze otelde menüye bakıyor; 'apple' yazıyor. Anlamadı.",
+        "outcome": "i18n: dil seçici → tr → 'elma'. Çeviri olmadan kullanılamaz."
+      },
+      {
+        "persona": "Murat Bey (61) — Excel tarih",
+        "context": "Murat Bey Excel'de '6/3/2026' yazıyor; Amerikan formatında — '6 Mart' mı '3 Haziran' mı?",
+        "outcome": "Yerel format: TR'de '03.06.2026' = 3 Haziran. Belirsizlik bitti."
+      }
+    ],
+    "lesson": {
+      "ne": "Yazılımı dünya dillerine + yerel kültürlere uyumlu hale getirme.",
+      "nicin": "Çoğul kuralı yanlış = 'sizin 1 elmalar var' garip. RTL layout yok = Arap müşteri kullanamaz.",
+      "nasil": "1) react-i18next + ICU. 2) Tüm string t() ile. 3) Intl.* yerel format. 4) CSS logical properties RTL.",
+      "nerede": "`cc-i18n-deep` cluster + `l1-misc` i18n temel.",
+      "ne_zaman": "İlk ek dil eklenmeden önce altyapı hazır.",
+      "kim": "Frontend developer i18n; translator çeviri; product team locale önceliği.",
+      "analoji": "Otel: tüm tabela 4 dilde, kahvaltı saatleri yerel saatte, fiyat yerel kurda."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**i18n derinliği basitçe 'çeviri' değil.** Pluralization, RTL, format yerelleştirmesi — hepsi ayrı sorun. Kullanmıyorsan bile başlangıçtan t() pattern doğru."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'react-i18next + i18next-icu. Tüm UI string t() ile sarılı. Pluralization ICU format. CSS logical properties (margin-inline-start). Intl.NumberFormat + Intl.DateTimeFormat locale ile.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Locale checklist"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Item",
+        "Doğru",
+        "Yanlış"
+      ],
+      "rows": [
+        [
+          "Tarih format",
+          "Intl.DateTimeFormat",
+          "new Date().toLocaleString() (default)"
+        ],
+        [
+          "Sayı format",
+          "Intl.NumberFormat",
+          "Manuel comma/dot"
+        ],
+        [
+          "Pluralization",
+          "ICU MessageFormat",
+          "'1 item(s)'"
+        ],
+        [
+          "RTL",
+          "CSS logical properties",
+          "margin-left/right (sabit)"
+        ],
+        [
+          "Locale detect",
+          "navigator.languages",
+          "navigator.language tek"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "l1-misc",
+    "cc-tr",
+    "fe-core-ui"
+  ]
+}

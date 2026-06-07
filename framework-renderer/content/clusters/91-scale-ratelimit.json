@@ -1,0 +1,133 @@
+{
+  "id": "scale-ratelimit",
+  "title": "Rate Limit + Quota",
+  "subtitle": "Kötü niyetli veya hatalı istemcinin sistemi tüketmesini engelle. Müşteri başına saatlik kontingen + IP başına saniyelik tavan.",
+  "cluster": "scale",
+  "order": 8,
+  "icon": "ph-traffic-signal",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "scale",
+    "rate-limit",
+    "quota",
+    "ddos",
+    "throttling"
+  ],
+  "enrich": {
+    "info": "Token bucket (varsayılan), sliding window (kritik için), leaky bucket (akış kontrolü). Tier'lı quota: ücretsiz/pro/enterprise.",
+    "detail": "**3 katmanlı koruma:**\n\n1. **IP başına saniyelik tavan** (Cloudflare/Nginx): DDoS, bot tarama\n2. **Müşteri başına saatlik kontingen** (uygulama içi): tier'a göre 100/10K/sınırsız\n3. **Endpoint başına özel limit** (ağır operasyonlar): export 1/dakika, login 5/dakika\n\n**Token bucket — varsayılan:**\n- Saniyede X token yenilenir\n- Burst kapasitesi: kovada max Y token\n- Her istek 1 token harcar\n- Token yoksa 429 + `Retry-After: 30` header\n\n**Response header'ları (standart):**\n- `X-RateLimit-Limit: 100`\n- `X-RateLimit-Remaining: 87`\n- `X-RateLimit-Reset: 1717683600`\n\n**Quota üst limit nasıl ayarlanır:**\n- Ücretsiz: 100 req/saat (deneme amaçlı)\n- Pro: 10K req/saat (küçük işletme)\n- Enterprise: sınırsız + adil kullanım sözleşmesi",
+    "terms": [
+      {
+        "term": "Token Bucket",
+        "abbrev_tr": "Jeton kovası",
+        "meaning": "Saniyede X token dolar; her istek 1 harcar; tükenince reddedilir.",
+        "why": "Burst izinli (kovada birikmiş token), sürekli yüksek yük değil."
+      },
+      {
+        "term": "Sliding Window",
+        "abbrev_tr": "Kayar pencere",
+        "meaning": "Son 60 sn'de kaç istek geldi? Hesapla, limit'ten az mı?",
+        "why": "Token bucket'tan daha hassas, ama daha pahalı (her istek için hesap)."
+      },
+      {
+        "term": "429",
+        "abbrev_of": "Too Many Requests",
+        "abbrev_tr": "429 — çok istek",
+        "meaning": "HTTP durum kodu: rate limit aşıldı.",
+        "why": "İstemci için standart sinyal; client SDK'lar otomatik backoff yapar."
+      },
+      {
+        "term": "Quota",
+        "abbrev_tr": "Kontingen",
+        "meaning": "Belli sürede toplam istek hakkı (aylık/günlük/saatlik).",
+        "why": "Tier'lı satış modeli: ne kadar ödüyorsan o kadar."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Apartman çamaşırhanesi — Murat Bey (61)",
+        "context": "8 daireli binanın ortak makinesi. Murat Bey 'günde 3 saat hak' tablosu astı.",
+        "outcome": "Bu quota. Adil + makine yıpranmaz. Token bucket: her gün 3 token verilir, her kullanım 1 harcar."
+      },
+      {
+        "persona": "Köy fırını — Hatice Teyze (62)",
+        "context": "Hatice Teyze köyün fırınını işletiyor. Bayramda herkes ekmek ister; bir günde 100 sipariş. Sıraya kural koydu: 'Ailebaşına max 5 ekmek, sıraya 30 dk fasıla'.",
+        "outcome": "Quota (5 ekmek/aile) + rate limit (30 dk fasıla). Yoksa 1 aile 50 alır, diğerleri mahrum."
+      }
+    ],
+    "lesson": {
+      "ne": "Bir istemcinin (IP, kullanıcı, müşteri) belli sürede kaç istek atabileceğine sınır koyma sistemi.",
+      "nicin": "Bir kötü niyetli kullanıcı sistemi yıkabilir. Bir hatalı bot loop'a girip 1M istek atabilir. Limit olmadan koruma yok.",
+      "nasil": "1) IP başına Nginx/Cloudflare seviyesinde DDoS koruması. 2) Uygulama içi token bucket + Redis sayaç. 3) Tier'a göre quota. 4) 429 + Retry-After header.",
+      "nerede": "`scale-ratelimit` middleware Layer-1 öncesi. Redis sayaç tutar. Tier bilgisi `k-tenancy`'den gelir.",
+      "ne_zaman": "Her public endpoint için zorunlu. Internal API'lerde DDoS değil ama bot koruması.",
+      "kim": "SRE varsayılan limit koyar; ürün ekibi tier kuralını tanımlar; on-call 429 alarmlarına bakar.",
+      "analoji": "Otoyol ödeme gişesi: saniyede 5 araba geçebilir. 100 araba gelirse kuyruk olur, yine 5'er 5'er geçer. Trafik daralmaz."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Rate limit = adalet aracı.** Tek kullanıcı tüm kapasiteyi tüketmesin. Sistemi koruma + iyi müşteriye hız garantisi."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "DDoS tek başına yeterli değil",
+      "body": "Cloudflare DDoS'u keser ama 'meşru' bir bot saatte 100K istek atabilir = sistemi yer. Uygulama içi rate limit + quota gerek. **İki katmanlı koruma.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Express middleware: token bucket Redis ile. IP başına 100 req/dk + müşteri başına tier'a göre (free: 1K/saat, pro: 10K/saat). 429 dönerken X-RateLimit-* header'ları + Retry-After.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Tier × limit matrisi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Tier",
+        "Saatlik",
+        "Saniyelik burst",
+        "Endpoint exception"
+      ],
+      "rows": [
+        [
+          "Anonymous IP",
+          "60",
+          "5",
+          "Login: 5/dk"
+        ],
+        [
+          "Free",
+          "1.000",
+          "20",
+          "Export: 1/saat"
+        ],
+        [
+          "Pro",
+          "10.000",
+          "100",
+          "Export: 10/saat"
+        ],
+        [
+          "Enterprise",
+          "Sınırsız + sözleşme",
+          "500",
+          "Custom"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "scale-cache",
+    "cc-security",
+    "edu-u14",
+    "k-tenancy"
+  ]
+}

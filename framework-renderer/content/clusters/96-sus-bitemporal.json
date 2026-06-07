@@ -3,7 +3,7 @@
   "title": "Bitemporal immutable kayıt — tek doğruluk",
   "subtitle": "XTDB: \"valid_time + system_time\" otomatik; audit/time-travel/KVKK bedava. Postgres-wire uyumlu.",
   "cluster": "sus",
-  "order": 96,
+  "order": 7,
   "icon": "ph-clock-counter-clockwise",
   "tags": [
     "sustainability",

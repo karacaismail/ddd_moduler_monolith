@@ -4,7 +4,7 @@
   "subtitle": "Driver pattern: Local/S3/R2/Azure/GCS. Versioning, signed URL, lifecycle.",
   "cluster": "layer1",
   "layer": "l1",
-  "order": 17,
+  "order": 2,
   "icon": "ph-folder-simple",
   "badge": "Layer 1 — In-tree",
   "tags": [

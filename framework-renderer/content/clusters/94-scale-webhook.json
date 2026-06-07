@@ -1,0 +1,139 @@
+{
+  "id": "scale-webhook",
+  "title": "Outbound Webhook — dış sisteme olay yollama",
+  "subtitle": "Marketplace + entegrasyon ekosistemi için: 'sipariş oluştu' olayını dış sistem URL'ine HMAC-imzalı POST ile yolla.",
+  "cluster": "scale",
+  "order": 11,
+  "icon": "ph-paper-plane-tilt",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "scale",
+    "webhook",
+    "outbound",
+    "hmac",
+    "integration"
+  ],
+  "enrich": {
+    "info": "HMAC imzalama, exponential backoff retry, dead letter queue, replay protection, signature documentation.",
+    "detail": "**Webhook = ters HTTP istek.** Senin sistem, dış URL'e olay yollar.\n\n**Olmazsa olmaz 5 özellik:**\n\n1. **HMAC imza** — `X-Webhook-Signature: sha256=...`. Alıcı imzayı doğrular; senin gönderdiğinden emin olur.\n2. **Idempotency ID** — `X-Webhook-Id: uuid`. Alıcı aynı ID'yi 2. kez işlemez.\n3. **Timestamp** — `X-Webhook-Timestamp: 1717683600`. 5 dk eski isteği reddet (replay attack).\n4. **Retry + exponential backoff** — 2xx alana kadar 1s, 10s, 1dk, 10dk, 1 saat... max 24 saat.\n5. **DLQ** — 24 saat sonra hala başarısız → DLQ'ya at, admin'e bildir.\n\n**Alıcıya dokümantasyon:**\n- Signature verification kodu (her dilde örnek)\n- Idempotency nasıl yapılır\n- Payload örnek + alan açıklaması\n- 2xx, 4xx, 5xx anlamları\n\n**Customer-facing UI:**\n- Webhook URL kayıt formu\n- Hangi olaylara abone (sipariş, ödeme, kullanıcı)\n- Test webhook gönder butonu\n- Geçmiş gönderimler + status",
+    "terms": [
+      {
+        "term": "Webhook",
+        "abbrev_tr": "Geri çağrı",
+        "meaning": "Olay olduğunda dış URL'e otomatik POST.",
+        "why": "Polling'ten çok daha verimli — dış sistem 'yeni var mı?' diye sormaz, sen 'oldu' dersin."
+      },
+      {
+        "term": "HMAC",
+        "abbrev_of": "Hash-based Message Authentication Code",
+        "abbrev_tr": "Hash tabanlı kimlik doğrulama",
+        "meaning": "Mesaj + paylaşılan gizli anahtar → hash. Alıcı aynı hash'i hesaplar, eşleşirse mesaj doğru.",
+        "why": "Saldırgan webhook'u tutamaz veya değiştiremez."
+      },
+      {
+        "term": "Replay Attack",
+        "abbrev_tr": "Tekrar saldırısı",
+        "meaning": "Saldırgan eski webhook'u kaydedip tekrar gönderir.",
+        "why": "Timestamp + idempotency ID = çözüm."
+      },
+      {
+        "term": "DLQ",
+        "abbrev_of": "Dead Letter Queue",
+        "abbrev_tr": "Ölü mesaj kuyruğu",
+        "meaning": "24 saat boyunca başarısız webhook'ların gittiği park.",
+        "why": "Sonsuz retry değil, insan inceler."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Posta servisi — Hatice Teyze (62) güncellemeli sipariş",
+        "context": "Hatice Teyze butik dükkân, online sipariş aldı. Müşteri 'kargoya verildi mi?' diye 10 kez aradı.",
+        "outcome": "Webhook ile çözüm: kargo şirketi 'paket teslim' olayını Hatice Teyze'nin sitesine push eder. Müşteri yenilemeden 'teslim edildi' bildirimi alır."
+      },
+      {
+        "persona": "Apartman aidat — Murat Bey (61) banka bildirimi",
+        "context": "Murat Bey apartman aidatlarını banka hesabından takip ediyordu. 5 hesaba günde 10 kez bakıyordu.",
+        "outcome": "Banka webhook'u kayıt: 'hesaba para yattı' olayında Murat Bey'in tablosunu otomatik güncelle. Manuel takip son."
+      }
+    ],
+    "lesson": {
+      "ne": "Sistemde olay olunca dış URL'e HMAC-imzalı POST atan, retry-ve-DLQ ile garanti teslim eden mekanizma.",
+      "nicin": "Marketplace + entegrasyon ekosistemi olmadan SaaS büyüyemez. Webhook = ekosistemin protokolü.",
+      "nasil": "1) Outbox tablosundan webhook event'i al. 2) Customer'ın kayıtlı URL'ine HMAC-imzalı POST. 3) 2xx değilse exponential backoff retry. 4) 24 saat sonra DLQ. 5) Customer'a dashboard'ta göster.",
+      "nerede": "`scale-webhook` worker. `scale-outbox`'tan event okur. `cc-obs`'a metrik gönderir.",
+      "ne_zaman": "İlk public API sunulduğunda webhook da sun. Sonradan eklemek 5x iş.",
+      "kim": "Backend mühendisi worker yazar; DevRel dokümantasyon hazırlar; customer support DLQ inceler.",
+      "analoji": "Telegram bot: olay olduğunda mesaj atar. Sen sormazsın, o haber verir."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Webhook = Push API.** Senin sistem dış sistemleri **proaktif** bilgilendirir. Polling 100x daha pahalı + 100x daha geç haber alır."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "İmzasız webhook = saldırı yüzeyi",
+      "body": "İmza yoksa saldırgan dış URL'e sahte webhook gönderir; alıcı 'sipariş ödendi' kabul eder. **HMAC zorunlu.** Customer'a 'signing secret' ver, dokümantasyonla nasıl doğrulanacağını açıkla."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Webhook worker yaz: outbox tablosundan event al, customer'ın URL'ine HMAC-SHA256 imzalı POST. Header: X-Webhook-Id (uuid), X-Webhook-Timestamp, X-Webhook-Signature. Retry: 1s, 10s, 1dk, 10dk, 1saat. 24 saat sonra DLQ.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Webhook gönderim header'ları"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Header",
+        "Değer",
+        "Sebep"
+      ],
+      "rows": [
+        [
+          "X-Webhook-Id",
+          "uuid",
+          "Idempotency"
+        ],
+        [
+          "X-Webhook-Timestamp",
+          "unix epoch",
+          "Replay koruması (5dk eski reject)"
+        ],
+        [
+          "X-Webhook-Event",
+          "order.created",
+          "Event tipi"
+        ],
+        [
+          "X-Webhook-Signature",
+          "sha256=...",
+          "HMAC imza"
+        ],
+        [
+          "X-Webhook-Attempt",
+          "2",
+          "Retry sayacı (debug için)"
+        ],
+        [
+          "Content-Type",
+          "application/json",
+          "Payload tipi"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "scale-outbox",
+    "l1-misc",
+    "cc-security",
+    "scale-saga"
+  ]
+}

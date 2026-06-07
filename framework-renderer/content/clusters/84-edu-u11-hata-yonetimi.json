@@ -1,0 +1,206 @@
+{
+  "id": "edu-u11",
+  "title": "Hata Yönetimi — try/catch'ten DLQ'ya",
+  "subtitle": "Hatasız yazılım yoktur; hatayla doğru başa çıkan yazılım vardır. Üretimdeki çöküşlerin %40'ı hata yönetimi eksikliğinden.",
+  "cluster": "edu",
+  "order": 14,
+  "icon": "ph-warning-octagon",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "error-handling",
+    "retry",
+    "circuit-breaker",
+    "dlq"
+  ],
+  "enrich": {
+    "info": "Ne zaman try/catch, ne zaman retry, ne zaman vazgeçip Dead Letter Queue'ya at. Idempotency anahtar kavram.",
+    "detail": "**Üç tür hata var:**\n\n1. **Beklenen hata (validation)**: Kullanıcı 18 yaşından küçük → kayıt reddet. *try/catch yapma, validation katmanında yakala.*\n2. **Geçici hata (transient)**: Banka API 503 döndü, network koptu. *Retry et, exponential backoff ile.*\n3. **Kalıcı hata (permanent)**: Veri bozuk, harici sistem kalıcı kapalı. *Dead Letter Queue'ya (DLQ) at, alarm üret.*\n\n**Retry kuralları:**\n\n- Sadece **idempotent** işlemler retry edilebilir. Yoksa 2 kez sipariş alır.\n- Exponential backoff: 1s, 2s, 4s, 8s, 16s — sonra vazgeç\n- Maximum 3-5 deneme; daha fazla = daha fazla yük\n\n**Circuit breaker (Hystrix paterni):** dış sistem 10 sn boyunca her isteğe 503 dönüyorsa, devreyi 'AÇIK' duruma getir → bir süre hiç istek gönderme. Bu, çöken sistemi bombardımandan korur.\n\n**DLQ (Dead Letter Queue):** Retry'ı geçemeyen mesajlar buraya düşer. İnsan bakar, manuel inceler. Kuyruk değil, parking lot.",
+    "terms": [
+      {
+        "term": "try/catch",
+        "abbrev_tr": "Yakala-tutucu",
+        "meaning": "Hata atan kodu sarıp, hata çıkarsa ne yapacağını belirtmek.",
+        "why": "Hata yakalanmazsa program çöker; doğru yerde yakalanmazsa kullanıcı '500 Internal Server Error' görür."
+      },
+      {
+        "term": "Retry",
+        "abbrev_tr": "Yeniden deneme",
+        "meaning": "Başarısız işlemi belli aralıklarla tekrar denemek.",
+        "why": "Geçici hatalar (network kopması) ikinci denemede %80 düzelir."
+      },
+      {
+        "term": "Exponential Backoff",
+        "abbrev_tr": "Katlanan bekleme",
+        "meaning": "Her denemede bekleme süresini ikiye katla: 1s, 2s, 4s, 8s.",
+        "why": "Çöken sisteme aniden 1000 istek gönderirsen onu daha çok yıkarsın. Yavaş retry = nazik yaklaşım."
+      },
+      {
+        "term": "Idempotency",
+        "abbrev_tr": "Yinelendirme dayanıklığı",
+        "meaning": "Aynı işlemi 1 kez veya 5 kez çalıştırmak aynı sonucu verir.",
+        "why": "Retry edilen işlem idempotent değilse aynı sipariş 5 kez girer. Anahtar: 'isteğin idempotency key'i' ile aynı işlem 1 kez işlenir."
+      },
+      {
+        "term": "DLQ",
+        "abbrev_of": "Dead Letter Queue",
+        "abbrev_tr": "Ölü mesaj kuyruğu",
+        "meaning": "Retry'ı geçemeyen mesajların atıldığı park alanı. İnsan inceler.",
+        "why": "Sonsuz retry = sonsuz hata logu. DLQ alarm üretir, mesajları saklar."
+      },
+      {
+        "term": "Circuit Breaker",
+        "abbrev_tr": "Devre kesici",
+        "meaning": "Çöken dış sisteme bir süre istek göndermeyi kesme mekanizması.",
+        "why": "Çöken servise istek yağdırmak onu kurtaramaz, daha çok bombalar."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Bankamatik kullanan Yusuf Bey (65)",
+        "context": "Yusuf Bey 500 TL çekmek istedi. 'İşlem yapılıyor' yazısı uzun sürdü, makine 'hata oluştu' dedi ama parayı verdi. Yusuf Bey emin değil; bir daha denedi. Bu sefer para verdi ama hesaptan 2 kez düşmüş.",
+        "outcome": "Idempotency anahtarı olmayan sistem. Sonradan banka 1000 TL'yi geri yatırdı, ama Yusuf Bey'in itimadı sarsıldı. **Idempotency key = 'aynı işlem 1 kere işle' garantisi.**"
+      },
+      {
+        "persona": "Bakkal Hatice Teyze (62) — kart POS'u",
+        "context": "Müşteri kart bastı, POS 'iletişim hatası' dedi. Hatice Teyze tekrar bastı, yine hata. 5 kez denedi, sonunda 'tamam' dedi. Ertesi gün hesabında 5 kez 50 TL düşmüş görüyor.",
+        "outcome": "POS retry yapmış ama idempotency yokmuş. Banka itiraz formuyla 4'ünü iade etti. **Retry'ı çağıran taraf 'aynı işlemi tekrar et' demeli; çağrılan taraf 'aynısını mı?' diye anlamalı.**"
+      },
+      {
+        "persona": "Apartman yöneticisi Murat Bey (61) — elektrik faturası",
+        "context": "Murat Bey kapı kapı tahsil ediyor. 5 dairede yok. Notuna yazdı, 'üç gün sonra tekrar dene'. Üçüncü denemede yine yoksa apartman yönetimine bildiriyor.",
+        "outcome": "Murat Bey'in iş akışı = retry pattern. 3 deneme + sonrası DLQ (apartman yönetimine bildir). **Sonsuz değil, sınırlı.**"
+      }
+    ],
+    "lesson": {
+      "ne": "Bir kod parçasının hatasını yakalamak, gerekirse tekrar denemek, deneme başarısız olursa park alanına atmak. Üç katman var: validation (önle), retry (geçici sorun), DLQ (kalıcı sorun).",
+      "nicin": "Hata olmadan yazılım üretime çıkamaz. Doğru hata yönetimi olmadan üretim her gece sahibini uyandırır.",
+      "nasil": "1) try/catch yalnız beklenmedik hata için — kullanıcı hatası validation'da yakalansın. 2) Geçici hata için retry + backoff. 3) Hala başarısızsa DLQ. 4) DLQ'ya düşeni mutlaka insan görsün — alarm bağla.",
+      "nerede": "Her dış sistem çağrısında (banka, email, SMS, kargo API, vb.) — outbound webhook + scale-saga + DLQ var.",
+      "ne_zaman": "Üretimde **her** dış çağrı için. İçeride bile veritabanı kilitlenebilir → retry'a sahip ol.",
+      "kim": "Geliştirici try/catch yazar; SRE retry kuralını ayarlar; on-call mühendis DLQ'yu inceler.",
+      "frontend": {
+        "yer": "Kullanıcıya 'işlem yapılıyor' spinner. Hata olursa 'tekrar dene' butonu — ama idempotency anahtarı aynı kalmalı.",
+        "gereklilik": "Çift tıklamayı engelle (debounce). Network koparsa 'bağlantı yok' bildir, otomatik retry yapma — kullanıcı karar versin.",
+        "ornek": "Form gönder butonu: tıklandı, disabled oldu, spinner döndü. Hata = mesaj göster + buton tekrar aktif. **Aynı idempotency key**."
+      },
+      "backend": {
+        "yer": "Outbox + worker pattern + RabbitMQ/Postgres queue. Worker mesajı işler; başarısızsa retry sayacı + tekrar kuyruğa; max'ı geçince DLQ.",
+        "gereklilik": "İdempotency tablo: işlenen idempotency_key'leri sakla; aynı key gelirse skip et.",
+        "ornek": "`processed_events(idempotency_key, processed_at)` — INSERT ON CONFLICT DO NOTHING."
+      },
+      "analoji": "Trafik ışığında araç bekleyiş = retry (geçici engel). Çıkmaz sokak = DLQ (vazgeç, geri dön). Sürekli çalan ev zili = circuit breaker (kimse açmıyorsa bir süre çalma)."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Hata yönetiminin temel sorusu:** *'Bu hata bir daha denersem geçer mi?'* Geçici (network kopması) = evet, retry. Kalıcı (veri bozuk) = hayır, DLQ. Bu ayrımı yapmazsan ya sonsuz retry'a girersin, ya hatayı sessizce yutarsın."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "İdempotency'siz retry",
+      "body": "Banka API'ye 'sipariş öde' isteği gönderdin, 503 aldın. Retry ettin, bu sefer 200 OK. Ama belki ilk istek de geçmişti, sen bilmedin. = **çift ödeme.** Çözüm: her isteğe `Idempotency-Key: <uuid>` ekle; sunucu aynı key'i bir kez işler."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a şöyle yaz: *'Bu ödeme handler'ını yaz: idempotency key kontrol et, varsa kayıttan dön. Dış API çağrısını try/catch ile sar. 503/timeout = exponential backoff retry max 3 kez. Diğer hatalar DLQ'ya. Sentry'e gönder.'* Bu detayları söylemezsen kod basit `try { } catch (e) { console.log(e) }` üretir — üretimde işe yaramaz."
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Hata türü → yapılacak iş"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Hata türü",
+        "Örnek",
+        "Yapılacak"
+      ],
+      "rows": [
+        [
+          "Kullanıcı hatası",
+          "Geçersiz email",
+          "Validation, 400 dön, retry YOK"
+        ],
+        [
+          "Geçici hata (5xx, timeout)",
+          "Banka API down",
+          "Exponential backoff, max 3-5 retry"
+        ],
+        [
+          "Kalıcı hata (kötü veri)",
+          "JSON parse hatası",
+          "DLQ'ya at, alarm, retry YOK"
+        ],
+        [
+          "Beklenmedik hata (bug)",
+          "NullPointer",
+          "Sentry'e fırlat, kullanıcıya 'tekrar dene'"
+        ],
+        [
+          "Servis tamamen kapalı",
+          "Banka 5 dakikadır 503",
+          "Circuit breaker AÇIK, 30 sn istek gönderme"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Retry parametreleri — sağlıklı varsayılan"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Parametre",
+        "Değer",
+        "Açıklama"
+      ],
+      "rows": [
+        [
+          "Max attempts",
+          "3-5",
+          "Sonsuz değil; çabuk DLQ"
+        ],
+        [
+          "Initial delay",
+          "100ms",
+          "İlk retry hemen değil, ufak bekle"
+        ],
+        [
+          "Backoff multiplier",
+          "2x",
+          "100, 200, 400, 800, 1600 ms"
+        ],
+        [
+          "Max delay",
+          "30s",
+          "Çok uzun retry kullanıcıyı bekletir"
+        ],
+        [
+          "Jitter",
+          "±%20",
+          "Tüm clientlar aynı anda retry yapmasın (thundering herd)"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "DLQ olmayan sistem = retry sonsuz",
+      "body": "Sonsuz retry = log dosyaları doluyor, CPU yanıyor, asıl hata fark edilmiyor. DLQ + Slack/email alarm = on-call mühendis hemen haberdar."
+    }
+  ],
+  "related": [
+    "scale-saga",
+    "scale-idempotency",
+    "cc-obs",
+    "sus-durable"
+  ]
+}

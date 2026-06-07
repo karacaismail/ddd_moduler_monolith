@@ -1,0 +1,125 @@
+{
+  "id": "l1-import",
+  "title": "Veri İçe Aktarma — CSV upload + validate + dry-run",
+  "subtitle": "Müşteri 10K satırlık CSV yükledi. Hatalı satırı rapor et, geçenleri al, hatalıları reddet. Dry-run önizleme zorunlu.",
+  "cluster": "layer1",
+  "order": 9,
+  "icon": "ph-upload",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "layer1",
+    "import",
+    "csv",
+    "validation",
+    "dry-run"
+  ],
+  "enrich": {
+    "info": "CSV/Excel upload, schema validation (Zod), dry-run preview, partial commit (geçenleri al), error report.",
+    "detail": "**Import workflow (5 adım):**\n\n1. **Upload** — CSV/Excel → S3 (presigned URL)\n2. **Parse** — Parser ile satır satır oku (csv-parse, sheetjs)\n3. **Validate** — Her satırı Zod schema ile kontrol\n4. **Dry-run preview** — UI'da göster: 'X satır geçer, Y satır hatalı, Z satır şüpheli'\n5. **Commit** — Kullanıcı onaylarsa: transaction içinde insert\n\n**Dry-run zorunlu sebep:** Kullanıcı yanlış kolon eşlemesi yapabilir; import bittikten sonra 10K satır geri almak imkânsız.\n\n**Partial commit options:**\n- **All-or-nothing**: 1 satır hatalı → tüm import iptal (güvenli)\n- **Best-effort**: Geçenleri al, hatalıları rapor et (UX dostu)\n- **Threshold**: %5'ten fazla hata → iptal (otomatik)\n\n**Performance:**\n- 10K satır: in-memory parse → bulk insert (saniyeler)\n- 100K satır: streaming + batch insert (her 1000'de bir)\n- 1M satır: chunk dosya, paralel worker (DBOS)",
+    "terms": [
+      {
+        "term": "Dry-run",
+        "abbrev_tr": "Kuru deneme",
+        "meaning": "Gerçek import etmeden önce 'ne olacak' önizlemesi.",
+        "why": "10K satır geri alınamaz; önce göster, sonra commit."
+      },
+      {
+        "term": "Column Mapping",
+        "abbrev_tr": "Sütun eşleme",
+        "meaning": "CSV kolonlarını sistem alanlarına bağlama.",
+        "why": "Müşterinin CSV'sinde 'eposta' yazıyor, sistemde 'email' — eşleme şart."
+      },
+      {
+        "term": "Bulk Insert",
+        "abbrev_tr": "Toplu ekleme",
+        "meaning": "Tek transaction'da çoklu INSERT.",
+        "why": "10K tek INSERT = 10K commit = 10 dk. Bulk = 5 sn."
+      },
+      {
+        "term": "Validation Schema",
+        "abbrev_tr": "Doğrulama şeması",
+        "meaning": "Zod ile satır tipinin runtime kontrolü.",
+        "why": "DB constraint'i aşmasın; baştan reddedilsin."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Murat Bey (61) eski yöneticiden devir",
+        "context": "Murat Bey eski yöneticiden 50 daire bilgisi Excel olarak aldı.",
+        "outcome": "Upload → dry-run: '47 satır geçer, 3 satır eksik telefon'. Murat Bey 3 eksiği tamamladı, tekrar yükledi, hepsi geçti."
+      },
+      {
+        "persona": "Hatice Teyze (62) market müşteri kartları",
+        "context": "30 yıllık karton müşteri kartlarını Excel'e yazdı. 500 kart.",
+        "outcome": "Import 5 sn sürdü, 12 kart'ta telefon yanlış format. Hata raporu indirip Excel'de düzeltti, tekrar yükledi."
+      }
+    ],
+    "lesson": {
+      "ne": "Müşterinin dosyadaki verisini sisteme güvenle aktarma + hatalı satıyı raporlama.",
+      "nicin": "Manuel veri girişi = günler. Import = dakikalar.",
+      "nasil": "1) Upload → S3. 2) Parser. 3) Zod validation. 4) Dry-run UI. 5) Onayda transaction bulk insert.",
+      "nerede": "`l1-import` cluster + `scale-workers-deep` background.",
+      "ne_zaman": "Müşteri onboard ederken (legacy system geçişi).",
+      "kim": "Backend developer parser + validator; frontend developer mapping UI.",
+      "analoji": "Belediye nüfus kaydı: önce form doldur (CSV), memur kontrol (validate), defter (insert)."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Import = onboarding'in en kritik adımı.** Eski sistemden geçişin %80'i veri taşıma. Dry-run + clear error message olmadan müşteri vazgeçer."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "All-or-nothing tuzağı",
+      "body": "5000 satırda 1 hata → tüm import iptal. **Best-effort + hata raporu** UX dostu."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'POST /import endpoint: CSV upload S3'e. Worker: parse + Zod validate her satır. Dry-run preview JSON: {valid: N, invalid: M, errors: [...]}. UI onay sonrası real import (transaction bulk insert). Hata CSV: row, column, error.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Import strateji tablosu"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Satır",
+        "Mod",
+        "Yer",
+        "UX"
+      ],
+      "rows": [
+        [
+          "<1000",
+          "Sync",
+          "API request",
+          "Hemen sonuç"
+        ],
+        [
+          "1K-100K",
+          "Async worker",
+          "Background job",
+          "'X dk içinde email'"
+        ],
+        [
+          "100K+",
+          "Chunked + paralel",
+          "DBOS durable",
+          "Progress bar"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "l1-export",
+    "l1-file",
+    "scale-workers-deep"
+  ]
+}

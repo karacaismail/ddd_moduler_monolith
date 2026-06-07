@@ -1,0 +1,154 @@
+{
+  "id": "edu-u21",
+  "title": "Money + Tax — para ve vergi derinleştirme",
+  "subtitle": "Çoklu kur, kur tarihi, TR KDV %1/%8/%18, B2B reverse charge, uluslararası ödeme sağlayıcı seçimi.",
+  "cluster": "edu",
+  "order": 24,
+  "icon": "ph-money",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "money",
+    "tax",
+    "kdv",
+    "vat",
+    "payment-provider"
+  ],
+  "enrich": {
+    "info": "FX rate (kur tablosu + tarih), TR KDV %1/%8/%18, AB B2B reverse charge, Iyzico/PayTR vs Stripe seçimi.",
+    "detail": "**Çoklu kur (FX) — kritik kurallar:**\n\n1. **Anlık kur ile geçmiş işlem hesaplama YASAK** — geçen ay yapılan 100$ siparişi bugünkü kurla hesaplama. **Kur tarihi şart**.\n2. **Kur tablosu**: `fx_rate(from_currency, to_currency, rate, valid_at)`. Her gün TCMB veya exchange API'den çek.\n3. **Faturada hem ana hem dönüştürülmüş**: 100 USD (kur: 32.50, fatura tarihi 2026-06-06) = 3250 TL.\n\n**TR KDV (Katma Değer Vergisi):**\n- **%1**: Temel gıda, kitap, dergi\n- **%8** → 2023'te %10'a çıktı sonra %20'e: Tekstil, gıda, sağlık (güncel oran her zaman doğrula)\n- **%20** (2024 standart): Diğer mal/hizmet\n\n**Stopaj (gelir/kurumlar vergisi):**\n- Serbest meslek %20 stopaj\n- Kira %20 stopaj\n- Bunlar fatura üzerinde gösterilir\n\n**AB VAT:**\n- B2B (alıcı VAT no'lu firma): **Reverse charge** — alıcı kendi ülkesinde öder\n- B2C (bireysel): Satıcının ülkesi mi alıcının mı? OSS (One-Stop Shop) ile basitleştirilebilir.\n\n**ABD Sales Tax:**\n- 50 eyaletin her birinde farklı. **TaxJar** veya **Avalara** otomasyon zorunlu.\n\n**Ödeme sağlayıcı karşılaştırma (60+ junior altı için):**\n- **Iyzico/PayTR**: TR pazarı, BKM POS, taksit destekli, TL\n- **Stripe**: Uluslararası, multi-currency, abonelik için en iyi\n- **PayPal**: Düşük güven (TR'de), pahalı komisyon\n- **Paddle**: Merchant of Record (vergi yükünü alır) — küçük ekip için ideal",
+    "terms": [
+      {
+        "term": "KDV",
+        "abbrev_of": "Katma Değer Vergisi",
+        "abbrev_tr": "KDV (TR)",
+        "meaning": "Mal/hizmet satışlarında %1/%10/%20 vergi.",
+        "why": "Yanlış oran = ceza + müşteri itirazı."
+      },
+      {
+        "term": "VAT",
+        "abbrev_of": "Value Added Tax",
+        "abbrev_tr": "AB Katma Değer Vergisi",
+        "meaning": "AB'nin KDV'si; ülkeye göre %17-25 arası.",
+        "why": "AB satışı = doğru VAT oranı bilmek zorunda."
+      },
+      {
+        "term": "Reverse Charge",
+        "abbrev_tr": "Ters yükleme",
+        "meaning": "B2B AB ticarette: alıcı VAT'ı kendi ülkesinde öder, satıcı sıfır oran fatura keser.",
+        "why": "Uluslararası ticaret kuralı; yanlış = denetimde hesap verirsin."
+      },
+      {
+        "term": "FX Rate",
+        "abbrev_of": "Foreign Exchange Rate",
+        "abbrev_tr": "Kur",
+        "meaning": "İki para birimi arasındaki çeviri oranı (tarih ile).",
+        "why": "Geçmiş işlem geçmiş kurla; anlık kur kullanma."
+      },
+      {
+        "term": "Merchant of Record",
+        "abbrev_tr": "Tescilli satıcı",
+        "meaning": "Paddle/FastSpring vergi yükünü alır; sen satıyormuş gibi gözükür.",
+        "why": "Küçük ekip 50 ülkenin vergi kuralını takip edemez; MoR çözer."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Manav Selim Bey (62) — yabancı müşteri",
+        "context": "Selim Bey turistlere meyve satıyor. Bir gün €20 verdi turist; Selim Bey 'kur nedir?' diye sordu. Anlık kurla TL'ye çevirdi.",
+        "outcome": "Doğru zaman = anlık. Ama bunu **kayda alırsa** 'bugünkü kur' bilgisi ileride 3 ay sonra muhasebeci için kritik. Kayıt: 20 EUR + kur 35.50 = 710 TL. **Tarih + kur birlikte saklanır.**"
+      },
+      {
+        "persona": "Apartman aidatı + KDV — Murat Bey (61)",
+        "context": "Murat Bey 3 daireye temizlik hizmeti faturası kesti. Hepsine %20 KDV ekledi.",
+        "outcome": "Apartman temizlik hizmet KDV oranını doğru bilmesi gerek — yanlış oran iade veya ceza. Sisteme **vergi oranı her DocType'ta** tanımlı olmalı, sabit değil."
+      }
+    ],
+    "lesson": {
+      "ne": "Çoklu kur, vergi (KDV/VAT/Sales Tax), ödeme sağlayıcı seçiminin detayları.",
+      "nicin": "Yanlış kur = muhasebe açık. Yanlış vergi = ceza. Yanlış sağlayıcı = komisyon çöplüğü.",
+      "nasil": "1) Kur tablosu + tarih saklama. 2) Vergi oranı DocType'a göre. 3) AB için OSS/B2B reverse charge. 4) TR için Iyzico/PayTR, uluslararası için Stripe/Paddle.",
+      "nerede": "`s-billing` + `s-accounting` + `cc-tr` cluster'ları. atomic-types Money tipi.",
+      "ne_zaman": "İlk fatura kesilmeden ÖNCE tüm vergi mantığı hazır.",
+      "kim": "Geliştirici tablo + entegrasyon; muhasebe oran ve istisnalar; mali müşavir denetler.",
+      "analoji": "Manav: ürünün ağırlığı + birim fiyatı + KDV = toplam. Üçü ayrı; kafadan toplama yok. Yazılım aynı: tutar + kur + vergi ayrı kolonlarda."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Para ve vergi sistemin en muhafazakar tarafı.** Bug = yasal sorun + müşteri itirazı. Hızlı yazılmaz, doğru yazılır. Test çoktur."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "Vergi oranını sabit kodlama",
+      "body": "`const KDV = 0.20;` = 1 yıl sonra oran değişti, kod güncellenmedi, tüm fatura yanlış. Çözüm: **vergi oranı tablosu** — `tax_rate(category, country, rate, valid_from, valid_to)`. Tarihe göre sorgulanır."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Invoice tablosuna: amount Decimal(18,2), currency char(3), fx_rate Decimal(18,6), fx_date date, tax_rate Decimal(5,4). Total = amount * (1 + tax_rate). Currency convert: amount * fx_rate. Geçmiş fatura asla anlık kurla yeniden hesaplanmaz.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Ödeme sağlayıcı seçim matrisi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Sağlayıcı",
+        "TR uyum",
+        "Uluslararası",
+        "Subscription",
+        "MoR (vergi)"
+      ],
+      "rows": [
+        [
+          "Iyzico",
+          "✓ Mükemmel",
+          "✗",
+          "Sınırlı",
+          "✗"
+        ],
+        [
+          "PayTR",
+          "✓ Mükemmel",
+          "Sınırlı",
+          "✓",
+          "✗"
+        ],
+        [
+          "Stripe",
+          "Sınırlı",
+          "✓ Mükemmel",
+          "✓ En iyi",
+          "✗"
+        ],
+        [
+          "Paddle",
+          "Orta",
+          "✓",
+          "✓",
+          "✓ MoR"
+        ],
+        [
+          "PayPal",
+          "Düşük güven",
+          "✓",
+          "Sınırlı",
+          "✗"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "edu-u02b",
+    "s-billing",
+    "s-accounting",
+    "cc-tr"
+  ]
+}

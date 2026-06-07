@@ -1,0 +1,155 @@
+{
+  "id": "edu-u16",
+  "title": "Test Piramidi — kodun hata yapmadığını kanıtlamak",
+  "subtitle": "Üst seviye: az ve yavaş e2e. Orta: integration. Tabandaki çoğunluk: unit. Tersi piramit = çöker.",
+  "cluster": "edu",
+  "order": 19,
+  "icon": "ph-test-tube",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "testing",
+    "pyramid",
+    "unit",
+    "integration",
+    "e2e"
+  ],
+  "enrich": {
+    "info": "Unit (en çok, en hızlı), integration (orta), e2e (az, en yavaş). Mock vs stub farkı. Snapshot test ne işe yarar.",
+    "detail": "**Test piramidi (Mike Cohn, 2009):**\n\n```\n    /\\\n   /  \\   e2e   (%10) — yavaş, gerçek tarayıcı/cihaz\n  /----\\\n /      \\  integration (%20) — gerçek DB, gerçek HTTP\n/--------\\\n           unit (%70) — mock'lı, milisaniye\n```\n\n**Neden ters piramit kötü?**\nE2e çok = tek bug → 100 test fail → kaynak yanlış yere bakar. Yavaş suite = developer test çalıştırmaz.\n\n**Unit test = saf fonksiyon testi**: Database, network, file system YOK. Vitest/Jest ile <100ms.\n\n**Integration test = parça birleşim**: Gerçek DB (test database), gerçek HTTP server. Saniye seviyesi.\n\n**E2e test = kullanıcı yolu**: Playwright ile gerçek tarayıcı, gerçek form doldurma. Dakika seviyesi.\n\n**Mock vs Stub:**\n- **Stub**: Sahte cevap döner (`stripe.charge` 'success' döner).\n- **Mock**: Çağrı yapıldığını da doğrular (`stripe.charge` 1 kez 100 TL ile çağrıldı mı?).\n\n**Snapshot test**: 'Bu output bir kez doğru kaydedildi; bir daha değişmemeli' garantisi.\n\n**Coverage hedefleri (60+ junior altı için makul):**\n- Unit: %80\n- Integration: kritik flow %100\n- E2e: 5-10 happy path",
+    "terms": [
+      {
+        "term": "Unit Test",
+        "abbrev_tr": "Birim testi",
+        "meaning": "Tek fonksiyonun doğru çalıştığını test eder. Bağımlılıklar mock'lanır.",
+        "why": "En hızlı, en çok yazılır; bug erken yakalanır."
+      },
+      {
+        "term": "Integration Test",
+        "abbrev_tr": "Bütünleşme testi",
+        "meaning": "Birden fazla parçanın birlikte çalışmasını test eder (örn. API + DB).",
+        "why": "Tek tek doğru, beraber yanlış olabilir."
+      },
+      {
+        "term": "E2E",
+        "abbrev_of": "End-to-End",
+        "abbrev_tr": "Uçtan uca",
+        "meaning": "Kullanıcı bakış açısıyla tam akışı test eder (Playwright).",
+        "why": "Gerçek kullanıcı deneyimini kanıtlar; ama yavaş ve kırılgan."
+      },
+      {
+        "term": "Mock",
+        "abbrev_tr": "Sahte nesne",
+        "meaning": "Test sırasında gerçek bağımlılığı yerine geçen sahte nesne.",
+        "why": "Gerçek banka API'sini test'te çağırma; çift faturalama riski yok."
+      },
+      {
+        "term": "Snapshot",
+        "abbrev_tr": "Anlık görüntü",
+        "meaning": "Output'un ilk çalışan halini kaydet; sonraki çalışmalarda farklı çıkarsa fail.",
+        "why": "Tasarım/output değişimini görünür kılar."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Aşçı Hatice Teyze (62) — yeni baklava reçetesi",
+        "context": "Yeni reçetede 5 adım var: hamur, şerbet, ceviz, fırın, soğutma. Her adımı tek tek tadıyor (unit test). Sonra hep birlikte deniyor (integration). Sonra eşi+çocuklar yiyiyor (e2e).",
+        "outcome": "Sadece sonu denese tek tat. Adım adım tat olmasa hata nerede bilmez. Üç katman birlikte."
+      },
+      {
+        "persona": "Berber Mehmet Usta (60) — yeni saç sistemi",
+        "context": "Yeni saç tekniği öğrendi. Önce kuklası üzerinde denedi (unit). Sonra çırakta denedi (integration). Sonra normal müşteride (e2e).",
+        "outcome": "Direkt müşteride denese hata felaketti. Aşamalı test = güvenli ilerleyiş."
+      }
+    ],
+    "lesson": {
+      "ne": "Yazılımın doğru çalıştığını kanıtlayan otomatik kontrol mekanizması. 3 katman: küçük birim (unit) → birleşim (integration) → kullanıcı yolu (e2e).",
+      "nicin": "Test yoksa her değişiklik 'çalışıyor mu?' belirsizliği. Test varsa 5 saniyede 1000 senaryo kontrol edilir.",
+      "nasil": "1) Her yeni fonksiyon için unit test. 2) Kritik API endpoint'i için integration test. 3) Happy path için e2e. 4) Coverage hedefini CI'da zorla.",
+      "nerede": "Vitest (unit + integration), Playwright (e2e). CI'da her PR'da çalışır.",
+      "ne_zaman": "Test ÖNCE yaz (TDD) veya kodla birlikte. Sonradan yazılan test = yazılmıyor.",
+      "kim": "Geliştirici kendi testini yazar; tech lead coverage hedefini koyar; CI zorlar.",
+      "frontend": {
+        "yer": "Component test (Vitest + Testing Library), e2e (Playwright).",
+        "gereklilik": "Her component için 'render olur mu' + happy path interaction.",
+        "ornek": "`render(<LoginForm />); userEvent.type(emailInput, 'ad@x.com'); expect(submitBtn).toBeEnabled();`"
+      },
+      "backend": {
+        "yer": "Vitest unit + supertest integration. Test DB (Postgres test container).",
+        "gereklilik": "Her endpoint için: 200 happy path + 400/401/500 sad path.",
+        "ornek": "`test('POST /orders → 201', async () => { const r = await request(app).post('/orders').send({...}); expect(r.status).toBe(201); });`"
+      },
+      "analoji": "Restoran: aşçı malzemeyi tek tek kontrol eder (unit), yemeği tabakta tadar (integration), garson servis öncesi son bakar (e2e)."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Test piramidinin özü:** *çok ve hızlı küçük testler altta, az ve yavaş e2e üstte.* Ters çevirirsen suite 30 dk sürer, kimse çalıştırmaz, bug üretime gider."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Ters piramit tuzağı",
+      "body": "Yeni başlayan ekip 'her şeyi e2e ile test edelim' der. 200 e2e test = 45 dk suite. Kimse çalıştırmaz. Bug fark edilmez. **Önce unit, sonra integration, en üstte e2e.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Order service için: 1) Unit test her fonksiyon için (mock'lı DB). 2) Integration test POST /orders endpoint (gerçek test DB). 3) E2e Playwright: kullanıcı login → ürün seç → ödeme. Coverage %80 hedef.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Test türü → ne zaman"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Tür",
+        "Hız",
+        "Sayı",
+        "Ne test eder?"
+      ],
+      "rows": [
+        [
+          "Unit",
+          "<100ms",
+          "%70 (yüzlerce)",
+          "Saf fonksiyon"
+        ],
+        [
+          "Integration",
+          "saniye",
+          "%20 (onlarca)",
+          "API endpoint + DB"
+        ],
+        [
+          "E2E",
+          "dakika",
+          "%10 (5-15)",
+          "Kullanıcı akışı"
+        ],
+        [
+          "Visual regression",
+          "saniye",
+          "Component başına",
+          "UI değişimi"
+        ],
+        [
+          "Load test",
+          "dakikalar",
+          "Release öncesi",
+          "Performans"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "edu-u11",
+    "cc-obs",
+    "sus-conformance"
+  ]
+}

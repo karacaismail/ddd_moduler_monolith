@@ -3,7 +3,7 @@
   "title": "Frontend — Monorepo İskeleti",
   "subtitle": "pnpm workspaces, apps/ + packages/ + tools/, sıkı paket sınırı.",
   "cluster": "frontend",
-  "order": 53,
+  "order": 2,
   "icon": "ph-folder-open",
   "tags": [
     "frontend",

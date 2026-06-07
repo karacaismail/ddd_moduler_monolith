@@ -4,7 +4,7 @@
   "subtitle": "SAP PP, Odoo Manufacturing muadili. Bağımlı talep + regenerative plan.",
   "cluster": "stack",
   "layer": "l2",
-  "order": 30,
+  "order": 8,
   "icon": "ph-factory",
   "badge": "Layer 2 Stack #8",
   "tags": [

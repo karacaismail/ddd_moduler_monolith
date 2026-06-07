@@ -1,0 +1,208 @@
+{
+  "id": "edu-u15",
+  "title": "UX Prensipleri — 60+ kullanıcı için tasarım",
+  "subtitle": "Kullanıcı kafa karıştırırsa kapatır, geri gelmez. 60+ için tasarlanan iyi UX, gencen daha iyi UX'tir.",
+  "cluster": "edu",
+  "order": 18,
+  "icon": "ph-user-focus",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "ux",
+    "accessibility",
+    "60-plus",
+    "form-design"
+  ],
+  "enrich": {
+    "info": "Büyük yazı, net hedef, az adım, anlaşılır hata mesajı, geri al butonu, dokunma alanı, kontrast.",
+    "detail": "**Üç temel prensip:**\n\n1. **Görünürlük**: Yazı min 16px, kontrast min 4.5:1, dokunma alanı min 44×44px.\n2. **Sadelik**: Bir ekranda tek görev. 3'ten fazla seçenek varsa kategorize et.\n3. **Affedicilik**: Her aksiyon geri alınabilsin. Yanlış tıklama panik yaratmasın.\n\n**Form tasarımı altın kurallar:**\n\n- **Tek kolon**: Göz aşağı akar, sağa-sola atlayamaz\n- **Label inputun ÜSTÜNDE**, yanında değil (placeholder zayıf okuma için yetersiz)\n- **Adım göstergesi**: 'Adım 2/4' — kullanıcı nerede olduğunu bilsin\n- **Otomatik kaydetme**: Kullanıcı tarayıcıyı kapatsa kayıp olmasın\n- **Hata mesajı**: 'E-posta formatı hatalı' değil, *'E-posta @ işareti içermeli (örn: ad@gmail.com)'*\n\n**Erişilebilirlik (WCAG 2.2 AA):**\n\n- Klavye ile tüm işlev — fare olmadan\n- Ekran okuyucu uyumlu (semantic HTML, ARIA)\n- Renk körü için renk + simge\n\n**60+ ek prensipler:**\n\n- Animasyon ya yok ya çok yavaş\n- Sesli geri bildirim opsiyonel\n- 'Sil' butonu her zaman onaylama soruyor\n- 'Geri al' her ekranda var",
+    "terms": [
+      {
+        "term": "WCAG",
+        "abbrev_of": "Web Content Accessibility Guidelines",
+        "abbrev_tr": "Web Erişilebilirlik Kuralları",
+        "meaning": "Engelli kullanıcıların web sitesini kullanabilmesi için uluslararası standart.",
+        "why": "Yasal zorunluluk (AB, ABD) ve etik gereklilik."
+      },
+      {
+        "term": "Tap Target",
+        "abbrev_tr": "Dokunma alanı",
+        "meaning": "Parmakla basılabilen minimum buton/link alanı: 44×44px.",
+        "why": "Küçük olursa yan tuşa basılır, frustration oluşur."
+      },
+      {
+        "term": "Kontrast",
+        "abbrev_tr": "Renk farkı",
+        "meaning": "Yazı rengi ile arka plan renginin oranı. Min 4.5:1 (normal), 3:1 (büyük yazı).",
+        "why": "Düşük kontrast 60+ ve görme zorluğu olan için okunmaz."
+      },
+      {
+        "term": "Affordance",
+        "abbrev_tr": "Görsel ipucu",
+        "meaning": "Bir nesnenin ne yapılacağını anlatması (buton kabarık → tıklanır).",
+        "why": "'Bu buton mu, etiket mi?' belirsizliği panik yaratır."
+      },
+      {
+        "term": "Progressive Disclosure",
+        "abbrev_tr": "Aşamalı gösterim",
+        "meaning": "Karmaşık bilgiyi adım adım göster, hepsini birden değil.",
+        "why": "60+ kullanıcı '50 alanlı form' karşısında bocalar; '3 adımda 5 alan' rahattır."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Ayşe Teyze (63) — banka uygulaması",
+        "context": "Bankaya gitmek istemedi, uygulamayı denedi. Ana ekranda 25 buton, hangisi 'para transferi'? Küçük yazılar, 'IBAN', 'EFT', 'FAST', 'Havale' — hepsi farklı şey. 10 dakika debelendi, vazgeçti.",
+        "outcome": "İyi tasarım: ana ekranda 3 büyük buton: 'Para Gönder', 'Hesap Bakiyesi', 'Geçmiş Hareketler'. Tıklayınca alt seçenekler. Progressive disclosure."
+      },
+      {
+        "persona": "Yusuf Bey (66) — e-ticaret",
+        "context": "İlk online sipariş. Sepete ekledi, 'ödeme' butonuna bastı. 8 adımlı form: 'Fatura adresi, kargo adresi, kupon, kart bilgileri...' Hangi adımdayım? Belli değil. Kart numarasını yanlış yazdı; uygulama 'INVALID_INPUT' dedi. Kapattı.",
+        "outcome": "İyi tasarım: 'Adım 2/4: Kargo Adresi' yazısı üstte. Hata mesajı: 'Kart numarası 16 haneli olmalı (şu an 15 hane girdiniz)'. İnsan dili."
+      },
+      {
+        "persona": "Mehmet Bey (61) — randevu sistemi",
+        "context": "Doktora online randevu denedi. Takvim açıldı, küçük tarih kutuları, sıkış sıkış. 'Hangisine basayım?' Yanlış güne bastı, randevu alındı. Geri al yok. Telefonla iptal etmek 20 dakika.",
+        "outcome": "İyi tasarım: takvim büyük tarih kutuları, seçilen tarih onay sayfasında çıkar, 'Onayla' / 'Vazgeç'. Onaydan sonra 24 saat içinde iptal butonu görünür."
+      }
+    ],
+    "lesson": {
+      "ne": "Yazılım kullanıcısının kafasını karıştırmadan, hata yapmadan, geri alabilerek görevini bitirmesini sağlayan tasarım prensipleri.",
+      "nicin": "Kullanıcı yazılımı 'anlamak için zaman harcamak' istemez; işini görmek ister. Kötü UX = kayıp müşteri.",
+      "nasil": "1) Yazı min 16px. 2) Buton min 44×44px. 3) Tek ekranda tek görev. 4) Hata mesajları insan dilinde + nasıl düzeltileceği. 5) Her destrüktif aksiyona onay. 6) Otomatik kaydet.",
+      "nerede": "Frontend cluster'ları (`fe-mobile`, `fe-core-ui`) UI mekaniği, bu cluster prensipleri anlatır.",
+      "ne_zaman": "Her form, her buton, her hata mesajı tasarlanırken bu prensiplere bakılır.",
+      "kim": "Tasarımcı prensiplere uyar; geliştirici uygular; QA test eder; 60+ pilot kullanıcı doğrular.",
+      "frontend": {
+        "yer": "SCSS/Tailwind ile font-size ≥ 1rem, kontrast tokenleri (--text-primary: 4.5:1 oranlı), min-h-[44px] tap target.",
+        "gereklilik": "Mobile-first: önce 360px ekrana çiz. Klavye navigasyon: Tab sırası mantıklı.",
+        "ornek": "Buton: `min-h-[44px] px-4 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50` — büyük, net, geri bildirim."
+      },
+      "backend": {
+        "yer": "Validation hatalarını kullanıcı-dostu döndür: `{field: 'email', error: 'E-posta @ içermeli (örn: ad@gmail.com)'}` değil `INVALID_INPUT`.",
+        "gereklilik": "i18n: hata mesajları çeviri katmanından geçer.",
+        "ornek": "Zod schema: `.email('Geçerli bir e-posta giriniz')` — kullanıcıya direkt gösterilebilir."
+      },
+      "analoji": "Köy lokantası: menü tek sayfa, fiyatlar net, garson 'ne istersin?' diye soruyor. McDonald's tablosu: 50 seçenek, fotoğraflar küçük, fiyat sembol — yaşlı kafa karışır."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**UX'in altın kuralı:** *'Kullanıcı düşünmesin.'* Steve Krug'un kitap başlığı. 60+ kullanıcı için iki katı geçerli. Her UI elemanı kendini açıklamalı: bu nedir, ne yapacak, nasıl geri alacağım."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "En klasik tasarım hatası",
+      "body": "Form 25 alanlı, hepsi yıldızlı (zorunlu). Kullanıcı 1. alanı yazdı, 24 boş. Hata mesajı kırmızı 'Geçersiz!'. Vazgeçti. Çözüm: **Progressive form** — 3 adım × 5 alan. Adım göstergesi. Otomatik kaydet."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a şöyle yaz: *'Bu form için UX kontrol listesi uygula: tek kolon, label inputun ÜSTÜNDE, min-h-[44px] inputlar, 16px font, hata mesajı insan dilinde + nasıl düzeltileceği, otomatik kaydet localStorage'a, geri al butonu, adım göstergesi 1/3.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "UX kontrol listesi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Soru",
+        "Doğru",
+        "Yanlış"
+      ],
+      "rows": [
+        [
+          "Yazı boyutu",
+          "≥16px (1rem)",
+          "12px küçük"
+        ],
+        [
+          "Dokunma alanı",
+          "≥44×44px",
+          "20×20px ufak buton"
+        ],
+        [
+          "Kontrast",
+          "≥4.5:1",
+          "Açık gri yazı beyaz arka"
+        ],
+        [
+          "Hata mesajı",
+          "'E-posta @ içermeli'",
+          "'INVALID_INPUT'"
+        ],
+        [
+          "Zorunlu alan göstergesi",
+          "* yıldız + label",
+          "Belirsiz"
+        ],
+        [
+          "Tıklama geri bildirimi",
+          "Buton inset/loader",
+          "Hiçbir şey değişmedi"
+        ],
+        [
+          "Form geri al",
+          "'Vazgeç' butonu",
+          "Geri tuşu yok"
+        ],
+        [
+          "Otomatik kaydet",
+          "localStorage 30sn",
+          "Yenilenince kayıp"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Hata mesajı yazma — örnekler"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Yanlış (jargon)",
+        "Doğru (insan)"
+      ],
+      "rows": [
+        [
+          "'INVALID_INPUT'",
+          "'E-posta @ işareti içermeli (örn: ad@gmail.com)'"
+        ],
+        [
+          "'500 Internal Server Error'",
+          "'Üzgünüz, geçici sorun. 30 saniye sonra tekrar deneyin.'"
+        ],
+        [
+          "'Required field'",
+          "'Bu alanı doldurmanız gerekiyor'"
+        ],
+        [
+          "'Phone format invalid'",
+          "'Telefon 0532 123 45 67 formatında olmalı'"
+        ],
+        [
+          "'Validation failed'",
+          "'2 alanı kontrol etmeniz gerekiyor (aşağıda kırmızı işaretli)'"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "60+ test grubu",
+      "body": "En iyi UX kontrolü: 60+ yaş pilot kullanıcıları izlemek. Onlar takılıyorsa, gençler de takılıyor — sadece şikâyet etmiyor. Ayda 1 kez 3 kullanıcıyla 30 dk usability test = projeyi kurtarır."
+    }
+  ],
+  "related": [
+    "fe-mobile",
+    "fe-core-ui",
+    "cc-tr"
+  ]
+}

@@ -3,7 +3,7 @@
   "title": "Sözleşme kapısı — \"Don't break userspace\"",
   "subtitle": "Linus Torvalds 1 numaralı kuralı: bir değişiklik kullanıcı programını kırıyorsa, hata **çekirdektedir**; patch geri alınır.",
   "cluster": "sus",
-  "order": 91,
+  "order": 2,
   "icon": "ph-handshake",
   "tags": [
     "sustainability",

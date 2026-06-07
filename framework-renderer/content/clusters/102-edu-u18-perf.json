@@ -1,0 +1,144 @@
+{
+  "id": "edu-u18",
+  "title": "Performans Ölçümü — yavaşı bulup düzeltmek",
+  "subtitle": "Sezgi ile 'yavaş' demek yetmez; profiling + p95 latency ile ölç, EXPLAIN ile DB'yi anla, N+1'i kovala.",
+  "cluster": "edu",
+  "order": 21,
+  "icon": "ph-speedometer",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "performance",
+    "profiling",
+    "n-plus-one",
+    "p99",
+    "explain"
+  ],
+  "enrich": {
+    "info": "p50/p95/p99 percentile, slow query log, EXPLAIN ANALYZE, N+1 query, flame graph, load test.",
+    "detail": "**Performans ölçümünün altın kuralı:** *'Ölçmeden optimize etme.'* Sezgi yanıltır.\n\n**Percentile latency:**\n- **p50 (median)**: Kullanıcının yarısı bu kadar hızlı görür. 200ms = ortalama.\n- **p95**: 95'i bu kadar hızlı. 500ms = pahalı işlemler.\n- **p99**: 99'u bu kadar hızlı. 2 saniye = en yavaş %1. **Müşteri burada şikâyet eder.**\n\n**Slow query log** (PostgreSQL):\n- `log_min_duration_statement = 500ms` — 500ms+ sorgular log'a\n- Haftalık inceleme: en yavaş 10 sorguyu çöz\n\n**EXPLAIN ANALYZE:** Sorgunun gerçek planını görür. **Seq Scan** = full table; **Index Scan** = hızlı.\n\n**N+1 query problem:** En klasik bug.\n```sql\nSELECT * FROM order; -- 1 sorgu, 100 satır\n-- her sipariş için ayrı sorgu:\nSELECT * FROM customer WHERE id = ?; -- 100 sorgu\n```\nToplam: **101 sorgu** = 5 sn. Doğrusu: JOIN veya eager-load = **1 sorgu** = 50ms.\n\n**Flame graph:** Hangi fonksiyon ne kadar süre aldı — görsel. py-spy, node --prof.\n\n**Load test:** k6 veya Artillery ile '1000 eş zamanlı kullanıcı' simülasyonu.",
+    "terms": [
+      {
+        "term": "p95",
+        "abbrev_tr": "%95 percentile",
+        "meaning": "İsteklerin %95'i bu kadar hızlı; en yavaş %5 dışarıda.",
+        "why": "Ortalama yanıltır; p95 gerçek kullanıcı deneyimi."
+      },
+      {
+        "term": "N+1 Query",
+        "abbrev_tr": "N+1 sorgu problemi",
+        "meaning": "1 ana sorgu + her satır için ek sorgu = N+1.",
+        "why": "100 satır = 101 sorgu = 5 sn. JOIN ile 1 sorgu = 50ms."
+      },
+      {
+        "term": "EXPLAIN",
+        "abbrev_tr": "Sorgu planı",
+        "meaning": "PostgreSQL sorgunun nasıl yürüteceğini gösterir.",
+        "why": "Index kullanılıyor mu, table scan mı; optimize öncesi şart."
+      },
+      {
+        "term": "Slow Query Log",
+        "abbrev_tr": "Yavaş sorgu kaydı",
+        "meaning": "X ms'yi geçen sorguları otomatik log'a yazma.",
+        "why": "Üretimde yavaş olanı bulmak için."
+      },
+      {
+        "term": "Flame Graph",
+        "abbrev_tr": "Alev grafiği",
+        "meaning": "Hangi fonksiyon CPU'yu ne kadar tüketti — yatay yığın görünüm.",
+        "why": "Sezgi 'şu fonksiyon yavaş' der; flame graph kanıtlar."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Hatice Teyze (62) market kasası",
+        "context": "Hatice Teyze müşterisi 'kasada hep bekliyorum' diye şikâyet etti. Hatice 'ben hızlıyım' diyor.",
+        "outcome": "Ölç: 100 müşterinin %95'i 30 sn'de, ama %5'i 5 dakika bekliyor (poşet doldurma + kart sorunu). p95 değil, p99 problemi. Kart okuyucusu yenilenince düzeldi."
+      },
+      {
+        "persona": "Berber Mehmet Usta (60) — sıra",
+        "context": "Mehmet Usta 'müşteri bekliyor' diye iş çıkışı şikâyetleri aldı. Defteri açtı: 10 randevu için 12 saat. Ortalama uygun; ama 2 müşteri 1 saat beklemiş (öncesi gecikti).",
+        "outcome": "Ortalama yanıltır. Maksimum bekleme süresi gerçek sorun. p95 = 30 dk, p99 = 1 saat."
+      }
+    ],
+    "lesson": {
+      "ne": "Sistemin hızını ölçme, yavaşı bulma, çözme.",
+      "nicin": "'Yavaş' sezgi ile söylenir; ölçmeden çözüm rasgele. Yanlış optimize 1 hafta boşa.",
+      "nasil": "1) p95/p99 latency dashboard (Grafana). 2) Slow query log (500ms+). 3) EXPLAIN ANALYZE ile sorgu planı. 4) N+1 → JOIN veya eager load. 5) Load test release öncesi.",
+      "nerede": "`cc-obs` infra'sı + Grafana dashboard. Slow query log Postgres'te. Profiling dev'de.",
+      "ne_zaman": "Müşteri şikâyetinden ÖNCE proaktif izleme. p95 > 500ms alarm.",
+      "kim": "SRE altyapı; backend developer sorgu optimize; frontend developer bundle size.",
+      "analoji": "Doktor tansiyon ölçüyor. 'İyi hissediyorum' yetmez; tansiyon yüksekse müdahale şart. Performans = sistemin tansiyonu."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Performansın altın kuralı:** *'p99 < 2 sn, p95 < 500ms, p50 < 100ms.'* Bu hedefe ulaşmadan production'a çıkma. p99'da takip kullanıcı kaybedersin."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "N+1: en gizli performans katili",
+      "body": "ORM (Prisma) `customer.orders` yazarsın; arka planda 100 ayrı SELECT. EXPLAIN ANALYZE'da görmezsin; sadece slow log'da fark edilir. Çözüm: `include: { orders: true }` veya raw JOIN."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Bu endpoint'i optimize et: EXPLAIN ANALYZE çıktısı kullan, Seq Scan varsa index ekle, N+1 varsa include kullan, k6 ile 100 RPS load test, hedef p95 < 300ms.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Performans bütçesi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Metrik",
+        "Yeşil",
+        "Sarı",
+        "Kırmızı"
+      ],
+      "rows": [
+        [
+          "API p95 latency",
+          "< 300ms",
+          "300-500ms",
+          "> 500ms"
+        ],
+        [
+          "API p99 latency",
+          "< 1s",
+          "1-2s",
+          "> 2s"
+        ],
+        [
+          "DB query p95",
+          "< 50ms",
+          "50-200ms",
+          "> 200ms"
+        ],
+        [
+          "Frontend FCP",
+          "< 1.5s",
+          "1.5-3s",
+          "> 3s"
+        ],
+        [
+          "Frontend LCP",
+          "< 2.5s",
+          "2.5-4s",
+          "> 4s"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "scale-cache",
+    "cc-obs",
+    "edu-u14"
+  ]
+}

@@ -4,7 +4,7 @@
   "subtitle": "Yazma normalize, okuma denormalize. Event-driven senkron.",
   "cluster": "scale",
   "layer": "scale",
-  "order": 11,
+  "order": 2,
   "icon": "ph-projector-screen-chart",
   "badge": "Scale primitive #2",
   "tags": [

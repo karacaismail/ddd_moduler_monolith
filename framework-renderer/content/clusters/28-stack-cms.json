@@ -4,7 +4,7 @@
   "subtitle": "Strapi, Sanity, Contentful, Drupal, WordPress muadili. Headless-first.",
   "cluster": "stack",
   "layer": "l2",
-  "order": 28,
+  "order": 6,
   "icon": "ph-article",
   "badge": "Layer 2 Stack #6",
   "tags": [

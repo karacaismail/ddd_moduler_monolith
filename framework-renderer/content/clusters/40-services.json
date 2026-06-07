@@ -2,8 +2,8 @@
   "id": "services",
   "title": "Services — Dış Sağlayıcılar",
   "subtitle": "Adapter pattern arkasında 11 kategori dış servis.",
-  "cluster": "services",
-  "order": 40,
+  "cluster": "dx",
+  "order": 3,
   "icon": "ph-cloud",
   "tags": [
     "services",

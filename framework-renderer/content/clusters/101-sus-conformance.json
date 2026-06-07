@@ -3,7 +3,7 @@
   "title": "Test-önce sözleşme koşumu",
   "subtitle": "PostgreSQL merge-gate disiplini + Stripe-mock + Hypothesis property-based testing. \"Sözleşme korunduğunu sadece çalışan test kanıtlar.\"",
   "cluster": "sus",
-  "order": 101,
+  "order": 12,
   "icon": "ph-test-tube",
   "tags": [
     "sustainability",

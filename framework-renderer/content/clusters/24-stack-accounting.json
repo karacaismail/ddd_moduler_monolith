@@ -4,7 +4,7 @@
   "subtitle": "Odoo Accounting, SAP FI/CO, Frappe Books, Mikro/Logo muadili. TR uyum birinci sınıf.",
   "cluster": "stack",
   "layer": "l2",
-  "order": 24,
+  "order": 2,
   "icon": "ph-coins",
   "badge": "Layer 2 Stack #2 — TR uyum kritik",
   "tags": [

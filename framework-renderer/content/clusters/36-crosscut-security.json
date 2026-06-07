@@ -3,7 +3,7 @@
   "title": "Security Model",
   "subtitle": "STRIDE threat model + OWASP Top 10 + defense in depth.",
   "cluster": "crosscut",
-  "order": 36,
+  "order": 2,
   "icon": "ph-shield",
   "tags": [
     "security",

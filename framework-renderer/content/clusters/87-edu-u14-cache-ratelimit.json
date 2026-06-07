@@ -1,0 +1,195 @@
+{
+  "id": "edu-u14",
+  "title": "Cache ve Rate Limit — hız ve adalet",
+  "subtitle": "Cache = aynı işi 2 kez yapma. Rate limit = bir kullanıcı tüm kapasiteyi tüketmesin.",
+  "cluster": "edu",
+  "order": 17,
+  "icon": "ph-gauge",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "education",
+    "cache",
+    "rate-limit",
+    "redis",
+    "throttling"
+  ],
+  "enrich": {
+    "info": "Cache-aside pattern, invalidation (en zor 2 problem), token bucket, müşteri quota, DDoS koruması.",
+    "detail": "**Cache nedir?** Aynı veriyi tekrar hesaplamak yerine hızlı bir yerde sakla. İlk istek 200ms, sonraki 5ms.\n\n**3 pattern:**\n\n1. **Cache-aside** (en yaygın): Kod önce cache'e bakar, yoksa DB'den çeker + cache'e yazar.\n2. **Write-through**: Yazma anında hem DB hem cache'e yaz.\n3. **Write-behind**: Cache'e yaz, DB'ye yavaş yavaş yaz (riskli; data loss).\n\n**Invalidation = bilgisayar biliminin 2 zor probleminden 1'i.** Cache eski veri tutar; DB güncellenirse cache geçersiz olur. Çözümler: TTL (zaman aşımı), event-based invalidation (DB güncellendi → cache temizle).\n\n**Rate limit:** Bir kullanıcı/IP saniyede 100'den fazla istek atamasın. Yöntem:\n\n- **Token bucket** (en yaygın): Saniyede X token yenilenir, her istek 1 token tüketir; token bittiyse 429 dön.\n- **Leaky bucket**: Sabit hızda işle, gelen aşırı isteği at.\n- **Sliding window**: Son 60 saniyede kaç istek geldi.\n\n**Quota** (tier'a göre): Ücretsiz: 100/saat, Pro: 10K/saat, Enterprise: limitsiz.",
+    "terms": [
+      {
+        "term": "Cache",
+        "abbrev_tr": "Önbellek",
+        "meaning": "Yavaş kaynağı (DB, API) hızlı bir yere (RAM, Redis) kopyalayıp tekrar gerektiğinde oradan okuma.",
+        "why": "DB sorgusu 100ms; Redis'ten okuma 1ms. 100x hız."
+      },
+      {
+        "term": "TTL",
+        "abbrev_of": "Time To Live",
+        "abbrev_tr": "Yaşam süresi",
+        "meaning": "Cache'de bir verinin ne kadar süre tutulacağı (örn. 300 saniye).",
+        "why": "TTL bitince veri silinir, bir sonraki istek DB'den taze çeker. Eski veriden korur."
+      },
+      {
+        "term": "Invalidation",
+        "abbrev_tr": "Geçersiz kılma",
+        "meaning": "Veri DB'de değişti → cache'deki kopyayı sil/yenile.",
+        "why": "Yoksa kullanıcı eski fiyatı görür; sipariş eski fiyattan geçer."
+      },
+      {
+        "term": "Rate Limit",
+        "abbrev_tr": "Hız sınırı",
+        "meaning": "Bir kaynağa belli sürede kaç istek atılabileceği.",
+        "why": "DDoS koruması + adil kullanım. Bir kullanıcı sistemi tek başına yıkamaz."
+      },
+      {
+        "term": "Token Bucket",
+        "abbrev_tr": "Jeton kovası",
+        "meaning": "Saniyede X jeton dolar; her istek 1 jeton harcar; jeton yoksa istek 429 reddedilir.",
+        "why": "Anlık ani yük (burst) izinli; sürekli yüksek yük değil. Adil + esnek."
+      },
+      {
+        "term": "429",
+        "abbrev_of": "Too Many Requests",
+        "abbrev_tr": "429 — çok istek",
+        "meaning": "HTTP durum kodu: rate limit aşıldı.",
+        "why": "İstemci 'yavaşla' anlamı çıkarsın; standart kod sayesinde dünya genelinde tanınır."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Bakkal Hatice Teyze (62) — sık satılan ürünler",
+        "context": "Sigara, ekmek, su — günde 100 kez aynı fiyat sorulur. Hatice Teyze her seferinde defteri açıp arıyordu. Sonra masaya 'sigara: 50 TL, ekmek: 7 TL, su: 5 TL' kâğıdı yapıştırdı.",
+        "outcome": "Bu cache. Fiyat değişince kâğıdı günceller (invalidation). Yoksa kullanıcı eski fiyatı duyar = sorun."
+      },
+      {
+        "persona": "Apartman çamaşırhanesi — Murat Bey (61)",
+        "context": "8 daireli binanın ortak çamaşır makinesi var. Murat Bey 'günde 3 saat herkese hak' diye yazdı kapıya. Yoksa bir daire 24 saat tutardı.",
+        "outcome": "Bu rate limit. Adil + makine yıpranmaz. Yoksa bir aile sistemi tek başına kullanır = diğerleri mahrum."
+      },
+      {
+        "persona": "Berber randevu defteri — Mehmet Usta (60)",
+        "context": "Mehmet Usta günde max 12 müşteri kabul ediyor. 'Bugün dolu, yarına yaz' diyor. Aynı müşteriye günde 3 kez gelmesini de yasakladı.",
+        "outcome": "Rate limit (günde 12) + quota (müşteri başına 1). Dış sistem API'leri böyle: 'saatte 100, müşteri başına 10'."
+      }
+    ],
+    "lesson": {
+      "ne": "Cache: aynı işi 2 kez yapmamak için hızlı hafızada sakla. Rate limit: bir kullanıcının kapasiteyi tek başına tüketmesini engelle.",
+      "nicin": "Cache olmadan sistem 1000 eşzamanlı kullanıcıya dayanamaz. Rate limit olmadan bir kötü niyetli kullanıcı sistemi yıkar.",
+      "nasil": "1) Sık okunan, az değişen veriyi Redis'e cache'le. TTL: 60sn-1 saat arası. 2) Değişince invalidate et. 3) Her API endpoint'inde rate limit middleware. 4) Token bucket: kullanıcı/IP başına saniyede 10 token, max 100 burst.",
+      "nerede": "Cache: `scale-cache` cluster. Rate limit: `scale-ratelimit` cluster. Her ikisi de Layer-1 öncesi middleware'da çalışır.",
+      "ne_zaman": "Cache: aynı sorguya günde 100+ istek varsa. Rate limit: public endpoint her zaman; internal API en az.",
+      "kim": "SRE/mimar TTL kuralını koyar; geliştirici cache key'i seçer; pazarlama quota tier'ı belirler.",
+      "frontend": {
+        "yer": "Frontend de cache yapar: React Query, SWR. Aynı veriyi 2. kez istemek için ağa çıkmaz, cache'den gösterir.",
+        "gereklilik": "Cache invalidation: kullanıcı 'kaydet' tıkladığında ilgili cache'i geçersiz kıl.",
+        "ornek": "React Query: `staleTime: 60_000` — 60 sn taze, sonra arka planda yenile."
+      },
+      "backend": {
+        "yer": "Express middleware: `rateLimit({ windowMs: 60_000, max: 100 })`. Redis cache: `redis.get(key) || (DB'den çek + redis.set(key, val, ttl))`.",
+        "gereklilik": "Cache key: deterministik (örn. `customer:42:profile`). TTL belirgin. Invalidation event-based.",
+        "ornek": "`async function getCustomer(id) { return cache.get(`cust:${id}`) ?? (await db.findById(id)).also(c => cache.set(`cust:${id}`, c, 300)); }`"
+      },
+      "analoji": "Cache = sık çıkardığın eşyayı dolaba değil masaya koyma. Rate limit = sınıfta 'her öğrenci 5 dk söz hakkı' kuralı."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**İki ayrı dert, iki ayrı çözüm:** *Yavaş mı?* → Cache. *Bir kullanıcı kapasiteyi tüketiyor mu?* → Rate limit. İkisi de Layer-1 öncesi middleware. İkisi de Redis'i sever."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "En klasik tuzak: invalidation",
+      "body": "Cache'i koydun, hız 10x. Bir gün müşteri 'eski fiyatı görüyorum!' diye şikâyet. DB güncellendi, cache eski. Çözüm: yazma anında ilgili cache key'lerini sil. **Cache koymak kolay; doğru invalidate etmek zor.**"
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a şöyle yaz: *'GET /customer/:id endpoint'inde Redis cache ekle. Key: `cust:${id}`, TTL 300sn. Cache miss'te DB sorgula + cache'e yaz. PUT/PATCH /customer/:id ile değişince `cust:${id}` key'ini sil (invalidate). Rate limit: 100 req/min IP başına.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Cache pattern karşılaştırma"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Pattern",
+        "Okuma",
+        "Yazma",
+        "Risk"
+      ],
+      "rows": [
+        [
+          "Cache-aside",
+          "Önce cache, yoksa DB+cache",
+          "Direkt DB (cache invalidate)",
+          "Race condition (nadiren)"
+        ],
+        [
+          "Write-through",
+          "Cache'ten oku",
+          "DB+cache aynı anda",
+          "Yazma yavaşlar"
+        ],
+        [
+          "Write-behind",
+          "Cache'ten oku",
+          "Cache'e yaz, DB'ye sonra",
+          "Veri kaybı (cache patlarsa)"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Rate limit pattern karşılaştırma"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Pattern",
+        "Anlık burst?",
+        "Hassasiyet",
+        "Maliyet"
+      ],
+      "rows": [
+        [
+          "Token bucket",
+          "✓ Evet",
+          "Orta",
+          "Düşük"
+        ],
+        [
+          "Leaky bucket",
+          "✗ Hayır",
+          "Yüksek",
+          "Düşük"
+        ],
+        [
+          "Sliding window",
+          "Kısmen",
+          "Yüksek",
+          "Yüksek (her istek hesap)"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Quota tier örneği",
+      "body": "**Ücretsiz**: 100 istek/saat. **Pro**: 10K/saat. **Enterprise**: limitsiz. Saatlik counter Redis'te tutulur; saat dönünce sıfırlanır. Kullanıcı limit'e yaklaştığında 'X / 10000 kullanıldı' header'ı dönder — bildirici."
+    }
+  ],
+  "related": [
+    "scale-cache",
+    "scale-ratelimit",
+    "scale-counter",
+    "cc-security"
+  ]
+}

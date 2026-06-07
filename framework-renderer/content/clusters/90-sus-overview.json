@@ -3,7 +3,7 @@
   "title": "Sürdürülebilirlik haritası — neden mekanizma?",
   "subtitle": "Olgun mimariyi 30-50 yıl yaşatan şey \"iyi tasarım\" değil; **mekanizmadır**. Linux/Stripe/Drupal/Shopify/PostgreSQL/IBM-i bunu kanıtladı.",
   "cluster": "sus",
-  "order": 90,
+  "order": 1,
   "icon": "ph-infinity",
   "tags": [
     "sustainability",

@@ -3,7 +3,7 @@
   "title": "Otomatik upgrade — kendini-yükselten döngü",
   "subtitle": "Drupal Rector + AI: her deprecation bir codemod kuralı olur; AI eski kodu yeniden yazar. \"Migration aracı = AI\".",
   "cluster": "sus",
-  "order": 94,
+  "order": 5,
   "icon": "ph-arrows-clockwise",
   "tags": [
     "sustainability",

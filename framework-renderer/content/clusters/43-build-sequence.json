@@ -3,7 +3,7 @@
   "title": "Build Sırası — 5 Stage",
   "subtitle": "Kernel → Scale primitives → Layer 1 → Layer 2 + DX → Scale proof.",
   "cluster": "build",
-  "order": 43,
+  "order": 3,
   "icon": "ph-flag-banner",
   "tags": [
     "build",

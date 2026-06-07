@@ -1,0 +1,137 @@
+{
+  "id": "k-sso",
+  "title": "SSO + Federation — kurumsal kimlik girişi",
+  "subtitle": "Enterprise müşterisi 'Google'la / Okta'yla giriş' ister. SAML, OAuth, OpenID Connect, MFA, passkey.",
+  "cluster": "layer0",
+  "order": 7,
+  "icon": "ph-key",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "layer0",
+    "sso",
+    "saml",
+    "oauth",
+    "mfa",
+    "passkey"
+  ],
+  "enrich": {
+    "info": "SAML 2.0 (kurumsal), OAuth 2.0/OIDC (modern), MFA (TOTP, WebAuthn passkey), enterprise SSO (Okta, Auth0).",
+    "detail": "**3 SSO protokolü:**\n\n1. **SAML 2.0** — XML tabanlı, eski ama enterprise standardı.\n2. **OAuth 2.0** — Sadece authorization.\n3. **OpenID Connect (OIDC)** — OAuth üstüne identity. Modern + basit.\n\n**Self-hosted seçenekleri:**\n- **Keycloak**: Java, ağır ama enterprise-grade\n- **Authentik**: Modern Python, Keycloak alternatifi\n- **Ory Hydra+Kratos**: Go, headless\n\n**Managed:**\n- **Auth0**, **Clerk**, **WorkOS** (enterprise SSO as a service)\n\n**MFA seçenekleri:**\n- **SMS**: Düşük güvenlik (SIM swap saldırısı)\n- **TOTP** (Google Authenticator): İyi\n- **WebAuthn / Passkey** (parmak izi, Face ID): En güvenli, modern\n- **Hardware key** (YubiKey): En yüksek\n\n**Modern hedef: parolasız + passkey.**",
+    "terms": [
+      {
+        "term": "SSO",
+        "abbrev_of": "Single Sign-On",
+        "abbrev_tr": "Tek oturum",
+        "meaning": "Bir kez giriş, çoklu uygulamaya kabul.",
+        "why": "Kurumsal müşteri 10 uygulama için 10 parola istemez."
+      },
+      {
+        "term": "SAML",
+        "abbrev_of": "Security Assertion Markup Language",
+        "abbrev_tr": "SAML 2.0",
+        "meaning": "XML tabanlı kurumsal SSO protokolü.",
+        "why": "Enterprise IT'nin bildiği standart."
+      },
+      {
+        "term": "OIDC",
+        "abbrev_of": "OpenID Connect",
+        "abbrev_tr": "OpenID Connect",
+        "meaning": "OAuth 2.0 üstüne identity bilgisi.",
+        "why": "Modern SSO standardı."
+      },
+      {
+        "term": "MFA",
+        "abbrev_of": "Multi-Factor Authentication",
+        "abbrev_tr": "Çok faktörlü kimlik doğrulama",
+        "meaning": "Parola + ikinci şey (SMS, TOTP, parmak izi).",
+        "why": "Parola çalınsa bile korur."
+      },
+      {
+        "term": "Passkey",
+        "abbrev_tr": "Parolasız anahtar",
+        "meaning": "WebAuthn cryptographic key, parolasız giriş.",
+        "why": "Phishing'e karşı bağışık + UX harika."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Apartman çok kapılı geçiş — Murat Bey (61)",
+        "context": "Ana kapı + havuz + otopark farklı anahtarlar.",
+        "outcome": "SSO ile bir kart, tüm kapılara izin."
+      },
+      {
+        "persona": "Ayşe Teyze (63) — parolasız giriş",
+        "context": "Bankaya parmak izi ile giriyor; parola yok.",
+        "outcome": "WebAuthn passkey: parmak izi = anahtar."
+      }
+    ],
+    "lesson": {
+      "ne": "Tek kez kimlik doğrulama ile çoklu sisteme erişim + ikinci faktör güvenlik.",
+      "nicin": "Enterprise satış SSO olmadan imkânsız. MFA olmadan parola sızıntısı = tüm hesap.",
+      "nasil": "1) Modern: WorkOS veya Auth0. 2) Self-hosted: Keycloak/Authentik. 3) MFA TOTP minimum.",
+      "nerede": "`k-sso` cluster. `k-identity` ile birlikte.",
+      "ne_zaman": "İlk enterprise lead'den önce.",
+      "kim": "Backend developer entegrasyon; security team MFA politika.",
+      "analoji": "Hastane personel kartı: bir kart tüm bölümlere yetki."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**SSO = enterprise sales unlock.** Pre-revenue: OAuth (Google/Microsoft). Enterprise: SAML zorunlu."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "SMS MFA tehlikesi",
+      "body": "SIM swap saldırısı = saldırgan SMS'leri alır. **TOTP veya WebAuthn = SMS'ten daha güvenli.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Authentik veya WorkOS ile SSO entegrasyonu. Email domain'ine göre IdP seç. JWT + refresh token. MFA TOTP. WebAuthn passkey opsiyonel.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Protokol seçimi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Senaryo",
+        "Protokol",
+        "Sağlayıcı"
+      ],
+      "rows": [
+        [
+          "Bireysel kullanıcı",
+          "OAuth 2.0",
+          "Google/Apple SDK"
+        ],
+        [
+          "Pre-revenue startup",
+          "OIDC",
+          "Clerk/Auth0/WorkOS"
+        ],
+        [
+          "Enterprise kurum",
+          "SAML 2.0",
+          "Okta/Entra"
+        ],
+        [
+          "Self-hosted",
+          "OIDC + SAML",
+          "Keycloak/Authentik"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "k-identity",
+    "cc-security",
+    "cc-privacy"
+  ]
+}

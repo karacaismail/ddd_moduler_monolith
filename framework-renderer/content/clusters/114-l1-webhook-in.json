@@ -1,0 +1,136 @@
+{
+  "id": "l1-webhook-in",
+  "title": "Inbound Webhook — dış sistemden gelen olay alma",
+  "subtitle": "Stripe ödendi dediğinde, Sentry hata dediğinde — webhook gelir. HMAC doğrula, idempotency uygula, hızlı 2xx dön.",
+  "cluster": "layer1",
+  "order": 10,
+  "icon": "ph-paper-plane-tilt",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "layer1",
+    "webhook",
+    "inbound",
+    "hmac",
+    "idempotency"
+  ],
+  "enrich": {
+    "info": "HMAC signature verification, event ID idempotency, replay protection (timestamp), fast 2xx response, error handling.",
+    "detail": "**Inbound webhook kritik kuralları:**\n\n1. **HMAC imza doğrula HER ZAMAN** — `X-Stripe-Signature` header'ı secret ile karşılaştır\n2. **Timestamp kontrol** — 5 dk eski isteği reddet (replay attack)\n3. **Event ID idempotency** — `event.id`'yi DB'ye INSERT ON CONFLICT DO NOTHING\n4. **Hızlı 2xx dön** — handler 5 sn aşarsa Stripe retry yapar. Queue'ya at; 200 hemen\n5. **Replay endpoint** — Stripe dashboard'tan 'webhook tekrar gönder' yaparsan idempotency çalışmalı\n\n**Workflow:**\n1. HTTP request gelir\n2. HMAC + timestamp doğrula\n3. Event ID DB'ye INSERT (idempotent)\n4. Event'i queue'ya at\n5. 200 OK dön (< 100ms)\n6. Worker queue'dan alıp asıl işi yapar",
+    "terms": [
+      {
+        "term": "Inbound Webhook",
+        "abbrev_tr": "Gelen webhook",
+        "meaning": "Dış sistemden senin sisteme push edilen HTTP POST.",
+        "why": "Stripe 'ödeme alındı' dediğinde sen sorgu atmazsın."
+      },
+      {
+        "term": "HMAC Signature",
+        "abbrev_tr": "HMAC imza",
+        "meaning": "Mesaj + secret = hash.",
+        "why": "Sahte webhook'a karşı koruma."
+      },
+      {
+        "term": "Replay Attack",
+        "abbrev_tr": "Tekrar saldırısı",
+        "meaning": "Saldırgan eski webhook'u kaydedip tekrar gönderir.",
+        "why": "Timestamp ile engellenir."
+      },
+      {
+        "term": "Event Idempotency",
+        "abbrev_tr": "Olay yinelendirme dayanıklılığı",
+        "meaning": "Aynı event_id 2 kez gelirse 1 kez işle.",
+        "why": "Stripe at-least-once; idempotency olmadan çift işlem."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Apartman postacısı — Murat Bey (61) gelen mektup",
+        "context": "Posta gelir, Murat Bey damgaya bakıyor (TEDAŞ damgalı mı).",
+        "outcome": "HMAC = TEDAŞ damgası. Sahte fatura kabul edilmez."
+      },
+      {
+        "persona": "Berber Mehmet Usta (60) — banka SMS",
+        "context": "Aynı SMS 5 dakika sonra tekrar geldi.",
+        "outcome": "Aynı transaction_id varsa idempotency = 1 kez kayıt."
+      }
+    ],
+    "lesson": {
+      "ne": "Dış sistemden gelen webhook'u doğrulayıp güvenle işleme.",
+      "nicin": "Stripe, Sentry, GitHub vs. event'lerini almak için.",
+      "nasil": "1) Endpoint /webhooks/<provider>. 2) HMAC doğrula. 3) Event ID DB'ye INSERT. 4) Queue'ya at. 5) 200 OK <100ms.",
+      "nerede": "`l1-webhook-in` cluster.",
+      "ne_zaman": "İlk dış entegrasyondan önce.",
+      "kim": "Backend developer endpoint + worker.",
+      "analoji": "Apartman güvenlik kameraları: sahte alarm (replay), aynı alarm 2 kez (idempotency)."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Inbound webhook = dış sistemin sana mesajı.** İmza doğrulanmamış webhook = saldırı yüzeyi."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "İmza doğrulamadan kabul = vahim",
+      "body": "Saldırgan `/webhooks/stripe` endpoint'ine fake `payment.succeeded` yollar. **HMAC zorunlu.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'/webhooks/stripe: stripe.webhooks.constructEvent ile HMAC + timestamp. webhook_events tablosu event.id INSERT ON CONFLICT DO NOTHING. Conflict = duplicate, 200 dön. Yeni = queue'ya at, 200 dön.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Webhook handler kontrol listesi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Adım",
+        "İş",
+        "Süre"
+      ],
+      "rows": [
+        [
+          "1. HMAC verify",
+          "Stripe SDK",
+          "< 5ms"
+        ],
+        [
+          "2. Timestamp",
+          "< 5dk eski",
+          "< 1ms"
+        ],
+        [
+          "3. Idempotency",
+          "INSERT ON CONFLICT",
+          "< 10ms"
+        ],
+        [
+          "4. Queue push",
+          "BullMQ/DBOS",
+          "< 5ms"
+        ],
+        [
+          "5. Respond 200",
+          "HTTP",
+          "< 100ms total"
+        ],
+        [
+          "6. Worker async",
+          "Asıl iş",
+          "saniyeler"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "scale-webhook",
+    "scale-workers-deep",
+    "cc-security"
+  ]
+}

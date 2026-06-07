@@ -1,0 +1,142 @@
+{
+  "id": "dx-api-gateway",
+  "title": "API Gateway + Developer Portal",
+  "subtitle": "Public API kullanıcısı için tek giriş: auth, rate limit, versioning, dokümantasyon, API key yönetimi.",
+  "cluster": "dx",
+  "order": 4,
+  "icon": "ph-door-open",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "dx",
+    "api-gateway",
+    "developer-portal",
+    "openapi",
+    "versioning"
+  ],
+  "enrich": {
+    "info": "Kong/Tyk/custom. Auth + rate limit gateway katmanında. OpenAPI spec → Swagger UI. API key dashboard.",
+    "detail": "**Gateway sorumlulukları:**\n\n1. **Auth**: JWT veya API key doğrulama; backend service'ler auth bilmiyor\n2. **Rate limit**: Customer tier'ına göre — `cc-ratelimit` ile entegre\n3. **Versioning**: `/v1`, `/v2` routing; sus-versioning ile uyumlu\n4. **Logging**: Tüm istekler + response time, error rate\n5. **Caching**: GET response cache (TTL)\n6. **CORS**: Browser istemcileri için header yönetimi\n7. **Webhook signature**: Dış sistem webhook'larını doğrulama\n\n**Developer Portal — olmazsa olmaz:**\n\n- **Self-service API key**: Geliştirici kayıt → key al → dene\n- **Interactive docs**: Swagger UI / Stoplight — kod örnekleri\n- **Quickstart**: 5 dakikada ilk istek\n- **SDK**: TypeScript, Python, Go SDK üret (Stainless veya OpenAPI Generator)\n- **Changelog**: Her API değişikliği\n- **Status page**: Uptime, incidents\n\n**Stripe-tarzı best practice:**\n- API key prefix: `sk_live_xxx`, `sk_test_xxx` (canlı/test)\n- Idempotency-Key header desteği\n- Request ID her response'da (`X-Request-Id`)\n- Hata mesajları açıklayıcı (machine + human readable)",
+    "terms": [
+      {
+        "term": "API Gateway",
+        "abbrev_tr": "API geçidi",
+        "meaning": "Public API'ye gelen tüm istekleri filtreleyen, route eden katman.",
+        "why": "Backend service'ler auth/rate limit bilmek zorunda kalmaz; tek noktada."
+      },
+      {
+        "term": "OpenAPI",
+        "abbrev_tr": "OpenAPI (Swagger)",
+        "meaning": "API'yi makinece-okunabilir tanımlama formatı (YAML/JSON).",
+        "why": "Swagger UI, SDK üretimi, contract testing — hepsi bundan üretilir."
+      },
+      {
+        "term": "API Key",
+        "abbrev_tr": "API anahtarı",
+        "meaning": "Müşteriyi tanımlayan uzun token: `sk_live_abc123...`.",
+        "why": "JWT'den basit; M2M (machine-to-machine) için ideal."
+      },
+      {
+        "term": "Developer Portal",
+        "abbrev_tr": "Geliştirici portalı",
+        "meaning": "API kullanıcıları için ayrı dashboard: docs, key, log, status.",
+        "why": "Self-service olmadan satış ekibi key elden veriyor = ölçeklenmez."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Apartman ana kapı — Murat Bey (61) zil sistemi",
+        "context": "Murat Bey ana kapıyı kilitledi; her daire için zil + interkom var. Misafir zile basar, sakin açar.",
+        "outcome": "Bu API Gateway: tek giriş, kim girecek kontrol. Sakin her misafire 'şu kapıdan gel' demek zorunda değil."
+      },
+      {
+        "persona": "Otobüs durağı tabelası — Yusuf Bey (66)",
+        "context": "Yusuf Bey tabeladan otobüs saatlerini öğreniyor; hangi otobüs nereye gider, ne zaman gelir — hepsi tek yerde.",
+        "outcome": "Bu developer portal: kullanıcı tek yere bakar, bilgi alır, deneme yapar."
+      }
+    ],
+    "lesson": {
+      "ne": "Public API'ye gelen istekleri tek noktada karşılayan ve geliştirici müşteri için self-service dashboard sunan altyapı.",
+      "nicin": "Backend service'lerin auth/rate limit/log bilme yükünü almak + müşteriye 5 dakikada başlangıç.",
+      "nasil": "1) Gateway katmanı (Kong veya custom Node.js middleware). 2) OpenAPI 3.x spec generate. 3) Swagger UI deploy. 4) API key tablosu + dashboard. 5) Stainless veya OpenAPI Generator ile SDK.",
+      "nerede": "`dx-api-gateway` cluster + sus-versioning + scale-ratelimit entegrasyonu.",
+      "ne_zaman": "Public API açılmadan önce. Önce gateway kur, sonra endpoint yayınla.",
+      "kim": "Platform mühendisi gateway kurar; DevRel portal + dokümantasyon; ürün ekibi API roadmap.",
+      "analoji": "Hastane danışma masası: kim hangi doktora, hangi katta, ne saatte. Doktorlar 'beni bul' tek tek bilmek zorunda değil — danışma bilir."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Gateway = tek giriş prensibi.** 100 endpoint'in her birinde auth + rate limit yazmak yerine, tek katmanda halledilir. Mikro hizmet/monolit fark etmez."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "Portal olmadan API satılmaz",
+      "body": "'Bizim API'mız var, dokümantasyon e-posta isteyin' = 2010. **Self-service portal** olmadan modern geliştirici sigaya sokar. Stripe/Twilio portal seviyesi standart."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Express gateway middleware: JWT/API key auth, scale-ratelimit entegrasyonu, OpenAPI 3.x spec auto-generate (tsoa veya zod-to-openapi), Swagger UI /docs. API key tablo: customer_id, key_hash, last_used. Test/live prefix.'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Gateway sorumlulukları"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Sorumluluk",
+        "Gateway",
+        "Backend service"
+      ],
+      "rows": [
+        [
+          "Auth",
+          "✓",
+          "✗ (gateway'in geçirdiği header'a güvenir)"
+        ],
+        [
+          "Rate limit",
+          "✓",
+          "✗"
+        ],
+        [
+          "Logging",
+          "✓",
+          "✓ (iş seviyesi)"
+        ],
+        [
+          "CORS",
+          "✓",
+          "✗"
+        ],
+        [
+          "Versioning route",
+          "✓",
+          "✗"
+        ],
+        [
+          "Iş mantığı",
+          "✗",
+          "✓"
+        ],
+        [
+          "DB erişim",
+          "✗",
+          "✓"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "sus-versioning",
+    "scale-ratelimit",
+    "cc-security",
+    "dx-cli"
+  ]
+}

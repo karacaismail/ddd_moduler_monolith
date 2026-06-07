@@ -1,0 +1,182 @@
+{
+  "id": "l1-search-deep",
+  "title": "Arama Derinleştirme — autocomplete, faceted, did-you-mean",
+  "subtitle": "BM25 + vector yeterli değil. Modern arama: typeahead, kategori filtreleri, yazım düzeltme, kullanıcı sorgu analitiği.",
+  "cluster": "layer1",
+  "order": 12,
+  "icon": "ph-magnifying-glass-plus",
+  "granularity": "orta-tas",
+  "state": "wip",
+  "tags": [
+    "layer1",
+    "search",
+    "autocomplete",
+    "faceted",
+    "analytics"
+  ],
+  "enrich": {
+    "info": "Autocomplete (typeahead), faceted search (filtre kategoriler), spell check + did-you-mean, search analytics, spatial search.",
+    "detail": "**Modern arama 5 bileşen:**\n\n1. **Autocomplete (typeahead)** — kullanıcı yazarken öneri\n   - 2-3 harf sonra başlar\n   - Debounce 150ms (her tuş için istek atma)\n   - Önceki sorgular cache'lenir\n   - Yapı: Trie (PostgreSQL pg_trgm + GIN index) veya Elasticsearch suggester\n\n2. **Faceted search (kategori filtreler)** — sol panelde 'Marka: Apple (24), Samsung (18)'\n   - Sayım önbelleğe alınır (her arama sonrası)\n   - Çoklu seçim AND/OR\n   - Yapı: aggregations (Elasticsearch / OpenSearch)\n\n3. **Spell check + did-you-mean** — 'eklma' → 'elma mı demek istediniz?'\n   - Levenshtein distance (max 2 hata)\n   - PostgreSQL: pg_trgm similarity()\n   - Phonetic (TR için): metaphone TR varyantı\n\n4. **Search analytics** — kullanıcı neyi aradı, neyi bulamadı\n   - Her arama log'la: query, results_count, click_position\n   - 'Sıfır sonuç' aramalar = içerik boşluğu (ürün eklemen gereken)\n   - 'Yüksek tıklama' = popüler\n\n5. **Spatial search** — 'yakın eczane' (PostGIS ile birlikte)\n   - ST_DWithin + arama filtresi\n\n**Implementation seçimi:**\n- **Küçük (<100K dokuman)**: Postgres full-text search + pg_trgm yeter\n- **Orta (100K-10M)**: Meilisearch (kolay, hızlı, ücretsiz self-host)\n- **Büyük (10M+)**: OpenSearch/Elasticsearch (klasik, ağır)\n- **Vector search**: pgvector (Postgres extension) veya Weaviate\n\n**Modüler monolith için:** Meilisearch + pgvector hibrit pattern. Şu an cluster framework'te küçük ölçekte Postgres BM25 + vector yeterli.",
+    "terms": [
+      {
+        "term": "Autocomplete",
+        "abbrev_tr": "Otomatik tamamlama",
+        "meaning": "Kullanıcı yazarken öneri gösterme.",
+        "why": "Kullanıcı 'el' yazınca 'elma, elbise' önerisi → hızlı + doğru."
+      },
+      {
+        "term": "Faceted Search",
+        "abbrev_tr": "Yönlü arama",
+        "meaning": "Filtre kategorilerle sonuç daraltma: 'marka', 'fiyat'.",
+        "why": "E-ticaret olmazsa olmaz."
+      },
+      {
+        "term": "Did-you-mean",
+        "abbrev_tr": "Yazım önerisi",
+        "meaning": "Yanlış yazıldıysa doğru yazımı öner.",
+        "why": "'eklma' → 'elma' = kullanıcı kaybedilmez."
+      },
+      {
+        "term": "Levenshtein Distance",
+        "abbrev_tr": "Düzenleme mesafesi",
+        "meaning": "İki kelime arası kaç harf değiştirilirse aynı olur.",
+        "why": "'eklma' ↔ 'elma' = 1 harf farkı, öner."
+      },
+      {
+        "term": "Aggregations",
+        "abbrev_tr": "Toplulaştırmalar",
+        "meaning": "Arama sonuçlarını kategoriye göre saymak.",
+        "why": "'Marka: Apple (24)' sayısı her arama sonrası güncel."
+      },
+      {
+        "term": "BM25",
+        "abbrev_tr": "BM25 algoritması",
+        "meaning": "Klasik full-text search puanlama algoritması.",
+        "why": "Term frequency + document length normalizasyonu."
+      },
+      {
+        "term": "Vector Search",
+        "abbrev_tr": "Vektör arama",
+        "meaning": "Embedding similarity (cosine) ile semantic arama.",
+        "why": "'köpek mama' → 'kuru gıda' bulabilir; kelime eşleşmez."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Bakkal Hatice Teyze (62) — müşteri sorgusu",
+        "context": "Müşteri 'şeker' diyor. Hatice Teyze 'tane şeker mi, kesme şeker mi, esmer şeker mi?' diye soruyor.",
+        "outcome": "Bu faceted search: ana terim + alt kategoriler. Müşteri seçim yaparak daraltır."
+      },
+      {
+        "persona": "Berber Mehmet Usta (60) — yanlış adres",
+        "context": "Müşteri 'Çamlık' diye yazdı haritada; yer bulunamadı. Asıl 'Çamlıca' idi.",
+        "outcome": "Did-you-mean: 'Çamlıca demek istediniz mi?' → 1 harf farkı, otomatik öneri."
+      },
+      {
+        "persona": "Apartman yöneticisi Murat Bey (61) — kayıp eşya",
+        "context": "Sakini 'mavi şemsiye gördünüz mü?' diye sordu. Murat Bey defteri arar; 'şemsiye'yle başlayan tüm kayıtları listeler.",
+        "outcome": "Autocomplete + arama: 'şem' yazınca 'şemsiye, şempanze' önerisi."
+      }
+    ],
+    "lesson": {
+      "ne": "Klasik kelime eşleşmesi üstüne modern arama özellikleri: typeahead, faceted, did-you-mean, analytics.",
+      "nicin": "Kullanıcı aradığını bulamazsa siteyi terk eder. %30 e-ticaret cirosu doğrudan aramaya bağlı.",
+      "nasil": "1) Meilisearch self-host. 2) Faceted aggregation. 3) pg_trgm similarity did-you-mean. 4) Search log tablosu. 5) PostGIS spatial.",
+      "nerede": "`l1-search` cluster + `l1-search-deep` derinleştirme. Meilisearch service Docker'da.",
+      "ne_zaman": "İlk 1000 üründen sonra arama olmadan yetmez. Baştan altyapı hazır.",
+      "kim": "Backend developer index + sync; frontend developer typeahead UI; ürün ekibi analytics dashboard.",
+      "frontend": {
+        "yer": "Input + dropdown panel. Sol kenar filtreler. Sonuç sayısı.",
+        "gereklilik": "Debounce 150ms. Klavye navigation. Keyboard accessible.",
+        "ornek": "<input onChange={debounce(search, 150)}> + <Combobox options={suggestions}>"
+      },
+      "backend": {
+        "yer": "Meilisearch service / endpoint /search?q=&filter=brand:Apple&facets=brand,category. Search log tablosu.",
+        "gereklilik": "Index sync: DocType save → outbox → search index update.",
+        "ornek": "search_queries(query, results_count, clicked_position, user_id, ts) — analitiğin temeli."
+      },
+      "analoji": "Kütüphaneci: 'tarih' diyorsun, 'hangi dönem, hangi ülke, hangi yazar?' diye sorup raf raf gezdiriyor. Sadece konu vermek yetmez; filtre + öneri."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Arama = sitenin keşif aracı.** BM25 tek başına yetmez; autocomplete + faceted + did-you-mean modern beklenti."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "label": "'Sıfır sonuç' analitiği unutulur",
+      "body": "Kullanıcı 'X' aradı, sonuç yok. Bu bilgiyi log'lamazsan ürün ekibi 'X eklemek gerek' fırsatını kaçırır. **search_queries.results_count = 0 → günlük rapor.**"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "Vibecoding ipucu",
+      "body": "AI ajan'a: *'Meilisearch entegrasyonu. /search endpoint: q + facets + filter. Frontend: input debounce 150ms + Combobox + facet sidebar. Search log tablosu (query, results_count, clicked_position). Did-you-mean: pg_trgm similarity().'*"
+    },
+    {
+      "type": "heading",
+      "level": 4,
+      "text": "Arama özelliği matrisi"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Özellik",
+        "Postgres FTS",
+        "Meilisearch",
+        "Elasticsearch"
+      ],
+      "rows": [
+        [
+          "Autocomplete",
+          "pg_trgm + GIN",
+          "✓ Built-in",
+          "✓ Suggester"
+        ],
+        [
+          "Faceted",
+          "Manuel aggregation",
+          "✓ Built-in",
+          "✓ Aggregations"
+        ],
+        [
+          "Did-you-mean",
+          "pg_trgm similarity",
+          "✓",
+          "✓"
+        ],
+        [
+          "Vector search",
+          "pgvector",
+          "✓ (yeni)",
+          "✓ kNN"
+        ],
+        [
+          "Spatial",
+          "PostGIS",
+          "Sınırlı",
+          "✓ geo_distance"
+        ],
+        [
+          "Ölçek",
+          "100K dokuman",
+          "10M",
+          "100M+"
+        ],
+        [
+          "Self-host kolaylık",
+          "✓ Postgres içinde",
+          "Çok kolay",
+          "Ağır"
+        ]
+      ]
+    }
+  ],
+  "related": [
+    "l1-search",
+    "scale-gis",
+    "scale-cache"
+  ]
+}
