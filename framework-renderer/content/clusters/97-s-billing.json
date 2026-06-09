@@ -2,7 +2,7 @@
   "id": "s-billing",
   "title": "Billing + Subscription — SaaS satış altyapısı",
   "subtitle": "15 SaaS ürünü SaaS olarak satılacak: abonelik, trial, prorate, dunning, fatura, vergi otomasyonu.",
-  "cluster": "stack",
+  "cluster": "finance",
   "order": 13,
   "icon": "ph-receipt",
   "granularity": "buyuk-tas",
@@ -77,6 +77,12 @@
     {
       "type": "paragraph",
       "text": "**Billing = revenue engine.** Bug = direct gelir kaybı. Çift fatura, eksik fatura, vergi hatası — hepsi muhasebe + güven krizi."
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-billing.svg",
+      "alt": "Billing + Subscription — SaaS satış altyapısı ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "Billing + Subscription — SaaS satış altyapısı kategori şeması · pazar muadilleri + AI/TR ipuçları"
     },
     {
       "type": "callout",

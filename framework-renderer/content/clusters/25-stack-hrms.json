@@ -2,7 +2,7 @@
   "id": "s-hrms",
   "title": "HRMS Stack (TR)",
   "subtitle": "Odoo HR, SAP HCM, Frappe HRMS, Logo HR muadili. Effective-dating ana disiplin.",
-  "cluster": "stack",
+  "cluster": "hr",
   "layer": "l2",
   "order": 3,
   "icon": "ph-users-four",
@@ -17,6 +17,12 @@
     {
       "type": "paragraph",
       "text": "İstihdam yaşam döngüsü ana modeli. HRMS (#9) ana stack. Effective-dating (bitemporal) tüm core değer alanlarda zorunlu disiplin."
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-hrms.svg",
+      "alt": "HRMS Stack (TR) ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "HRMS Stack (TR) kategori şeması · pazar muadilleri + AI/TR ipuçları"
     },
     {
       "type": "heading",

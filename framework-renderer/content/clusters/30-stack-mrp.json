@@ -2,7 +2,7 @@
   "id": "s-mrp",
   "title": "MRP / Manufacturing Stack",
   "subtitle": "SAP PP, Odoo Manufacturing muadili. Bağımlı talep + regenerative plan.",
-  "cluster": "stack",
+  "cluster": "core-operations",
   "layer": "l2",
   "order": 8,
   "icon": "ph-factory",
@@ -16,6 +16,12 @@
     {
       "type": "paragraph",
       "text": "MRP (#14) ana stack. ERP'den ({{ref:s-accounting}}) GL postingi, Inventory'den ({{ref:s-commerce}}) stock ledger besleme."
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-mrp.svg",
+      "alt": "MRP / Manufacturing Stack ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "MRP / Manufacturing Stack kategori şeması · pazar muadilleri + AI/TR ipuçları"
     },
     {
       "type": "heading",

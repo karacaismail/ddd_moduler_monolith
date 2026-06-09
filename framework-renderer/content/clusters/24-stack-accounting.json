@@ -2,7 +2,7 @@
   "id": "s-accounting",
   "title": "Accounting + Finans Stack (TR)",
   "subtitle": "Odoo Accounting, SAP FI/CO, Frappe Books, Mikro/Logo muadili. TR uyum birinci sınıf.",
-  "cluster": "stack",
+  "cluster": "finance",
   "layer": "l2",
   "order": 2,
   "icon": "ph-coins",
@@ -27,6 +27,12 @@
           "analoji": "Mektubun e-postaya dönmesi."
         }
       }
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-accounting.svg",
+      "alt": "Accounting + Finans Stack (TR) ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "Accounting + Finans Stack (TR) kategori şeması · pazar muadilleri + AI/TR ipuçları"
     },
     {
       "type": "heading",

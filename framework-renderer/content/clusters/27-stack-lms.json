@@ -2,7 +2,7 @@
   "id": "s-lms",
   "title": "LMS Stack",
   "subtitle": "Moodle, Canvas, Udemy, Coursera, Frappe LMS muadili.",
-  "cluster": "stack",
+  "cluster": "hr",
   "layer": "l2",
   "order": 5,
   "icon": "ph-graduation-cap",
@@ -17,6 +17,12 @@
     {
       "type": "paragraph",
       "text": "LMS (#6) ana stack. CMS authoring'den içerik tüketir, HRMS'ten employee'leri öğrenen olarak alır."
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-lms.svg",
+      "alt": "LMS Stack ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "LMS Stack kategori şeması · pazar muadilleri + AI/TR ipuçları"
     },
     {
       "type": "heading",

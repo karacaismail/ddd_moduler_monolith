@@ -1,0 +1,74 @@
+{
+  "id": "s-fleet",
+  "title": "Fleet Management",
+  "subtitle": "Samsara muadili. Araç takibi + bakım",
+  "cluster": "supply-chain",
+  "order": 3,
+  "icon": "ph-jeep",
+  "granularity": "buyuk-tas",
+  "state": "wip",
+  "tags": [
+    "supply-chain",
+    "fleet",
+    "stack"
+  ],
+  "enrich": {
+    "info": "Samsara muadili. Araç takibi + bakım",
+    "detail": "**Muadiller:** Samsara\n\n**Not:** Araç takibi + bakım\n\n\n**Layer-2 stack ürünü.** Kernel + Scale + Layer-1 primitive'lerinin üstüne oturur. Kendi DocType'larını tanımlar, kendi UI'sını sunar; ama yetki/audit/event-bus framework'ten gelir.",
+    "terms": [
+      {
+        "term": "Samsara",
+        "abbrev_tr": "Pazar lideri (muadil)",
+        "meaning": "Samsara — Fleet Management kategorisinde pazar referansı.",
+        "why": "Müşteri 'X gibi, ama bizim platformumuza entegre' iletişimi için karşılaştırma noktası."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "İşletme sahibi Murat Bey (61) — Fleet Management",
+        "context": "Murat Bey 8 personelli işletmesini Samsara yönetiyor. Aylık abonelik döviz cinsi; ekip İngilizce'ye hâkim değil.",
+        "outcome": "Bu sistem TR fiyatlandırması + Türkçe arayüz + Türk muhasebe ile entegre. Murat Bey 1 günde geçiş yapıyor; ekip ilk haftada öğreniyor."
+      }
+    ],
+    "lesson": {
+      "ne": "Fleet Management kategorisinde, Samsara işlevini sunan stack ürünü.",
+      "nicin": "Müşteri Fleet Management için ayrı bir SaaS satın almak zorunda kalmasın; aynı platformda diğer ürünlerle entegre çalışsın.",
+      "nasil": "Layer-2 stack ürünü olarak Kernel + Scale + Layer-1 üstüne inşa edilir. DocType engine ile şema, otomatik REST/GraphQL, audit + tenancy ücretsiz.",
+      "nerede": "Bu cluster + ileride implementation.",
+      "ne_zaman": "Faz 2-3 (build-sequence) — kernel + scale + L1 hazır olduktan sonra.",
+      "kim": "Stack squad (bu ürün için sorumlu ekip) + AI squad (AI özellikleri için)",
+      "analoji": "AVM'deki bir mağaza: kendi vitrini, kendi ürünü; ama AVM ortak otopark, güvenlik, ısıtma sağlar. Fleet Management mağazası, framework AVM'si."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Fleet Management** — Samsara muadili. Araç takibi + bakım"
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-fleet.svg",
+      "alt": "Fleet Management ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "Fleet Management kategori şeması · pazar muadilleri + AI/TR ipuçları"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Muadil",
+        "Bilinme nedeni"
+      ],
+      "rows": [
+        [
+          "Samsara",
+          "Pazar lideri / referans"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Özel notlar",
+      "body": "Araç takibi + bakım"
+    }
+  ]
+}

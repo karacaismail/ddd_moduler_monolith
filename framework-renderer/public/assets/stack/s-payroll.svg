@@ -1,0 +1,20 @@
+<svg viewBox="0 0 620 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t-s-payroll d-s-payroll">
+  <title id="t-s-payroll">Payroll — kategori şeması</title>
+  <desc id="d-s-payroll">Payroll ürünü için kategori, muadiller, TR uyum ve katman pozisyonu</desc>
+  <rect width="620" height="360" rx="8" fill="white"/>
+  <rect x="20" y="20" width="580" height="60" rx="6" fill="#8b5cf6"/>
+  <text x="40" y="56" font-family="Roboto,sans-serif" font-size="22" fill="white" font-weight="500">Payroll</text>
+  
+    <g transform="translate(480,30)">
+      <rect x="0" y="0" width="80" height="28" rx="4" fill="#dc2626"/>
+      <text x="40" y="19" font-family="Roboto,sans-serif" font-size="13" fill="white" text-anchor="middle" font-weight="500">TR uyum</text>
+    </g>
+  <text x="40" y="115" font-family="Roboto,sans-serif" font-size="13" fill="#5b21b6" font-weight="500">KATEGORİ: HR</text>
+  <line x1="40" y1="124" x2="580" y2="124" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="40" y="160" font-family="Roboto,sans-serif" font-size="13" fill="#475569" font-weight="500">Pazar muadilleri:</text>
+  
+  
+  <g transform="translate(40,340)">
+    <text x="0" y="0" font-family="Roboto,sans-serif" font-size="11" fill="#64748b">Layer-2 stack ürünü · Kernel + Scale + Layer-1 üzerine</text>
+  </g>
+</svg>

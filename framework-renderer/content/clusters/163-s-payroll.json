@@ -1,0 +1,68 @@
+{
+  "id": "s-payroll",
+  "title": "Payroll",
+  "subtitle": "TR: SGK entegrasyonu kritik TR yerelleştirme: zorunlu.",
+  "cluster": "hr",
+  "order": 1,
+  "icon": "ph-money",
+  "granularity": "buyuk-tas",
+  "state": "wip",
+  "tags": [
+    "hr",
+    "payroll",
+    "stack",
+    "tr-uyum"
+  ],
+  "enrich": {
+    "info": "TR: SGK entegrasyonu kritik TR yerelleştirme: zorunlu.",
+    "detail": "**Not:** TR: SGK entegrasyonu kritik\n\n**Yerelleştirme:** Türkiye için 1. sınıf (GİB/SGK/EİDS/KVKK).\n\n\n**Layer-2 stack ürünü.** Kernel + Scale + Layer-1 primitive'lerinin üstüne oturur. Kendi DocType'larını tanımlar, kendi UI'sını sunar; ama yetki/audit/event-bus framework'ten gelir.",
+    "terms": [
+      {
+        "term": "TR Lokalizasyon",
+        "abbrev_tr": "Türkiye uyumu",
+        "meaning": "GİB/SGK/EİDS/KVKK gibi yerel mevzuat entegrasyonu.",
+        "why": "Yurt dışı muadillerin TR'de yetersiz kaldığı boşluk."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "Mali müşavir Hasan Bey (58) — TR mevzuat",
+        "context": "Hasan Bey 12 müşterinin Payroll ihtiyacını yönetiyor. Yabancı yazılım GİB e-Fatura'da takılıyor; özelleştirme aylar alıyor.",
+        "outcome": "Bu sistem TR mevzuatını baştan içeriyor; mali müşavir 1 günde 12 müşteriyi taşıyor."
+      }
+    ],
+    "lesson": {
+      "ne": "Payroll kategorisinde, sektörün işlevini sunan stack ürünü.",
+      "nicin": "Müşteri Payroll için ayrı bir SaaS satın almak zorunda kalmasın; aynı platformda diğer ürünlerle entegre çalışsın.",
+      "nasil": "Layer-2 stack ürünü olarak Kernel + Scale + Layer-1 üstüne inşa edilir. DocType engine ile şema, otomatik REST/GraphQL, audit + tenancy ücretsiz.",
+      "nerede": "Bu cluster + ileride implementation.",
+      "ne_zaman": "Faz 2-3 (build-sequence) — kernel + scale + L1 hazır olduktan sonra.",
+      "kim": "Stack squad (bu ürün için sorumlu ekip) + AI squad (AI özellikleri için) + TR uyum ekibi",
+      "analoji": "AVM'deki bir mağaza: kendi vitrini, kendi ürünü; ama AVM ortak otopark, güvenlik, ısıtma sağlar. Payroll mağazası, framework AVM'si."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Payroll** — TR: SGK entegrasyonu kritik TR yerelleştirme: zorunlu."
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-payroll.svg",
+      "alt": "Payroll ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "Payroll kategori şeması · pazar muadilleri + AI/TR ipuçları"
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "TR Yerelleştirme — 1. sınıf",
+      "body": "Bu cluster GİB/SGK/EİDS/KVKK mevzuatına baştan uyumlu tasarlanır. Yurt dışı muadillerin boşluk bıraktığı yer — farklılaşma noktası."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Özel notlar",
+      "body": "TR: SGK entegrasyonu kritik"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
   "id": "s-ai",
   "title": "AI Stack",
   "subtitle": "Framework AI-first iddiasının çıktığı yer. Diğer stack'ler bu primitive'leri tüketir.",
-  "cluster": "stack",
+  "cluster": "data-intelligence",
   "layer": "l2",
   "order": 9,
   "icon": "ph-robot",
@@ -25,6 +25,12 @@
       "type": "paragraph",
       "text": "Bu stack diğer module'lerin tüketeceği AI primitive'lerini sağlar. Her bounded context kendi tool'larını expose eder, agent'lar MCP üstünden çağırır.",
       "enrich": {}
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-ai.svg",
+      "alt": "AI Stack ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "AI Stack kategori şeması · pazar muadilleri + AI/TR ipuçları"
     },
     {
       "type": "heading",

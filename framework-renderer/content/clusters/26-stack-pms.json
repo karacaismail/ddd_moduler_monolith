@@ -2,7 +2,7 @@
   "id": "s-pms",
   "title": "PMS Stack",
   "subtitle": "Linear, Jira, Asana, Monday, ClickUp, MS Project muadili.",
-  "cluster": "stack",
+  "cluster": "content-collaboration",
   "layer": "l2",
   "order": 4,
   "icon": "ph-kanban",
@@ -17,6 +17,12 @@
     {
       "type": "paragraph",
       "text": "PMS (#11) ana stack. Diğer ürünlerden helpdesk/CRM cross-link."
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-pms.svg",
+      "alt": "PMS Stack ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "PMS Stack kategori şeması · pazar muadilleri + AI/TR ipuçları"
     },
     {
       "type": "heading",

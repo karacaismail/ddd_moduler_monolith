@@ -69,6 +69,12 @@
       "variant": "info",
       "label": "🛤 Sürdürülebilirlik aşamaları (paralel yol haritası)",
       "body": "Yukarıdaki 5 Stage build sırası **mimari/runtime yapımı** anlatır. Buna paralel **sürdürülebilirlik mekanizmaları** 4 aşamada inşa edilir; her aşamanın bir build stage'inde eşiği vardır.\n\n**Aşama 0 — Sınır kapıları (Stage 1 ile paralel).** İlk Layer 2 modülü yazılmadan ÖNCE: `import-linter` + `boundaries.yml` CI kapısı + BC politikası taslağı ({{ref:sus-boundaries}}). En düşük maliyet, en yüksek koruma.\n\n**Aşama 1 — Sözleşme katmanı (Stage 2-3 paralel).** İlk dış entegratör/plugin ortaya çıkmadan ÖNCE: tarih-tabanlı versiyon + response transform + DocType snapshot ({{ref:sus-versioning}} + {{ref:sus-timi}}).\n\n**Aşama 2 — Kendini-yükselten döngü (Stage 4).** İkinci major sürüm planlanırken: codemod + bitemporal + DBOS ({{ref:sus-codemod}} + {{ref:sus-bitemporal}} + {{ref:sus-durable}}).\n\n**Aşama 3 — DX + AI (Stage 5).** AI ajan üretime alınmadan ÖNCE: declarative türetme + tipli action yüzeyi ({{ref:sus-declarative}} + {{ref:sus-actions}})."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "70+ ürün build sırası",
+      "body": "**Faz 1** (kernel + scale + L1): atomic-types, k-*, scale-*, l1-*. ~6 ay. 0 ürün canlı.\n**Faz 2** (ilk 10 stack ürünü): s-crm, s-ecommerce (s-commerce), s-accounting, s-hrms, s-payroll, s-pms, s-helpdesk, s-billing, s-cms, s-drive. ~12 ay.\n**Faz 3** (Çekirdek Op + Finans tamamla): s-sales, s-pos, s-inventory, s-purchase, s-mrp, s-revrec, s-fpa, s-tax-compliance. ~6 ay.\n**Faz 4** (Tedarik + Müşteri + İçerik): s-wms, s-tms, s-fsm, s-marketing, s-clm, s-cpq, s-pim, s-dms, s-wiki, s-social, s-community. ~12 ay.\n**Faz 5** (Veri-Zeka): s-ai, s-rag, s-bi, s-etl, s-observability, s-predictive. ~6 ay.\n**Faz 6** (Platform farklılaştırıcı): s-studio (low-code), s-bpm, s-ipaas. ~6 ay.\n**Faz 7** (Dikey TR — geleneksel oyuncuya rakip): s-property (arsam), s-restaurant (e-menum), s-incentive (Segika), s-education, s-clinic. ~12 ay.\n\n**Toplam ~60 ay** = 5 yıl. Tek ekip için imkânsız; çoklu squad zorunlu. Her squad: 1 senior + 2 mid + 1 junior + 1 AI eşi."
     }
   ],
   "enrich": {

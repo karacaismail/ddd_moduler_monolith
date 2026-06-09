@@ -1,0 +1,61 @@
+{
+  "id": "s-traceability",
+  "title": "Traceability",
+  "subtitle": "Lot/seri, geri çağırma, soğuk zincir",
+  "cluster": "supply-chain",
+  "order": 8,
+  "icon": "ph-barcode",
+  "granularity": "buyuk-tas",
+  "state": "wip",
+  "tags": [
+    "supply-chain",
+    "traceability",
+    "stack"
+  ],
+  "enrich": {
+    "info": "Lot/seri, geri çağırma, soğuk zincir",
+    "detail": "**Not:** Lot/seri, geri çağırma, soğuk zincir\n\n\n**Layer-2 stack ürünü.** Kernel + Scale + Layer-1 primitive'lerinin üstüne oturur. Kendi DocType'larını tanımlar, kendi UI'sını sunar; ama yetki/audit/event-bus framework'ten gelir.",
+    "terms": [
+      {
+        "term": "Stack ürünü",
+        "abbrev_tr": "Layer-2 ürün",
+        "meaning": "Kernel + Scale + Layer-1 üstüne kurulu, bağımsız satılabilir ürün.",
+        "why": "Tek müşteriye sadece bu modül satılabilir; ama altyapı ortak."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "İşletme sahibi Murat Bey (61) — Traceability",
+        "context": "Murat Bey 8 personelli işletmesini yabancı bir yazılımla yönetiyor. Aylık abonelik döviz cinsi; ekip İngilizce'ye hâkim değil.",
+        "outcome": "Bu sistem TR fiyatlandırması + Türkçe arayüz + Türk muhasebe ile entegre. Murat Bey 1 günde geçiş yapıyor; ekip ilk haftada öğreniyor."
+      }
+    ],
+    "lesson": {
+      "ne": "Traceability kategorisinde, sektörün işlevini sunan stack ürünü.",
+      "nicin": "Müşteri Traceability için ayrı bir SaaS satın almak zorunda kalmasın; aynı platformda diğer ürünlerle entegre çalışsın.",
+      "nasil": "Layer-2 stack ürünü olarak Kernel + Scale + Layer-1 üstüne inşa edilir. DocType engine ile şema, otomatik REST/GraphQL, audit + tenancy ücretsiz.",
+      "nerede": "Bu cluster + ileride implementation.",
+      "ne_zaman": "Faz 2-3 (build-sequence) — kernel + scale + L1 hazır olduktan sonra.",
+      "kim": "Stack squad (bu ürün için sorumlu ekip) + AI squad (AI özellikleri için)",
+      "analoji": "AVM'deki bir mağaza: kendi vitrini, kendi ürünü; ama AVM ortak otopark, güvenlik, ısıtma sağlar. Traceability mağazası, framework AVM'si."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Traceability** — Lot/seri, geri çağırma, soğuk zincir"
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-traceability.svg",
+      "alt": "Traceability ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "Traceability kategori şeması · pazar muadilleri + AI/TR ipuçları"
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Özel notlar",
+      "body": "Lot/seri, geri çağırma, soğuk zincir"
+    }
+  ]
+}

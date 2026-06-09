@@ -1,7 +1,7 @@
 {
   "id": "overview",
   "title": "Yönetici özeti",
-  "subtitle": "Bu sayfa 15 SaaS ürünü taşıyacak DDD modüler monolith framework'ün master haritası — JSON-driven, dinamik render.",
+  "subtitle": "Bu sayfa 70+ ürünlük 9 kategorili Super-ERP / AI-first SaaS framework'ün master haritası — JSON-driven, dinamik render.",
   "cluster": "meta",
   "order": 1,
   "icon": "ph-list-checks",
@@ -14,8 +14,8 @@
     "ai-first"
   ],
   "enrich": {
-    "info": "15 farklı yazılım ürününün ortak temelini oluşturan, 6 katmanlı bir altyapının genel haritası.",
-    "detail": "**Amaç:** son ürün değil, **meta-framework** geliştirmek — Drupal/Django/Frappe sınıfı. FastAPI backend üstüne metadata-driven DocType engine, polyglot runtime (Python + TS), scale primitives core'da.\n\n**Çerçeve:** 6 katman (kum tanesi → kaya). Her katman aşağıdakini bilir, üstündekini bilmez.\n\n**Ölçek:** 15 ürün hedefi (HRMS, Commerce, Accounting, PMS, LMS, CMS, Social, MRP, AI, Marketing, Helpdesk, Drive, Field Service, Real Estate, Field-builder), her biri kendi Layer-2 stack'inde.",
+    "info": "70+ ürünün ortak temelini oluşturan, 6 katmanlı ve 9 ürün kategorili meta-framework.",
+    "detail": "**Amaç:** son ürün değil, **meta-framework** geliştirmek — Drupal/Django/Frappe/Salesforce sınıfı. FastAPI/Django backend üstüne metadata-driven DocType engine, polyglot runtime (Python + TS), scale primitives core'da.\n\n**Çerçeve:** 6 katman (atom → kaya). Her katman aşağıdakini bilir, üstündekini bilmez.\n\n**Ölçek:** **70+ ürün hedefi, 9 kategoride:**\n1. **Çekirdek Operasyon** (7): CRM, Sales, e-Commerce, POS, Inventory, Purchase, MRP\n2. **Finans & Muhasebe** (10): Accounting, Billing, RevRec, Subscription Analytics, FP&A, Expenses, Fixed Assets, Treasury, Consolidation, Tax (TR)\n3. **Tedarik Zinciri & Lojistik** (9): WMS, TMS, Fleet, Demand, Procurement, Quality, CMMS, Traceability, FSM\n4. **İnsan Kaynakları** (7): HRMS, Payroll (TR), ATS, Onboarding, Performance, LMS, Workforce\n5. **Müşteri & Gelir** (7): Helpdesk, Marketing, CLM, CPQ, Loyalty, PIM, Marketplace\n6. **İçerik & İşbirliği** (9): CMS, Drive, DMS, Wiki, Social, Community, PMS, Event, Survey\n7. **Veri & Zeka (AI-first)** (8): AI Copilot, RAG, BI, ETL, Observability, Predictive, Doc Match, Conversational\n8. **Platform & Yatay** (6): Studio (low-code), BPM, iPaaS, IAM, Audit, i18n\n9. **Dikey / Sektörel (TR Farklılaştırıcı)** (7): arsam (emlak), e-menum (restoran), Segika (SGK teşvik), eğitim, sağlık, dernek, hukuk\n\n**3 ayırt edici nokta:**\n- **Low-code Studio** — DocType ile kod yazmadan modül üretme\n- **Deep TR localization** — GİB/SGK/EİDS/KVKK 1. sınıf, sonradan eklemiyor\n- **AI-native workflows** — her stack'te AI özelliği (lead scoring, OCR, text-to-SQL, vs.)",
     "terms": [
       {
         "term": "DDD",

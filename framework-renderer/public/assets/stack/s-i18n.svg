@@ -1,0 +1,16 @@
+<svg viewBox="0 0 620 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t-s-i18n d-s-i18n">
+  <title id="t-s-i18n">i18n / Localization — kategori şeması</title>
+  <desc id="d-s-i18n">i18n / Localization ürünü için kategori, muadiller ve katman pozisyonu</desc>
+  <rect width="620" height="360" rx="8" fill="white"/>
+  <rect x="20" y="20" width="580" height="60" rx="6" fill="#64748b"/>
+  <text x="40" y="56" font-family="Roboto,sans-serif" font-size="22" fill="white" font-weight="500">i18n / Localization</text>
+  
+  <text x="40" y="115" font-family="Roboto,sans-serif" font-size="13" fill="#334155" font-weight="500">KATEGORİ: Platform</text>
+  <line x1="40" y1="124" x2="580" y2="124" stroke="#64748b" stroke-width="2"/>
+  <text x="40" y="160" font-family="Roboto,sans-serif" font-size="13" fill="#475569" font-weight="500">Pazar muadilleri:</text>
+  
+  
+  <g transform="translate(40,340)">
+    <text x="0" y="0" font-family="Roboto,sans-serif" font-size="11" fill="#64748b">Layer-2 stack ürünü · Kernel + Scale + Layer-1 üzerine</text>
+  </g>
+</svg>

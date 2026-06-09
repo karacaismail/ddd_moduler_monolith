@@ -2,7 +2,7 @@
   "id": "s-drive",
   "title": "Drive + Collaboration Stack",
   "subtitle": "Google Drive/Dropbox + Google Docs + Notion + Frappe Drive muadili.",
-  "cluster": "stack",
+  "cluster": "content-collaboration",
   "layer": "l2",
   "order": 12,
   "icon": "ph-cloud-arrow-up",
@@ -17,6 +17,12 @@
     {
       "type": "paragraph",
       "text": "Drive (#7) ana stack. Sync engine + block storage + CRDT co-editing. Frappe Drive seviyesi yetmiyor (basit re-upload), Seafile/Dropbox seviyesi gerek."
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-drive.svg",
+      "alt": "Drive + Collaboration Stack ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "Drive + Collaboration Stack kategori şeması · pazar muadilleri + AI/TR ipuçları"
     },
     {
       "type": "feature-list",

@@ -2,7 +2,7 @@
   "id": "s-cms",
   "title": "CMS Stack",
   "subtitle": "Strapi, Sanity, Contentful, Drupal, WordPress muadili. Headless-first.",
-  "cluster": "stack",
+  "cluster": "content-collaboration",
   "layer": "l2",
   "order": 6,
   "icon": "ph-article",
@@ -17,6 +17,12 @@
     {
       "type": "paragraph",
       "text": "CMS (#5) ana stack. Headless-first; Next.js yasak olduğu için zaten doğru çatal. FastAPI Content Delivery API + Flowbite React storefront."
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-cms.svg",
+      "alt": "CMS Stack ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "CMS Stack kategori şeması · pazar muadilleri + AI/TR ipuçları"
     },
     {
       "type": "heading",

@@ -1,0 +1,82 @@
+{
+  "id": "s-community",
+  "title": "Community / Forum",
+  "subtitle": "Discourse, Circle, Open Atrium muadili. B2B topluluk",
+  "cluster": "content-collaboration",
+  "order": 3,
+  "icon": "ph-users-four",
+  "granularity": "buyuk-tas",
+  "state": "wip",
+  "tags": [
+    "content-collaboration",
+    "community",
+    "stack"
+  ],
+  "enrich": {
+    "info": "Discourse, Circle, Open Atrium muadili. B2B topluluk",
+    "detail": "**Muadiller:** Discourse, Circle, Open Atrium\n\n**Not:** B2B topluluk\n\n\n**Layer-2 stack ürünü.** Kernel + Scale + Layer-1 primitive'lerinin üstüne oturur. Kendi DocType'larını tanımlar, kendi UI'sını sunar; ama yetki/audit/event-bus framework'ten gelir.",
+    "terms": [
+      {
+        "term": "Discourse",
+        "abbrev_tr": "Pazar lideri (muadil)",
+        "meaning": "Discourse — Community / Forum kategorisinde pazar referansı.",
+        "why": "Müşteri 'X gibi, ama bizim platformumuza entegre' iletişimi için karşılaştırma noktası."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "İşletme sahibi Murat Bey (61) — Community / Forum",
+        "context": "Murat Bey 8 personelli işletmesini Discourse yönetiyor. Aylık abonelik döviz cinsi; ekip İngilizce'ye hâkim değil.",
+        "outcome": "Bu sistem TR fiyatlandırması + Türkçe arayüz + Türk muhasebe ile entegre. Murat Bey 1 günde geçiş yapıyor; ekip ilk haftada öğreniyor."
+      }
+    ],
+    "lesson": {
+      "ne": "Community / Forum kategorisinde, Discourse işlevini sunan stack ürünü.",
+      "nicin": "Müşteri Community / Forum için ayrı bir SaaS satın almak zorunda kalmasın; aynı platformda diğer ürünlerle entegre çalışsın.",
+      "nasil": "Layer-2 stack ürünü olarak Kernel + Scale + Layer-1 üstüne inşa edilir. DocType engine ile şema, otomatik REST/GraphQL, audit + tenancy ücretsiz.",
+      "nerede": "Bu cluster + ileride implementation.",
+      "ne_zaman": "Faz 2-3 (build-sequence) — kernel + scale + L1 hazır olduktan sonra.",
+      "kim": "Stack squad (bu ürün için sorumlu ekip) + AI squad (AI özellikleri için)",
+      "analoji": "AVM'deki bir mağaza: kendi vitrini, kendi ürünü; ama AVM ortak otopark, güvenlik, ısıtma sağlar. Community / Forum mağazası, framework AVM'si."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Community / Forum** — Discourse, Circle, Open Atrium muadili. B2B topluluk"
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-community.svg",
+      "alt": "Community / Forum ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "Community / Forum kategori şeması · pazar muadilleri + AI/TR ipuçları"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Muadil",
+        "Bilinme nedeni"
+      ],
+      "rows": [
+        [
+          "Discourse",
+          "Pazar lideri / referans"
+        ],
+        [
+          "Circle",
+          "Pazar lideri / referans"
+        ],
+        [
+          "Open Atrium",
+          "Pazar lideri / referans"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Özel notlar",
+      "body": "B2B topluluk"
+    }
+  ]
+}

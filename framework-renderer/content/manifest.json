@@ -8,14 +8,14 @@
       "label": "Eğitim Yolu",
       "order": 0,
       "icon": "ph-graduation-cap",
-      "description": "10 üniteli sıralı müfredat — 60+ yaş için tasarlandı. Önce buradan başla."
+      "description": "10 üniteli sıralı müfredat — 60+ yaş için tasarlandı."
     },
     {
       "id": "meta",
       "label": "Genel Harita",
       "order": 1,
       "icon": "ph-list-checks",
-      "description": "Sistemin büyük resmi: yönetici özeti + felsefe + tahta."
+      "description": "Sistemin büyük resmi."
     },
     {
       "id": "atomic",
@@ -42,41 +42,97 @@
       "icon": "ph-stack"
     },
     {
-      "id": "stack",
-      "label": "Layer 2 — Stack Ürünler",
+      "id": "core-operations",
+      "label": "Çekirdek Operasyon",
       "order": 6,
-      "icon": "ph-package"
+      "icon": "ph-storefront",
+      "description": "CRM, satış, e-ticaret, POS, stok, satınalma, üretim."
+    },
+    {
+      "id": "finance",
+      "label": "Finans & Muhasebe",
+      "order": 7,
+      "icon": "ph-coin",
+      "description": "Muhasebe, abonelik, FP&A, KDV, TR uyum."
+    },
+    {
+      "id": "supply-chain",
+      "label": "Tedarik Zinciri & Lojistik",
+      "order": 8,
+      "icon": "ph-truck",
+      "description": "WMS, TMS, fleet, satınalma, kalite, traceability."
+    },
+    {
+      "id": "hr",
+      "label": "İnsan Kaynakları",
+      "order": 9,
+      "icon": "ph-users-three",
+      "description": "HRMS, payroll, ATS, performans, LMS."
+    },
+    {
+      "id": "customer-revenue",
+      "label": "Müşteri & Gelir",
+      "order": 10,
+      "icon": "ph-handshake",
+      "description": "Helpdesk, pazarlama, CLM, CPQ, sadakat, PIM."
+    },
+    {
+      "id": "content-collaboration",
+      "label": "İçerik & İşbirliği",
+      "order": 11,
+      "icon": "ph-folder-notch",
+      "description": "CMS, drive, wiki, social, project, event, survey."
+    },
+    {
+      "id": "data-intelligence",
+      "label": "Veri & Zeka (AI-first)",
+      "order": 12,
+      "icon": "ph-brain",
+      "description": "AI Copilot, RAG, BI, ETL, observability, predictive."
+    },
+    {
+      "id": "platform-horizontal",
+      "label": "Platform & Yatay",
+      "order": 13,
+      "icon": "ph-puzzle-piece",
+      "description": "Studio, BPM, iPaaS, IAM, Audit, i18n."
+    },
+    {
+      "id": "vertical",
+      "label": "Dikey / Sektörel",
+      "order": 14,
+      "icon": "ph-buildings",
+      "description": "Emlak (arsam), eğitim, sağlık, restoran (e-menum), Segika."
     },
     {
       "id": "crosscut",
       "label": "Çapraz-Kesen",
-      "order": 7,
+      "order": 15,
       "icon": "ph-arrows-out"
     },
     {
       "id": "dx",
-      "label": "Plugin DX + Services",
-      "order": 8,
-      "icon": "ph-puzzle-piece"
+      "label": "Plugin DX",
+      "order": 16,
+      "icon": "ph-wrench"
     },
     {
       "id": "build",
       "label": "Build & Deploy",
-      "order": 9,
+      "order": 17,
       "icon": "ph-flag-banner"
     },
     {
       "id": "frontend",
       "label": "Frontend Tech-Stack",
-      "order": 10,
+      "order": 18,
       "icon": "ph-device-mobile"
     },
     {
       "id": "sus",
-      "label": "Sürdürülebilirlik — 50 yıl yaşam",
-      "order": 11,
-      "icon": "ph-infinity",
-      "description": "Olgun mimariyi onlarca yıl yaşatan mekanizmalar."
+      "label": "Sürdürülebilirlik — 50 yıl",
+      "order": 19,
+      "icon": "ph-infinity"
     }
   ],
   "clusters": [
@@ -556,82 +612,281 @@
       "title": "Arama Derinleştirme"
     },
     {
+      "id": "s-crm",
+      "file": "clusters/140-s-crm.json",
+      "cluster": "core-operations",
+      "order": 1,
+      "title": "CRM"
+    },
+    {
+      "id": "s-sales",
+      "file": "clusters/141-s-sales.json",
+      "cluster": "core-operations",
+      "order": 2,
+      "title": "Sales / Order"
+    },
+    {
       "file": "clusters/23-stack-commerce.json",
       "id": "s-commerce",
       "title": "Commerce Stack",
-      "cluster": "stack",
-      "order": 1,
-      "layer": "l2"
-    },
-    {
-      "file": "clusters/24-stack-accounting.json",
-      "id": "s-accounting",
-      "title": "Accounting + Finans Stack (TR)",
-      "cluster": "stack",
-      "order": 2,
-      "layer": "l2"
-    },
-    {
-      "file": "clusters/25-stack-hrms.json",
-      "id": "s-hrms",
-      "title": "HRMS Stack (TR)",
-      "cluster": "stack",
+      "cluster": "core-operations",
       "order": 3,
       "layer": "l2"
     },
     {
-      "file": "clusters/26-stack-pms.json",
-      "id": "s-pms",
-      "title": "PMS Stack",
-      "cluster": "stack",
+      "id": "s-pos",
+      "file": "clusters/143-s-pos.json",
+      "cluster": "core-operations",
       "order": 4,
-      "layer": "l2"
+      "title": "Point of Sale"
     },
     {
-      "file": "clusters/27-stack-lms.json",
-      "id": "s-lms",
-      "title": "LMS Stack",
-      "cluster": "stack",
+      "id": "s-inventory",
+      "file": "clusters/144-s-inventory.json",
+      "cluster": "core-operations",
       "order": 5,
-      "layer": "l2"
+      "title": "Inventory / Stock"
     },
     {
-      "file": "clusters/28-stack-cms.json",
-      "id": "s-cms",
-      "title": "CMS Stack",
-      "cluster": "stack",
+      "id": "s-purchase",
+      "file": "clusters/145-s-purchase.json",
+      "cluster": "core-operations",
       "order": 6,
-      "layer": "l2"
-    },
-    {
-      "file": "clusters/29-stack-social.json",
-      "id": "s-social",
-      "title": "Social Stack",
-      "cluster": "stack",
-      "order": 7,
-      "layer": "l2"
+      "title": "Purchase"
     },
     {
       "file": "clusters/30-stack-mrp.json",
       "id": "s-mrp",
       "title": "MRP / Manufacturing Stack",
-      "cluster": "stack",
+      "cluster": "core-operations",
       "order": 8,
       "layer": "l2"
     },
     {
-      "file": "clusters/31-stack-ai.json",
-      "id": "s-ai",
-      "title": "AI Stack",
-      "cluster": "stack",
-      "order": 9,
+      "id": "s-revenue-recognition",
+      "file": "clusters/146-s-revenue-recognition.json",
+      "cluster": "finance",
+      "order": 1,
+      "title": "Revenue Recognition"
+    },
+    {
+      "file": "clusters/24-stack-accounting.json",
+      "id": "s-accounting",
+      "title": "Accounting + Finans Stack (TR)",
+      "cluster": "finance",
+      "order": 2,
       "layer": "l2"
+    },
+    {
+      "id": "s-subscription-analytics",
+      "file": "clusters/147-s-subscription-analytics.json",
+      "cluster": "finance",
+      "order": 2,
+      "title": "Subscription Analytics"
+    },
+    {
+      "id": "s-fpa",
+      "file": "clusters/148-s-fpa.json",
+      "cluster": "finance",
+      "order": 3,
+      "title": "Budgeting & Forecast (FP&A)"
+    },
+    {
+      "id": "s-expenses",
+      "file": "clusters/149-s-expenses.json",
+      "cluster": "finance",
+      "order": 4,
+      "title": "Expenses & Travel"
+    },
+    {
+      "id": "s-fixed-assets",
+      "file": "clusters/150-s-fixed-assets.json",
+      "cluster": "finance",
+      "order": 5,
+      "title": "Fixed Assets / Amortization"
+    },
+    {
+      "id": "s-treasury",
+      "file": "clusters/151-s-treasury.json",
+      "cluster": "finance",
+      "order": 6,
+      "title": "Cash Flow & Treasury"
+    },
+    {
+      "id": "s-consolidation",
+      "file": "clusters/152-s-consolidation.json",
+      "cluster": "finance",
+      "order": 7,
+      "title": "Multi-currency Consolidation"
+    },
+    {
+      "id": "s-tax-compliance",
+      "file": "clusters/153-s-tax-compliance.json",
+      "cluster": "finance",
+      "order": 8,
+      "title": "Tax Compliance / e-Fatura"
+    },
+    {
+      "id": "s-billing",
+      "file": "clusters/97-s-billing.json",
+      "cluster": "finance",
+      "order": 13,
+      "title": "Billing + Subscription"
+    },
+    {
+      "id": "s-wms",
+      "file": "clusters/154-s-wms.json",
+      "cluster": "supply-chain",
+      "order": 1,
+      "title": "Warehouse Management (WMS)"
+    },
+    {
+      "id": "s-tms",
+      "file": "clusters/155-s-tms.json",
+      "cluster": "supply-chain",
+      "order": 2,
+      "title": "Transport Management (TMS)"
+    },
+    {
+      "id": "s-fleet",
+      "file": "clusters/156-s-fleet.json",
+      "cluster": "supply-chain",
+      "order": 3,
+      "title": "Fleet Management"
+    },
+    {
+      "id": "s-demand-planning",
+      "file": "clusters/157-s-demand-planning.json",
+      "cluster": "supply-chain",
+      "order": 4,
+      "title": "Demand Planning / S&OP"
+    },
+    {
+      "id": "s-procurement",
+      "file": "clusters/158-s-procurement.json",
+      "cluster": "supply-chain",
+      "order": 5,
+      "title": "Procurement / Sourcing / RFQ"
+    },
+    {
+      "id": "s-quality",
+      "file": "clusters/159-s-quality.json",
+      "cluster": "supply-chain",
+      "order": 6,
+      "title": "Quality Management (QC/QA)"
+    },
+    {
+      "id": "s-cmms",
+      "file": "clusters/160-s-cmms.json",
+      "cluster": "supply-chain",
+      "order": 7,
+      "title": "Maintenance / CMMS"
+    },
+    {
+      "id": "s-traceability",
+      "file": "clusters/161-s-traceability.json",
+      "cluster": "supply-chain",
+      "order": 8,
+      "title": "Traceability"
+    },
+    {
+      "id": "s-fsm",
+      "file": "clusters/162-s-fsm.json",
+      "cluster": "supply-chain",
+      "order": 9,
+      "title": "Field Service"
+    },
+    {
+      "id": "s-payroll",
+      "file": "clusters/163-s-payroll.json",
+      "cluster": "hr",
+      "order": 1,
+      "title": "Payroll"
+    },
+    {
+      "id": "s-ats",
+      "file": "clusters/164-s-ats.json",
+      "cluster": "hr",
+      "order": 2,
+      "title": "Recruitment / ATS"
+    },
+    {
+      "file": "clusters/25-stack-hrms.json",
+      "id": "s-hrms",
+      "title": "HRMS Stack (TR)",
+      "cluster": "hr",
+      "order": 3,
+      "layer": "l2"
+    },
+    {
+      "id": "s-onboarding",
+      "file": "clusters/165-s-onboarding.json",
+      "cluster": "hr",
+      "order": 3,
+      "title": "Onboarding"
+    },
+    {
+      "id": "s-performance",
+      "file": "clusters/166-s-performance.json",
+      "cluster": "hr",
+      "order": 4,
+      "title": "Performance & Competency"
+    },
+    {
+      "file": "clusters/27-stack-lms.json",
+      "id": "s-lms",
+      "title": "LMS Stack",
+      "cluster": "hr",
+      "order": 5,
+      "layer": "l2"
+    },
+    {
+      "id": "s-workforce",
+      "file": "clusters/167-s-workforce.json",
+      "cluster": "hr",
+      "order": 5,
+      "title": "Shift / Workforce Planning"
+    },
+    {
+      "id": "s-clm",
+      "file": "clusters/168-s-clm.json",
+      "cluster": "customer-revenue",
+      "order": 1,
+      "title": "Contract Management (CLM)"
+    },
+    {
+      "id": "s-cpq",
+      "file": "clusters/169-s-cpq.json",
+      "cluster": "customer-revenue",
+      "order": 2,
+      "title": "CPQ"
+    },
+    {
+      "id": "s-loyalty",
+      "file": "clusters/170-s-loyalty.json",
+      "cluster": "customer-revenue",
+      "order": 3,
+      "title": "Loyalty & Referral"
+    },
+    {
+      "id": "s-pim",
+      "file": "clusters/171-s-pim.json",
+      "cluster": "customer-revenue",
+      "order": 4,
+      "title": "PIM"
+    },
+    {
+      "id": "s-marketplace",
+      "file": "clusters/172-s-marketplace.json",
+      "cluster": "customer-revenue",
+      "order": 5,
+      "title": "Marketplace Management"
     },
     {
       "file": "clusters/32-stack-marketing.json",
       "id": "s-marketing",
       "title": "Marketing + CRM Stack",
-      "cluster": "stack",
+      "cluster": "customer-revenue",
       "order": 10,
       "layer": "l2"
     },
@@ -639,24 +894,224 @@
       "file": "clusters/33-stack-helpdesk.json",
       "id": "s-helpdesk",
       "title": "Helpdesk + Knowledge Stack",
-      "cluster": "stack",
+      "cluster": "customer-revenue",
       "order": 11,
+      "layer": "l2"
+    },
+    {
+      "id": "s-dms",
+      "file": "clusters/173-s-dms.json",
+      "cluster": "content-collaboration",
+      "order": 1,
+      "title": "Document Management (DMS)"
+    },
+    {
+      "id": "s-wiki",
+      "file": "clusters/174-s-wiki.json",
+      "cluster": "content-collaboration",
+      "order": 2,
+      "title": "Wiki / Knowledge Base"
+    },
+    {
+      "id": "s-community",
+      "file": "clusters/175-s-community.json",
+      "cluster": "content-collaboration",
+      "order": 3,
+      "title": "Community / Forum"
+    },
+    {
+      "file": "clusters/26-stack-pms.json",
+      "id": "s-pms",
+      "title": "PMS Stack",
+      "cluster": "content-collaboration",
+      "order": 4,
+      "layer": "l2"
+    },
+    {
+      "id": "s-event",
+      "file": "clusters/176-s-event.json",
+      "cluster": "content-collaboration",
+      "order": 4,
+      "title": "Event Management"
+    },
+    {
+      "id": "s-survey",
+      "file": "clusters/177-s-survey.json",
+      "cluster": "content-collaboration",
+      "order": 5,
+      "title": "Survey / Feedback"
+    },
+    {
+      "file": "clusters/28-stack-cms.json",
+      "id": "s-cms",
+      "title": "CMS Stack",
+      "cluster": "content-collaboration",
+      "order": 6,
+      "layer": "l2"
+    },
+    {
+      "file": "clusters/29-stack-social.json",
+      "id": "s-social",
+      "title": "Social Stack",
+      "cluster": "content-collaboration",
+      "order": 7,
       "layer": "l2"
     },
     {
       "file": "clusters/34-stack-drive.json",
       "id": "s-drive",
       "title": "Drive + Collaboration Stack",
-      "cluster": "stack",
+      "cluster": "content-collaboration",
       "order": 12,
       "layer": "l2"
     },
     {
-      "id": "s-billing",
-      "file": "clusters/97-s-billing.json",
-      "cluster": "stack",
-      "order": 13,
-      "title": "Billing + Subscription"
+      "id": "s-rag",
+      "file": "clusters/178-s-rag.json",
+      "cluster": "data-intelligence",
+      "order": 1,
+      "title": "Enterprise RAG Assistant"
+    },
+    {
+      "id": "s-bi",
+      "file": "clusters/179-s-bi.json",
+      "cluster": "data-intelligence",
+      "order": 2,
+      "title": "BI / Dashboard"
+    },
+    {
+      "id": "s-etl",
+      "file": "clusters/180-s-etl.json",
+      "cluster": "data-intelligence",
+      "order": 3,
+      "title": "Data Pipeline / ETL"
+    },
+    {
+      "id": "s-observability",
+      "file": "clusters/181-s-observability.json",
+      "cluster": "data-intelligence",
+      "order": 4,
+      "title": "Observability"
+    },
+    {
+      "id": "s-predictive",
+      "file": "clusters/182-s-predictive.json",
+      "cluster": "data-intelligence",
+      "order": 5,
+      "title": "Predictive Analytics"
+    },
+    {
+      "id": "s-doc-matching",
+      "file": "clusters/183-s-doc-matching.json",
+      "cluster": "data-intelligence",
+      "order": 6,
+      "title": "Document Classification & Matching"
+    },
+    {
+      "id": "s-conversational",
+      "file": "clusters/184-s-conversational.json",
+      "cluster": "data-intelligence",
+      "order": 7,
+      "title": "Conversational Commerce / Chatbot"
+    },
+    {
+      "file": "clusters/31-stack-ai.json",
+      "id": "s-ai",
+      "title": "AI Stack",
+      "cluster": "data-intelligence",
+      "order": 9,
+      "layer": "l2"
+    },
+    {
+      "id": "s-studio",
+      "file": "clusters/185-s-studio.json",
+      "cluster": "platform-horizontal",
+      "order": 1,
+      "title": "Low-code Studio"
+    },
+    {
+      "id": "s-bpm",
+      "file": "clusters/186-s-bpm.json",
+      "cluster": "platform-horizontal",
+      "order": 2,
+      "title": "Workflow / BPM Engine"
+    },
+    {
+      "id": "s-ipaas",
+      "file": "clusters/187-s-ipaas.json",
+      "cluster": "platform-horizontal",
+      "order": 3,
+      "title": "Integration Hub (iPaaS)"
+    },
+    {
+      "id": "s-iam",
+      "file": "clusters/188-s-iam.json",
+      "cluster": "platform-horizontal",
+      "order": 4,
+      "title": "Identity & Access (IAM)"
+    },
+    {
+      "id": "s-audit",
+      "file": "clusters/189-s-audit.json",
+      "cluster": "platform-horizontal",
+      "order": 5,
+      "title": "Audit / Compliance"
+    },
+    {
+      "id": "s-i18n",
+      "file": "clusters/190-s-i18n.json",
+      "cluster": "platform-horizontal",
+      "order": 6,
+      "title": "i18n / Localization"
+    },
+    {
+      "id": "s-property",
+      "file": "clusters/191-s-property.json",
+      "cluster": "vertical",
+      "order": 1,
+      "title": "Real Estate / Asset Mgmt"
+    },
+    {
+      "id": "s-education",
+      "file": "clusters/192-s-education.json",
+      "cluster": "vertical",
+      "order": 2,
+      "title": "School Management"
+    },
+    {
+      "id": "s-clinic",
+      "file": "clusters/193-s-clinic.json",
+      "cluster": "vertical",
+      "order": 3,
+      "title": "Health / Clinic"
+    },
+    {
+      "id": "s-membership",
+      "file": "clusters/194-s-membership.json",
+      "cluster": "vertical",
+      "order": 4,
+      "title": "Membership / Association"
+    },
+    {
+      "id": "s-restaurant",
+      "file": "clusters/195-s-restaurant.json",
+      "cluster": "vertical",
+      "order": 5,
+      "title": "Restaurant / F&B"
+    },
+    {
+      "id": "s-incentive",
+      "file": "clusters/196-s-incentive.json",
+      "cluster": "vertical",
+      "order": 6,
+      "title": "SGK Teşvik Otomasyonu"
+    },
+    {
+      "id": "s-legaltech",
+      "file": "clusters/197-s-legaltech.json",
+      "cluster": "vertical",
+      "order": 7,
+      "title": "Legal Practice Management"
     },
     {
       "file": "clusters/35-crosscut-tr.json",

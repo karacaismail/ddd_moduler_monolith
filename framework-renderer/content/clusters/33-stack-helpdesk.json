@@ -2,7 +2,7 @@
   "id": "s-helpdesk",
   "title": "Helpdesk + Knowledge Stack",
   "subtitle": "Gorgias, Zendesk, Frappe Helpdesk, Confluence muadili.",
-  "cluster": "stack",
+  "cluster": "customer-revenue",
   "layer": "l2",
   "order": 11,
   "icon": "ph-headset",
@@ -14,6 +14,12 @@
     "wiki"
   ],
   "blocks": [
+    {
+      "type": "image",
+      "src": "/assets/stack/s-helpdesk.svg",
+      "alt": "Helpdesk + Knowledge Stack ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "Helpdesk + Knowledge Stack kategori şeması · pazar muadilleri + AI/TR ipuçları"
+    },
     {
       "type": "feature-list",
       "items": [

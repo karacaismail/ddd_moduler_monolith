@@ -2,9 +2,9 @@
   "id": "s-commerce",
   "title": "Commerce Stack",
   "subtitle": "Shopify, WooCommerce, Odoo Sale, Medusa muadili. 5 üründe merkez.",
-  "cluster": "stack",
+  "cluster": "core-operations",
   "layer": "l2",
-  "order": 1,
+  "order": 3,
   "icon": "ph-shopping-cart",
   "badge": "Layer 2 Stack #1",
   "tags": [
@@ -17,6 +17,12 @@
     {
       "type": "paragraph",
       "text": "Sahibinden (#1), Alibaba (#2), AliExpress (#3), Amazon (#4), E-ticaret SaaS (#12) — merkez stack. Her ürünün talepleri farklı olduğundan modular: gerekmeyen alt-modüller install edilmez."
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-commerce.svg",
+      "alt": "Commerce Stack ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "Commerce Stack kategori şeması · pazar muadilleri + AI/TR ipuçları"
     },
     {
       "type": "heading",

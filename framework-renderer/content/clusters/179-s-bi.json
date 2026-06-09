@@ -1,0 +1,85 @@
+{
+  "id": "s-bi",
+  "title": "BI / Dashboard",
+  "subtitle": "Metabase, Looker muadili. AI: text-to-SQL, doğal dil sorgu.",
+  "cluster": "data-intelligence",
+  "order": 2,
+  "icon": "ph-chart-pie",
+  "granularity": "buyuk-tas",
+  "state": "wip",
+  "tags": [
+    "data-intelligence",
+    "bi",
+    "stack",
+    "ai-native"
+  ],
+  "enrich": {
+    "info": "Metabase, Looker muadili. AI: text-to-SQL, doğal dil sorgu.",
+    "detail": "**Muadiller:** Metabase, Looker\n\n**AI özellikler:** text-to-SQL, doğal dil sorgu\n\n\n**Layer-2 stack ürünü.** Kernel + Scale + Layer-1 primitive'lerinin üstüne oturur. Kendi DocType'larını tanımlar, kendi UI'sını sunar; ama yetki/audit/event-bus framework'ten gelir.",
+    "terms": [
+      {
+        "term": "Metabase",
+        "abbrev_tr": "Pazar lideri (muadil)",
+        "meaning": "Metabase — BI / Dashboard kategorisinde pazar referansı.",
+        "why": "Müşteri 'X gibi, ama bizim platformumuza entegre' iletişimi için karşılaştırma noktası."
+      },
+      {
+        "term": "AI özellik",
+        "abbrev_tr": "Yapay zekâ desteği",
+        "meaning": "text-to-SQL, doğal dil sorgu",
+        "why": "AI-first iddiası — diğer muadillerden farklılaşma."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "İşletme sahibi Murat Bey (61) — BI / Dashboard",
+        "context": "Murat Bey 8 personelli işletmesini Metabase yönetiyor. Aylık abonelik döviz cinsi; ekip İngilizce'ye hâkim değil.",
+        "outcome": "Bu sistem TR fiyatlandırması + Türkçe arayüz + Türk muhasebe ile entegre. Murat Bey 1 günde geçiş yapıyor; ekip ilk haftada öğreniyor."
+      }
+    ],
+    "lesson": {
+      "ne": "BI / Dashboard kategorisinde, Metabase işlevini sunan stack ürünü.",
+      "nicin": "Müşteri BI / Dashboard için ayrı bir SaaS satın almak zorunda kalmasın; aynı platformda diğer ürünlerle entegre çalışsın.",
+      "nasil": "Layer-2 stack ürünü olarak Kernel + Scale + Layer-1 üstüne inşa edilir. DocType engine ile şema, otomatik REST/GraphQL, audit + tenancy ücretsiz.",
+      "nerede": "Bu cluster + ileride implementation.",
+      "ne_zaman": "Faz 2-3 (build-sequence) — kernel + scale + L1 hazır olduktan sonra.",
+      "kim": "Stack squad (bu ürün için sorumlu ekip) + AI squad (AI özellikleri için)",
+      "analoji": "AVM'deki bir mağaza: kendi vitrini, kendi ürünü; ama AVM ortak otopark, güvenlik, ısıtma sağlar. BI / Dashboard mağazası, framework AVM'si."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**BI / Dashboard** — Metabase, Looker muadili. AI: text-to-SQL, doğal dil sorgu."
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-bi.svg",
+      "alt": "BI / Dashboard ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "BI / Dashboard kategori şeması · pazar muadilleri + AI/TR ipuçları"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Muadil",
+        "Bilinme nedeni"
+      ],
+      "rows": [
+        [
+          "Metabase",
+          "Pazar lideri / referans"
+        ],
+        [
+          "Looker",
+          "Pazar lideri / referans"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "AI-first özellikler",
+      "body": "text-to-SQL, doğal dil sorgu"
+    }
+  ]
+}

@@ -147,6 +147,12 @@
       "variant": "critical",
       "label": "🛑 Sürdürülebilirlik anti-pattern'leri (yeni eklendi)",
       "body": "Aşağıdaki 3 tuzak küme 1'in mevcut anti-pattern listesine eklendi (kaynak: küme 2 sürdürülebilirlik araştırması):\n\n**1) Zorlanmayan modül sınırı (Shopify dersi).** \"Bu modüle dokunma\" diye yazılı kural koymak ama CI'da kontrol etmemek. 6 ay içinde sosyal anlaşma çürür, monolit çorba olur. Çözüm: {{ref:sus-boundaries}}.\n\n**2) Upgrade'i otomatikleştirmeden uzun-ömür (SAP fosilleşmesi).** \"Sürümümüzü sabit tutun, sonra düzeltiriz\" zihniyeti. Yıllar geçtikçe ekosistem dağılır, yeni özelleştirme imkansızlaşır, sistem fosilleşir. Çözüm: {{ref:sus-codemod}} (Drupal Rector + AI codemod).\n\n**3) Big-bang rewrite (Drupal 8 travması).** Eski sürümü tamamen at, yeniden yaz. Tüm plugin ekosistemi kırılır, ekosistem darmadağın olur. Drupal 8 geçişinde bu yapıldı; D9+ dersi: kademeli deprecation + codemod. Çözüm: {{ref:sus-bc-policy}} + {{ref:sus-versioning}}."
+    },
+    {
+      "type": "callout",
+      "variant": "critical",
+      "label": "Tek squad 70 ürün ANTI-PATTERN",
+      "body": "70+ ürün kataloğu 1-3 kişilik tek squad ile dilemmadır. Her ürünün ortalama bakım yükü ayda 2-5 gün. 70 ürün × 3 gün = 210 gün-ay = en az 10 FTE bakım yalnız başına. Faz sıralı build + her stack için squad ataması zorunlu. Tek seferde tüm 70'i deneyerek başlamak = hiçbirini bitirmemek."
     }
   ],
   "enrich": {

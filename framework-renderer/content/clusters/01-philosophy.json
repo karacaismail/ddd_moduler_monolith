@@ -245,6 +245,12 @@
       "variant": "info",
       "label": "⚙️ Felsefenin makinesı",
       "body": "Yukarıda 7 ana ilke yazıldı — modüler monolit, metadata-driven, AI-first, polyglot, scale-primitive, Türkiye uyumu, açık gerilimler. Ama **ilke = yazı = sosyal söz**; sosyal söz çürür.\n\nİlkeyi yaşatan **makinedir**: CI sınır kapısı, BC sözleşme guard'ı, codemod döngüsü. Bu makineler {{ref:sus-overview}} grubunda işlenir. \"Modüler monolit\" ilkesinin kanıtlayıcısı {{ref:sus-boundaries}}; \"AI-first\" ilkesinin güvenlik katmanı {{ref:sus-actions}}."
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "label": "70+ ürün katalogu",
+      "body": "Modüler monolith felsefesi 9 ürün kategorisini taşır: Çekirdek Op, Finans, Tedarik, HR, Müşteri, İçerik, Veri-Zeka, Platform, Dikey TR. Tek kernel + tek event bus + tek auth. Her ürün ayrı satılabilir; ortak altyapı paylaşır."
     }
   ],
   "enrich": {

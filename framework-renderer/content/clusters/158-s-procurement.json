@@ -1,0 +1,78 @@
+{
+  "id": "s-procurement",
+  "title": "Procurement / Sourcing / RFQ",
+  "subtitle": "Coupa, SAP Ariba muadili. Tedarikçi portalı + ihale",
+  "cluster": "supply-chain",
+  "order": 5,
+  "icon": "ph-clipboard-text",
+  "granularity": "buyuk-tas",
+  "state": "wip",
+  "tags": [
+    "supply-chain",
+    "procurement",
+    "stack"
+  ],
+  "enrich": {
+    "info": "Coupa, SAP Ariba muadili. Tedarikçi portalı + ihale",
+    "detail": "**Muadiller:** Coupa, SAP Ariba\n\n**Not:** Tedarikçi portalı + ihale\n\n\n**Layer-2 stack ürünü.** Kernel + Scale + Layer-1 primitive'lerinin üstüne oturur. Kendi DocType'larını tanımlar, kendi UI'sını sunar; ama yetki/audit/event-bus framework'ten gelir.",
+    "terms": [
+      {
+        "term": "Coupa",
+        "abbrev_tr": "Pazar lideri (muadil)",
+        "meaning": "Coupa — Procurement / Sourcing / RFQ kategorisinde pazar referansı.",
+        "why": "Müşteri 'X gibi, ama bizim platformumuza entegre' iletişimi için karşılaştırma noktası."
+      }
+    ],
+    "stories": [
+      {
+        "persona": "İşletme sahibi Murat Bey (61) — Procurement / Sourcing / RFQ",
+        "context": "Murat Bey 8 personelli işletmesini Coupa yönetiyor. Aylık abonelik döviz cinsi; ekip İngilizce'ye hâkim değil.",
+        "outcome": "Bu sistem TR fiyatlandırması + Türkçe arayüz + Türk muhasebe ile entegre. Murat Bey 1 günde geçiş yapıyor; ekip ilk haftada öğreniyor."
+      }
+    ],
+    "lesson": {
+      "ne": "Procurement / Sourcing / RFQ kategorisinde, Coupa işlevini sunan stack ürünü.",
+      "nicin": "Müşteri Procurement / Sourcing / RFQ için ayrı bir SaaS satın almak zorunda kalmasın; aynı platformda diğer ürünlerle entegre çalışsın.",
+      "nasil": "Layer-2 stack ürünü olarak Kernel + Scale + Layer-1 üstüne inşa edilir. DocType engine ile şema, otomatik REST/GraphQL, audit + tenancy ücretsiz.",
+      "nerede": "Bu cluster + ileride implementation.",
+      "ne_zaman": "Faz 2-3 (build-sequence) — kernel + scale + L1 hazır olduktan sonra.",
+      "kim": "Stack squad (bu ürün için sorumlu ekip) + AI squad (AI özellikleri için)",
+      "analoji": "AVM'deki bir mağaza: kendi vitrini, kendi ürünü; ama AVM ortak otopark, güvenlik, ısıtma sağlar. Procurement / Sourcing / RFQ mağazası, framework AVM'si."
+    }
+  },
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "**Procurement / Sourcing / RFQ** — Coupa, SAP Ariba muadili. Tedarikçi portalı + ihale"
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-procurement.svg",
+      "alt": "Procurement / Sourcing / RFQ ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "Procurement / Sourcing / RFQ kategori şeması · pazar muadilleri + AI/TR ipuçları"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Muadil",
+        "Bilinme nedeni"
+      ],
+      "rows": [
+        [
+          "Coupa",
+          "Pazar lideri / referans"
+        ],
+        [
+          "SAP Ariba",
+          "Pazar lideri / referans"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "label": "Özel notlar",
+      "body": "Tedarikçi portalı + ihale"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
   "id": "s-marketing",
   "title": "Marketing + CRM Stack",
   "subtitle": "Klaviyo + Salesforce CRM muadili. Lead, pipeline, campaign, automation.",
-  "cluster": "stack",
+  "cluster": "customer-revenue",
   "layer": "l2",
   "order": 10,
   "icon": "ph-megaphone",
@@ -14,6 +14,12 @@
     "automation"
   ],
   "blocks": [
+    {
+      "type": "image",
+      "src": "/assets/stack/s-marketing.svg",
+      "alt": "Marketing + CRM Stack ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "Marketing + CRM Stack kategori şeması · pazar muadilleri + AI/TR ipuçları"
+    },
     {
       "type": "feature-list",
       "items": [

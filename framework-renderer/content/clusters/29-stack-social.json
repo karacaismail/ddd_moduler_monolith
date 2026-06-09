@@ -2,7 +2,7 @@
   "id": "s-social",
   "title": "Social Stack",
   "subtitle": "Twitter, Threads, Instagram, Facebook muadili. Scale primitives sınavı.",
-  "cluster": "stack",
+  "cluster": "content-collaboration",
   "layer": "l2",
   "order": 7,
   "icon": "ph-users-three",
@@ -26,6 +26,12 @@
           "analoji": "Bakkalın rafındaki her eşya."
         }
       }
+    },
+    {
+      "type": "image",
+      "src": "/assets/stack/s-social.svg",
+      "alt": "Social Stack ürünü — kategori, muadiller ve katman pozisyonu",
+      "caption": "Social Stack kategori şeması · pazar muadilleri + AI/TR ipuçları"
     },
     {
       "type": "heading",
