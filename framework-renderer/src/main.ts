@@ -482,13 +482,17 @@ async function boot(): Promise<void> {
     mountCompareView(contentEl, loader, renderer);
   } else {
     // 9b. Normal ilk render
-    // PAGE-PER-CLUSTER MODE: hash varsa sadece o cluster'ı render et (tek sayfa = tek cluster).
-    // hash yoksa filter-cluster kullanılır; yoksa tüm cluster'lar (içindekiler tablosu modu).
-    const initialCluster = initialRoute.filterCluster ?? initialRoute.hash;
-    const isClusterRoute = initialCluster && loader.getCluster(initialCluster);
+    // GROUP-SCOPED MODE: hash bir cluster ID ise, o cluster'ın grubuna ait TÜM cluster'lar render edilir.
+    // (Sidebar accordion açık + içinde aktif item → content alanında sadece o grubun cluster'ları.)
+    // filter.cluster aslında GRUP ID ile filtreler (renderer'da c.cluster === filter.cluster).
+    let initialGroupId = initialRoute.filterCluster;
+    if (!initialGroupId && initialRoute.hash) {
+      const c = loader.getCluster(initialRoute.hash);
+      if (c) initialGroupId = c.cluster; // cluster.cluster = group ID
+    }
     applyFilter({
       layer: initialRoute.filterLayer,
-      cluster: isClusterRoute ? initialCluster : initialRoute.filterCluster,
+      cluster: initialGroupId,
     });
   }
 
@@ -568,25 +572,30 @@ async function boot(): Promise<void> {
     if (state.hash && state.hash !== lastHash) {
       closeDetail();
       lastHash = state.hash;
-      // PAGE-PER-CLUSTER MODE: hash bir cluster ID'si ise SADECE o cluster'ı render et.
-      // (Tek cluster sayfa = uzun-scroll yok; sidebar bağımsız.)
+      // GROUP-SCOPED MODE: hash bir cluster ID'si ise, o cluster'ın grubuna ait TÜM cluster'lar
+      // content'te render edilir; diğer gruplar görünmez. Tıklanan cluster expand olur + scroll.
       const targetCluster = loader.getCluster(state.hash);
       if (targetCluster) {
-        applyFilter({ cluster: state.hash });
-        // İçeriği üste scroll et (yeni sayfa hissi); window scroll, sidebar etkilenmez.
-        window.scrollTo({ top: 0, behavior: 'auto' });
+        const groupId = targetCluster.cluster;
+        // Aynı grup zaten render edilmiş mi? (Yeniden render maliyetinden kaçın.)
+        const alreadyOnGroup = document.getElementById(state.hash) !== null;
+        if (!alreadyOnGroup) {
+          applyFilter({ cluster: groupId });
+        }
+        // Tıklanan cluster'ı aç + ona scroll (üste değil; grup içi navigasyon)
+        setTimeout(() => {
+          expandCluster(state.hash!);
+          scrollToHash(state.hash!);
+        }, alreadyOnGroup ? 0 : 30);
         return;
       }
-      // hash bir cluster ID değil → cluster içi anchor (kv-row, heading, vs.) olabilir.
-      // Parent cluster'ı bul, gerekirse onu render et, sonra anchor'a scroll.
+      // hash bir cluster ID değil → cluster içi anchor.
       const targetEl = document.getElementById(state.hash);
       const parentCluster = targetEl?.closest<HTMLElement>('.cluster');
       if (parentCluster) {
-        // Eğer parent cluster zaten render edilmiş (current page) ise sadece anchor scroll.
         expandCluster(parentCluster.id);
         setTimeout(() => scrollToHash(state.hash!), 30);
       } else if (state.hash) {
-        // Anchor parent cluster bulunamadı (henüz render değil) → orphan anchor; üste scroll
         setTimeout(() => scrollToHash(state.hash!), 30);
       }
     }
