@@ -2,7 +2,7 @@ import { ContentLoader } from '@/engine/loader';
 import { BlockRegistry } from '@/engine/registry';
 import { Renderer } from '@/engine/renderer';
 import { SearchIndex } from '@/engine/search';
-import { buildToc, renderTocElement, setupScrollSpy } from '@/engine/toc';
+import { buildToc, renderTocElement } from '@/engine/toc';
 import { onRouteChange, parseRoute, scrollToHash, updateQuery } from '@/engine/router';
 
 import { registerAllBlocks } from '@/blocks';
@@ -437,9 +437,8 @@ async function boot(): Promise<void> {
       },
       opts.pushState ? 'push' : 'replace',
     );
-    // Re-setup scroll spy after re-render
-    const tocEl = document.getElementById('toc');
-    if (tocEl) setupScrollSpy(tocEl);
+    // PAGE-PER-CLUSTER: scroll-spy kapalı (tek cluster sayfada; sidebar bağımsız scroll).
+    // void setupScrollSpy — eski uzun-scroll moduna geri dönülürse uncomment.
     // FILTER APPLIED → ilgili cluster'ları auto-expand (kullanıcı içerik görsün)
     if (isFiltered) {
       contentEl.querySelectorAll<HTMLElement>('.cluster').forEach((el) => {
@@ -483,9 +482,13 @@ async function boot(): Promise<void> {
     mountCompareView(contentEl, loader, renderer);
   } else {
     // 9b. Normal ilk render
+    // PAGE-PER-CLUSTER MODE: hash varsa sadece o cluster'ı render et (tek sayfa = tek cluster).
+    // hash yoksa filter-cluster kullanılır; yoksa tüm cluster'lar (içindekiler tablosu modu).
+    const initialCluster = initialRoute.filterCluster ?? initialRoute.hash;
+    const isClusterRoute = initialCluster && loader.getCluster(initialCluster);
     applyFilter({
       layer: initialRoute.filterLayer,
-      cluster: initialRoute.filterCluster,
+      cluster: isClusterRoute ? initialCluster : initialRoute.filterCluster,
     });
   }
 
@@ -565,29 +568,27 @@ async function boot(): Promise<void> {
     if (state.hash && state.hash !== lastHash) {
       closeDetail();
       lastHash = state.hash;
-    }
-    if (state.hash) {
-      // Hedef cluster DOM'da yok mu? (Filter aktif olabilir) → filtreyi temizle, re-render
-      const exists = document.getElementById(state.hash);
-      if (!exists) {
-        const targetCluster = loader.getCluster(state.hash);
-        if (targetCluster) {
-          // Filter aktifken farklı gruba atlama → filtreyi sıfırla
-          applyFilter({});
-          // Filter chip'lerini de "Tümü" yap
-          document.querySelectorAll<HTMLElement>('.filter-bar__chips').forEach((wrap) => {
-            wrap.querySelectorAll('.chip').forEach((c) => c.classList.remove('chip--active'));
-            wrap.querySelector('.chip[data-value=""]')?.classList.add('chip--active');
-          });
-        }
+      // PAGE-PER-CLUSTER MODE: hash bir cluster ID'si ise SADECE o cluster'ı render et.
+      // (Tek cluster sayfa = uzun-scroll yok; sidebar bağımsız.)
+      const targetCluster = loader.getCluster(state.hash);
+      if (targetCluster) {
+        applyFilter({ cluster: state.hash });
+        // İçeriği üste scroll et (yeni sayfa hissi); window scroll, sidebar etkilenmez.
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        return;
       }
-      // Hedef cluster'ı aç, sonra scroll
-      expandCluster(state.hash);
-      // Cluster id'si değil item anchor'ı ise, parent cluster'ı bul
+      // hash bir cluster ID değil → cluster içi anchor (kv-row, heading, vs.) olabilir.
+      // Parent cluster'ı bul, gerekirse onu render et, sonra anchor'a scroll.
       const targetEl = document.getElementById(state.hash);
       const parentCluster = targetEl?.closest<HTMLElement>('.cluster');
-      if (parentCluster) expandCluster(parentCluster.id);
-      setTimeout(() => scrollToHash(state.hash!), 30);
+      if (parentCluster) {
+        // Eğer parent cluster zaten render edilmiş (current page) ise sadece anchor scroll.
+        expandCluster(parentCluster.id);
+        setTimeout(() => scrollToHash(state.hash!), 30);
+      } else if (state.hash) {
+        // Anchor parent cluster bulunamadı (henüz render değil) → orphan anchor; üste scroll
+        setTimeout(() => scrollToHash(state.hash!), 30);
+      }
     }
   });
 

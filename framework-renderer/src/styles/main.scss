@@ -3059,6 +3059,8 @@ tr.is-clickable {
     max-width: none !important;
     height: calc(100vh - var(--appbar-h)) !important;
     overflow-y: auto;
+    // Sidebar scroll content scroll'undan bağımsız — chain'lemesin:
+    overscroll-behavior: contain;
     align-self: start;
     z-index: 10;
     border-right: 1px solid var(--line-2);

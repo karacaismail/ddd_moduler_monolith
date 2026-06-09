@@ -196,7 +196,15 @@ export function renderTocElement(toc: TocGroup[], activeClusterId?: string): HTM
       a.href = `#${c.id}`;
       a.textContent = c.title;
       a.setAttribute('data-cluster-id', c.id);
+      a.setAttribute('data-group-id', group.id);
       if (c.id === activeClusterId) a.classList.add('toc__link--active');
+      // Tıklamada parent accordion'u kilitle: scrollSpy başka grubu açmasın.
+      // 1) Mevcut grubu zorla aç. 2) data-lock-until ile ~1200ms scroll-spy'ı baskıla.
+      a.addEventListener('click', () => {
+        openOnlyGroup(nav, group.id);
+        nav.dataset.lockGroupId = group.id;
+        nav.dataset.lockUntil = String(Date.now() + 1200);
+      });
       li.appendChild(a);
       ol.appendChild(li);
     }
@@ -228,21 +236,29 @@ export function setupScrollSpy(toc: HTMLElement): void {
           for (const link of links) {
             link.classList.toggle('toc__link--active', link.dataset.clusterId === id);
           }
-          // TEK-AÇIK kuralı: aktif link'in grubunu aç, diğerlerini kapat
           const activeLink = links.find((l) => l.dataset.clusterId === id);
           if (activeLink) {
             const group = activeLink.closest<HTMLElement>('.toc__group');
             const groupId = group?.getAttribute('data-group-id');
-            if (groupId) openOnlyGroup(toc, groupId);
-            // Sidebar viewport içinde değilse scroll-into-view
-            const sidebar = activeLink.closest<HTMLElement>('.sidebar');
-            if (sidebar) {
-              const linkRect = activeLink.getBoundingClientRect();
-              const sbRect = sidebar.getBoundingClientRect();
-              if (linkRect.top < sbRect.top + 40 || linkRect.bottom > sbRect.bottom - 40) {
-                activeLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Lock kontrolü: tıklama sonrası ~1200ms boyunca scroll-spy grup açmasın.
+            const lockUntil = Number(toc.dataset.lockUntil || '0');
+            const lockedGroup = toc.dataset.lockGroupId;
+            const isLocked = Date.now() < lockUntil;
+
+            // Lock varsa sadece lock'lanan gruba ait link için aç; başka grupları görmezden gel.
+            // Lock yoksa normal davranış: aktif cluster'ın grubunu aç.
+            if (isLocked) {
+              if (groupId && groupId === lockedGroup) {
+                openOnlyGroup(toc, groupId);
               }
+              // else: başka cluster'ın observer fire'ı yok say
+            } else if (groupId) {
+              openOnlyGroup(toc, groupId);
             }
+
+            // PAGE-PER-CLUSTER MODE: sidebar bağımsız scroll. scroll-into-view kapalı.
+            // Eğer kullanıcı kendi sidebar pozisyonunu kaybederse manuel kaydırır.
           }
         }
       }
