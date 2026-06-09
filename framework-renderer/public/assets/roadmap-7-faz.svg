@@ -1,0 +1,63 @@
+<svg viewBox="0 0 1100 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="rt rd">
+<title id="rt">70+ ürün build sırası — 7 fazlı zaman çizelgesi (60 ay)</title>
+<desc id="rd">Faz 1 (kernel) 6 ay, Faz 2 (ilk 10 ürün) 12 ay, sonra paralel ve sıralı 5 faz daha; toplam 60 ay 70+ ürün roadmap</desc>
+<rect width="100%" height="100%" fill="white"/>
+<text x="550" y="36" font-family="Roboto,sans-serif" font-size="22" fill="#0f172a" font-weight="500" text-anchor="middle">70+ ürün roadmap · 7 faz · ~60 ay</text>
+<text x="550" y="58" font-family="Roboto,sans-serif" font-size="13" fill="#64748b" text-anchor="middle">Çoklu squad zorunlu — tek başına 70 ürün imkânsız</text>
+<line x1="220.0" y1="80" x2="220.0" y2="496" stroke="#e2e8f0" stroke-width="1"/>
+<text x="220.0" y="72" font-family="Roboto,sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">M0</text>
+<line x1="303.0" y1="80" x2="303.0" y2="496" stroke="#e2e8f0" stroke-width="1"/>
+<text x="303.0" y="72" font-family="Roboto,sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">M6</text>
+<line x1="386.0" y1="80" x2="386.0" y2="496" stroke="#e2e8f0" stroke-width="1"/>
+<text x="386.0" y="72" font-family="Roboto,sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">M12</text>
+<line x1="469.0" y1="80" x2="469.0" y2="496" stroke="#e2e8f0" stroke-width="1"/>
+<text x="469.0" y="72" font-family="Roboto,sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">M18</text>
+<line x1="552.0" y1="80" x2="552.0" y2="496" stroke="#e2e8f0" stroke-width="1"/>
+<text x="552.0" y="72" font-family="Roboto,sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">M24</text>
+<line x1="635.0" y1="80" x2="635.0" y2="496" stroke="#e2e8f0" stroke-width="1"/>
+<text x="635.0" y="72" font-family="Roboto,sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">M30</text>
+<line x1="718.0" y1="80" x2="718.0" y2="496" stroke="#e2e8f0" stroke-width="1"/>
+<text x="718.0" y="72" font-family="Roboto,sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">M36</text>
+<line x1="801.0" y1="80" x2="801.0" y2="496" stroke="#e2e8f0" stroke-width="1"/>
+<text x="801.0" y="72" font-family="Roboto,sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">M42</text>
+<line x1="884.0" y1="80" x2="884.0" y2="496" stroke="#e2e8f0" stroke-width="1"/>
+<text x="884.0" y="72" font-family="Roboto,sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">M48</text>
+<line x1="967.0" y1="80" x2="967.0" y2="496" stroke="#e2e8f0" stroke-width="1"/>
+<text x="967.0" y="72" font-family="Roboto,sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">M54</text>
+<line x1="1050.0" y1="80" x2="1050.0" y2="496" stroke="#e2e8f0" stroke-width="1"/>
+<text x="1050.0" y="72" font-family="Roboto,sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">M60</text>
+<text x="303.0" y="516" font-family="Roboto,sans-serif" font-size="12" fill="#475569" font-weight="500" text-anchor="middle">Yıl 1</text>
+<text x="469.0" y="516" font-family="Roboto,sans-serif" font-size="12" fill="#475569" font-weight="500" text-anchor="middle">Yıl 2</text>
+<text x="635.0" y="516" font-family="Roboto,sans-serif" font-size="12" fill="#475569" font-weight="500" text-anchor="middle">Yıl 3</text>
+<text x="801.0" y="516" font-family="Roboto,sans-serif" font-size="12" fill="#475569" font-weight="500" text-anchor="middle">Yıl 4</text>
+<text x="967.0" y="516" font-family="Roboto,sans-serif" font-size="12" fill="#475569" font-weight="500" text-anchor="middle">Yıl 5</text>
+<text x="210" y="103" font-family="Roboto,sans-serif" font-size="13" fill="#0f172a" font-weight="500" text-anchor="end">Faz 1 · Altyapı</text>
+<rect x="220.0" y="80" width="83.0" height="36" rx="6" fill="#64748b" opacity="0.92"/>
+<text x="261.5" y="103" font-family="Roboto,sans-serif" font-size="12" fill="white" font-weight="500" text-anchor="middle">6 ay</text>
+<text x="220.0" y="130" font-family="Roboto,sans-serif" font-size="11" fill="#475569">kernel + scale + L1 (ATOMIC + 25 cluster)</text>
+<text x="210" y="161" font-family="Roboto,sans-serif" font-size="13" fill="#0f172a" font-weight="500" text-anchor="end">Faz 2 · İlk 10 ürün</text>
+<rect x="303.0" y="138" width="166.0" height="36" rx="6" fill="#3b82f6" opacity="0.92"/>
+<text x="386.0" y="161" font-family="Roboto,sans-serif" font-size="12" fill="white" font-weight="500" text-anchor="middle">12 ay</text>
+<text x="303.0" y="188" font-family="Roboto,sans-serif" font-size="11" fill="#475569">CRM, e-Commerce, Accounting, HRMS, Payroll, PMS, Helpdesk, B...</text>
+<text x="210" y="219" font-family="Roboto,sans-serif" font-size="13" fill="#0f172a" font-weight="500" text-anchor="end">Faz 3 · Op + Finans tam</text>
+<rect x="469.0" y="196" width="83.0" height="36" rx="6" fill="#10b981" opacity="0.92"/>
+<text x="510.5" y="219" font-family="Roboto,sans-serif" font-size="12" fill="white" font-weight="500" text-anchor="middle">6 ay</text>
+<text x="469.0" y="246" font-family="Roboto,sans-serif" font-size="11" fill="#475569">Sales, POS, Inventory, Purchase, MRP, RevRec, FP&A, Tax (TR)</text>
+<text x="210" y="277" font-family="Roboto,sans-serif" font-size="13" fill="#0f172a" font-weight="500" text-anchor="end">Faz 4 · Tedarik + Müşteri+İçerik</text>
+<rect x="552.0" y="254" width="166.0" height="36" rx="6" fill="#f59e0b" opacity="0.92"/>
+<text x="635.0" y="277" font-family="Roboto,sans-serif" font-size="12" fill="white" font-weight="500" text-anchor="middle">12 ay</text>
+<text x="552.0" y="304" font-family="Roboto,sans-serif" font-size="11" fill="#475569">WMS, TMS, FSM, Marketing, CLM, CPQ, PIM, DMS, Wiki, Social, ...</text>
+<text x="210" y="335" font-family="Roboto,sans-serif" font-size="13" fill="#0f172a" font-weight="500" text-anchor="end">Faz 5 · Veri-Zeka</text>
+<rect x="718.0" y="312" width="83.0" height="36" rx="6" fill="#a855f7" opacity="0.92"/>
+<text x="759.5" y="335" font-family="Roboto,sans-serif" font-size="12" fill="white" font-weight="500" text-anchor="middle">6 ay</text>
+<text x="718.0" y="362" font-family="Roboto,sans-serif" font-size="11" fill="#475569">AI Copilot, RAG, BI, ETL, Observability, Predictive</text>
+<text x="210" y="393" font-family="Roboto,sans-serif" font-size="13" fill="#0f172a" font-weight="500" text-anchor="end">Faz 6 · Platform (DİF)</text>
+<rect x="801.0" y="370" width="83.0" height="36" rx="6" fill="#06b6d4" opacity="0.92"/>
+<text x="842.5" y="393" font-family="Roboto,sans-serif" font-size="12" fill="white" font-weight="500" text-anchor="middle">6 ay</text>
+<text x="801.0" y="420" font-family="Roboto,sans-serif" font-size="11" fill="#475569">Studio (low-code) + BPM + iPaaS</text>
+<text x="210" y="451" font-family="Roboto,sans-serif" font-size="13" fill="#0f172a" font-weight="500" text-anchor="end">Faz 7 · Dikey TR</text>
+<rect x="884.0" y="428" width="166.0" height="36" rx="6" fill="#dc2626" opacity="0.92"/>
+<text x="967.0" y="451" font-family="Roboto,sans-serif" font-size="12" fill="white" font-weight="500" text-anchor="middle">12 ay</text>
+<text x="884.0" y="478" font-family="Roboto,sans-serif" font-size="11" fill="#475569">arsam (emlak), e-menum (F&B), Segika (SGK), Eğitim, Sağlık</text>
+<text x="220" y="520" font-family="Roboto,sans-serif" font-size="12" fill="#64748b">Kritik karar: Faz 1'i hızlı bitir (kernel sağlam). Sonraki fazlar paralelleşebilir — squad sayısına bağlı.</text>
+</svg>

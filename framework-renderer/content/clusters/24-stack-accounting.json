@@ -239,5 +239,8 @@
       "kim": "Muhasebeci günlük kontrolü yapar; mali müşavir denetler; vergi dairesi e-fatura sisteminden okur; üst yönetim raporları görür.",
       "analoji": "Eski usul muhasebe defterinin dijital hali: hiçbir kalem unutulmaz, otomatik toplanır, vergi dairesi anında görür."
     }
-  }
+  },
+  "related": [
+    "cc-tr"
+  ]
 }

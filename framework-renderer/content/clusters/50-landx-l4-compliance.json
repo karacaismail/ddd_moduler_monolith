@@ -88,5 +88,8 @@
       "kim": "Denetçi okur; sistem yazar.",
       "analoji": "Mahkeme tutanağı: hangi kanıt, hangi madde — defterde."
     }
-  }
+  },
+  "related": [
+    "cc-tr"
+  ]
 }

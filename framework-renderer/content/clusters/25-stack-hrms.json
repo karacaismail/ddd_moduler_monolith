@@ -185,5 +185,8 @@
       "kim": "İK uzmanı kayıtları tutar; yönetici onaylar; çalışan kendi bilgisini görür; SGK e-bildirim üzerinden okur.",
       "analoji": "Bir okulun öğrenci işleri: tüm öğrencilerin kayıt, devam, not, başarı durumu tek defterde. Veliler, öğretmenler, müdür hepsi farklı pencereden bakar."
     }
-  }
+  },
+  "related": [
+    "cc-tr"
+  ]
 }

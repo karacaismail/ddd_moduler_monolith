@@ -71,6 +71,12 @@
       "body": "Yukarıdaki 5 Stage build sırası **mimari/runtime yapımı** anlatır. Buna paralel **sürdürülebilirlik mekanizmaları** 4 aşamada inşa edilir; her aşamanın bir build stage'inde eşiği vardır.\n\n**Aşama 0 — Sınır kapıları (Stage 1 ile paralel).** İlk Layer 2 modülü yazılmadan ÖNCE: `import-linter` + `boundaries.yml` CI kapısı + BC politikası taslağı ({{ref:sus-boundaries}}). En düşük maliyet, en yüksek koruma.\n\n**Aşama 1 — Sözleşme katmanı (Stage 2-3 paralel).** İlk dış entegratör/plugin ortaya çıkmadan ÖNCE: tarih-tabanlı versiyon + response transform + DocType snapshot ({{ref:sus-versioning}} + {{ref:sus-timi}}).\n\n**Aşama 2 — Kendini-yükselten döngü (Stage 4).** İkinci major sürüm planlanırken: codemod + bitemporal + DBOS ({{ref:sus-codemod}} + {{ref:sus-bitemporal}} + {{ref:sus-durable}}).\n\n**Aşama 3 — DX + AI (Stage 5).** AI ajan üretime alınmadan ÖNCE: declarative türetme + tipli action yüzeyi ({{ref:sus-declarative}} + {{ref:sus-actions}})."
     },
     {
+      "type": "image",
+      "src": "/assets/roadmap-7-faz.svg",
+      "alt": "7 fazlı 60 aylık 70+ ürün roadmap zaman çizelgesi",
+      "caption": "60 ay 70+ ürün — 7 fazda hangi ürünler ne zaman canlıya çıkar"
+    },
+    {
       "type": "callout",
       "variant": "info",
       "label": "70+ ürün build sırası",
