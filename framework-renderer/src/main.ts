@@ -482,18 +482,20 @@ async function boot(): Promise<void> {
     mountCompareView(contentEl, loader, renderer);
   } else {
     // 9b. Normal ilk render
-    // GROUP-SCOPED MODE: hash bir cluster ID ise, o cluster'ın grubuna ait TÜM cluster'lar render edilir.
-    // (Sidebar accordion açık + içinde aktif item → content alanında sadece o grubun cluster'ları.)
-    // filter.cluster aslında GRUP ID ile filtreler (renderer'da c.cluster === filter.cluster).
-    let initialGroupId = initialRoute.filterCluster;
-    if (!initialGroupId && initialRoute.hash) {
+    // GROUP-SCOPED MODE: hash bir cluster ID ise hash öncelikli — eski ?cluster= baskılanır.
+    // filter.cluster renderer'da c.cluster === filter.cluster ile filtreler (cluster.cluster = group ID).
+    let initialGroupId: string | undefined;
+    if (initialRoute.hash) {
       const c = loader.getCluster(initialRoute.hash);
-      if (c) initialGroupId = c.cluster; // cluster.cluster = group ID
+      if (c) initialGroupId = c.cluster; // hash → cluster → group ID (URL'i override eder)
     }
+    if (!initialGroupId) initialGroupId = initialRoute.filterCluster;
     applyFilter({
       layer: initialRoute.filterLayer,
       cluster: initialGroupId,
     });
+    // lastFilterKey'i ilk render ile senkronize et (loop önler)
+    lastFilterKey = (initialRoute.filterLayer ?? '') + '|' + (initialGroupId ?? '');
   }
 
   // 10. Hash scroll — initial hedef cluster'ı aç + scroll
@@ -573,20 +575,21 @@ async function boot(): Promise<void> {
       closeDetail();
       lastHash = state.hash;
       // GROUP-SCOPED MODE: hash bir cluster ID'si ise, o cluster'ın grubuna ait TÜM cluster'lar
-      // content'te render edilir; diğer gruplar görünmez. Tıklanan cluster expand olur + scroll.
+      // content'te render edilir. Hash, URL'deki eski ?cluster='ı OVERRIDE eder.
       const targetCluster = loader.getCluster(state.hash);
       if (targetCluster) {
         const groupId = targetCluster.cluster;
-        // Aynı grup zaten render edilmiş mi? (Yeniden render maliyetinden kaçın.)
         const alreadyOnGroup = document.getElementById(state.hash) !== null;
         if (!alreadyOnGroup) {
           applyFilter({ cluster: groupId });
+          // Loop önle: applyFilter URL'i ?cluster=groupId yapar; lastFilterKey'i de güncelle
+          lastFilterKey = '|' + groupId;
         }
         // Tıklanan cluster'ı aç + ona scroll (üste değil; grup içi navigasyon)
         setTimeout(() => {
           expandCluster(state.hash!);
           scrollToHash(state.hash!);
-        }, alreadyOnGroup ? 0 : 30);
+        }, alreadyOnGroup ? 0 : 50);
         return;
       }
       // hash bir cluster ID değil → cluster içi anchor.
