@@ -440,13 +440,9 @@ async function boot(): Promise<void> {
     // PAGE-PER-CLUSTER: scroll-spy kapalı (tek cluster sayfada; sidebar bağımsız scroll).
     // void setupScrollSpy — eski uzun-scroll moduna geri dönülürse uncomment.
     // FILTER APPLIED → ilgili cluster'ları auto-expand (kullanıcı içerik görsün)
-    if (isFiltered) {
-      contentEl.querySelectorAll<HTMLElement>('.cluster').forEach((el) => {
-        lazyRender(el as LazyCluster);
-        el.classList.remove('cluster--collapsed');
-        el.querySelector('.cluster__header')?.setAttribute('aria-expanded', 'true');
-      });
-    }
+    // GROUP-SCOPED MODE: cluster'lar default KAPALI gelir (sadece başlık görünür).
+    // Aktif/hedef cluster onRouteChange içinde expandCluster ile açılır.
+    // Eski "filter applied → hepsini aç" mantığı kaldırıldı.
     // Filter-bar UI state'i de sync olsun (popstate sonrası)
     if (filterBarEl) {
       filterBarEl.querySelectorAll<HTMLElement>('.chip').forEach((chip) => {
@@ -483,10 +479,11 @@ async function boot(): Promise<void> {
   } else {
     // 9b. Normal ilk render
     // GROUP-SCOPED MODE: hash bir cluster ID ise hash öncelikli — eski ?cluster= baskılanır.
-    // filter.cluster renderer'da c.cluster === filter.cluster ile filtreler (cluster.cluster = group ID).
+    // parseRoute() hash'i '#' ile döndürüyor; loader.getCluster() temiz ID istiyor.
     let initialGroupId: string | undefined;
-    if (initialRoute.hash) {
-      const c = loader.getCluster(initialRoute.hash);
+    const cleanHash = (initialRoute.hash ?? '').replace(/^#/, '');
+    if (cleanHash) {
+      const c = loader.getCluster(cleanHash);
       if (c) initialGroupId = c.cluster; // hash → cluster → group ID (URL'i override eder)
     }
     if (!initialGroupId) initialGroupId = initialRoute.filterCluster;
@@ -499,14 +496,16 @@ async function boot(): Promise<void> {
   }
 
   // 10. Hash scroll — initial hedef cluster'ı aç + scroll
+  // parseRoute() hash'i '#' prefix'i ile veriyor — temizle.
   if (initialRoute.hash) {
     setTimeout(() => {
-      const hash = initialRoute.hash!;
-      // Hedef bir cluster mi yoksa cluster içi anchor mı?
-      const el = document.getElementById(hash);
+      const cleanHash = initialRoute.hash!.replace(/^#/, '');
+      if (!cleanHash) return;
+      const el = document.getElementById(cleanHash);
       const sec = el?.closest<HTMLElement>('.cluster');
+      // SADECE aktif/hedef cluster expand olur — diğerleri kapalı kalır.
       if (sec) sec.classList.remove('cluster--collapsed');
-      scrollToHash(hash, 'auto');
+      scrollToHash('#' + cleanHash, 'auto');
     }, 50);
   }
 
@@ -574,32 +573,33 @@ async function boot(): Promise<void> {
     if (state.hash && state.hash !== lastHash) {
       closeDetail();
       lastHash = state.hash;
+      // parseRoute() hash'i '#' ile veriyor; cluster ID için temizle.
+      const clean = state.hash.replace(/^#/, '');
       // GROUP-SCOPED MODE: hash bir cluster ID'si ise, o cluster'ın grubuna ait TÜM cluster'lar
       // content'te render edilir. Hash, URL'deki eski ?cluster='ı OVERRIDE eder.
-      const targetCluster = loader.getCluster(state.hash);
+      const targetCluster = loader.getCluster(clean);
       if (targetCluster) {
         const groupId = targetCluster.cluster;
-        const alreadyOnGroup = document.getElementById(state.hash) !== null;
+        const alreadyOnGroup = document.getElementById(clean) !== null;
         if (!alreadyOnGroup) {
           applyFilter({ cluster: groupId });
-          // Loop önle: applyFilter URL'i ?cluster=groupId yapar; lastFilterKey'i de güncelle
           lastFilterKey = '|' + groupId;
         }
-        // Tıklanan cluster'ı aç + ona scroll (üste değil; grup içi navigasyon)
+        // Tıklanan cluster'ı aç + ona scroll
         setTimeout(() => {
-          expandCluster(state.hash!);
-          scrollToHash(state.hash!);
+          expandCluster(clean);
+          scrollToHash('#' + clean);
         }, alreadyOnGroup ? 0 : 50);
         return;
       }
       // hash bir cluster ID değil → cluster içi anchor.
-      const targetEl = document.getElementById(state.hash);
+      const targetEl = document.getElementById(clean);
       const parentCluster = targetEl?.closest<HTMLElement>('.cluster');
       if (parentCluster) {
         expandCluster(parentCluster.id);
-        setTimeout(() => scrollToHash(state.hash!), 30);
-      } else if (state.hash) {
-        setTimeout(() => scrollToHash(state.hash!), 30);
+        setTimeout(() => scrollToHash('#' + clean), 30);
+      } else if (clean) {
+        setTimeout(() => scrollToHash('#' + clean), 30);
       }
     }
   });
